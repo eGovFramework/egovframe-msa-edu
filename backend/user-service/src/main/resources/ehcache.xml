@@ -1,0 +1,51 @@
+<config xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns='http://www.ehcache.org/v3'
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core.xsd">
+
+    <cache alias="cache-user-authorization-by-roles"> <!-- 캐시 이름 -->
+        <key-type>java.util.List</key-type> <!-- 캐시 키 타입 -->
+        <value-type>java.util.List</value-type> <!-- 캐시 저장 값 타입 -->
+        <expiry>
+            <ttl unit="minutes">3</ttl> <!-- 만료 시간 -->
+        </expiry>
+
+        <listeners>
+            <listener>
+                <class>org.egovframe.cloud.userservice.config.CacheEventLogger</class> <!-- 캐시 이벤트 리스너 -->
+                <event-firing-mode>ASYNCHRONOUS</event-firing-mode>
+                <event-ordering-mode>UNORDERED</event-ordering-mode>
+                <events-to-fire-on>CREATED</events-to-fire-on>
+                <events-to-fire-on>EXPIRED</events-to-fire-on>
+            </listener>
+        </listeners>
+
+        <resources>
+            <heap unit="entries">2000</heap> <!-- 힙 사이즈 -->
+            <offheap unit="MB">1</offheap> <!-- 힙 사이즈가 부족할 경우 디스크 사용 용량 -->
+        </resources>
+    </cache>
+
+    <cache alias="cache-user-authorization-by-userid"> <!-- 캐시 이름 -->
+        <key-type>java.lang.String</key-type> <!-- 캐시 키 타입 -->
+        <value-type>java.util.List</value-type> <!-- 캐시 저장 값 타입 -->
+        <expiry>
+            <ttl unit="minutes">3</ttl> <!-- 만료 시간 -->
+        </expiry>
+
+        <listeners>
+            <listener>
+                <class>org.egovframe.cloud.userservice.config.CacheEventLogger</class> <!-- 캐시 이벤트 리스너 -->
+                <event-firing-mode>ASYNCHRONOUS</event-firing-mode>
+                <event-ordering-mode>UNORDERED</event-ordering-mode>
+                <events-to-fire-on>CREATED</events-to-fire-on>
+                <events-to-fire-on>EXPIRED</events-to-fire-on>
+            </listener>
+        </listeners>
+
+        <resources>
+            <heap unit="entries">2000</heap> <!-- 힙 사이즈 -->
+            <offheap unit="MB">1</offheap> <!-- 힙 사이즈가 부족할 경우 디스크 사용 용량 -->
+        </resources>
+    </cache>
+
+</config>

@@ -1,0 +1,32 @@
+server:
+  port: 0 # random port
+
+spring:
+  application:
+    name: portal-service
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL57Dialect
+        storage_engine: innodb
+        format_sql: true
+        default_batch_fetch_size: 1000
+    show-sql: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 50MB
+
+# config server actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans
+
+logging:
+  level:
+    org.egovframe.cloud.portalservice.client: DEBUG   # Feign log를 확인하기 위해 해당 패키지를 디버그 모드로 설정

@@ -1,0 +1,67 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: apigateway
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - SwaggerHeaderFilter
+        - id: portal-service
+          uri: lb://PORTAL-SERVICE
+          predicates:
+            - Path=/portal-service/**
+          filters:
+            - RewritePath=/portal-service/(?<segment>.*), /$\{segment}
+            - SwaggerHeaderFilter
+        - id: board-service
+          uri: lb://BOARD-SERVICE
+          predicates:
+            - Path=/board-service/**
+          filters:
+            - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+            - SwaggerHeaderFilter
+        - id: reserve-item-service
+          uri: lb://RESERVE-ITEM-SERVICE
+          predicates:
+            - Path=/reserve-item-service/**
+          filters:
+            - RewritePath=/reserve-item-service/(?<segment>.*), /$\{segment}
+            - SwaggerHeaderFilter
+        - id: reserve-check-service
+          uri: lb://RESERVE-CHECK-SERVICE
+          predicates:
+            - Path=/reserve-check-service/**
+          filters:
+            - RewritePath=/reserve-check-service/(?<segment>.*), /$\{segment}
+            - SwaggerHeaderFilter
+        - id: reserve-request-service
+          uri: lb://RESERVE-REQUEST-SERVICE
+          predicates:
+            - Path=/reserve-request-service/**
+          filters:
+            - RewritePath=/reserve-request-service/(?<segment>.*), /$\{segment}
+            - SwaggerHeaderFilter
+      default-filters:
+        - name: GlobalFilter
+          args:
+            preLogger: true
+            postLogger: true
+      discovery:
+        locator:
+          enabled: true
+
+# config server actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans

@@ -1,0 +1,98 @@
+plugins {
+    id 'org.springframework.boot' version '2.4.5'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    // querydsl
+    id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
+    id 'java'
+}
+
+group = 'org.egovframe.cloud'
+version = '0.1'
+sourceCompatibility = '1.8'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://maven.egovframe.go.kr/maven/" } // egovframe maven 원격 저장소
+}
+
+ext {
+    set('springCloudVersion', "2020.0.3")
+}
+
+dependencies {
+//    implementation files('../../module-common/build/libs/module-common-0.1.jar') // 공통 모듈, @ComponentScan(basePackages={"org.egovframe.cloud"}) 추가해야 적용된다
+    implementation 'org.egovframe.cloud:module-common:0.1'
+    implementation('org.egovframe.rte:org.egovframe.rte.fdl.cmmn:4.0.0') {
+        exclude group: 'org.egovframe.rte', module: 'org.egovframe.rte.fdl.logging'
+    }
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'    // config
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // config
+    implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'  // bus
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'        // logstash logback
+    implementation 'mysql:mysql-connector-java'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    // querydsl
+    implementation 'com.querydsl:querydsl-jpa'
+    implementation 'com.querydsl:querydsl-sql:4.4.0'
+    implementation 'com.querydsl:querydsl-sql-spring:4.4.0'
+
+    //messaging
+    implementation 'org.springframework.cloud:spring-cloud-stream'
+    implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
+
+    // swagger
+    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    // lombok
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'com.h2database:h2'
+    testImplementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.7' // 테스트시에만 출력
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+// querydsl 추가 시작
+def querydslDir = "$buildDir/generated/querydsl"
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+configurations {
+    querydsl.extendsFrom compileClasspath
+}
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+// querydsl 추가 끝

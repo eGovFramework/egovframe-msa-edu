@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: reserve-request-service
+
+server:
+  port: 0
+
+# config server actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans

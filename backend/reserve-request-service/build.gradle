@@ -1,0 +1,87 @@
+plugins {
+    id 'org.springframework.boot' version '2.4.5'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'org.egovframe.cloud'
+version = '0.1'
+sourceCompatibility = '1.8'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://maven.egovframe.go.kr/maven/" } // egovframe maven 원격 저장소
+}
+
+ext {
+    set('springCloudVersion', "2020.0.3")
+}
+
+
+dependencies {
+//    implementation files('../../module-common/build/libs/module-common-0.1.jar') // @ComponentScan(basePackages={"org.egovframe.cloud"}) 추가해야 적용된다
+    implementation 'org.egovframe.cloud:module-common:0.1'
+    implementation('org.egovframe.rte:org.egovframe.rte.fdl.cmmn:4.0.0') {
+        exclude group: 'org.egovframe.rte', module: 'org.egovframe.rte.fdl.logging'
+    }
+    implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'org.springframework.cloud:spring-cloud-starter-config' // config
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // config
+    implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'  // bus
+    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j'
+    implementation 'com.playtika.reactivefeign:feign-reactor-spring-cloud-starter:3.1.0'
+
+    //messaging
+    implementation 'org.springframework.cloud:spring-cloud-stream'
+    implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'net.java.dev.jna:jna:5.9.0' // byte-buddy (No compatible attachment provider is available.)
+
+
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+    implementation 'dev.miku:r2dbc-mysql:0.8.2.RELEASE'
+    implementation 'mysql:mysql-connector-java'
+
+    // swagger api docs
+    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.10'
+
+    // bolcking 호출 감지
+    implementation 'io.projectreactor:reactor-tools:3.4.9'
+    implementation 'io.projectreactor.tools:blockhound:1.0.6.RELEASE'
+
+    //lombok
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'com.h2database:h2'
+    testImplementation 'io.r2dbc:r2dbc-h2'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.amqp:spring-rabbit-test'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}

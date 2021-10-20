@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: reserve-item-service
+
+logging:
+  level:
+    org:
+      springramework:
+        data:
+          r2dbc: DEBUG
+
+
+file:
+  location: ${user.home}/msa-attach-volume
+
+
+# jwt token
+token:
+  secret: egovframe_user_token

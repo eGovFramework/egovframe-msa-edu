@@ -1,0 +1,15 @@
+---
+applications:
+  - name: egov-discovery # CF push 시 생성되는 이름
+#    memory: 512M # 메모리
+    instances: 1 # 인스턴스 수
+    host: egov-discovery # host 명으로 유일해야 함
+    path: build/libs/discovery-0.1.jar # build 후 생성된 jar 위치
+    buildpack: java_buildpack # cf buildpacks 명령어로 java buildpack 이름 확인
+    env:
+      spring_profiles_active: cf
+      spring_cloud_config_uri: https://egov-config.paas-ta.org
+      eureka_server_enable_self_preservation: true
+      server_port: 80
+      TZ: Asia/Seoul
+      JAVA_OPTS: -Xss349k

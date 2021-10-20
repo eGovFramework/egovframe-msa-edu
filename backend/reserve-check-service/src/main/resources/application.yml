@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: reserve-check-service
+
+server:
+  port: 0
+
+# config server actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans
+

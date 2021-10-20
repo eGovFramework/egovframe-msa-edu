@@ -1,0 +1,18 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: discovery
+  security:
+    user:
+      name: admin
+      password: admin
+
+# eureka 가 포함되면 eureka server 도 등록되므로 해제한다.
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+  server:
+    peer-node-read-timeout-ms: 10000

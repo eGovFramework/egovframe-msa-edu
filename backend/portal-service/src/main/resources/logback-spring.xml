@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %thread %-5level %logger - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 로컬에서는 로그를 전송하지 않도록 설정 -->
+    <springProfile name="default">
+        <root level="INFO">
+            <appender-ref ref="STDOUT" />
+        </root>
+    </springProfile>
+    <springProfile name="!default">
+        <!-- java -Ddestination="localhost:8088" 와 같이 변경할 수 있다. cf 환경에서는 manifest.yml 파일에 환경변수로 추가 -->
+        <property name="destination" value="localhost:8088" />
+        <property name="app_name" value="${app_name}" />
+
+        <!-- ELK - Logstash 로 로그를 전송하기 위한 appender -->
+        <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+            <destination>${destination}</destination><!-- native profile => localhost:8088 -->
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <customFields>{"app.name":"${app_name}"}</customFields>
+            </encoder>
+        </appender>
+        <root level="WARN">
+            <appender-ref ref="LOGSTASH" />
+            <appender-ref ref="STDOUT" />
+        </root>
+    </springProfile>
+
+</configuration>

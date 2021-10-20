@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    config:
+      uri: http://localhost:8888
+      name: portal-service # portal-service.yml이 있으면 불러오게 된다
+#      name: config-service # config-service의 application.yml 을 불러오게 된다
+#  profiles:
+#    active: prod # application-prod.yml
