@@ -1,44 +1,45 @@
 HELP.md
-.gradle
-build/
-gradle-wrapper.jar
-gradle-wrapper.properties
+**/.gitignore
+**/.gradle
+**/build/
+**/gradle-wrapper.jar
+**/gradle-wrapper.properties
 !**/src/main/**/build/
 !**/src/test/**/build/
 
 ### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
+**/.apt_generated
+**/.classpath
+**/.factorypath
+**/.project
+**/.settings
+**/.springBeans
+**/.sts4-cache
+**/.metadata
+**/bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-out/
+**/.idea
+**/*.iws
+**/*.iml
+**/*.ipr
+**/out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
 ### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+**/nbproject/private/
+**/nbbuild/
+**/dist/
+**/nbdist/
+**/.nb-gradle/
 
 ### VS Code ###
-.vscode/
+**/.vscode/
 
 ### macOS template
 *.DS_Store
-.AppleDouble
-.LSOverride
-
+*.AppleDouble
+*.LSOverride
