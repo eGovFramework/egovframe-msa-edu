@@ -1,0 +1,7 @@
+server.name: kibana
+server.host: "0.0.0.0"
+
+## X-Pack security credentials
+# xpack.monitoring.ui.container.elasticsearch.enabled: true
+# elasticsearch.username: elastic
+# elasticsearch.password: changeme

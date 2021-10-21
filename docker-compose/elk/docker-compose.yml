@@ -1,0 +1,67 @@
+version: '3.8'
+services:
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+    # restart: always
+    ports:
+      - "9200:9200"
+    environment:
+      discovery.type: single-node
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      TZ: Asia/Seoul
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - elastic
+    volumes:
+      - ${HOME}/docker-volume/elasticsearch/data:/usr/share/elasticsearch/data
+
+  logstash:
+    container_name: logstash
+    image: docker.elastic.co/logstash/logstash:7.14.0
+    # restart: always
+    ports:
+      - "5001:5001"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      TZ: Asia/Seoul
+    volumes:
+      - type: bind
+        source: ${PWD}/logstash/config/logstash.yml
+        target: /usr/share/logstash/config/logstash.yml
+        read_only: true
+      - type: bind
+        source: ${PWD}/logstash/pipeline
+        target: /usr/share/logstash/pipeline
+        read_only: true
+    networks:
+      - elastic
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:7.14.0
+    # restart: always
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
+      TZ: Asia/Seoul
+    volumes:
+      - type: bind
+        source: ${PWD}/kibana/config/kibana.yml
+        target: /usr/share/kibana/config/kibana.yml
+        read_only: true
+    networks:
+      - elastic
+    depends_on:
+      - elasticsearch
+
+networks:
+  elastic:
+    driver: bridge
