@@ -5,7 +5,7 @@ services:
     environment:  # 환경변수
       MYSQL_USER: msaportal
       MYSQL_DATABASE: msaportal
-      MYSQL_PASSWORD: msaportal01
+      MYSQL_PASSWORD: msaportal
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_ROOT_HOST: "%"
       TZ: Asia/Seoul
@@ -23,7 +23,7 @@ services:
     environment:  # 환경변수
       MYSQL_USER: msaportal
       MYSQL_DATABASE: reservation
-      MYSQL_PASSWORD: msaportal01
+      MYSQL_PASSWORD: msaportal
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_ROOT_HOST: "%"
       TZ: Asia/Seoul
