@@ -1,0 +1,13 @@
+---
+applications:
+  - name: egov-simple-admin # CF push 시 생성되는 이름
+    memory: 2048M # 메모리
+    instances: 1 # 인스턴스 수
+    host: egov-simple-admin # host 명으로 유일해야 함
+    command: npm run start # 애플리케이션 실행 명령어
+    path: ./ # 배포될 애플리케이션의 위치
+    buildpack: nodejs_buildpack # cf buildpacks 명령어로 nodejs buildpack 이름 확인
+    env:
+      NODE_ENV: production
+      TZ: 'Asia/Seoul'
+      # SERVER_API_URL: https://egov-apigateway.paas-ta.org

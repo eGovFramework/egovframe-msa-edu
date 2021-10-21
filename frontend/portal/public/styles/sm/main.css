@@ -1,0 +1,58 @@
+@charset "UTF-8";
+
+header {border-bottom:1px solid #e7e7e7;}
+header nav ul li a {color:#000;}
+/* popup */
+.absolute {
+        position: absolute;
+        top: 580px;
+        right: 10px;
+        cursor:pointer;
+}
+.popup_close {
+        position: absolute;
+        right:10px;
+        top:10px;
+        cursor:pointer;
+}
+.popup_detail{
+        position: absolute;
+        right:165px;
+        bottom:44px;
+        font-size:15px;
+        cursor:pointer;
+        padding: 5px 10px;
+        font-weight:bold;
+        color: #ffffff;
+        text-shadow: 0px 0px 5px #4484e2,
+          0px 0px 20px #4484e2,
+          0px 0px 30px #4484e2;
+
+}
+.popup_detail:hover{
+        color: #ffffff;
+        text-shadow: 0px 0px 5px #fff,
+          0px 0px 20px #4484E2,
+          0px 0px 30px #4484E2,
+          0px 0px 40px #4484E2,
+          0px 0px 60px #4484E2,
+          0px 0px 90px #4484E2,
+          0px 0px 120px #4484E2,
+          0px 0px 200px #4484E2;
+}
+
+
+#page_popup {
+
+        background-color: green;
+        background-repeat: no-repeat;
+        position:absolute;
+        left:30px;
+        top:130px;
+        cursor:move;
+        width:463px;
+        height:538px;
+        border-style: ridge;
+        z-index:200;
+}
+#page_popup .absolute span {font-size: 14px}
