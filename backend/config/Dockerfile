@@ -1,4 +1,4 @@
-# docker run --name egov-config -d -p 8888:8888 -e profile=prod -e ENCRYPT_KEY=??? jaeyeolkim/egov-config
+# docker run --name egov-config -d -p 8888:8888 -e profile=prod -e ENCRYPT_KEY=??? egovframework/egov-config
 # base image - openjdk8
 FROM openjdk:8-jre-alpine
 # jar 파일이 복사되는 위치
