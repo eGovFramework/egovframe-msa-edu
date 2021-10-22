@@ -1,10 +1,10 @@
 version: "3.8"
 services:
-  mysql_msaportal:
+  mysql:
     image: mysql:5.7
     environment:  # 환경변수
+      MYSQL_MULTIPLE_DATABASES: msaportal,reservation
       MYSQL_USER: msaportal
-      MYSQL_DATABASE: msaportal
       MYSQL_PASSWORD: msaportal
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_ROOT_HOST: "%"
@@ -13,26 +13,7 @@ services:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
     volumes:
-      - "${HOME}/docker-volume/msaportal-db/:/var/lib/mysql"
+      - "${HOME}/docker-volume/mysql/:/var/lib/mysql"
     ports:
       - "3306:3306"
-    container_name: mysql_msaportal
-  
-  mysql_reservation:
-    image: mysql:5.7
-    environment:  # 환경변수
-      MYSQL_USER: msaportal
-      MYSQL_DATABASE: reservation
-      MYSQL_PASSWORD: msaportal
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-      MYSQL_ROOT_HOST: "%"
-      TZ: Asia/Seoul
-    command: # 명령어 실행 - characterset 지정
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-    volumes:
-      - "${HOME}/docker-volume/reservation-db/:/var/lib/mysql"
-    ports:
-      - "3307:3306"
-    container_name: mysql_reservation
-    
+    container_name: mysql
