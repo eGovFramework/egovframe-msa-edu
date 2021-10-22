@@ -35,3 +35,6 @@ spring:
     password: guest
   zipkin:
     base-url: http://localhost:8085
+
+egov:
+  message: hello
