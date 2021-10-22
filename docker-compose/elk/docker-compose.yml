@@ -2,7 +2,7 @@ version: '3.8'
 services:
   elasticsearch:
     container_name: elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
     # restart: always
     ports:
       - "9200:9200"
@@ -21,7 +21,7 @@ services:
 
   logstash:
     container_name: logstash
-    image: docker.elastic.co/logstash/logstash:7.14.0
+    image: docker.elastic.co/logstash/logstash:7.10.1
     # restart: always
     ports:
       - "5001:5001"
@@ -44,7 +44,7 @@ services:
 
   kibana:
     container_name: kibana
-    image: docker.elastic.co/kibana/kibana:7.14.0
+    image: docker.elastic.co/kibana/kibana:7.10.1
     # restart: always
     ports:
       - "5601:5601"
