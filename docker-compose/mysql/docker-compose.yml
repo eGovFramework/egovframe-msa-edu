@@ -14,7 +14,7 @@ services:
       - --collation-server=utf8mb4_unicode_ci
     volumes:
       - "${HOME}/docker-volume/mysql/:/var/lib/mysql"
-      - ./init.sql:/data/application/init.sql
+      - "./init.sql:/data/application/init.sql"
     ports:
       - "3306:3306"
     container_name: mysql
