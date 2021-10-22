@@ -3,6 +3,8 @@ CREATE DATABASE IF NOT EXISTS reservation;
 
 grant all privileges on *.* to 'msaportal'@'%';
 
+use reservation;
+
 CREATE TABLE IF NOT EXISTS  reserve
 (
     `reserve_id`               VARCHAR(255)     NOT NULL    COMMENT '예약 id',
@@ -28,6 +30,10 @@ CREATE TABLE IF NOT EXISTS  reserve
 
 ALTER TABLE reserve COMMENT '예약 신청&확인';
 
+
+
+
+use msaportal;
 
 -- MySQL dump 10.13  Distrib 5.7.35, for Linux (x86_64)
 --
