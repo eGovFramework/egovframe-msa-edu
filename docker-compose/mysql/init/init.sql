@@ -1,7 +1,8 @@
 CREATE DATABASE IF NOT EXISTS msaportal;
 CREATE DATABASE IF NOT EXISTS reservation;
 
--- reserve Table Create SQL
+grant all privileges on *.* to 'msaportal'@'%';
+
 CREATE TABLE IF NOT EXISTS  reserve
 (
     `reserve_id`               VARCHAR(255)     NOT NULL    COMMENT '예약 id',
