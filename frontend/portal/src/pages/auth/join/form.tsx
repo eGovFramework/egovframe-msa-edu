@@ -2,12 +2,13 @@ import CustomAlert, { CustomAlertPrpps } from '@components/CustomAlert'
 import { DLWrapper } from '@components/WriteDLFields'
 import { makeStyles, Theme } from '@material-ui/core/styles'
 import Alert from '@material-ui/lab/Alert'
-import { userService } from '@service'
+import { ISocialUser, userService } from '@service'
 import { format, isValidPassword } from '@utils'
 import { useRouter } from 'next/router'
-import React, { createRef, useState } from 'react'
+import React, { createRef, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { GetServerSideProps } from 'next'
 
 const useStyles = makeStyles((theme: Theme) => ({
   alert: {
@@ -20,9 +21,17 @@ interface IUserForm {
   password: string
   passwordConfirm: string
   userName: string
+  provider?: string
+  token?: string
 }
 
-const Form = () => {
+interface FormProps {
+  socialUser: ISocialUser
+}
+
+const Form = (props: FormProps) => {
+  const { socialUser } = props
+
   const router = useRouter()
   const classes = useStyles()
   const { t } = useTranslation()
@@ -44,10 +53,12 @@ const Form = () => {
   // form hook
   const methods = useForm<IUserForm>({
     defaultValues: {
-      email: '',
+      email: socialUser.email || '',
       password: '',
       passwordConfirm: '',
-      userName: '',
+      userName: socialUser.name || '',
+      provider: router.query.provider as string,
+      token: router.query.token as string,
     },
   })
   const {
@@ -66,6 +77,14 @@ const Form = () => {
       },
     })
   }
+
+  useEffect(() => {
+    if (socialUser) {
+      if (socialUser.name) {
+
+      }
+    }
+  }, [socialUser])
 
   // 이메일중복확인
   const handleCheckEmail = event => {
@@ -156,6 +175,7 @@ const Form = () => {
                     <input
                       ref={emailRef}
                       type="text"
+                      readOnly={/*typeof socialUser.email !== 'undefined' && socialUser.email !== null*/false}
                       value={field.value}
                       onChange={field.onChange}
                       placeholder={t('user.email')}
@@ -264,6 +284,7 @@ const Form = () => {
                   >
                     <input
                       type="text"
+                      readOnly={/*typeof socialUser.name !== 'undefined' && socialUser.name !== null*/false}
                       value={field.value}
                       onChange={field.onChange}
                       placeholder={t('label.title.name')}
@@ -308,6 +329,35 @@ const Form = () => {
       />
     </section>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async context => {
+  const provider = context.query.provider as string
+  const token = context.query.token as string
+
+  let socialUser = {}
+
+  try {
+    if (provider && token) {
+      const result = await userService.social(provider, token)
+      if (result) {
+        socialUser = (await result.data) as ISocialUser
+      }
+    }
+  } catch (error) {
+    console.error(`social item query error ${error.message}`)
+    if (error.response?.data?.code === 'E003') {
+      return {
+        notFound: true,
+      }
+    }
+  }
+
+  return {
+    props: {
+      socialUser
+    },
+  }
 }
 
 export default Form

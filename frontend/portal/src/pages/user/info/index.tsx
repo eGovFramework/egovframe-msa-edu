@@ -150,9 +150,8 @@ const UserInfo = () => {
           token: response.response.access_token,
         },
       })
-      setErrorState(null)
     } else {
-      setErrorState(t('err.user.login.social'))
+      setErrorState({ message: t('err.user.login.social') })
     }
   }
 
@@ -173,9 +172,8 @@ const UserInfo = () => {
           token: response.accessToken,
         },
       })
-      setErrorState(null)
     } else {
-      setErrorState(t('err.user.login.social'))
+      setErrorState({ message: t('err.user.login.social') })
     }
   }
 
@@ -193,9 +191,8 @@ const UserInfo = () => {
           token: response.tokenId,
         },
       })
-      setErrorState(null)
     } else {
-      setErrorState(t('err.user.login.social'))
+      setErrorState({ message: t('err.user.login.social') })
     }
   }
 

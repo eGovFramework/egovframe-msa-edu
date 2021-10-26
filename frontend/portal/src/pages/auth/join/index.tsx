@@ -61,7 +61,7 @@ const Join = ({ policyPP, policyTOS }: IJoinProps) => {
       return
     }
 
-    router.push('/auth/join/form')
+    router.push(`/auth/join/form?provider=${router.query.provider}&token=${router.query.token}`)
   }
 
   return (

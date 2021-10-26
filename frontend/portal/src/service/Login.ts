@@ -34,6 +34,8 @@ export const loginSerivce = {
         if (result.status === 200) {
           onSuccessLogin(await result.json())
           resolve('success')
+        } if (result.status === 412) {
+          reject('join')
         } else {
           reject('noAuth')
         }

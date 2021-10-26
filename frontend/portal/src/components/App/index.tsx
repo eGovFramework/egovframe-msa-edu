@@ -36,6 +36,7 @@ const App = ({ component: Component, ...pageProps }: AppProps) => {
   const router = useRouter()
   const pathname = router.pathname
   const authPage = pathname?.startsWith('/auth/')
+  const naverLoginCallbackPage = pathname?.startsWith('/auth/login/naver')
   const errorPage = router.pathname === '/404' || router.pathname === '/_error'
 
   const { enqueueSnackbar } = useSnackbar()
@@ -127,7 +128,7 @@ const App = ({ component: Component, ...pageProps }: AppProps) => {
     return null
   }
 
-  return errorPage ? (
+  return errorPage || naverLoginCallbackPage ? (
     <Wrapper>
       <Component {...pageProps} />
     </Wrapper>
