@@ -12,7 +12,7 @@ eureka:
     register-with-eureka: true # eureka 서버에 등록
     fetch-registry: true # 외부 검색 가능
     service-url:
-      defaultZone: http://admin:admin@localhost:8761/eureka
+      defaultZone: http://admin:admin@${eureka.instance.hostname:localhost}:8761/eureka
 
 # file attach location - messages{lang}.properties 도 이 경로에 위치한다.
 file:
