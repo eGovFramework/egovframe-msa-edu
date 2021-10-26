@@ -1,5 +1,6 @@
 package org.egovframe.cloud.reserveitemservice.service.reserveItem;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -79,7 +80,7 @@ public class ReserveItemService extends ReactiveAbstractService {
      * @return
      */
     private Mono<ReserveItemListResponseDto> convertReserveItemListResponseDto(ReserveItem reserveItem) {
-        return Mono.just(ReserveItemListResponseDto.builder().reserveItem(reserveItem).build());
+        return Mono.just(ReserveItemListResponseDto.builder().entity(reserveItem).build());
     }
 
     /**
@@ -108,10 +109,13 @@ public class ReserveItemService extends ReactiveAbstractService {
      */
     @Transactional(readOnly = true)
     public Mono<Page<ReserveItemListResponseDto>> searchForUser(String categoryId, ReserveItemRequestDto requestDto, Pageable pageable) {
-        return reserveItemRepository.searchForUser(categoryId, requestDto, pageable)
+        if (!"all".equals(categoryId)) {
+            requestDto.setCategoryId(categoryId);
+        }
+        return reserveItemRepository.search(requestDto, pageable)
                 .flatMap(this::convertReserveItemListResponseDto)
                 .collectList()
-                .zipWith(reserveItemRepository.searchCountForUser(categoryId, requestDto, pageable))
+                .zipWith(reserveItemRepository.searchCount(requestDto, pageable))
                 .flatMap(tuple -> Mono.just(new PageImpl<>(tuple.getT1(), pageable, tuple.getT2())));
     }
 
@@ -200,22 +204,26 @@ public class ReserveItemService extends ReactiveAbstractService {
                 .switchIfEmpty(monoResponseStatusEntityNotFoundException(reserveItemId))
                 .flatMap(reserveItem -> {
                     if (!Category.EDUCATION.isEquals(reserveItem.getCategoryId())) {
-                        return Mono.error(new BusinessMessageException("저장할 수 없습니다."));
+                        //해당 예약은 수정할 수 없습니다.
+                        return Mono.error(new BusinessMessageException(getMessage("valid.reserve_not_update")));
                     }
 
                     LocalDateTime now = LocalDateTime.now();
                     if (!(now.isAfter(reserveItem.getRequestStartDate()) && now.isBefore(reserveItem.getRequestEndDate()))) {
-                        return Mono.error(new BusinessMessageException("예약 가능 일자가 아닙니다."));
+                        //해당 날짜에는 예약할 수 없습니다.
+                        return Mono.error(new BusinessMessageException(getMessage("valid.reserve_date")));
                     }
 
                     int qty = reserveItem.getInventoryQty() - reserveQty;
                     if (qty < 0) {
-                        return Mono.error(new BusinessMessageException("재고가 없습니다."));
+                        //해당 날짜에 예약할 수 있는 재고수량이 없습니다.
+                        return Mono.error(new BusinessMessageException(getMessage("valid.reserve_count")));
                     }
 
                     return Mono.just(reserveItem.updateInventoryQty(qty));
                 })
                 .flatMap(reserveItemRepository::save)
+                .delayElement(Duration.ofSeconds(5))
                 .publishOn(Schedulers.boundedElastic())
                 .doOnNext(reserveItem -> {
                     log.info("reserve item inventory updated success");

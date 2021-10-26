@@ -1,25 +1,18 @@
 package org.egovframe.cloud.userservice.domain.user;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
-import java.time.LocalDateTime;
-import java.util.Arrays;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.egovframe.cloud.common.domain.Role;
 import org.egovframe.cloud.servlet.domain.BaseEntity;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 /**
  * org.egovframe.cloud.userservice.domain.user.User
@@ -192,36 +185,6 @@ public class User extends BaseEntity {
     }
 
     /**
-     * 구글 id 등록
-     *
-     * @return User 사용자 엔티티
-     */
-    public User updateGoogleId(String googleId) {
-        this.googleId = googleId;
-        return this;
-    }
-
-    /**
-     * 카카오 id 등록
-     *
-     * @return User 사용자 엔티티
-     */
-    public User updateKakaoId(String kakaoId) {
-        this.kakaoId = kakaoId;
-        return this;
-    }
-
-    /**
-     * 네이버 id 등록
-     *
-     * @return User 사용자 엔티티
-     */
-    public User updateNaverId(String naverId) {
-        this.naverId = naverId;
-        return this;
-    }
-
-    /**
      * 소셜 사용자 여부 반환
      *
      * @return boolean 소셜 사용자 여부
@@ -232,6 +195,28 @@ public class User extends BaseEntity {
         else if (this.naverId != null && !"".equals(this.naverId)) return true;
 
         return false;
+    }
+
+    /**
+     * 소셜 정보 설정
+     *
+     * @return User 사용자 엔티티
+     */
+    public User setSocial(String provider, String providerId) {
+        switch (provider) {
+            case "google":
+                this.googleId = providerId;
+                break;
+            case "naver":
+                this.naverId = providerId;
+                break;
+            case "kakao":
+                this.kakaoId = providerId;
+                break;
+            default:
+        }
+
+        return this;
     }
 
     public String getRoleKey() {

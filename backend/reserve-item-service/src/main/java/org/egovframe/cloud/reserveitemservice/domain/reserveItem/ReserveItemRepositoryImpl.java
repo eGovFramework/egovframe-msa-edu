@@ -77,42 +77,6 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
                 .count();
     }
 
-    @Override
-    public Flux<ReserveItem> searchForUser(String categoryId, ReserveItemRequestDto requestDto, Pageable pageable) {
-        Criteria where = Criteria.from(whereQuery(requestDto));
-
-        if (!"all".equals(categoryId)) {
-            where = where.and(where("category_id").is(categoryId));
-        }
-
-        Query query = Query.query(where("use_at").isTrue().and(where))
-                .sort(Sort.by(Sort.Direction.DESC, "create_date"))
-                .with(pageable);
-
-        return entityTemplate.select(ReserveItem.class)
-                .matching(query)
-                .all()
-                .flatMap(this::loadRelations)
-                .switchIfEmpty(Flux.empty());
-    }
-
-
-    @Override
-    public Mono<Long> searchCountForUser(String categoryId, ReserveItemRequestDto requestDto, Pageable pageable) {
-        Criteria where = Criteria.from(whereQuery(requestDto));
-
-        if (!"all".equals(categoryId)) {
-            where = where.and(where("category_id").is(categoryId));
-        }
-
-        Query query = Query.query(where("use_at").isTrue().and(where))
-                .sort(Sort.by(Sort.Direction.DESC, "create_date"))
-                .with(pageable);
-        return entityTemplate.select(ReserveItem.class)
-                .matching(query)
-                .count();
-    }
-
     /**
      * relation 걸린 table 정보도 같이 조회
      * 공통코드, 지역
@@ -258,11 +222,11 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
             }
         }
 
-        if (requestDto.getLocationId() != null) {
+        if (requestDto.getLocationId() != null && !"null".equals(requestDto.getLocationId()) && !"undefined".equals(requestDto.getLocationId())) {
             whereCriteria.add(where("location_id").in(requestDto.getLocationId()));
         }
 
-        if (requestDto.getCategoryId() != null ) {
+        if (requestDto.getCategoryId() != null && !"null".equals(requestDto.getCategoryId()) && !"undefined".equals(requestDto.getCategoryId())) {
             whereCriteria.add(where("category_id").in(requestDto.getCategoryId()));
         }
 
@@ -271,6 +235,7 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
             whereCriteria.add(where("use_at").isTrue());
             whereCriteria.add(where("reserve_method_id").is("internet"));
         }
+        System.out.println(whereCriteria.toString());
 
         return whereCriteria;
     }

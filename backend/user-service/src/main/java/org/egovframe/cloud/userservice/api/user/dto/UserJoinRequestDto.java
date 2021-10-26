@@ -33,24 +33,43 @@ import java.util.UUID;
 @NoArgsConstructor
 public class UserJoinRequestDto {
 
+    /**
+     * 사용자 이름
+     */
     @NotBlank(message = "{user.user_name}{valid.required}")
     private String userName;
 
+    /**
+     * 이메일
+     */
     @NotBlank(message = "{user.email}{valid.required}")
     @Email
     private String email;
 
+    /**
+     * 비밀번호
+     */
     // (숫자)(영문)(특수문자)(공백제거)(자리수)
     @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,20}",
             message = "{valid.password}")
     private String password;
 
     /**
+     * 소셜 공급자
+     */
+    private String provider;
+
+    /**
+     * 소셜 토큰
+     */
+    private String token;
+
+    /**
      * UserSaveRequestDto 의 필드 값을 User Entity 빌더를 사용하여 주입 후 User를 리턴한다.
      * UserSaveRequestDto 가 가지고 있는 User 의 필드만 세팅할 수 있게 된다.
      *
-     * @param passwordEncoder
-     * @return
+     * @param passwordEncoder 비밀번호 인코더
+     * @return User 사용자 엔티티
      */
     public User toEntity(BCryptPasswordEncoder passwordEncoder) {
         return User.builder()

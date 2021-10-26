@@ -10,13 +10,17 @@ import org.egovframe.cloud.reserverequestservice.service.ReserveService;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.MessageListener;
 import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 /**
  * org.egovframe.cloud.reserverequestservice.api.ReserveApiController
@@ -44,13 +48,28 @@ public class ReserveApiController {
     private final MessageListenerContainerFactory messageListenerContainerFactory;
     private final AmqpAdmin amqpAdmin;
 
+    private final Environment env;
+
+    /**
+     * 서비스 상태 확인
+     *
+     * @return
+     */
+    @GetMapping("/actuator/health-info")
+    public String status() {
+        return String.format("GET Reserve Request Service on" +
+                "\n local.server.port :" + env.getProperty("local.server.port")
+                + "\n egov.message :" + env.getProperty("egov.message")
+        );
+    }
+
     /**
      * 예약 신청 - 심사
      *
      * @param saveRequestDtoMono
      * @return
      */
-    @PostMapping("/api/v1/requests/audit")
+    @PostMapping("/api/v1/requests/evaluates")
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<ReserveResponseDto> create(@RequestBody Mono<ReserveSaveRequestDto> saveRequestDtoMono) {
         return saveRequestDtoMono.flatMap(reserveService::create);
@@ -79,10 +98,12 @@ public class ReserveApiController {
      * @param reserveId
      * @return
      */
+    @CrossOrigin()
     @GetMapping(value = "/api/v1/requests/direct/{reserveId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<?> receiveReservationResult(@PathVariable String reserveId) {
+    public Flux<String> receiveReservationResult(@PathVariable String reserveId) {
         MessageListenerContainer mlc = messageListenerContainerFactory.createMessageListenerContainer(reserveId);
         Flux<String> f = Flux.create(emitter -> {
+
           mlc.setupMessageListener((MessageListener) m -> {
               String qname = m.getMessageProperties().getConsumerQueue();
               log.info("message received, queue={}", qname);
@@ -118,7 +139,9 @@ public class ReserveApiController {
                 .map(v -> {
                     log.info("sending keepalive message...");
                     return "no news is good news";
-                }).mergeWith(f);
+                })
+            .mergeWith(f)
+            .delayElements(Duration.ofSeconds(5));
     }
 
 }

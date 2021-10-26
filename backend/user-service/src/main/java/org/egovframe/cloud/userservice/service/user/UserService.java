@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.common.domain.Role;
 import org.egovframe.cloud.common.dto.RequestDto;
+import org.egovframe.cloud.common.exception.BusinessException;
 import org.egovframe.cloud.common.exception.BusinessMessageException;
+import org.egovframe.cloud.common.exception.dto.ErrorCode;
 import org.egovframe.cloud.common.service.AbstractService;
 import org.egovframe.cloud.common.util.LogUtil;
 import org.egovframe.cloud.userservice.api.user.dto.*;
@@ -21,6 +23,7 @@ import org.egovframe.cloud.userservice.config.dto.SocialUser;
 import org.egovframe.cloud.userservice.domain.log.LoginLog;
 import org.egovframe.cloud.userservice.domain.log.LoginLogRepository;
 import org.egovframe.cloud.userservice.domain.user.*;
+import org.egovframe.cloud.userservice.api.user.dto.SocialUserResponseDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -315,7 +318,14 @@ public class UserService extends AbstractService implements UserDetailsService {
             throw new BusinessMessageException(getMessage("msg.join.email.exists"));
         }
 
-        userRepository.save(requestDto.toEntity(passwordEncoder));
+        User user = requestDto.toEntity(passwordEncoder);
+
+        if (requestDto.getProvider() != null && !"".equals(requestDto.getProvider()) && requestDto.getToken() != null && !"".equals(requestDto.getToken())) {
+            SocialUserResponseDto socialUserResponseDto = getSocialUserInfo(requestDto.getProvider(), requestDto.getToken());
+            user.setSocial(requestDto.getProvider(), socialUserResponseDto.getId());
+        }
+
+        userRepository.save(user);
 
         return true;
     }
@@ -364,12 +374,10 @@ public class UserService extends AbstractService implements UserDetailsService {
 
             log.info("end send change password email - emailAddr: " + emailAddr + ", tokenValue: " + tokenValue);
         } catch (MessagingException e) {
-            e.printStackTrace();
             String errorMessage = getMessage("err.user.find.password");
             log.error(errorMessage + ": " + e.getMessage());
             throw new BusinessMessageException(errorMessage);
         } catch (Exception e) {
-            e.printStackTrace();
             String errorMessage = getMessage("err.user.find.password");
             log.error(errorMessage + ": " + e.getMessage());
             throw new BusinessMessageException(errorMessage);
@@ -579,9 +587,9 @@ public class UserService extends AbstractService implements UserDetailsService {
      */
     @Transactional
     public UserResponseDto loadUserBySocial(UserLoginRequestDto requestDto) {
-        String[] userInfo = getSocialUserInfo(requestDto.getProvider(), requestDto.getToken());
+        /*SocialUserResponseDto socialUserDto = getSocialUserInfo(requestDto.getProvider(), requestDto.getToken());
 
-        UserResponseDto userDto = getAndSaveSocialUser(requestDto.getProvider(), userInfo[0], userInfo[1], userInfo[2]);
+        UserResponseDto userDto = getAndSaveSocialUser(requestDto.getProvider(), socialUserDto);
 
         if (userDto == null) {
             throw new BusinessMessageException(getMessage("err.user.join.social"));
@@ -590,7 +598,29 @@ public class UserService extends AbstractService implements UserDetailsService {
             throw new BusinessMessageException(getMessage("err.user.state.cantlogin"));
         }
 
-        return userDto;
+        return userDto;*/
+        SocialUserResponseDto socialUserResponseDto = getSocialUserInfo(requestDto.getProvider(), requestDto.getToken());
+
+        User user = findSocialUser(requestDto.getProvider(), socialUserResponseDto.getId());
+
+        /*// 이메일이 없는 사용자가 이메일을 직접입력하고 나중에 원래 이메일을 가지고 있는 사용자가 다른 접근할 경우 문제가 생길 수 있음
+        if (user == null && socialUserResponseDto.getEmail() != null) {
+            user = userRepository.findByEmail(socialUserResponseDto.getEmail()).orElse(null);
+
+            // 공급자 id로 조회되지 않지만 이메일로 조회되는 경우 공급자 id 등록
+            if (user != null) {
+                user.setSocial(requestDto.getProvider(), socialUserResponseDto.getId());
+            }
+        }*/
+
+        if (user == null) {
+            throw new BusinessException(ErrorCode.REQUIRE_USER_JOIN);
+        }
+        if (!UserStateCode.NORMAL.getKey().equals(user.getUserStateCode())) {
+            throw new BusinessMessageException(getMessage("err.user.state.cantlogin"));
+        }
+
+        return new UserResponseDto(user);
     }
 
     /**
@@ -601,9 +631,9 @@ public class UserService extends AbstractService implements UserDetailsService {
      * @return User 사용자 엔티티
      */
     private User findSocialUserByToken(String provider, String token) {
-        String[] userInfo = getSocialUserInfo(provider, token);
+        SocialUserResponseDto socialUserResponseDto = getSocialUserInfo(provider, token);
 
-        return findSocialUser(provider, userInfo[0]);
+        return findSocialUser(provider, socialUserResponseDto.getId());
     }
 
     /**
@@ -613,26 +643,26 @@ public class UserService extends AbstractService implements UserDetailsService {
      * @param token    토큰
      * @return String[] 소셜 사용자 정보
      */
-    private String[] getSocialUserInfo(String provider, String token) {
-        String[] userInfo = null;
+    public SocialUserResponseDto getSocialUserInfo(String provider, String token) {
+        SocialUserResponseDto social = null;
 
         switch (provider) {
             case "google":
-                userInfo = getGoogleUserInfo(token);
+                social = getGoogleUserInfo(token);
                 break;
             case "naver":
-                userInfo = getNaverUserInfo(token);
+                social = getNaverUserInfo(token);
                 break;
             case "kakao":
-                userInfo = getKakaoUserInfo(token);
+                social = getKakaoUserInfo(token);
                 break;
             default:
                 break;
         }
 
-        if (userInfo == null) throw new BusinessMessageException(getMessage("err.user.social.get"));
+        if (social == null) throw new BusinessMessageException(getMessage("err.user.social.get"));
 
-        return userInfo;
+        return social;
     }
 
     /**
@@ -641,7 +671,7 @@ public class UserService extends AbstractService implements UserDetailsService {
      * @param token 토큰
      * @return String[] 구글 사용자 정보
      */
-    private String[] getGoogleUserInfo(String token) {
+    private SocialUserResponseDto getGoogleUserInfo(String token) {
         try {
             HttpTransport transport = new NetHttpTransport();
             GsonFactory gsonFactory = new GsonFactory();
@@ -652,14 +682,18 @@ public class UserService extends AbstractService implements UserDetailsService {
 
             GoogleIdToken idToken = verifier.verify(token);
 
-            GoogleIdToken.Payload payload = idToken.getPayload();
-            log.info("google oauth2: {}", payload.toString());
+            if (idToken != null) {
+                GoogleIdToken.Payload payload = idToken.getPayload();
+                log.info("google oauth2: {}", payload.toString());
 
-            return new String[]{
-                    payload.getSubject(),
-                    payload.getEmail(),
-                    (String) payload.get("name")
-            };
+                return SocialUserResponseDto.builder()
+                        .id(payload.getSubject())
+                        .email(payload.getEmail())
+                        .name((String) payload.get("name"))
+                        .build();
+            }
+
+            return null;
         } catch (GeneralSecurityException e) {
             throw new BusinessMessageException(getMessage("err.user.social.get"));
         } catch (IOException e) {
@@ -675,7 +709,7 @@ public class UserService extends AbstractService implements UserDetailsService {
      * @param token 토큰
      * @return String[] 네이버 사용자 정보
      */
-    private String[] getNaverUserInfo(String token) {
+    private SocialUserResponseDto getNaverUserInfo(String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -688,14 +722,26 @@ public class UserService extends AbstractService implements UserDetailsService {
         if (response.getBody() != null && !"".equals(response.getBody())) {
             JsonElement element = JsonParser.parseString(response.getBody());
             JsonObject object = element.getAsJsonObject();
-            log.info("naver oauth2: {}", object.toString());
+            log.info("naver oauth2: {}", object);
 
             if (object.get("resultcode") != null && "00".equals(object.get("resultcode").getAsString())) {
-                return new String[]{
-                        object.get("response").getAsJsonObject().get("id").getAsString(),
-                        object.get("response").getAsJsonObject().get("email").getAsString(),
-                        object.get("response").getAsJsonObject().get("name").getAsString()
-                };
+                JsonElement responseElement = object.get("response");
+
+                if (responseElement != null) {
+                    SocialUserResponseDto.SocialUserResponseDtoBuilder builder = SocialUserResponseDto.builder();
+
+                    if (responseElement.getAsJsonObject().get("id") != null && !"".equals(responseElement.getAsJsonObject().get("id").getAsString())) {
+                        builder.id(responseElement.getAsJsonObject().get("id").getAsString());
+                    }
+                    if (responseElement.getAsJsonObject().get("email") != null && !"".equals(responseElement.getAsJsonObject().get("email").getAsString())) {
+                        builder.email(responseElement.getAsJsonObject().get("email").getAsString());
+                    }
+                    if (responseElement.getAsJsonObject().get("name") != null && !"".equals(responseElement.getAsJsonObject().get("name").getAsString())) {
+                        builder.name(responseElement.getAsJsonObject().get("name").getAsString());
+                    }
+
+                    return builder.build();
+                }
             }
         }
 
@@ -708,7 +754,7 @@ public class UserService extends AbstractService implements UserDetailsService {
      * @param token 토큰
      * @return String[] 카카오 사용자 정보
      */
-    private String[] getKakaoUserInfo(String token) {
+    private SocialUserResponseDto getKakaoUserInfo(String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -721,14 +767,26 @@ public class UserService extends AbstractService implements UserDetailsService {
         if (response.getBody() != null && !"".equals(response.getBody())) {
             JsonElement element = JsonParser.parseString(response.getBody());
             JsonObject object = element.getAsJsonObject();
+            JsonElement kakaoAccount = object.get("kakao_account");
             log.info("kakao oauth2: {}", object.toString());
 
-            if (object.get("id") != null && !"".equals(object.get("id").getAsString())) {
-                return new String[]{
-                        object.get("id").getAsString(),
-                        object.get("kakao_account").getAsJsonObject().get("email").getAsString(),
-                        object.get("kakao_account").getAsJsonObject().get("profile").getAsJsonObject().get("nickname").getAsString()
-                };
+            String id = object.get("id") != null && !"".equals(object.get("id").getAsString()) ? object.get("id").getAsString() : null;
+
+            if (id != null) {
+                SocialUserResponseDto.SocialUserResponseDtoBuilder builder = SocialUserResponseDto.builder()
+                        .id(id);
+
+                if (kakaoAccount.getAsJsonObject().get("email") != null && !"".equals(kakaoAccount.getAsJsonObject().get("email").getAsString())) {
+                    builder.email(kakaoAccount.getAsJsonObject().get("email").getAsString());
+                }
+                JsonElement profile = kakaoAccount.getAsJsonObject().get("profile");
+                if (profile != null) {
+                    if (profile.getAsJsonObject().get("nickname") != null && !"".equals(profile.getAsJsonObject().get("nickname").getAsString())) {
+                        builder.name(profile.getAsJsonObject().get("nickname").getAsString());
+                    }
+                }
+
+                return builder.build();
             }
         }
 
@@ -785,19 +843,7 @@ public class UserService extends AbstractService implements UserDetailsService {
 
             // 공급자 id로 조회되지 않지만 이메일로 조회되는 경우 공급자 id 등록
             if (user != null) {
-                switch (providerCode) {
-                    case "google":
-                        user = user.updateGoogleId(providerId);
-                        break;
-                    case "kakao":
-                        user = user.updateKakaoId(providerId);
-                        break;
-                    case "naver":
-                        user = user.updateNaverId(providerId);
-                        break;
-                    default:
-                        break;
-                }
+                user.setSocial(providerCode, providerId);
             }
         }
 
@@ -806,27 +852,15 @@ public class UserService extends AbstractService implements UserDetailsService {
             final String userId = UUID.randomUUID().toString();
             //final String password = makeRandomPassword(); // 임의 비밀번호 생성 시 복호화 불가능
 
-            User.UserBuilder userBuilder = User.builder()
+            user = User.builder()
                     .email(email) // 100byte
                     //.encryptedPassword(passwordEncoder.encode(password)) // 100 byte
                     .userName(userName)
                     .userId(userId)
                     .role(Role.USER)
-                    .userStateCode(UserStateCode.NORMAL.getKey());
-
-            switch (providerCode) {
-                case "google":
-                    user = userBuilder.googleId(providerId).build();
-                    break;
-                case "kakao":
-                    user = userBuilder.kakaoId(providerId).build();
-                    break;
-                case "naver":
-                    user = userBuilder.naverId(providerId).build();
-                    break;
-                default:
-                    break;
-            }
+                    .userStateCode(UserStateCode.NORMAL.getKey())
+                    .build();
+            user.setSocial(providerCode, providerId);
 
             if (user != null) {
                 userRepository.save(user);

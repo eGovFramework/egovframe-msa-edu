@@ -14,6 +14,7 @@ import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemRes
 import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemSaveRequestDto;
 import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemUpdateRequestDto;
 import org.egovframe.cloud.reserveitemservice.service.reserveItem.ReserveItemService;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -54,6 +55,21 @@ import reactor.core.publisher.Mono;
 public class ReserveItemApiController {
 
     private final ReserveItemService reserveItemService;
+
+    private final Environment env;
+
+    /**
+     * 서비스 상태 확인
+     *
+     * @return
+     */
+    @GetMapping("/actuator/health-info")
+    public String status() {
+        return String.format("GET Reserve Item Service on" +
+                "\n local.server.port :" + env.getProperty("local.server.port")
+                + "\n egov.message :" + env.getProperty("egov.message")
+        );
+    }
 
     /**
      * 목록 조회
@@ -148,7 +164,7 @@ public class ReserveItemApiController {
     @GetMapping("/api/v1/reserve-items/relations/{reserveItemId}")
     @ResponseStatus(HttpStatus.OK)
     public Mono<ReserveItemRelationResponseDto> findByIdWithRelations(@PathVariable Long reserveItemId) {
-        return reserveItemService.findByIdWithRelations(reserveItemId).log();
+        return reserveItemService.findByIdWithRelations(reserveItemId);
     }
 
     /**

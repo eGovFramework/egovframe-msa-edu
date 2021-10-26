@@ -2,9 +2,12 @@ package org.egovframe.cloud.reserveitemservice.validator;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+
+import org.egovframe.cloud.common.util.MessageUtil;
 import org.egovframe.cloud.reserveitemservice.validator.annotation.ReserveItemSaveValid;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.lang.reflect.Field;
@@ -30,6 +33,11 @@ import java.time.LocalDateTime;
 @Slf4j
 public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItemSaveValid, Object> {
 
+    @Resource(
+        name = "messageUtil"
+    )
+    protected MessageUtil messageUtil;
+
     private String message;
 
     @Override
@@ -54,7 +62,8 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
         LocalDateTime operationEndDate = (LocalDateTime) getFieldValue(value, "operationEndDate");
         if (operationStartDate.isAfter(operationEndDate)) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate("시작일이 종료일 보다 큽니다.")
+            //시작일, 종료일, {0}이 {1}보다 늦습니다.
+            context.buildConstraintViolationWithTemplate(messageUtil.getMessage("valid.to_be_slow.format", new Object[]{messageUtil.getMessage("common.start_date"), messageUtil.getMessage("common.end_date")}))
                     .addPropertyNode("operationStartDate")
                     .addConstraintViolation();
             fieldValid = false;
@@ -66,7 +75,8 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
             // 예약 구분 필수
             if (isNull(value, "reserveMeansId")) {
                 context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate("인터넷 예약인 경우 예약 구분은 필수입니다.")
+                //인터넷 예약 구분 값은 필수 입니다.
+                context.buildConstraintViolationWithTemplate(messageUtil.getMessage("reserve_item.reserve_means")+ messageUtil.getMessage("valid.required"))
                         .addPropertyNode("reserveMeansId")
                         .addConstraintViolation();
                 fieldValid = false;
@@ -77,24 +87,28 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
                     // 예약 신청 기간 필수
                     if (isNull(value, "requestStartDate")) {
                         context.disableDefaultConstraintViolation();
-                        context.buildConstraintViolationWithTemplate("인터넷 예약인 경우 예약 신청 시작 기간은 필수입니다.")
-                                .addPropertyNode("requestStartDate")
-                                .addConstraintViolation();
+                        // 예약 신청 시작일 값은 필수 입니다.
+                        context.buildConstraintViolationWithTemplate(messageUtil.getMessage("reserve_item.request")+" "+messageUtil.getMessage("common.start_datetime") + messageUtil.getMessage("valid.required"))
+                            .addPropertyNode("requestStartDate")
+                            .addConstraintViolation();
+
                         fieldValid = false;
                     } else if (isNull(value, "requestEndDate")) {
                         context.disableDefaultConstraintViolation();
-                        context.buildConstraintViolationWithTemplate("인터넷 예약인 경우 예약 신청 종료 기간은 필수입니다.")
-                                .addPropertyNode("requestEndDate")
-                                .addConstraintViolation();
+                        // 예약 신청 종료일 값은 필수 입니다.
+                        context.buildConstraintViolationWithTemplate(messageUtil.getMessage("reserve_item.request")+" "+messageUtil.getMessage("common.end_datetime") + messageUtil.getMessage("valid.required"))
+                            .addPropertyNode("requestEndDate")
+                            .addConstraintViolation();
                         fieldValid = false;
                     }else {
                         LocalDateTime requestStartDate = (LocalDateTime) getFieldValue(value, "requestStartDate");
                         LocalDateTime requestEndDate = (LocalDateTime) getFieldValue(value, "requestEndDate");
                         if (requestStartDate.isAfter(requestEndDate)) {
                             context.disableDefaultConstraintViolation();
-                            context.buildConstraintViolationWithTemplate("시작일이 종료일 보다 큽니다.")
-                                    .addPropertyNode("requestStartDate")
-                                    .addConstraintViolation();
+                            //시작일, 종료일, {0}이 {1}보다 늦습니다.
+                            context.buildConstraintViolationWithTemplate(messageUtil.getMessage("valid.to_be_slow.format", new Object[]{messageUtil.getMessage("common.start_date"), messageUtil.getMessage("common.end_date")}))
+                                .addPropertyNode("requestStartDate")
+                                .addConstraintViolation();
                             fieldValid = false;
                         }
                     }
@@ -102,7 +116,8 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
                     //기간 지정 필수
                     if (isNull(value, "isPeriod")) {
                         context.disableDefaultConstraintViolation();
-                        context.buildConstraintViolationWithTemplate("인터넷 예약인 경우 기간 지정 여부는 필수입니다.")
+                        //기간 지정 가능 여부 값은 필수 입니다.
+                        context.buildConstraintViolationWithTemplate(messageUtil.getMessage("reserve_item.period_possible")+ messageUtil.getMessage("valid.required"))
                                 .addPropertyNode("requestEndDate")
                                 .addConstraintViolation();
                         fieldValid = false;
@@ -111,7 +126,8 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
                         // 기간 지정 가능인 경우 최대 얘약일 수 필수
                         if (isPeriod && isNull(value, "periodMaxCount")) {
                             context.disableDefaultConstraintViolation();
-                            context.buildConstraintViolationWithTemplate("기간 지정이 가능인 경우 최대 예약 일수는 필수입니다.")
+                            //최대 예약 가능 일수 값은 필수 입니다.
+                            context.buildConstraintViolationWithTemplate(messageUtil.getMessage("reserve_item.max_period_days")+ messageUtil.getMessage("valid.required"))
                                     .addPropertyNode("periodMaxCount")
                                     .addConstraintViolation();
                             fieldValid = false;
@@ -121,7 +137,8 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
                     //예약 구분이 외부 링크인 경우 외부 링크 url 필수
                     if (isNull(value, "externalUrl")) {
                         context.disableDefaultConstraintViolation();
-                        context.buildConstraintViolationWithTemplate("예약 구분이 외부링크인 경우 외부링크 url 값은 필수입니다.")
+                        //외부링크 URL 값은 필수 입니다.
+                        context.buildConstraintViolationWithTemplate(messageUtil.getMessage("reserve_item.external_url")+ messageUtil.getMessage("valid.required"))
                                 .addPropertyNode("externalUrl")
                                 .addConstraintViolation();
                         fieldValid = false;
@@ -132,7 +149,8 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
             //예약 방법인 '전화'인 경우 contact 필수
             if (isNull(value, "contact")) {
                 context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate("전화예약인 경우 문의처는 필수입니다.")
+                //문의처 값은 필수입니다.
+                context.buildConstraintViolationWithTemplate(messageUtil.getMessage("reserve_item.contact")+ messageUtil.getMessage("valid.required"))
                         .addPropertyNode("contact")
                         .addConstraintViolation();
                 fieldValid = false;
@@ -141,7 +159,8 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
             //예약 방법인 '방문'인 경우 주소 필수
             if (isNull(value, "address")) {
                 context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate("방문예약인 경우 주소는 필수입니다.")
+                //주소 값은 필수 입니다.
+                context.buildConstraintViolationWithTemplate(messageUtil.getMessage("common.address")+ messageUtil.getMessage("valid.required"))
                         .addPropertyNode("address")
                         .addConstraintViolation();
                 fieldValid = false;
@@ -152,7 +171,8 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
         Boolean isPaid = Boolean.valueOf(String.valueOf(getFieldValue(value, "isPaid")));
         if (isPaid && isNull(value, "usageCost")) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate("유료인 경우 이용 요금은 필수입니다.")
+            //이용요금 값은 필수입니다.
+            context.buildConstraintViolationWithTemplate(messageUtil.getMessage("reserve_item.usage_fee")+ messageUtil.getMessage("valid.required"))
                     .addPropertyNode("usageCost")
                     .addConstraintViolation();
             fieldValid = false;

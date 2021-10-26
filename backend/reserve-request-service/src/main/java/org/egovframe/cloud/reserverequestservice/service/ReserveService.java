@@ -3,6 +3,7 @@ package org.egovframe.cloud.reserverequestservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.common.config.GlobalConstant;
+import org.egovframe.cloud.common.dto.AttachmentEntityMessage;
 import org.egovframe.cloud.common.exception.BusinessMessageException;
 import org.egovframe.cloud.reactive.service.ReactiveAbstractService;
 import org.egovframe.cloud.reserverequestservice.api.dto.ReserveResponseDto;
@@ -99,6 +100,12 @@ public class ReserveService extends ReactiveAbstractService {
                 return Mono.just(tuple.getT1());
             })
             .flatMap(reserveRepository::insert)
+            .doOnNext(reserve -> sendAttachmentEntityInfo(streamBridge,
+                AttachmentEntityMessage.builder()
+                    .attachmentCode(reserve.getAttachmentCode())
+                    .entityName(reserve.getClass().getName())
+                    .entityId(reserve.getReserveId())
+                    .build()))
             .flatMap(this::convertReserveResponseDto);
     }
 
@@ -164,7 +171,8 @@ public class ReserveService extends ReactiveAbstractService {
         }else if (Category.SPACE.isEquals(saveRequestDto.getCategoryId())) {
             return checkSpace(saveRequestDto);
         }
-        return Mono.error(new BusinessMessageException("저장 할 수 없습니다."));
+        //해당 날짜에는 예약할 수 없습니다.
+        return Mono.error(new BusinessMessageException(getMessage("valid.reserve_date")));
     }
 
     /**
@@ -180,17 +188,23 @@ public class ReserveService extends ReactiveAbstractService {
             saveRequestDto.getRequestEndDate() : saveRequestDto.getOperationEndDate();
 
         if (saveRequestDto.getReserveStartDate().isBefore(startDate)) {
-            return Mono.error(new BusinessMessageException("시작일이 운영/예약 시작일 이전입니다."));
+            //{0}이 {1} 보다 빠릅니다. 시작일, 운영/예약 시작일
+            return Mono.error(new BusinessMessageException(getMessage("valid.to_be_fast.format", new Object[]{getMessage("common.start_date"),
+                getMessage("reserve_item.operation")+getMessage("reserve")+" "+getMessage("common.start_date")})));
         }
 
         if (saveRequestDto.getReserveEndDate().isAfter(endDate)) {
-            return Mono.error(new BusinessMessageException("종료일이 운영/예약 종료일 이후입니다."));
+            //{0}이 {1} 보다 늦습니다. 종료일, 운영/예약 종료일
+            return Mono.error(new BusinessMessageException(getMessage("valid.to_be_slow.format", new Object[]{getMessage("common.end_date"),
+                getMessage("reserve_item.operation")+getMessage("reserve")+" "+getMessage("common.end_date")})));
         }
+
         if (saveRequestDto.getIsPeriod()) {
             long between = ChronoUnit.DAYS.between(saveRequestDto.getReserveStartDate(),
                 saveRequestDto.getReserveEndDate());
             if (saveRequestDto.getPeriodMaxCount() < between) {
-                return Mono.error(new BusinessMessageException("최대 예약 가능 일수보다 예약기간이 깁니다. (최대 예약 가능일 수 : "+saveRequestDto.getPeriodMaxCount()+")"));
+                //최대 예약 가능 일수보다 예약기간이 깁니다. (최대 예약 가능일 수 : {0})
+                return Mono.error(new BusinessMessageException(getMessage("valid.reserve_period", new Object[]{saveRequestDto.getPeriodMaxCount()})));
             }
         }
         return Mono.just(saveRequestDto);
@@ -204,14 +218,14 @@ public class ReserveService extends ReactiveAbstractService {
      */
     private Mono<ReserveSaveRequestDto> checkSpace(ReserveSaveRequestDto saveRequestDto) {
         return this.checkReserveDate(saveRequestDto)
-            .flatMap(result -> reserveRepository.findAllByReserveDateWithoutSelfCount(
-                result.getReserveId(),
+            .flatMap(result -> reserveRepository.findAllByReserveDateCount(
                 result.getReserveItemId(),
                 result.getReserveStartDate(),
                 result.getReserveEndDate())
                 .flatMap(count -> {
                     if (count > 0) {
-                        return Mono.error(new BusinessMessageException("해당 날짜에는 예약할 수 없습니다."));
+                        //해당 날짜에는 예약할 수 없습니다.
+                        return Mono.error(new BusinessMessageException(getMessage("valid.reserve_date")));
                     }
                     return Mono.just(result);
                 })
@@ -226,8 +240,7 @@ public class ReserveService extends ReactiveAbstractService {
      */
     private Mono<ReserveSaveRequestDto> checkEquipment(ReserveSaveRequestDto saveRequestDto) {
         return this.checkReserveDate(saveRequestDto)
-            .flatMap(result -> this.getMaxByReserveDateWithoutSelf(
-                result.getReserveId(),
+            .flatMap(result -> this.getMaxByReserveDate(
                 result.getReserveItemId(),
                 result.getReserveStartDate(),
                 result.getReserveEndDate())
@@ -239,7 +252,8 @@ public class ReserveService extends ReactiveAbstractService {
                 })
                 .flatMap(isValid -> {
                     if (!isValid) {
-                        return Mono.error(new BusinessMessageException("해당 날짜에 예약할 수 있는 재고수량이 없습니다."));
+                        //해당 날짜에 예약할 수 있는 재고수량이 없습니다.
+                        return Mono.error(new BusinessMessageException(getMessage("valid.reserve_count")));
                     }
                     return Mono.just(saveRequestDto);
                 })
@@ -255,8 +269,8 @@ public class ReserveService extends ReactiveAbstractService {
      * @param endDate
      * @return
      */
-    private Mono<Integer> getMaxByReserveDateWithoutSelf(String reserveId, Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate) {
-        Flux<Reserve> reserveFlux = reserveRepository.findAllByReserveDateWithoutSelf(reserveId, reserveItemId, startDate, endDate)
+    private Mono<Integer> getMaxByReserveDate( Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate) {
+        Flux<Reserve> reserveFlux = reserveRepository.findAllByReserveDate(reserveItemId, startDate, endDate)
             .switchIfEmpty(Flux.empty());
 
         if (reserveFlux.equals(Flux.empty())) {

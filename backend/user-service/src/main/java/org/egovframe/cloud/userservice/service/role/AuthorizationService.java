@@ -1,11 +1,7 @@
 package org.egovframe.cloud.userservice.service.role;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.common.config.GlobalConstant;
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.common.exception.EntityNotFoundException;
@@ -28,7 +24,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.AntPathMatcher;
 
-import lombok.RequiredArgsConstructor;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * org.egovframe.cloud.userservice.service.role.AuthorizationService
@@ -50,6 +49,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class AuthorizationService extends AbstractService {
 
     /**

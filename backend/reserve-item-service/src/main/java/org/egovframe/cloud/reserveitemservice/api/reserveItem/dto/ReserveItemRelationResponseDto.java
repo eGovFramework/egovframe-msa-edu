@@ -66,6 +66,7 @@ public class ReserveItemRelationResponseDto {
     private String managerDept;     //담당자 소속
     private String managerName;     //담당자 이름
     private String managerContact;  //담당자 연락처
+    private Boolean isPossible;         //예약 가능 여부
 
     @Builder
     public ReserveItemRelationResponseDto(ReserveItem entity) {
@@ -103,8 +104,9 @@ public class ReserveItemRelationResponseDto {
         this.managerDept = entity.getManagerDept();
         this.managerName = entity.getManagerName();
         this.managerContact = entity.getManagerContact();
-
+        this.isPossible = entity.isReservationPossible();
     }
+
 
 
 }

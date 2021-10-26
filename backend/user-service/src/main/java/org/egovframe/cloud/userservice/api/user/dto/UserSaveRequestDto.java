@@ -1,19 +1,17 @@
 package org.egovframe.cloud.userservice.api.user.dto;
 
-import java.util.Arrays;
-import java.util.UUID;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.egovframe.cloud.common.domain.Role;
 import org.egovframe.cloud.userservice.domain.user.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import java.util.Arrays;
+import java.util.UUID;
 
 /**
  * org.egovframe.cloud.userservice.api.user.dto.UserSaveRequestDto

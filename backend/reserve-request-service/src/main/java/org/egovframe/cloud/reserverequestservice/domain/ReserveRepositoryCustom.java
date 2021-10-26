@@ -23,6 +23,6 @@ import reactor.core.publisher.Mono;
  */
 public interface ReserveRepositoryCustom {
     Mono<Reserve> insert(Reserve reserve);
-    Flux<Reserve> findAllByReserveDateWithoutSelf(String reserveId, Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate);
-    Mono<Long> findAllByReserveDateWithoutSelfCount(String reserveId, Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate);
+    Flux<Reserve> findAllByReserveDate(Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate);
+    Mono<Long> findAllByReserveDateCount(Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate);
 }

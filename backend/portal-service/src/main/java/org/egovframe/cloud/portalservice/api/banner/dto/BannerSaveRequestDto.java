@@ -1,11 +1,10 @@
 package org.egovframe.cloud.portalservice.api.banner.dto;
 
-import javax.validation.constraints.NotBlank;
-
+import lombok.Getter;
 import org.egovframe.cloud.portalservice.domain.banner.Banner;
 import org.egovframe.cloud.portalservice.domain.menu.Site;
 
-import lombok.Getter;
+import javax.validation.constraints.NotBlank;
 
 /**
  * org.egovframe.cloud.portalservice.api.content.dto.BannerSaveRequestDto

@@ -36,38 +36,7 @@ public class ReserveItemMainResponseDto {
 				this.endDate = entity.getRequestEndDate();
 			}
 		}
-		this.isPossible = isReservationPossible(entity);
-	}
-
-	/**
-	 * 예약 가능 여부 체크
-	 *
-	 * @param entity
-	 * @return
-	 */
-	private boolean isReservationPossible(ReserveItem entity) {
-		LocalDateTime now = LocalDateTime.now();
-		if (!entity.getIsUse()) {
-			return false;
-		}
-
-		if (entity.getInventoryQty() <= 0) {
-			return false;
-		}
-
-		if (entity.getIsPeriod()) {
-			if (entity.getRequestStartDate().isBefore(now) && entity.getRequestEndDate().isAfter(now)) {
-				return true;
-			}else {
-				return false;
-			}
-		} else {
-			if (entity.getOperationStartDate().isBefore(now) && entity.getOperationEndDate().isAfter(now)) {
-				return true;
-			}else {
-				return false;
-			}
-		}
+		this.isPossible = entity.isReservationPossible();
 	}
 
 }

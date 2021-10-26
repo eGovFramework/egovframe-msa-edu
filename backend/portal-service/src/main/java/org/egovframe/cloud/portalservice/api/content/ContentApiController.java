@@ -1,7 +1,6 @@
 package org.egovframe.cloud.portalservice.api.content;
 
-import javax.validation.Valid;
-
+import lombok.RequiredArgsConstructor;
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.portalservice.api.content.dto.ContentListResponseDto;
 import org.egovframe.cloud.portalservice.api.content.dto.ContentResponseDto;
@@ -12,15 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import lombok.RequiredArgsConstructor;
+import javax.validation.Valid;
 
 /**
  * org.egovframe.cloud.portalservice.api.content.ContentApiController

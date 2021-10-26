@@ -54,12 +54,11 @@ public class ReserveRepositoryImpl implements ReserveRepositoryCustom {
      * @return
      */
     @Override
-    public Flux<Reserve> findAllByReserveDateWithoutSelf(String reserveId, Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate) {
+    public Flux<Reserve> findAllByReserveDate(Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate) {
         return entityTemplate.select(Reserve.class)
             .matching(Query.query(where("reserve_item_id").is(reserveItemId)
                 .and ("reserve_start_date").lessThanOrEquals(endDate)
                 .and("reserve_end_date").greaterThanOrEquals(startDate)
-                .and("reserve_id").not(reserveId)
             ))
             .all();
     }
@@ -74,12 +73,11 @@ public class ReserveRepositoryImpl implements ReserveRepositoryCustom {
      * @return
      */
     @Override
-    public Mono<Long> findAllByReserveDateWithoutSelfCount(String reserveId, Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate) {
+    public Mono<Long> findAllByReserveDateCount(Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate) {
         return entityTemplate.select(Reserve.class)
             .matching(Query.query(where("reserve_item_id").is(reserveItemId)
                 .and ("reserve_start_date").lessThanOrEquals(endDate)
                 .and("reserve_end_date").greaterThanOrEquals(startDate)
-                .and("reserve_id").not(reserveId)
             ))
             .count();
     }

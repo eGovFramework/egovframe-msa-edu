@@ -1,17 +1,22 @@
 package org.egovframe.cloud.boardservice.domain.posts;
 
-import java.time.LocalDateTime;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.base.CaseFormat;
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.*;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.sql.SQLExpressions;
+import com.querydsl.sql.SQLQuery;
+import com.querydsl.sql.SQLQueryFactory;
+import lombok.RequiredArgsConstructor;
 import org.egovframe.cloud.boardservice.api.board.dto.QBoardResponseDto;
-import org.egovframe.cloud.boardservice.api.posts.dto.PostsListResponseDto;
-import org.egovframe.cloud.boardservice.api.posts.dto.PostsResponseDto;
-import org.egovframe.cloud.boardservice.api.posts.dto.PostsSimpleResponseDto;
-import org.egovframe.cloud.boardservice.api.posts.dto.QPostsListResponseDto;
-import org.egovframe.cloud.boardservice.api.posts.dto.QPostsResponseDto;
-import org.egovframe.cloud.boardservice.api.posts.dto.QPostsSimpleResponseDto;
+import org.egovframe.cloud.boardservice.api.posts.dto.*;
 import org.egovframe.cloud.boardservice.domain.board.QBoard;
 import org.egovframe.cloud.boardservice.domain.comment.QComment;
 import org.egovframe.cloud.boardservice.domain.user.QUser;
@@ -20,27 +25,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import com.google.common.base.CaseFormat;
-import com.querydsl.core.QueryResults;
-import com.querydsl.core.Tuple;
-import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.CaseBuilder;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.core.types.dsl.SimpleExpression;
-import com.querydsl.core.types.dsl.StringPath;
-import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.JPQLQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.querydsl.sql.SQLExpressions;
-import com.querydsl.sql.SQLQuery;
-import com.querydsl.sql.SQLQueryFactory;
-
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * org.egovframe.cloud.boardservice.domain.posts.PostsRepositoryImpl

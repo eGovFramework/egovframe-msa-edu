@@ -14,5 +14,7 @@ eureka:
   client:
     register-with-eureka: false
     fetch-registry: false
+    service-url:
+      defaultZone: http://${spring.security.user.name}:${spring.security.user.password}@localhost:8761/eureka
   server:
     peer-node-read-timeout-ms: 10000
