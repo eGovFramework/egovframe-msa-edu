@@ -1,0 +1,77 @@
+version: '3'
+services:
+  egov-config:
+    container_name: egov-config
+    hostname: egov-config
+    image: egovframe/msa-edu-config:latest
+    ports:
+      - "8888:8888"
+    # restart: always
+    # networks: 
+    #   - egov-network
+    volumes:
+      - ${HOME}/workspace/egovframe-msa-edu/config:/usr/app/config # volume bind
+    environment:
+      ENCRYPT_KEY: token_secret
+      TZ: Asia/Seoul
+
+  egov-discovery:
+    container_name: egov-discovery
+    image: egovframe/msa-discovery:latest
+    ports:
+      - "8761:8761"
+    # restart: always
+    # networks: 
+    #   - egov-network
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      TZ: Asia/Seoul
+
+  egov-apigateway:
+    container_name: egov-apigateway
+    image: egovframe/msa-apigateway:latest
+    ports:
+      - "8000:8000"
+    restart: on-failure
+    # networks: 
+    #   - egov-network
+    volumes:
+      - ${HOME}/workspace:/usr/app/msa-attach-volume
+    environment:
+      SPRING_CLOUD_CONFIG_URI: "egov-config:8888"
+      SPRING_PROFILES_ACTIVE: default
+      TZ: Asia/Seoul
+    depends_on:
+      - egov-config
+    # links:
+    #   - egov-config
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "egov-config:8888"]
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
+    # networks: 
+    #   - egov-network
+    environment:
+      TZ: Asia/Seoul
+
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin
+    ports:
+      - "8085:9411"
+    restart: always
+    # networks: 
+    #   - egov-network
+    environment:
+      TZ: Asia/Seoul
+
+networks:
+  default:
+    external: true
+    name: egov-network
