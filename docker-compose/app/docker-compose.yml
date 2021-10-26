@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  egov-user-service:
+    container_name: egov-user-service
+    image: egovframe/msa-user-service:latest
+    restart: always
+    #networks: egovnetwork
+    volumes:
+      - ${HOME}/msa-attach-volume:/usr/app/msa-attach-volume
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+    depends_on:
+      - egov-apigateway
+
+  egov-board-service:
+    container_name: egov-board-service
+    image: egovframe/msa-board-service:latest
+    restart: always
+    #networks: egovnetwork
+    volumes:
+      - ${HOME}/msa-attach-volume:/usr/app/msa-attach-volume
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+    depends_on:
+      - egov-apigateway
+
+  egov-portal-service:
+    container_name: egov-portal-service
+    image: egovframe/msa-portal-service:latest
+    restart: always
+    #networks: egovnetwork
+    volumes:
+      - ${HOME}/msa-attach-volume:/usr/app/msa-attach-volume
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+    depends_on:
+      - egov-apigateway
+
+# networks:
+#   egovnetwork:
+#     driver: bridge

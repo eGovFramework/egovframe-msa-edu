@@ -5,13 +5,12 @@ spring:
   application:
     name: config-service
   profiles:
-    active: native,default # native file repository
+    active: native # native file repository
   cloud:
     config:
       server:
         native:
-          search-locations: file:///${user.home}/workspace.edu/egovframe-msa-edu/config # Windows
-          # search-locations: file://${user.home}/workspace.edu/egovframe-msa-edu/config # MacOS
+          search-locations: file:///usr/app/config # docker
   rabbitmq:
     host: localhost
     port: 5672

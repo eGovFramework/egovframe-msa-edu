@@ -9,5 +9,5 @@ WORKDIR $APP_HOME
 COPY build/libs/*.jar config.jar
 # application port
 EXPOSE 8888
-# 실행 (ARG 아니고 ENV 값이다)
-CMD ["java", "-Dspring.profiles.active=${profile:prod}", "-jar", "config.jar"]
+# 실행
+CMD ["java", "-Dspring.profiles.active=${profile:native}", "-jar", "config.jar"]

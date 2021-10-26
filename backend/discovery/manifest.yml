@@ -8,7 +8,7 @@ applications:
     buildpack: java_buildpack # cf buildpacks 명령어로 java buildpack 이름 확인
     env:
       spring_profiles_active: cf
-      spring_cloud_config_uri: https://egov-config.paas-ta.org
+      spring_cloud_config_uri: http://localhost:8888
       eureka_server_enable_self_preservation: true
       server_port: 80
       TZ: Asia/Seoul

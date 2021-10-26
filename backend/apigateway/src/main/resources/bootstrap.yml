@@ -2,4 +2,5 @@ spring:
   cloud:
     config:
       uri: http://localhost:8888
-      name: apigateway
+      name: application
+      enabled: true
