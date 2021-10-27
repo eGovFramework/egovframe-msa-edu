@@ -7,7 +7,7 @@ services:
       - "8888:8888"
     restart: always
     volumes:
-      - ${HOME}/workspace/egovframe-msa-edu/config:/usr/app/config # volume bind
+      - ${HOME}/workspace.edu/egovframe-msa-edu/config:/usr/app/config # volume bind
     environment:
       ENCRYPT_KEY: token_secret
       logstash_hostname: logstash:5001
@@ -59,7 +59,7 @@ services:
     container_name: zipkin
     image: openzipkin/zipkin
     ports:
-      - "8085:9411"
+      - "9411:9411"
     restart: always
     environment:
       TZ: Asia/Seoul

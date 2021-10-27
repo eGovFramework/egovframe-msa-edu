@@ -32,7 +32,7 @@ spring:
     username: guest
     password: guest
   zipkin:
-    base-url: http://${zipkin.hostname:${localhost}}:8085
+    base-url: http://${zipkin.hostname:${localhost}}:9411
 
 egov:
   message: hello
