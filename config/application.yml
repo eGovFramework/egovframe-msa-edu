@@ -16,12 +16,10 @@ eureka:
 
 # file attach location - messages{lang}.properties 도 이 경로에 위치한다.
 file:
-  directory: ${user.home}/msa-attach-volume # url 사용시에는 사용되지 않는다
+  directory: ${app.home:${user.home}}/msa-attach-volume # url 사용시에는 사용되지 않는다
   url: http://localhost:8080 # nginx 로 파일 다운로드 처리
 messages:
   directory: ${file.directory}/messages
-logstash:
-  url: localhost:8086
 
 apigateway:
   host: http://localhost:${server.port}
@@ -29,12 +27,12 @@ apigateway:
 # rabbitmq server
 spring:
   rabbitmq:
-    host: localhost
+    host: ${rabbitmq.hostname:${localhost}}
     port: 5672
     username: guest
     password: guest
   zipkin:
-    base-url: http://localhost:8085
+    base-url: http://${zipkin.hostname:${localhost}}:8085
 
 egov:
   message: hello

@@ -10,6 +10,9 @@ services:
       - ${HOME}/workspace/egovframe-msa-edu/config:/usr/app/config # volume bind
     environment:
       ENCRYPT_KEY: token_secret
+      logstash_hostname: logstash:5001
+      RABBITMQ_HOSTNAME: rabbitmq
+      ZIPKIN_HOSTNAME: zipkin
       TZ: Asia/Seoul
 
   discovery:
@@ -35,6 +38,9 @@ services:
       SPRING_CLOUD_CONFIG_URI: http://config:8888
       SPRING_PROFILES_ACTIVE: default
       EUREKA_INSTANCE_HOSTNAME: discovery
+      RABBITMQ_HOSTNAME: rabbitmq
+      ZIPKIN_HOSTNAME: zipkin
+      APP_HOME: /usr/app
       TZ: Asia/Seoul
     depends_on:
       - config

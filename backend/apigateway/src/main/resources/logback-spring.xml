@@ -15,7 +15,7 @@
     </springProfile>
     <springProfile name="!default">
         <!-- java -Ddestination="localhost:5001" 와 같이 변경할 수 있다. cf 환경에서는 manifest.yml 파일에 환경변수로 추가 -->
-        <property name="destination" value="${destination:-localhost:5001}" />
+        <property name="destination" value="${logstash_hostname:-localhost:5001}" />
         <property name="app_name" value="${app_name:-apigateway}" />
 
         <!-- ELK - Logstash 로 로그를 전송하기 위한 appender -->
