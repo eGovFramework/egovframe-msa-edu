@@ -36,7 +36,7 @@ import java.nio.file.Paths;
 @Configuration
 public class MessageSourceConfig {
 
-    @Value("${messages.directory}")
+    @Value("${messages.directory:${user.home}/msa-attach-volume/messages}")
     private String messagesDirectory;
 
     @Value("${spring.profiles.active:default}")

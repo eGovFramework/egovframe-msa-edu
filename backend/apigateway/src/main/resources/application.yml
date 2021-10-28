@@ -65,3 +65,6 @@ management:
     web:
       exposure:
         include: refresh, health, beans
+
+messages:
+  directory: ${user.dir}/msa-attach-volume/messages

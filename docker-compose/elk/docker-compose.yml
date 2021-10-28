@@ -14,10 +14,8 @@ services:
       memlock:
         soft: -1
         hard: -1
-    networks:
-      - elastic
     volumes:
-      - ${HOME}/docker-volume/elasticsearch/data:/usr/share/elasticsearch/data
+      - ${HOME}/workspace.edu/data:/usr/share/elasticsearch/data
 
   logstash:
     container_name: logstash
@@ -37,10 +35,6 @@ services:
         source: ${PWD}/logstash/pipeline
         target: /usr/share/logstash/pipeline
         read_only: true
-    networks:
-      - elastic
-    depends_on:
-      - elasticsearch
 
   kibana:
     container_name: kibana
@@ -57,11 +51,8 @@ services:
         source: ${PWD}/kibana/config/kibana.yml
         target: /usr/share/kibana/config/kibana.yml
         read_only: true
-    networks:
-      - elastic
-    depends_on:
-      - elasticsearch
 
 networks:
-  elastic:
-    driver: bridge
+  default:
+    external:
+      name: egov-network

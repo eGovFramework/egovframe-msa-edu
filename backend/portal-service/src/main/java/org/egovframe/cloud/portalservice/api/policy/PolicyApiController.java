@@ -77,7 +77,6 @@ public class PolicyApiController {
      */
     @PostMapping("/api/v1/policies")
     public Long save(@RequestBody PolicySaveRequestDto saveRequestDto) {
-        System.out.println(saveRequestDto.toString());
         return policyService.save(saveRequestDto);
     }
 

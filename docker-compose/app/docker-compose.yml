@@ -1,0 +1,116 @@
+version: '3'
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
+    environment:
+      TZ: Asia/Seoul
+
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
+    restart: always
+    environment:
+      TZ: Asia/Seoul
+
+  config:
+    container_name: config
+    image: egovframe/msa-edu-config:latest
+    ports:
+      - "8888:8888"
+    restart: always
+    volumes:
+      - ${HOME}/workspace.edu/egovframe-msa-edu/config:/usr/app/config # volume bind
+    environment:
+      ENCRYPT_KEY: token_secret
+      SPRING_PROFILES_ACTIVE: native
+      # logstash_hostname: logstash:5001
+      RABBITMQ_HOSTNAME: rabbitmq
+      ZIPKIN_HOSTNAME: zipkin
+      TZ: Asia/Seoul
+
+  discovery:
+    container_name: discovery
+    image: egovframe/msa-discovery:latest
+    ports:
+      - "8761:8761"
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      EUREKA_INSTANCE_HOSTNAME: discovery
+      TZ: Asia/Seoul
+
+  apigateway:
+    container_name: apigateway
+    image: egovframe/msa-apigateway:latest
+    ports:
+      - "8000:8000"
+    restart: on-failure
+    volumes:
+      - ${HOME}/workspace:/usr/app/msa-attach-volume
+    environment:
+      SPRING_CLOUD_CONFIG_URI: http://config:8888
+      SPRING_PROFILES_ACTIVE: default
+      EUREKA_INSTANCE_HOSTNAME: discovery
+      RABBITMQ_HOSTNAME: rabbitmq
+      ZIPKIN_HOSTNAME: zipkin
+      APP_HOME: /usr/app
+      TZ: Asia/Seoul
+
+  userservice:
+    container_name: userservice
+    image: egovframe/msa-user-service:latest
+    restart: always
+    volumes:
+      - ${HOME}/workspace.edu/docker-compose:/usr/app/msa-attach-volume
+    environment:
+      SPRING_CLOUD_CONFIG_URI: http://config:8888
+      SPRING_PROFILES_ACTIVE: default
+      APP_HOME: /usr/app
+      # logstash_hostname: logstash:5001
+      EUREKA_INSTANCE_HOSTNAME: discovery
+      MYSQL_HOSTNAME: mysql
+      RABBITMQ_HOSTNAME: rabbitmq
+      ZIPKIN_HOSTNAME: zipkin
+      TZ: Asia/Seoul
+
+  boardservice:
+    container_name: boardservice
+    image: egovframe/msa-board-service:latest
+    restart: always
+    volumes:
+      - ${HOME}/workspace:/usr/app/msa-attach-volume
+    environment:
+      SPRING_CLOUD_CONFIG_URI: http://config:8888
+      SPRING_PROFILES_ACTIVE: default
+      EUREKA_INSTANCE_HOSTNAME: discovery
+      APP_HOME: /usr/app
+      # logstash_hostname: logstash:5001
+      MYSQL_HOSTNAME: mysql
+      TZ: Asia/Seoul
+
+  portalservice:
+    container_name: portalservice
+    image: egovframe/msa-portal-service:latest
+    restart: always
+    volumes:
+      - ${HOME}/workspace:/usr/app/msa-attach-volume
+    environment:
+      SPRING_CLOUD_CONFIG_URI: http://config:8888
+      SPRING_PROFILES_ACTIVE: default
+      EUREKA_INSTANCE_HOSTNAME: discovery
+      APP_HOME: /usr/app
+      # logstash_hostname: logstash:5001
+      MYSQL_HOSTNAME: mysql
+      TZ: Asia/Seoul
+
+networks:
+  default:
+    external:
+      name: egov-network

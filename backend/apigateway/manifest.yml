@@ -10,7 +10,7 @@ applications:
       - egov-discovery-provided-service # discovery service binding
     env:
       spring_profiles_active: cf
-      spring_cloud_config_uri: https://egov-config.paas-ta.org
+      spring_cloud_config_uri: http://localhost:8888
       app_name: egov-apigateway # logstash custom app name
       TZ: Asia/Seoul
       JAVA_OPTS: -Xss349k

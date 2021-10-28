@@ -278,7 +278,6 @@ public class ReserveItem extends BaseEntity {
      * @return
      */
     public ReserveItem update(ReserveItemUpdateRequestDto updateRequestDto) {
-        System.out.println("============ ?? : " + updateRequestDto.toString());
         this.reserveItemName = updateRequestDto.getReserveItemName();
         this.locationId = updateRequestDto.getLocationId();
         this.categoryId = updateRequestDto.getCategoryId();

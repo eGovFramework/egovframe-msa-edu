@@ -235,7 +235,6 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
             whereCriteria.add(where("use_at").isTrue());
             whereCriteria.add(where("reserve_method_id").is("internet"));
         }
-        System.out.println(whereCriteria.toString());
 
         return whereCriteria;
     }

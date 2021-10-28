@@ -113,7 +113,6 @@ public class ReserveItemApiController {
     @GetMapping("/api/v1/reserve-items/{reserveItemId}")
     @ResponseStatus(HttpStatus.OK)
     public Mono<ReserveItemResponseDto> findById(@PathVariable Long reserveItemId) {
-        System.out.println("findById : " + reserveItemId);
         return reserveItemService.findById(reserveItemId);
     }
 
@@ -177,7 +176,6 @@ public class ReserveItemApiController {
     @PutMapping("/api/v1/reserve-items/{reserveItemId}/inventories")
     @ResponseStatus(HttpStatus.OK)
     public Mono<Boolean> updateInventory(@PathVariable Long reserveItemId, @RequestBody Integer reserveQty) {
-        System.out.println("update inventories : " + reserveItemId+" : " + reserveQty);
         return reserveItemService.updateInventory(reserveItemId, reserveQty);
     }
 
