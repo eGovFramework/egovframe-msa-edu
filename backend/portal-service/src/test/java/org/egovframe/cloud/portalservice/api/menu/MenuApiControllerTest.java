@@ -37,7 +37,6 @@ import org.springframework.test.context.TestPropertySource;
 @ActiveProfiles(profiles = "test")
 class MenuApiControllerTest {
 
-
     @Autowired
     private TestRestTemplate restTemplate;
 
@@ -51,9 +50,9 @@ class MenuApiControllerTest {
     @BeforeEach
     public void setup() throws Exception {
         siteRepository.save(Site.builder()
-                .name("site")
-                .isUse(true)
-                .build()
+            .name("site")
+            .isUse(true)
+            .build()
         );
     }
 
@@ -68,24 +67,24 @@ class MenuApiControllerTest {
         Site site = siteRepository.findAll().get(0);
 
         Menu parentMenu = menuRepository.save(Menu.builder()
-                .menuKorName("parent")
-                .sortSeq(1)
-                .site(site)
-                .build());
+            .menuKorName("parent")
+            .sortSeq(1)
+            .site(site)
+            .build());
 
         for (int i = 0; i < 3; i++) {
             Menu childMenu = Menu.builder()
-                    .menuKorName("child_" + i)
-                    .site(site)
-                    .parent(parentMenu)
-                    .sortSeq(i + 1)
-                    .build();
+                .menuKorName("child_" + i)
+                .site(site)
+                .parent(parentMenu)
+                .sortSeq(i + 1)
+                .build();
             childMenu.setParentMenu(parentMenu);
             menuRepository.save(childMenu);
         }
 
         //when
-        ResponseEntity<List<MenuTreeResponseDto>> responseEntity = restTemplate.exchange("/api/v1/"+site.getId()+"/menus", HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuTreeResponseDto>>(){});
+        ResponseEntity<List<MenuTreeResponseDto>> responseEntity = restTemplate.exchange("/api/v1/menus/"+site.getId()+"/tree", HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuTreeResponseDto>>(){});
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -102,14 +101,14 @@ class MenuApiControllerTest {
     public void 메뉴관리_사이트콤보_목록_조회한다() throws Exception {
         //given
         siteRepository.save(Site.builder()
-                .name("portal")
-                .isUse(true)
-                .build()
+            .name("portal")
+            .isUse(true)
+            .build()
         );
         siteRepository.save(Site.builder()
-                .name("admin")
-                .isUse(true)
-                .build()
+            .name("admin")
+            .isUse(true)
+            .build()
         );
 
         //when
@@ -127,50 +126,50 @@ class MenuApiControllerTest {
         Site site = siteRepository.findAll().get(0);
 
         Menu parentMenu1 = menuRepository.save(Menu.builder()
-                .menuKorName("parent_1")
-                .sortSeq(1)
-                .site(site)
-                .build());
+            .menuKorName("parent_1")
+            .sortSeq(1)
+            .site(site)
+            .build());
         Menu parentMenu2 = menuRepository.save(Menu.builder()
-                .menuKorName("parent_2")
-                .sortSeq(2)
-                .site(site)
-                .build());
+            .menuKorName("parent_2")
+            .sortSeq(2)
+            .site(site)
+            .build());
 
         for (int i = 0; i < 3; i++) {
             Menu childMenu1 = Menu.builder()
-                    .menuKorName("child_1_" + i)
-                    .site(site)
-                    .parent(parentMenu1)
-                    .sortSeq(i + 1)
-                    .build();
+                .menuKorName("child_1_" + i)
+                .site(site)
+                .parent(parentMenu1)
+                .sortSeq(i + 1)
+                .build();
             childMenu1.setParentMenu(parentMenu1);
             menuRepository.save(childMenu1);
             if (i == 1) {
                 Menu childChildMenu = Menu.builder()
-                        .menuKorName("child_child_1")
-                        .site(site)
-                        .parent(childMenu1)
-                        .sortSeq(1)
-                        .build();
+                    .menuKorName("child_child_1")
+                    .site(site)
+                    .parent(childMenu1)
+                    .sortSeq(1)
+                    .build();
                 childChildMenu.setParentMenu(childMenu1);
                 menuRepository.save(childChildMenu);
                 Menu childChildMenu2 = Menu.builder()
-                        .menuKorName("child_child_1")
-                        .site(site)
-                        .parent(childMenu1)
-                        .sortSeq(2)
-                        .build();
+                    .menuKorName("child_child_1")
+                    .site(site)
+                    .parent(childMenu1)
+                    .sortSeq(2)
+                    .build();
                 childChildMenu2.setParentMenu(childMenu1);
                 menuRepository.save(childChildMenu2);
             }
 
             Menu childMenu2 = Menu.builder()
-                    .menuKorName("child_2_" + i)
-                    .site(site)
-                    .parent(parentMenu2)
-                    .sortSeq(i + 1)
-                    .build();
+                .menuKorName("child_2_" + i)
+                .site(site)
+                .parent(parentMenu2)
+                .sortSeq(i + 1)
+                .build();
             childMenu1.setParentMenu(parentMenu2);
             menuRepository.save(childMenu2);
         }
@@ -197,18 +196,19 @@ class MenuApiControllerTest {
         Site site = siteRepository.findAll().get(0);
 
         Menu parentMenu = menuRepository.save(Menu.builder()
-                .menuKorName("parent")
-                .sortSeq(1)
-                .site(site)
-                .build());
+            .menuKorName("parent")
+            .menuKorName("parenteng")
+            .sortSeq(1)
+            .site(site)
+            .build());
 
         //when
-        String url = "/api/v1/manager/menus/"+parentMenu.getId();
+        String url = "/api/v1/menus/"+parentMenu.getId();
         ResponseEntity<MenuResponseDto> responseEntity = restTemplate.getForEntity(url, MenuResponseDto.class);
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).extracting("name").isEqualTo(parentMenu.getMenuKorName());
+        assertThat(responseEntity.getBody()).extracting("menuKorName").isEqualTo(parentMenu.getMenuKorName());
         System.out.println(responseEntity.getBody());
 
     }
@@ -219,11 +219,11 @@ class MenuApiControllerTest {
         Site site = siteRepository.findAll().get(0);
 
         MenuTreeRequestDto menuTreeRequestDto = MenuTreeRequestDto.builder()
-                .parentId(null)
-                .siteId(site.getId())
-                .name("parent")
-                .sortSeq(1)
-                .build();
+            .parentId(null)
+            .siteId(site.getId())
+            .name("parent")
+            .sortSeq(1)
+            .build();
 
         String url = "/api/v1/menus";
 
@@ -237,35 +237,30 @@ class MenuApiControllerTest {
 
     }
 
-    /**
-     * @TODO
-     * bulk update 수정 필요
-     * @throws Exception
-     */
     @Test
     public void 메뉴관리_트리_드래그앤드랍_순서_및_부모메뉴_변경() throws Exception {
         //given
         Site site = siteRepository.findAll().get(0);
 
         Menu parentMenu1 = menuRepository.save(Menu.builder()
-                .menuKorName("parent_1")
-                .sortSeq(1)
-                .site(site)
-                .build());
+            .menuKorName("parent_1")
+            .sortSeq(1)
+            .site(site)
+            .build());
         Menu parentMenu2 = menuRepository.save(Menu.builder()
-                .menuKorName("parent_2")
-                .sortSeq(2)
-                .site(site)
-                .build());
+            .menuKorName("parent_2")
+            .sortSeq(2)
+            .site(site)
+            .build());
 
         Long menuId = 0L;
         for (int i = 0; i < 3; i++) {
             Menu childMenu1 = Menu.builder()
-                    .menuKorName("child_1_" + i)
-                    .site(site)
-                    .parent(parentMenu1)
-                    .sortSeq(i + 1)
-                    .build();
+                .menuKorName("child_1_" + i)
+                .site(site)
+                .parent(parentMenu1)
+                .sortSeq(i + 1)
+                .build();
             childMenu1.setParentMenu(parentMenu1);
             Menu save = menuRepository.save(childMenu1);
             menuId = save.getId();
@@ -274,25 +269,24 @@ class MenuApiControllerTest {
         List<MenuDnDRequestDto> updateList = new ArrayList<>();
 
         updateList.add(MenuDnDRequestDto.builder()
-                .menuId(menuId)
-                .sortSeq(1)
-                .parentId(parentMenu2.getId())
-                .build());
+            .menuId(menuId)
+            .sortSeq(1)
+            .parentId(parentMenu2.getId())
+            .build());
 
         HttpEntity<List<MenuDnDRequestDto>> httpEntity = new HttpEntity<>(
-                updateList
+            updateList
         );
 
 
         String url = "/api/v1/menus/"+site.getId()+"/tree";
 
         //when
-        ResponseEntity<List<MenuTreeResponseDto>> responseEntity =
-                restTemplate.exchange(url, HttpMethod.PUT, httpEntity, new ParameterizedTypeReference<List<MenuTreeResponseDto>>(){});
+        ResponseEntity<Long> responseEntity =
+            restTemplate.exchange(url, HttpMethod.PUT, httpEntity, Long.class);
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        responseEntity.getBody().stream().forEach(System.out::println);
 
     }
 
@@ -301,19 +295,19 @@ class MenuApiControllerTest {
         Site site = siteRepository.findAll().get(0);
 
         Menu parentMenu1 = menuRepository.save(Menu.builder()
-                .menuKorName("parent_1")
-                .sortSeq(1)
-                .site(site)
-                .build());
+            .menuKorName("parent_1")
+            .sortSeq(1)
+            .site(site)
+            .build());
 
         Long menuId = 0L;
         for (int i = 0; i < 3; i++) {
             Menu childMenu1 = Menu.builder()
-                    .menuKorName("child_1_" + i)
-                    .site(site)
-                    .parent(parentMenu1)
-                    .sortSeq(i + 1)
-                    .build();
+                .menuKorName("child_1_" + i)
+                .site(site)
+                .parent(parentMenu1)
+                .sortSeq(i + 1)
+                .build();
             childMenu1.setParentMenu(parentMenu1);
             Menu save = menuRepository.save(childMenu1);
             menuId = save.getId();
@@ -323,7 +317,7 @@ class MenuApiControllerTest {
 
         //when
         ResponseEntity<MenuTreeResponseDto> responseEntity =
-                restTemplate.exchange(url, HttpMethod.PUT, null, MenuTreeResponseDto.class);
+            restTemplate.exchange(url, HttpMethod.PUT, null, MenuTreeResponseDto.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody().getName()).isEqualTo("updateName");
@@ -336,31 +330,31 @@ class MenuApiControllerTest {
         Site site = siteRepository.findAll().get(0);
 
         Menu parentMenu1 = menuRepository.save(Menu.builder()
-                .menuKorName("parent_1")
-                .sortSeq(1)
-                .site(site)
-                .build());
+            .menuKorName("parent_1")
+            .sortSeq(1)
+            .site(site)
+            .build());
 
         String url = "/api/v1/menus/"+parentMenu1.getId();
 
 
         HttpEntity<MenuUpdateRequestDto> httpEntity = new HttpEntity<>(
-                MenuUpdateRequestDto.builder()
-                        .description("상위메뉴")
-                        .connectId(1)
-                        .menuType("menuType")
-                        .urlPath("/index")
-                        .subName("subname")
-                        .isUse(true)
-                        .isShow(true)
-                        .isBlank(false)
-                        .icon("icon")
+            MenuUpdateRequestDto.builder()
+                .description("상위메뉴")
+                .connectId(1)
+                .menuType("menuType")
+                .urlPath("/index")
+                .subName("subname")
+                .isUse(true)
+                .isShow(true)
+                .isBlank(false)
+                .icon("icon")
                 .build()
         );
 
         //when
         ResponseEntity<MenuResponseDto> responseEntity =
-                restTemplate.exchange(url, HttpMethod.PUT, httpEntity, MenuResponseDto.class);
+            restTemplate.exchange(url, HttpMethod.PUT, httpEntity, MenuResponseDto.class);
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -375,19 +369,19 @@ class MenuApiControllerTest {
         Site site = siteRepository.findAll().get(0);
 
         Menu parentMenu1 = menuRepository.save(Menu.builder()
-                .menuKorName("parent_1")
-                .sortSeq(1)
-                .site(site)
-                .build());
+            .menuKorName("parent_1")
+            .sortSeq(1)
+            .site(site)
+            .build());
 
         Long menuId = 0L;
         for (int i = 0; i < 3; i++) {
             Menu childMenu1 = Menu.builder()
-                    .menuKorName("child_1_" + i)
-                    .site(site)
-                    .parent(parentMenu1)
-                    .sortSeq(i + 1)
-                    .build();
+                .menuKorName("child_1_" + i)
+                .site(site)
+                .parent(parentMenu1)
+                .sortSeq(i + 1)
+                .build();
             childMenu1.setParentMenu(parentMenu1);
             Menu save = menuRepository.save(childMenu1);
             menuId = save.getId();
@@ -409,19 +403,19 @@ class MenuApiControllerTest {
         Site site = siteRepository.findAll().get(0);
 
         Menu parentMenu1 = menuRepository.save(Menu.builder()
-                .menuKorName("parent_1")
-                .sortSeq(1)
-                .site(site)
-                .build());
+            .menuKorName("parent_1")
+            .sortSeq(1)
+            .site(site)
+            .build());
 
         Long menuId = 0L;
         for (int i = 0; i < 3; i++) {
             Menu childMenu1 = Menu.builder()
-                    .menuKorName("child_1_" + i)
-                    .site(site)
-                    .parent(parentMenu1)
-                    .sortSeq(i + 1)
-                    .build();
+                .menuKorName("child_1_" + i)
+                .site(site)
+                .parent(parentMenu1)
+                .sortSeq(i + 1)
+                .build();
             childMenu1.setParentMenu(parentMenu1);
             Menu save = menuRepository.save(childMenu1);
             menuId = save.getId();

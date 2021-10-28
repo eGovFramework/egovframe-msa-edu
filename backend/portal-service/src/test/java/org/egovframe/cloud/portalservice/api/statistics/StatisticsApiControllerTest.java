@@ -2,6 +2,7 @@ package org.egovframe.cloud.portalservice.api.statistics;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.egovframe.cloud.portalservice.api.statistics.dto.StatisticsResponseDto;
@@ -33,14 +34,13 @@ class StatisticsApiControllerTest {
     @Autowired
     private StatisticsRepository statisticsRepository;
 
-
     @BeforeEach
     public void setup() {
         for (int i = 0; i < 10; i++) {
             statisticsRepository.save(Statistics.builder()
-                    .siteId(1L)
-                    .remoteIp("testip")
-                    .build());
+                .siteId(1L)
+                .remoteIp("testip")
+                .build());
         }
 
     }
@@ -55,10 +55,10 @@ class StatisticsApiControllerTest {
         Long siteId = 1L;
         // when
         ResponseEntity< List<StatisticsResponseDto>> responseEntity =
-                restTemplate.exchange("/api/v1/statistics/monthly/"+siteId,
-                        HttpMethod.GET,
-                        null,
-                        new ParameterizedTypeReference<List<StatisticsResponseDto>>(){});
+            restTemplate.exchange("/api/v1/statistics/monthly/"+siteId,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<StatisticsResponseDto>>(){});
 
         responseEntity.getBody().forEach(System.out::println);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -70,12 +70,14 @@ class StatisticsApiControllerTest {
     public void 일별접속통계_조회_성공() throws Exception {
         Long siteId = 1L;
 
+        LocalDate now = LocalDate.now();
+
         // when
         ResponseEntity< List<StatisticsResponseDto>> responseEntity =
-                restTemplate.exchange("/api/v1/statistics/daily/"+siteId+"?year=2021&month=9",
-                        HttpMethod.GET,
-                        null,
-                        new ParameterizedTypeReference<List<StatisticsResponseDto>>(){});
+            restTemplate.exchange("/api/v1/statistics/daily/"+siteId+"?year="+now.getYear()+"&month="+now.getMonthValue(),
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<StatisticsResponseDto>>(){});
 
         responseEntity.getBody().forEach(System.out::println);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
