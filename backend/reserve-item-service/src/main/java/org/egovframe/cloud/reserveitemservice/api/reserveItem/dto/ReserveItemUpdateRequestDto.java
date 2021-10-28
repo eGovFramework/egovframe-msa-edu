@@ -1,5 +1,6 @@
 package org.egovframe.cloud.reserveitemservice.api.reserveItem.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -61,7 +62,6 @@ public class ReserveItemUpdateRequestDto {
     private String externalUrl;     //외부링크
     @NotBlank
     private String selectionMeansId;       //선별 방법 - 공통코드 reserve-selection
-    @NotNull
     private Boolean isPaid;         // 유/무료 - false: 무료, true: 유료
     private BigDecimal usageCost;          //이용 요금
     private Boolean isUse;          //사용여부
@@ -82,6 +82,43 @@ public class ReserveItemUpdateRequestDto {
     private String managerName;     //담당자 이름
     @Size(max = 50)
     private String managerContact;  //담당자 연락처
+
+    @Builder
+    public ReserveItemUpdateRequestDto(String reserveItemName, Long locationId, String categoryId,
+        Integer totalQty, Integer inventoryQty, LocalDateTime operationStartDate, LocalDateTime operationEndDate,
+        String reserveMethodId, String reserveMeansId, LocalDateTime requestStartDate,
+        LocalDateTime requestEndDate, Boolean isPeriod, Integer periodMaxCount, String externalUrl,
+        String selectionMeansId, Boolean isPaid, BigDecimal usageCost, Boolean isUse, String purpose,
+        String address, String targetId, String excluded, String homepage, String contact, String managerDept,
+        String managerName, String managerContact) {
+        this.reserveItemName = reserveItemName;
+        this.locationId = locationId;
+        this.categoryId = categoryId;
+        this.totalQty = totalQty;
+        this.inventoryQty = inventoryQty;
+        this.operationStartDate = operationStartDate;
+        this.operationEndDate = operationEndDate;
+        this.reserveMethodId = reserveMethodId;
+        this.reserveMeansId = reserveMeansId;
+        this.requestStartDate = requestStartDate;
+        this.requestEndDate = requestEndDate;
+        this.isPeriod = isPeriod;
+        this.periodMaxCount = periodMaxCount;
+        this.externalUrl = externalUrl;
+        this.selectionMeansId = selectionMeansId;
+        this.isPaid = isPaid;
+        this.usageCost = usageCost;
+        this.isUse = isUse;
+        this.purpose = purpose;
+        this.address = address;
+        this.targetId = targetId;
+        this.excluded = excluded;
+        this.homepage = homepage;
+        this.contact = contact;
+        this.managerDept = managerDept;
+        this.managerName = managerName;
+        this.managerContact = managerContact;
+    }
 
     public ReserveItem toEntity() {
         return ReserveItem.builder()

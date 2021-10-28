@@ -21,7 +21,7 @@ public class R2dbcConfig{
     @Bean
     public H2ConnectionFactory connectionFactory() {
         return new H2ConnectionFactory(H2ConnectionConfiguration.builder()
-                .tcp("localhost", "~/querydsl")
+                .inMemory("testdb")
                 .property(H2ConnectionOption.DB_CLOSE_DELAY, "-1")
                 .username("sa")
                 .build());

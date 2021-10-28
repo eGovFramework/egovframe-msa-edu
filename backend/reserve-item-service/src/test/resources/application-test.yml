@@ -2,20 +2,6 @@ spring:
   application:
     name: reserve-item-service
 
-  datasource:
-    url: jdbc:h2:mem:testdb;MODE=MYSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
-    username: sa
-    password: 
-    driver-class-name: org.h2.Driver
-  jpa:
-    hibernate:
-      generate-ddl: true
-      ddl-auto: create-drop
-    properties:
-      hibernate:
-        format_sql: true
-        default_batch_fetch_size: 1000
-    show-sql: true
   h2:
     console:
       enabled: true

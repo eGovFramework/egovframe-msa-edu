@@ -428,8 +428,6 @@ public class AttachmentService extends AbstractService {
      * @return
      */
     public String updateEntity(String attachmentCode, AttachmentUploadRequestDto uploadRequestDto) {
-        System.out.println(" ====attachmentCode  : " + attachmentCode);
-        System.out.println(" ====uploadRequestDto  : " + uploadRequestDto);
         List<Attachment> attachments = attachmentRepository.findByCode(attachmentCode);
         for (Attachment attachment : attachments) {
             attachment.updateEntity(uploadRequestDto.getEntityName(), uploadRequestDto.getEntityId());
