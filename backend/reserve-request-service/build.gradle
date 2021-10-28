@@ -46,7 +46,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-stream'
     implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
-    implementation 'net.java.dev.jna:jna:5.9.0' // byte-buddy (No compatible attachment provider is available.)
+//    implementation 'net.java.dev.jna:jna:5.9.0' // byte-buddy (No compatible attachment provider is available.)
 
 
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
@@ -58,8 +58,8 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.10'
 
     // bolcking 호출 감지
-    implementation 'io.projectreactor:reactor-tools:3.4.9'
-    implementation 'io.projectreactor.tools:blockhound:1.0.6.RELEASE'
+//    implementation 'io.projectreactor:reactor-tools:3.4.9'
+//    implementation 'io.projectreactor.tools:blockhound:1.0.6.RELEASE'
 
     //lombok
     implementation 'org.projectlombok:lombok'
