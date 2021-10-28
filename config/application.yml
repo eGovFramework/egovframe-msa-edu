@@ -27,12 +27,12 @@ apigateway:
 # rabbitmq server
 spring:
   rabbitmq:
-    host: ${rabbitmq.hostname:${localhost}}
+    host: ${rabbitmq.hostname:localhost}
     port: 5672
     username: guest
     password: guest
   zipkin:
-    base-url: http://${zipkin.hostname:${localhost}}:9411
+    base-url: http://${zipkin.hostname:localhost}:9411
 
 egov:
   message: hello
