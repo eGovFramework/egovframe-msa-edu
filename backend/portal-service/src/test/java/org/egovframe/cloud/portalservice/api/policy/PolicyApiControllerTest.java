@@ -59,12 +59,12 @@ class PolicyApiControllerTest {
             }
 
             policyRepository.save(Policy.builder()
-                    .type(type)
-                    .title(title)
-                    .isUse(true)
-                    .regDate(ZonedDateTime.now())
-                    .contents(contents)
-                    .build());
+                .type(type)
+                .title(title)
+                .isUse(true)
+                .regDate(ZonedDateTime.now())
+                .contents(contents)
+                .build());
         }
     }
 
@@ -81,17 +81,16 @@ class PolicyApiControllerTest {
         String contents = "test contents";
 
         PolicySaveRequestDto requestDto = PolicySaveRequestDto.builder()
-                .type(type)
-                .title(title)
-                .isUse(true)
-                .regDate(ZonedDateTime.now())
-                .contents(contents)
-                .build();
+            .type(type)
+            .title(title)
+            .isUse(true)
+            .regDate(ZonedDateTime.now())
+            .contents(contents)
+            .build();
 
-        String url = "http://localhost:"+port+API_URL;
 
         //when
-        ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
+        ResponseEntity<Long> responseEntity = restTemplate.postForEntity(API_URL, requestDto, Long.class);
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -104,10 +103,10 @@ class PolicyApiControllerTest {
     @Test
     public void 목록조회한다() throws Exception {
 
-        String url = "http://localhost:"+port+API_URL+"?size=3%page=0";
+        String url = API_URL+"?size=3%page=0";
         //when
         ResponseEntity<RestResponsePage<PolicyResponseDto>> responseEntity =
-                restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<PolicyResponseDto>>() {});
+            restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<PolicyResponseDto>>() {});
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -134,7 +133,7 @@ class PolicyApiControllerTest {
     @Test
     public void ID로_한건조회_정상() throws Exception {
 
-        String url = "http://localhost:"+port+API_URL +"/9";
+        String url = API_URL +"/9";
 
         //when
         ResponseEntity<PolicyResponseDto> responseEntity = restTemplate.getForEntity(url, PolicyResponseDto.class);
@@ -148,17 +147,17 @@ class PolicyApiControllerTest {
     public void 이용약관_수정_된다() throws Exception {
         //given
         Long id = policyRepository.save(Policy.builder()
-                .type("TOS")
-                .title("title")
-                .contents("contents!!!!")
-                .build()
+            .type("TOS")
+            .title("title")
+            .contents("contents!!!!")
+            .build()
         ).getId();
-        String url = "http://localhost:"+port+API_URL +"/"+id;
+        String url = API_URL +"/"+id;
 
         PolicyUpdateRequestDto requestDto = PolicyUpdateRequestDto.builder()
-                .title("update title")
-                .contents("update Details")
-                .build();
+            .title("update title")
+            .contents("update Details")
+            .build();
 
         //when
         HttpEntity<PolicyUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
@@ -178,12 +177,12 @@ class PolicyApiControllerTest {
     public void 이용약관_삭제_한다() {
         //given
         Long id = policyRepository.save(Policy.builder()
-                .type("TOS")
-                .title("title")
-                .contents("contents!!!!")
-                .build()
+            .type("TOS")
+            .title("title")
+            .contents("contents!!!!")
+            .build()
         ).getId();
-        String url = "http://localhost:"+port+API_URL +"/"+id;
+        String url = API_URL +"/"+id;
 
         //when
         restTemplate.delete(url);
@@ -197,13 +196,13 @@ class PolicyApiControllerTest {
     public void 사용여부_수정_한다() throws Exception {
         //given
         Long id = policyRepository.save(Policy.builder()
-                .type("TOS")
-                .title("title")
-                .isUse(true)
-                .contents("contents!!!")
-                .build()
+            .type("TOS")
+            .title("title")
+            .isUse(true)
+            .contents("contents!!!")
+            .build()
         ).getId();
-        String url = "http://localhost:"+port+API_URL +"/"+id+"/"+false;
+        String url = API_URL +"/"+id+"/"+false;
 
         //when
         ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, null, Long.class);
