@@ -165,7 +165,7 @@ public class LocationService extends ReactiveAbstractService {
                 .switchIfEmpty(monoResponseStatusEntityNotFoundException(locationId))
                 .flatMap(locationRepository::delete)
                 .onErrorResume(DataIntegrityViolationException.class,
-                        throwable -> Mono.error(new BusinessMessageException("참조하는 데이터가 있어 삭제할 수 없습니다.")));
+                        throwable -> Mono.error(new BusinessMessageException(getMessage("err.db.constraint.delete"))));
     }
 
     /**

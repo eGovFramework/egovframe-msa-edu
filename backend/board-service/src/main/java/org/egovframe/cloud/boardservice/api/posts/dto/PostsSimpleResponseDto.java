@@ -1,14 +1,12 @@
 package org.egovframe.cloud.boardservice.api.posts.dto;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
-import org.egovframe.cloud.boardservice.api.board.dto.BoardResponseDto;
-
 import com.querydsl.core.annotations.QueryProjection;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.egovframe.cloud.boardservice.api.board.dto.BoardResponseDto;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * org.egovframe.cloud.boardservice.api.posts.dto.PostsSimpleResponseDto

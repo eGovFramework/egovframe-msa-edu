@@ -118,7 +118,6 @@ public class BannerService extends AbstractService {
      */
     @Transactional
     public BannerResponseDto save(BannerSaveRequestDto requestDto) {
-    	System.out.println("@@@@@@@@requestDto:"+requestDto);
         //site 정보 조회
         Site site = siteRepository.findById(requestDto.getSiteId())
             .orElseThrow(() ->

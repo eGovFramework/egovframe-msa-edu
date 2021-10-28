@@ -1,21 +1,9 @@
 package org.egovframe.cloud.userservice.config;
 
-import static org.egovframe.cloud.common.config.GlobalConstant.LOGIN_URI;
-import static org.springframework.util.StringUtils.hasLength;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Claims;
+import lombok.extern.slf4j.Slf4j;
+import org.egovframe.cloud.common.exception.BusinessException;
 import org.egovframe.cloud.common.util.LogUtil;
 import org.egovframe.cloud.userservice.api.user.dto.UserLoginRequestDto;
 import org.egovframe.cloud.userservice.api.user.dto.UserResponseDto;
@@ -34,10 +22,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import io.jsonwebtoken.Claims;
-import lombok.extern.slf4j.Slf4j;
+import static org.springframework.util.StringUtils.hasLength;
 
 /**
  * org.egovframe.cloud.userservice.config.AuthenticationFilter
@@ -76,11 +73,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
      * @param request  http 요청
      * @param response http 응답
      * @return Authentication 인증정보
-     * @throws NullPointerException 널 포인터 예외
-     * @throws Exception            예외
+     * @throws IOException 입출력 예외
+     * @throws Exception   예외
      */
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
         try {
             // 사용자가 입력한 인증정보 받기, POST method 값이기 때문에 input stream으로 받았다.
             UserLoginRequestDto creds = new ObjectMapper().readValue(request.getInputStream(), UserLoginRequestDto.class);
@@ -108,12 +105,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 // 인증정보 만들기
                 return getAuthenticationManager().authenticate(upat);
             }
-        } catch (NullPointerException e) {
+        } catch (IOException e) {
             log.error(e.getLocalizedMessage());
             throw new RuntimeException(e);
         } catch (Exception e) {
             log.error(e.getLocalizedMessage());
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
@@ -163,46 +160,41 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
      * @param request
      * @param response
      * @param chain
-     * @throws IOException
-     * @throws ServletException
      */
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String token = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
-        if (!hasLength(token) || "undefined".equals(token)) {
-            super.doFilter(request, response, chain);
-        } else {
-            try {
-                final String requestURI = httpRequest.getRequestURI();
-                log.info("httpRequest.getRequestURI() ={}", requestURI);
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
+        try {
+            HttpServletRequest httpRequest = (HttpServletRequest) request;
+            String token = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
+            if (!hasLength(token) || "undefined".equals(token)) {
+                super.doFilter(request, response, chain);
+            } else {
+                // 토큰 유효성 검사는 API Gateway ReactiveAuthorization 클래스에서 미리 처리된다.
+                Claims claims = tokenProvider.getClaimsFromToken(token);
 
-                if (LOGIN_URI.equals(requestURI)) {
-                    // 로그인 등 토큰 정보를 꺼낼 필요가 없는 경우
+                String username = claims.getSubject();
+                if (username == null) {
+                    // refresh token 에는 subject, authorities 정보가 없다.
                     SecurityContextHolder.getContext().setAuthentication(null);
                 } else {
-                    // 토큰 유효성 검사는 API Gateway ReactiveAuthorization 클래스에서 미리 처리된다.
-                    Claims claims = tokenProvider.getClaimsFromToken(token);
-
-                    String username = claims.getSubject();
-                    if (username == null) {
-                        // refresh token 에는 subject, authorities 정보가 없다.
-                        SecurityContextHolder.getContext().setAuthentication(null);
-                    } else {
-                        List<SimpleGrantedAuthority> roleList = Arrays.stream(claims.get(tokenProvider.TOKEN_CLAIM_NAME, String.class).split(","))
-                                .map(SimpleGrantedAuthority::new)
-                                .collect(Collectors.toList());
-                        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(username, null, roleList));
-                    }
+                    List<SimpleGrantedAuthority> roleList = Arrays.stream(claims.get(tokenProvider.TOKEN_CLAIM_NAME, String.class).split(","))
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList());
+                    SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(username, null, roleList));
                 }
-                chain.doFilter(request, response);
 
-            } catch (Exception e) {
-                SecurityContextHolder.getContext().setAuthentication(null);
-                HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-                httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-                log.error("AuthenticationFilter doFilter", e);
+                chain.doFilter(request, response);
             }
+        } catch (BusinessException e) {
+            SecurityContextHolder.getContext().setAuthentication(null);
+            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+            httpServletResponse.setStatus(e.getErrorCode().getStatus());
+            log.error("AuthenticationFilter doFilter error: {}", e.getMessage());
+        } catch (Exception e) {
+            SecurityContextHolder.getContext().setAuthentication(null);
+            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+            httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            log.error("AuthenticationFilter doFilter error: {}", e.getMessage());
         }
     }
 }

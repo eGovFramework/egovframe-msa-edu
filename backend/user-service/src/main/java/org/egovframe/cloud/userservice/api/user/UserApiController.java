@@ -1,27 +1,10 @@
 package org.egovframe.cloud.userservice.api.user;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
+import lombok.RequiredArgsConstructor;
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.common.exception.BusinessMessageException;
 import org.egovframe.cloud.common.util.MessageUtil;
-import org.egovframe.cloud.userservice.api.user.dto.UserEmailRequestDto;
-import org.egovframe.cloud.userservice.api.user.dto.UserFindPasswordSaveRequestDto;
-import org.egovframe.cloud.userservice.api.user.dto.UserFindPasswordUpdateRequestDto;
-import org.egovframe.cloud.userservice.api.user.dto.UserJoinRequestDto;
-import org.egovframe.cloud.userservice.api.user.dto.UserListResponseDto;
-import org.egovframe.cloud.userservice.api.user.dto.UserPasswordMatchRequestDto;
-import org.egovframe.cloud.userservice.api.user.dto.UserPasswordUpdateRequestDto;
-import org.egovframe.cloud.userservice.api.user.dto.UserResponseDto;
-import org.egovframe.cloud.userservice.api.user.dto.UserSaveRequestDto;
-import org.egovframe.cloud.userservice.api.user.dto.UserUpdateInfoRequestDto;
-import org.egovframe.cloud.userservice.api.user.dto.UserUpdateRequestDto;
-import org.egovframe.cloud.userservice.api.user.dto.UserVerifyRequestDto;
+import org.egovframe.cloud.userservice.api.user.dto.*;
 import org.egovframe.cloud.userservice.config.TokenProvider;
 import org.egovframe.cloud.userservice.service.user.UserService;
 import org.springframework.core.env.Environment;
@@ -29,15 +12,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import lombok.RequiredArgsConstructor;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 /**
  * org.egovframe.cloud.userservice.api.user.UserApiController
@@ -147,6 +128,17 @@ public class UserApiController {
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         tokenProvider.refreshToken(refreshToken, response);
+    }
+
+    /**
+     * 사용자 회원 가입
+     *
+     * @param requestDto 사용자 가입 요청 DTO
+     * @return Boolean 성공 여부
+     */
+    @PostMapping("/api/v1/users/social")
+    public SocialUserResponseDto social(@RequestBody @Valid SocialUserRequestDto requestDto) {
+        return userService.getSocialUserInfo(requestDto.getProvider(), requestDto.getToken());
     }
 
     /**

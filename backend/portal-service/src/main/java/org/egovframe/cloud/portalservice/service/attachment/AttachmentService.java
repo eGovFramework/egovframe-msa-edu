@@ -428,8 +428,6 @@ public class AttachmentService extends AbstractService {
      * @return
      */
     public String updateEntity(String attachmentCode, AttachmentUploadRequestDto uploadRequestDto) {
-        System.out.println(" ====attachmentCode  : " + attachmentCode);
-        System.out.println(" ====uploadRequestDto  : " + uploadRequestDto);
         List<Attachment> attachments = attachmentRepository.findByCode(attachmentCode);
         for (Attachment attachment : attachments) {
             attachment.updateEntity(uploadRequestDto.getEntityName(), uploadRequestDto.getEntityId());
@@ -455,7 +453,7 @@ public class AttachmentService extends AbstractService {
         for (Attachment attachment: attachmentList) {
             // 첨부파일 저장 후 기능 저장 시 오류 날 경우에만 첨부파일 전체 삭제를 하므로
             // entity 정보가 있는 경우에는 삭제하지 못하도록 한다.
-            if (attachment.getEntityId() != null || StringUtils.hasText(attachment.getEntityId())) {
+            if ((attachment.getEntityId() != null || StringUtils.hasText(attachment.getEntityId())) && !attachment.getEntityId().equals("-1")) {
                 throw new BusinessMessageException(getMessage("valid.file.not_deleted"));
             }
             // 물리적 파일 삭제

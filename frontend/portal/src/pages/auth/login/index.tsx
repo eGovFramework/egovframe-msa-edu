@@ -9,17 +9,26 @@ import Loader from '@components/Loader'
 import useUser from '@hooks/useUser'
 import { ILogin, loginSerivce } from '@service'
 import { userAtom } from '@stores'
-import Router from 'next/router'
+import Router, { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRecoilValue } from 'recoil'
+import CustomConfirm, { CustomConfirmPrpps } from '@components/CustomConfirm'
+
+interface AlertProps extends CustomConfirmPrpps {
+  message: string
+}
 
 const Login = () => {
   const { t } = useTranslation()
+  const router = useRouter()
 
   const { isLogin, mutate } = useUser()
   const user = useRecoilValue(userAtom)
+
+  const [customConfirm, setCustomConfirm] = useState<AlertProps | null>(null)
   const [errorState, setErrorState] = useState<string | null>(null)
+  const [kakaoLoginMode, setKakaoLoginMode] = useState<string | null>(null)
 
   useEffect(() => {
     if (isLogin && user) {
@@ -42,7 +51,29 @@ const Login = () => {
         setErrorState(result)
       }
     } catch (error) {
-      setErrorState(t('err.user.login'))
+      if (error === 'join') {
+        setCustomConfirm({
+          open: true,
+          message: t('msg.confirm.join.social'),
+          handleConfirm: () => {
+            setCustomConfirm({
+              ...customConfirm,
+              open: false,
+            })
+
+            // recoil 쓰려했는데 회원가입에 스탭이 있어서 진행중에 새로고침하면 상태가 삭제되면서 일반회원으로 가입될 수 있어서 소셜 정보를 파라미터로 넘김
+            router.push(`/auth/join?provider=${data.provider}&token=${data.token}`)
+          },
+          handleCancel: () => {
+            if (data.provider === 'kakao') {
+              setKakaoLoginMode('logout')
+            }
+            setCustomConfirm({ ...customConfirm, open: false })
+          },
+        })
+      } else {
+        setErrorState(t('err.user.login'))
+      }
     }
   }
 
@@ -105,11 +136,19 @@ const Login = () => {
           <span>{t('label.title.login.oauth')}</span>
         </h3>
         <div>
-          <KakaoLoginButton handleClick={handleKakaoLogin} />
+          <KakaoLoginButton handleClick={handleKakaoLogin} kakaoLoginMode={kakaoLoginMode} setKakaoLoginMode={setKakaoLoginMode} />
           <NaverLoginButton handleClick={handleNaverLogin} />
           <GoogleLoginButton handleClick={handleGoogleLogin} />
         </div>
       </article>
+      {customConfirm && (
+        <CustomConfirm
+          handleConfirm={customConfirm.handleConfirm}
+          handleCancel={customConfirm.handleCancel}
+          contentText={customConfirm.message}
+          open={customConfirm.open}
+        />
+      )}
     </section>
   )
 }

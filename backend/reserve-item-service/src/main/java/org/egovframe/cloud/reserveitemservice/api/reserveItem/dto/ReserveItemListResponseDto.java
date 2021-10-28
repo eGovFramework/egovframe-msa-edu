@@ -45,49 +45,18 @@ public class ReserveItemListResponseDto {
     private Boolean isPossible;         //예약 가능 여부
 
     @Builder
-    public ReserveItemListResponseDto(ReserveItem reserveItem) {
-        this.reserveItemId = reserveItem.getReserveItemId();
-        this.reserveItemName = reserveItem.getReserveItemName();
-        this.locationId = reserveItem.getLocationId();
-        this.locationName = reserveItem.getLocation().getLocationName();
-        this.categoryId = reserveItem.getCategoryId();
-        this.categoryName = reserveItem.getCategoryName();
-        this.totalQty = reserveItem.getTotalQty();
-        this.inventoryQty = reserveItem.getInventoryQty();
-        this.isUse = reserveItem.getIsUse();
-        this.createDate = reserveItem.getCreateDate();
-        this.isPossible = isReservationPossible(reserveItem);
-    }
-
-    /**
-     * 예약 가능 여부 체크
-     *
-     * @param reserveItem
-     * @return
-     */
-    private boolean isReservationPossible(ReserveItem reserveItem) {
-        LocalDateTime now = LocalDateTime.now();
-        if (!reserveItem.getIsUse()) {
-            return false;
-        }
-
-        if (reserveItem.getInventoryQty() <= 0) {
-            return false;
-        }
-
-        if (reserveItem.getIsPeriod()) {
-            if (reserveItem.getRequestStartDate().isBefore(now) && reserveItem.getRequestEndDate().isAfter(now)) {
-                return true;
-            }else {
-                return false;
-            }
-        } else {
-            if (reserveItem.getOperationStartDate().isBefore(now) && reserveItem.getOperationEndDate().isAfter(now)) {
-                return true;
-            }else {
-                return false;
-            }
-        }
+    public ReserveItemListResponseDto(ReserveItem entity) {
+        this.reserveItemId = entity.getReserveItemId();
+        this.reserveItemName = entity.getReserveItemName();
+        this.locationId = entity.getLocationId();
+        this.locationName = entity.getLocation().getLocationName();
+        this.categoryId = entity.getCategoryId();
+        this.categoryName = entity.getCategoryName();
+        this.totalQty = entity.getTotalQty();
+        this.inventoryQty = entity.getInventoryQty();
+        this.isUse = entity.getIsUse();
+        this.createDate = entity.getCreateDate();
+        this.isPossible = entity.isReservationPossible();
     }
 
 }

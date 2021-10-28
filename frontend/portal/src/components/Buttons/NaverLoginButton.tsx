@@ -47,6 +47,7 @@ const NaverLoginButton = (loginButtonProps: ISocialButton) => {
     })
 
     naverLogin.init()
+
     if (!window.opener) {
       naver.successCallback = data => {
         return onSuccess(data)
@@ -91,28 +92,28 @@ const NaverLoginButton = (loginButtonProps: ISocialButton) => {
   }
 
   const loadScript = useCallback(() => {
-    if (mounted) {
-      if (
-        document &&
-        document.querySelectorAll('#naver-login-sdk').length === 0
-      ) {
-        let script = document.createElement('script')
-        script.id = 'naver-login-sdk'
-        script.src = NAVER_ID_SDK_URL
-        script.onload = () => {
-          return initLoginButton()
-        }
-        document.head.appendChild(script)
-      } else {
-        initLoginButton()
+    if (
+      document &&
+      document.querySelectorAll('#naver-login-sdk').length === 0
+    ) {
+      let script = document.createElement('script')
+      script.id = 'naver-login-sdk'
+      script.src = NAVER_ID_SDK_URL
+      script.onload = () => {
+        return initLoginButton()
       }
+      document.head.appendChild(script)
+    } else {
+      initLoginButton()
     }
-  }, [mounted])
+  }, [])
 
   useEffect(() => {
-    appendNaverButton()
-    loadScript()
-  }, [])
+    if (mounted) {
+      appendNaverButton()
+      loadScript()
+    }
+  }, [mounted])
 
   const handleLogin = () => {
     if (!document || !document.querySelector('#naverIdLogin').firstChild) {

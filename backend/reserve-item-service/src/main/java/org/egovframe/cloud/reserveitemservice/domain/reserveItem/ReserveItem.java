@@ -278,7 +278,6 @@ public class ReserveItem extends BaseEntity {
      * @return
      */
     public ReserveItem update(ReserveItemUpdateRequestDto updateRequestDto) {
-        System.out.println("============ ?? : " + updateRequestDto.toString());
         this.reserveItemName = updateRequestDto.getReserveItemName();
         this.locationId = updateRequestDto.getLocationId();
         this.categoryId = updateRequestDto.getCategoryId();
@@ -332,9 +331,45 @@ public class ReserveItem extends BaseEntity {
         return this;
     }
 
+    /**
+     * 생성일 세팅
+     *
+     * @param createDate
+     * @return
+     */
     public ReserveItem setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
         return this;
+    }
+
+    /**
+     * 예약 가능 여부 체크
+     *
+     * @return
+     */
+    public Boolean isReservationPossible() {
+        if (!this.getIsUse()) {
+            return false;
+        }
+
+        if (this.getInventoryQty() <= 0) {
+            return false;
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        if (this.getReserveMethodId().equals("internet") && this.getReserveMeansId().equals("realtime")) {
+            if (this.getRequestStartDate().isBefore(now) && this.getRequestEndDate().isAfter(now)) {
+                return true;
+            }else {
+                return false;
+            }
+        } else {
+            if (this.getOperationStartDate().isBefore(now) && this.getOperationEndDate().isAfter(now)) {
+                return true;
+            }else {
+                return false;
+            }
+        }
     }
 }
 

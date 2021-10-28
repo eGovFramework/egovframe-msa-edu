@@ -14,7 +14,7 @@ const LoginNaver = () => {
 
   return <></> */
 
-  return <NaverLoginButton handleClick={() => {}} />
+  return <div style={{ display: 'none' }}><NaverLoginButton handleClick={() => {}} /></div>
 }
 
 export default LoginNaver

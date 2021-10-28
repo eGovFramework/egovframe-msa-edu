@@ -15,6 +15,7 @@ import org.egovframe.cloud.portalservice.domain.menu.MenuRole;
 import org.egovframe.cloud.portalservice.domain.menu.MenuRoleRepository;
 import org.egovframe.cloud.portalservice.domain.menu.Site;
 import org.egovframe.cloud.portalservice.domain.menu.SiteRepository;
+import org.egovframe.cloud.portalservice.domain.user.Role;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,6 @@ import org.springframework.test.context.TestPropertySource;
 @ActiveProfiles(profiles = "test")
 class MenuRoleApiControllerTest {
 
-
     @Autowired
     private TestRestTemplate restTemplate;
 
@@ -52,24 +52,24 @@ class MenuRoleApiControllerTest {
     @BeforeEach
     public void setup() throws Exception {
         Site site = Site.builder()
-                .name("site")
-                .isUse(true)
-                .build();
+            .name("site")
+            .isUse(true)
+            .build();
         siteRepository.save(site);
 
         Menu parentMenu = menuRepository.save(Menu.builder()
-                .menuKorName("parent")
-                .sortSeq(1)
-                .site(site)
-                .build());
+            .menuKorName("parent")
+            .sortSeq(1)
+            .site(site)
+            .build());
 
         for (int i = 0; i < 3; i++) {
             Menu childMenu = Menu.builder()
-                    .menuKorName("child_" + i)
-                    .site(site)
-                    .parent(parentMenu)
-                    .sortSeq(i + 1)
-                    .build();
+                .menuKorName("child_" + i)
+                .site(site)
+                .parent(parentMenu)
+                .sortSeq(i + 1)
+                .build();
             childMenu.setParentMenu(parentMenu);
             menuRepository.save(childMenu);
         }
@@ -87,7 +87,7 @@ class MenuRoleApiControllerTest {
         Site site = siteRepository.findAll().get(0);
         //when
         ResponseEntity<List<MenuRoleResponseDto>> responseEntity =
-                restTemplate.exchange("/api/v1/menu-roles/role/"+site.getId(), HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuRoleResponseDto>>(){});
+            restTemplate.exchange("/api/v1/menu-roles/role/"+site.getId(), HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuRoleResponseDto>>(){});
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -108,22 +108,25 @@ class MenuRoleApiControllerTest {
         Menu child1 = menus.stream().filter(menu -> menu.getMenuKorName().equals("child_1")).collect(Collectors.toList()).get(0);
 
         List<MenuRole> menuRoles = new ArrayList<>();
-        menuRoles.add(MenuRole.builder().roleId("role").menu(parent).build());
-        menuRoles.add(MenuRole.builder().roleId("role").menu(child1).build());
+        MenuRole menuRole1 = MenuRole.builder().roleId("ROLE").menu(parent).build();
+        menuRoles.add(menuRole1);
+        MenuRole menuRole2 = MenuRole.builder().roleId("ROLE").menu(child1).build();
+        menuRoles.add(menuRole2);
+
         menuRoleRepository.saveAll(menuRoles);
 
         Site site = siteRepository.findAll().get(0);
         //when
         ResponseEntity<List<MenuRoleResponseDto>> responseEntity =
-                restTemplate.exchange("/api/v1/menu-roles/role/"+site.getId(), HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuRoleResponseDto>>(){});
+            restTemplate.exchange("/api/v1/menu-roles/role/"+site.getId(), HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuRoleResponseDto>>(){});
 
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         List<MenuRoleResponseDto> body = responseEntity.getBody();
         assertThat(body.size()).isEqualTo(1);
-        assertThat(body.get(0).getIsChecked()).isTrue();
         body.stream().forEach(System.out::println);
+        assertThat(body.get(0).getIsChecked()).isTrue();
         assertThat(body.get(0).getChildren().size()).isEqualTo(3);
         body.stream().forEach(menuTreeResponseDto -> {
             menuTreeResponseDto.getChildren().stream().forEach(child -> {
@@ -149,38 +152,39 @@ class MenuRoleApiControllerTest {
         list.get(0).getChildren().stream().forEach(menuRoleResponseDto -> {
             if (menuRoleResponseDto.getKorName().equals("child_1")) {
                 children.add(MenuRoleRequestDto.builder()
-                        .menuRoleId(menuRoleResponseDto.getMenuRoleId())
-                        .isChecked(true)
-                        .roleId("role")
-                        .id(menuRoleResponseDto.getId())
-                        .build());
+                    .menuRoleId(menuRoleResponseDto.getMenuRoleId())
+                    .isChecked(true)
+                    .roleId("ROLE")
+                    .id(menuRoleResponseDto.getId())
+                    .build());
 
             }else {
                 children.add(MenuRoleRequestDto.builder()
-                        .menuRoleId(menuRoleResponseDto.getMenuRoleId())
-                        .isChecked(false)
-                        .roleId("role")
-                        .id(menuRoleResponseDto.getId())
-                        .build());
+                    .menuRoleId(menuRoleResponseDto.getMenuRoleId())
+                    .isChecked(false)
+                    .roleId("ROLE")
+                    .id(menuRoleResponseDto.getId())
+                    .build());
             }
         });
 
         requestDtoList.add(MenuRoleRequestDto.builder()
-                .menuRoleId(list.get(0).getMenuRoleId())
-                .isChecked(true)
-                .id(list.get(0).getId())
-                .children(children)
-                .build());
+            .menuRoleId(list.get(0).getMenuRoleId())
+            .isChecked(true)
+            .roleId("ROLE")
+            .id(list.get(0).getId())
+            .children(children)
+            .build());
 
         HttpEntity<List<MenuRoleRequestDto>> httpEntity = new HttpEntity<>(
-                requestDtoList
+            requestDtoList
         );
 
 
 
         //when
         ResponseEntity<String> responseEntity =
-                restTemplate.exchange("/api/v1/menu-roles", HttpMethod.POST, httpEntity, String.class);
+            restTemplate.exchange("/api/v1/menu-roles", HttpMethod.POST, httpEntity, String.class);
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -197,36 +201,38 @@ class MenuRoleApiControllerTest {
         //given
         Site site = siteRepository.findAll().get(0);
         Menu parentMenu = menuRepository.save(Menu.builder()
-                .menuKorName("parent-any")
-                .sortSeq(1)
-                .site(site)
-                .build());
+            .menuKorName("parent-any")
+            .sortSeq(1)
+            .site(site)
+            .isUse(true)
+            .build());
         MenuRole parentMenuRole = MenuRole.builder()
-                .roleId("ROLE_ANONYMOUS")
-                .menu(parentMenu)
-                .build();
+            .roleId(Role.ANONYMOUS.getKey())
+            .menu(parentMenu)
+            .build();
         parentMenuRole.setMenu(parentMenu);
         menuRoleRepository.save(parentMenuRole);
 
         for (int i = 0; i < 3; i++) {
             Menu childMenu = Menu.builder()
-                    .menuKorName("child-any_" + i)
-                    .site(site)
-                    .parent(parentMenu)
-                    .sortSeq(i + 1)
-                    .build();
+                .menuKorName("child-any_" + i)
+                .site(site)
+                .parent(parentMenu)
+                .sortSeq(i + 1)
+                .isUse(true)
+                .build();
             childMenu.setParentMenu(parentMenu);
             menuRepository.save(childMenu);
             MenuRole role_any = MenuRole.builder()
-                    .roleId("ROLE_ANONYMOUS")
-                    .menu(childMenu)
-                    .build();
+                .roleId(Role.ANONYMOUS.getKey())
+                .menu(childMenu)
+                .build();
             role_any.setMenu(childMenu);
             menuRoleRepository.save(role_any);
         }
         //when
         ResponseEntity<List<MenuSideResponseDto>> responseEntity =
-                restTemplate.exchange("/api/v1/menu-roles/"+site.getId(), HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuSideResponseDto>>(){});
+            restTemplate.exchange("/api/v1/menu-roles/"+site.getId(), HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuSideResponseDto>>(){});
 
 
         //then

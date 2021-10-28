@@ -33,16 +33,10 @@ public class PortalApiController {
      *
      * @return
      */
-    @GetMapping("/actuator/health-portal")
+    @GetMapping("/actuator/health-info")
     public String status() {
         return String.format("GET Portal Service on" +
                 "\n local.server.port :" + env.getProperty("local.server.port")
-                + "\n token expiration time :" + env.getProperty("token.expiration_time")
-                + "\n egov.server.ip :" + env.getProperty("egov.server.ip")
-                + "\n spring.datasource.username :" + env.getProperty("spring.datasource.username")
-                + "\n spring.profiles.active :" + env.getProperty("spring.profiles.active")
-                + "\n spring.cloud.config.label :" + env.getProperty("spring.cloud.config.label")
-                + "\n spring.cloud.config.uri :" + env.getProperty("spring.cloud.config.uri")
                 + "\n egov.message :" + env.getProperty("egov.message")
         );
     }
@@ -52,13 +46,10 @@ public class PortalApiController {
      *
      * @return
      */
-    @PostMapping("/actuator/health-portal")
+    @PostMapping("/actuator/health-info")
     public String poststatus() {
         return String.format("POST Portal Service on" +
                 "\n local.server.port :" + env.getProperty("local.server.port")
-                + "\n token expiration time :" + env.getProperty("token.expiration_time")
-                + "\n egov.server.ip :" + env.getProperty("egov.server.ip")
-                + "\n spring.datasource.username :" + env.getProperty("spring.datasource.username")
                 + "\n egov.message :" + env.getProperty("egov.message")
         );
     }

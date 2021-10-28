@@ -70,7 +70,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         res.status(200).json(payload)
       } else {
-        res.status(401).json({ message: 'Invalid Credentials 🥺' })
+        res.status(result.status).json({ message: 'Invalid Credentials 🥺' })
       }
     } else {
       res.status(401).json({ message: 'Invalid Credentials 🥺' })

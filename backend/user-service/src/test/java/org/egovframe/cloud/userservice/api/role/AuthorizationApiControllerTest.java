@@ -1,13 +1,6 @@
 package org.egovframe.cloud.userservice.api.role;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.egovframe.cloud.userservice.domain.role.Authorization;
 import org.egovframe.cloud.userservice.domain.role.AuthorizationRepository;
 import org.egovframe.cloud.userservice.domain.role.RoleAuthorization;
@@ -36,7 +29,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * org.egovframe.cloud.userservice.api.role.AuthorizationApiControllerTest

@@ -38,10 +38,19 @@ interface IUserUpdate extends IVerification {
   userName: string
 }
 
+// 소셜 정보
+export interface ISocialUser {
+  id: string
+  email: string
+  name: string
+}
+
 /**
  * 사용자 관리 서비스
  */
 export const userService = {
+  social: (provider: string, token: string) =>
+    axios.post(`${USER_URL}/social`, { provider, token }),
   existsEmail: (email: string, userId?: string) =>
     new Promise<boolean>((resolve, rejects) => {
       axios

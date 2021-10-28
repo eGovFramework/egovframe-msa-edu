@@ -1,6 +1,32 @@
 package org.egovframe.cloud.portalservice.api.attachment;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.util.encoders.Base64;
+import org.egovframe.cloud.portalservice.api.attachment.dto.*;
+import org.egovframe.cloud.portalservice.domain.attachment.Attachment;
+import org.egovframe.cloud.portalservice.domain.attachment.AttachmentRepository;
+import org.egovframe.cloud.portalservice.service.attachment.AttachmentService;
+import org.egovframe.cloud.portalservice.util.RestResponsePage;
+import org.egovframe.cloud.portalservice.utils.FileStorageUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.*;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,46 +37,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import org.bouncycastle.util.encoders.Base64;
-import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentBase64RequestDto;
-import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentEditorResponseDto;
-import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentFileResponseDto;
-import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentResponseDto;
-import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentTempSaveRequestDto;
-import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentUpdateRequestDto;
-import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentUploadRequestDto;
-import org.egovframe.cloud.portalservice.domain.attachment.Attachment;
-import org.egovframe.cloud.portalservice.domain.attachment.AttachmentRepository;
-import org.egovframe.cloud.portalservice.service.attachment.AttachmentService;
-import org.egovframe.cloud.portalservice.util.RestResponsePage;
-import org.egovframe.cloud.portalservice.utils.FileStorageUtils;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.extern.slf4j.Slf4j;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -82,6 +71,7 @@ class AttachmentApiControllerTest {
             attachmentService.delete(attachment.getUniqueId());
         }
     }
+
 
     /**
      * file to byte[]
@@ -182,16 +172,15 @@ class AttachmentApiControllerTest {
         //given
         String url = "/api/v1/upload/editor";
 
-        Path testFile = Paths.get("/Users/violet/Desktop/test/300.jpg")
-                .toAbsolutePath().normalize();
+        Resource testFile = getTestFile();
 
-        String base64data = Base64.toBase64String(getByteFile(testFile.toFile()));
+        String base64data = Base64.toBase64String(getByteFile(testFile.getFile()));
         AttachmentBase64RequestDto requestDto = AttachmentBase64RequestDto.builder()
                 .fieldName("upload")
-                .fileType("image/jpg")
+                .fileType("text")
                 .fileBase64(base64data)
-                .originalName("300.jpg")
-                .size(testFile.toFile().length())
+                .originalName(testFile.getFilename())
+                .size(testFile.getFile().length())
                 .build();
 
 
@@ -199,7 +188,7 @@ class AttachmentApiControllerTest {
                 restTemplate.postForEntity(url, requestDto, AttachmentEditorResponseDto.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody().getOriginalFileName()).isEqualTo("300.jpg");
+        assertThat(responseEntity.getBody().getOriginalFileName()).isEqualTo(testFile.getFilename());
     }
 
     @Test
@@ -252,16 +241,15 @@ class AttachmentApiControllerTest {
     @Test
     public void 에디터이미지업로드_후_이미지태그에서_이미지파일_조회_정상() throws Exception {
         //given
-        Path testFile = Paths.get("/Users/violet/Desktop/test/300.jpg")
-                .toAbsolutePath().normalize();
+        Resource testFile = getTestFile();
 
-        String base64data = Base64.toBase64String(getByteFile(testFile.toFile()));
+        String base64data = Base64.toBase64String(getByteFile(testFile.getFile()));
         AttachmentBase64RequestDto requestDto = AttachmentBase64RequestDto.builder()
                 .fieldName("upload")
-                .fileType("image/jpg")
+                .fileType("text")
                 .fileBase64(base64data)
-                .originalName("300.jpg")
-                .size(testFile.toFile().length())
+                .originalName(testFile.getFilename())
+                .size(testFile.contentLength())
                 .build();
         AttachmentEditorResponseDto responseDto = attachmentService.uploadEditor(requestDto);
 
@@ -279,7 +267,7 @@ class AttachmentApiControllerTest {
         //given
         List<AttachmentTempSaveRequestDto> saveRequestDtoList = getTempSaveDto(2);
 
-        String url = "/api/v1/attachments/temp";
+        String url = "/api/v1/attachments/file";
 
         //when
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, saveRequestDtoList, String.class);
@@ -337,7 +325,7 @@ class AttachmentApiControllerTest {
         HttpEntity<List<AttachmentTempSaveRequestDto>> requestEntity = new HttpEntity<>(updateRequestDtoList);
 
         //when
-        String url = "/api/v1/attachments/temp/"+attachmentCode;
+        String url = "/api/v1/attachments/file/"+attachmentCode;
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
 
@@ -354,7 +342,7 @@ class AttachmentApiControllerTest {
         List<AttachmentTempSaveRequestDto> saveRequestDtoList2 = getTempSaveDto(3);
         attachmentService.save(saveRequestDtoList2);
 
-        String url = "/api/v1/attachments/admin";
+        String url = "/api/v1/attachments";
 
         //when
         ResponseEntity<RestResponsePage<AttachmentResponseDto>> responseEntity = restTemplate.exchange(
@@ -383,7 +371,7 @@ class AttachmentApiControllerTest {
         List<AttachmentTempSaveRequestDto> saveRequestDtoList2 = getTempSaveDto(3);
         String attachmentCode = attachmentService.save(saveRequestDtoList2);
 
-        String url = "/api/v1/attachments/admin?keywordType=id&keyword="+attachmentCode;
+        String url = "/api/v1/attachments?keywordType=id&keyword="+attachmentCode;
 
         //when
         ResponseEntity<RestResponsePage<AttachmentResponseDto>> responseEntity = restTemplate.exchange(
@@ -412,7 +400,7 @@ class AttachmentApiControllerTest {
         List<AttachmentResponseDto> results = attachmentService.findByCode(attachmentCode);
 
         String uniqueId = results.get(1).getId();
-        String url = "/api/v1/attachments/admin/"+uniqueId+"/true";
+        String url = "/api/v1/attachments/"+uniqueId+"/true";
 
         //when
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, null, String.class);
@@ -420,10 +408,10 @@ class AttachmentApiControllerTest {
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         List<AttachmentResponseDto> saved = attachmentService.findByCode(attachmentCode);
-        AttachmentResponseDto updated = saved.stream()
-                .filter(attachmentResponseDto -> attachmentResponseDto.getId().equals(uniqueId))
-                .findAny().get();
-        assertThat(updated.getIsDelete()).isTrue();
+        Optional<AttachmentResponseDto> any = saved.stream()
+            .filter(attachmentResponseDto -> attachmentResponseDto.getId().equals(uniqueId))
+            .findAny();
+        assertThat(any.isPresent()).isFalse();
     }
 
     @Test
@@ -433,7 +421,7 @@ class AttachmentApiControllerTest {
         String attachmentCode = attachmentService.save(saveRequestDtoList2);
         List<AttachmentResponseDto> results = attachmentService.findByCode(attachmentCode);
 
-        String url = "/api/v1/attachments/admin/"+results.get(1).getId();
+        String url = "/api/v1/attachments/"+results.get(1).getId();
         //when
         restTemplate.delete(url);
 
@@ -500,7 +488,6 @@ class AttachmentApiControllerTest {
             );
         }
 
-        saveRequestDtoList.stream().forEach(System.out::println);
         //2개 첨부파일 더하기
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -569,25 +556,5 @@ class AttachmentApiControllerTest {
 
     }
 
-
-//
-//    @Test
-//    public void 첨부파일_다운로드_정상() throws Exception {
-//        //given
-//        List<AttachmentSaveRequestDto> saveRequestDtoList2 = getTempSaveDto(1);
-//        String attachmentCode = attachmentService.save(saveRequestDtoList2);
-//
-//        List<AttachmentResponseDto> byCode = attachmentService.findByCode(attachmentCode);
-//
-//        String uniqueId = byCode.get(0).getUniqueId();
-//        String url = "/api/v1/download/"+uniqueId;
-//
-//        //when
-//        ResponseEntity<ResponseEntity> responseEntity = restTemplate.getForEntity(url, ResponseEntity.class);
-//
-//        //then
-//        re
-//
-//    }
 
 }

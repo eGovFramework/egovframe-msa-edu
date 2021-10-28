@@ -34,10 +34,9 @@ public class Resilience4JConfig {
     @Bean
     public Customizer<Resilience4JCircuitBreakerFactory> resilience4JCircuitBreakerFactoryCustomizer() {
         CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
-                .failureRateThreshold(50) // Circuit 열지 말지 결정하는 실패 threshold 퍼센테이지
-                .waitDurationInOpenState(Duration.ofSeconds(5)) // (half closed 전에) circuitBreaker가 open 되기 전에 기다리는 기간
-                .slidingWindowType(CircuitBreakerConfig.SlidingWindowType.COUNT_BASED) // circuit breaker count 기반 처리
-                .slidingWindowSize(10) // 통계 대상 건수 -> N건의 요청중..
+                .slidingWindowType(CircuitBreakerConfig.SlidingWindowType.TIME_BASED) // circuit breaker time 기반 처리
+                .slowCallDurationThreshold(Duration.ofSeconds(10)) // 요청 지연으로 간주하는 시간
+                .minimumNumberOfCalls(10) // 통계 최소 요청 건
                 .build();
 
         return circuitBreakerFactory -> circuitBreakerFactory.configureDefault(
