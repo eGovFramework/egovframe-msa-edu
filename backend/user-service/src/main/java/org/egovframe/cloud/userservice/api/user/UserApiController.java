@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 /**
  * org.egovframe.cloud.userservice.api.user.UserApiController
@@ -131,7 +129,7 @@ public class UserApiController {
     }
 
     /**
-     * 사용자 회원 가입
+     * 사용자 소셜 정보 조회
      *
      * @param requestDto 사용자 가입 요청 DTO
      * @return Boolean 성공 여부
@@ -243,23 +241,21 @@ public class UserApiController {
     /**
      * 사용자 회원탈퇴
      *
-     * @param requestDto 사용자 비밀번호 확인 요청 DTO
-     * @return Boolean 일치 여부
-     * @throws GeneralSecurityException 보안 예외
-     * @throws IOException              입출력 예외
+     * @param requestDto 사용자 검증 요청 DTO
+     * @return Boolean 처리 여부
      */
     @PostMapping("/api/v1/users/leave")
-    public Boolean leave(@RequestBody @Valid UserVerifyRequestDto requestDto) throws GeneralSecurityException, IOException {
+    public Boolean leave(@RequestBody @Valid UserVerifyRequestDto requestDto) {
         final String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         return userService.leave(userId, requestDto);
     }
 
     /**
-     * 사용자 회원탈퇴
+     * 사용자 삭제
      *
-     * @param userId 사용자 비밀번호 확인 요청 DTO
-     * @return Boolean 일치 여부
+     * @param userId 사용자 id
+     * @return Boolean 처리 여부
      */
     @DeleteMapping("/api/v1/users/delete/{userId}")
     public Boolean delete(@PathVariable String userId) {

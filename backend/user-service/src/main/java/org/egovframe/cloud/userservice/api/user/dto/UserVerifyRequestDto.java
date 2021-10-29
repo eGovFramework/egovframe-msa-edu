@@ -9,7 +9,7 @@ import javax.validation.constraints.Pattern;
 /**
  * org.egovframe.cloud.userservice.api.user.dto.UserVerifyRequestDto
  *
- * 사용자 탈퇴 요청 DTO 클래스
+ * 사용자 검증 요청 DTO 클래스
  *
  * @author 표준프레임워크센터 jooho
  * @version 1.0

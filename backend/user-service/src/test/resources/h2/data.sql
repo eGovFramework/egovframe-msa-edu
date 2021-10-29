@@ -26,7 +26,9 @@ INSERT INTO `authorization` (authorization_name,url_pattern_value,http_method_co
      ('예약지역 사용여부 토글','/reserve-item-service/api/v1/locations/?*/?*','PUT',125,'87638675-11fa-49e5-9bd1-d2524bf6fa45',now(),'87638675-11fa-49e5-9bd1-d2524bf6fa45',now()),
      ('사용자 정보 수정','/user-service/api/v1/users/info/?*','PUT',126,'65a00f65-8460-49af-98ec-042977e56f4b',now(),'65a00f65-8460-49af-98ec-042977e56f4b',now()),
      ('사용자 회원탈퇴','/user-service/api/v1/users/leave','POST',127,'65a00f65-8460-49af-98ec-042977e56f4b',now(),'65a00f65-8460-49af-98ec-042977e56f4b',now()),
-     ('사용자 삭제','/user-service/api/v1/users/delete/?*','DELETE',128,'65a00f65-8460-49af-98ec-042977e56f4b',now(),'65a00f65-8460-49af-98ec-042977e56f4b',now());
+     ('사용자 삭제','/user-service/api/v1/users/delete/?*','DELETE',128,'65a00f65-8460-49af-98ec-042977e56f4b',now(),'65a00f65-8460-49af-98ec-042977e56f4b',now()),
+     ('사용자 삭제','/user-service/api/v1/users/social','POST',129,'65a00f65-8460-49af-98ec-042977e56f4b',now(),'65a00f65-8460-49af-98ec-042977e56f4b',now());
+
 
 INSERT INTO `role` (role_id,role_name,role_content,sort_seq,created_date) VALUES
      ('ROLE_ADMIN','시스템 관리자','시스템 관리자 권한',101,'2021-10-20 13:39:15'),
@@ -34,5 +36,58 @@ INSERT INTO `role` (role_id,role_name,role_content,sort_seq,created_date) VALUES
      ('ROLE_EMPLOYEE','내부 사용자','내부 사용자 권한',102,'2021-10-20 13:39:15'),
      ('ROLE_USER','일반 사용자','일반 사용자 권한',103,'2021-10-20 13:39:15');
 
-INSERT INTO role_authorization (role_id,authorization_no,created_by,created_date) 
-select 'ROLE_ADMIN', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`;
+INSERT INTO role_authorization (role_id,authorization_no,created_by,created_date)
+select 'ROLE_ADMIN', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`
+
+union all
+select 'ROLE_USER', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`
+where url_pattern_value = '/user-service/api/v1/users/?*' and http_method_code = 'GET'
+union all
+select 'ROLE_USER', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`
+where url_pattern_value = '/user-service/api/v1/users/token/refresh' and http_method_code = 'GET'
+union all
+select 'ROLE_USER', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`
+where url_pattern_value = '/user-service/api/v1/authorizations/check' and http_method_code = 'GET'
+union all
+select 'ROLE_USER', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`
+where url_pattern_value = '/user-service/api/v1/users/exists' and http_method_code = 'POST'
+union all
+select 'ROLE_USER', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`
+where url_pattern_value = '/user-service/api/v1/users/password/update' and http_method_code = 'PUT'
+union all
+select 'ROLE_USER', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`
+where url_pattern_value = '/user-service/api/v1/users/password/match' and http_method_code = 'POST'
+union all
+select 'ROLE_USER', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`
+where url_pattern_value = '/user-service/api/v1/users/info/?*' and http_method_code = 'PUT'
+union all
+select 'ROLE_USER', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`
+where url_pattern_value = '/user-service/api/v1/users/leave' and http_method_code = 'POST'
+
+union all
+select 'ROLE_ANONYMOUS', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`
+where url_pattern_value = '/user-service/api/v1/users/?*' and http_method_code = 'GET'
+union all
+select 'ROLE_ANONYMOUS', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`
+where url_pattern_value = '/user-service/api/v1/users/token/refresh' and http_method_code = 'GET'
+union all
+select 'ROLE_ANONYMOUS', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`
+where url_pattern_value = '/user-service/api/v1/authorizations/check' and http_method_code = 'GET'
+union all
+select 'ROLE_ANONYMOUS', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`
+where url_pattern_value = '/user-service/api/v1/users/exists' and http_method_code = 'POST'
+union all
+select 'ROLE_ANONYMOUS', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`
+where url_pattern_value = '/user-service/api/v1/users/join' and http_method_code = 'POST'
+union all
+select 'ROLE_ANONYMOUS', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`
+where url_pattern_value = '/user-service/api/v1/users/password/find' and http_method_code = 'POST'
+union all
+select 'ROLE_ANONYMOUS', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`
+where url_pattern_value = '/user-service/api/v1/users/password/valid/?*' and http_method_code = 'GET'
+union all
+select 'ROLE_ANONYMOUS', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`
+where url_pattern_value = '/user-service/api/v1/users/password/change' and http_method_code = 'PUT'
+union all
+select 'ROLE_ANONYMOUS', authorization_no, '65a00f65-8460-49af-98ec-042977e56f4b', now() from `authorization`
+where url_pattern_value = '/user-service/api/v1/users/social' and http_method_code = 'POST';

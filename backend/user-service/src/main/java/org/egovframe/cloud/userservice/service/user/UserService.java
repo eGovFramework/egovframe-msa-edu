@@ -163,7 +163,7 @@ public class UserService extends AbstractService implements UserDetailsService {
     @Transactional
     public String updateRefreshToken(String userId, String updateRefreshToken) {
         User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자가 없습니다."));
+                .orElseThrow(() -> new UsernameNotFoundException(getMessage("err.user.notexists")));
 
         user.updateRefreshToken(updateRefreshToken);
 
@@ -178,7 +178,7 @@ public class UserService extends AbstractService implements UserDetailsService {
      */
     public User findByRefreshToken(String refreshToken) {
         return userRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자가 없습니다."));
+                .orElseThrow(() -> new UsernameNotFoundException(getMessage("err.user.notexists")));
     }
 
     /**
@@ -189,7 +189,7 @@ public class UserService extends AbstractService implements UserDetailsService {
      */
     public UserResponseDto findByUserId(String userId) {
         User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자가 없습니다."));
+                .orElseThrow(() -> new UsernameNotFoundException(getMessage("err.user.notexists")));
 
         return new UserResponseDto(user);
     }
@@ -202,7 +202,7 @@ public class UserService extends AbstractService implements UserDetailsService {
      */
     public UserResponseDto findByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자가 없습니다."));
+                .orElseThrow(() -> new UsernameNotFoundException(getMessage("err.user.notexists")));
 
         return new UserResponseDto(user);
     }
@@ -296,7 +296,6 @@ public class UserService extends AbstractService implements UserDetailsService {
         if (email == null || "".equals(email)) {
             throw new BusinessMessageException(getMessage("valid.required.format", new Object[]{getMessage("user.email")}));
         }
-
 
         if (userId == null || "".equals(userId)) {
             return userRepository.findByEmail(email).isPresent();
@@ -431,7 +430,7 @@ public class UserService extends AbstractService implements UserDetailsService {
         }
 
         User user = userRepository.findByEmail(entity.getUserFindPasswordId().getEmailAddr())
-                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자가 없습니다."));
+                .orElseThrow(() -> new UsernameNotFoundException(getMessage("err.user.notexists")));
 
         user.updatePassword(passwordEncoder.encode(requestDto.getPassword())); // 비밀번호 수정
 
@@ -449,9 +448,14 @@ public class UserService extends AbstractService implements UserDetailsService {
      */
     @Transactional
     public Boolean updatePassword(String userId, UserPasswordUpdateRequestDto requestDto) {
-        User entity = findUserVerify(userId, requestDto);
+        try {
+            User entity = findUserVerify(userId, requestDto);
 
-        entity.updatePassword(passwordEncoder.encode(requestDto.getNewPassword())); // 비밀번호 수정
+            entity.updatePassword(passwordEncoder.encode(requestDto.getNewPassword())); // 비밀번호 수정
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
 
         return true;
     }
@@ -547,7 +551,12 @@ public class UserService extends AbstractService implements UserDetailsService {
      * @return User 사용자 엔티티
      */
     private User findUserVerify(String userId, UserVerifyRequestDto requestDto) {
+        if (userId == null || "".equals(userId)) {
+            throw new BusinessMessageException(getMessage("err.required.login"));
+        }
+
         User user = null;
+
         if ("password".equals(requestDto.getProvider())) {
             user = findUserVerifyPassword(userId, requestDto.getPassword());
         } else {
