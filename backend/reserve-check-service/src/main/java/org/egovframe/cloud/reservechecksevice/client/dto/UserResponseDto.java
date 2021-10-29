@@ -2,6 +2,7 @@ package org.egovframe.cloud.reservechecksevice.client.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * org.egovframe.cloud.userservice.api.user.dto.UserResponseDto
@@ -21,6 +22,7 @@ import lombok.Getter;
  * </pre>
  */
 @Getter
+@NoArgsConstructor
 public class UserResponseDto {
 
     private String userId;
