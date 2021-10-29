@@ -27,7 +27,7 @@ INSERT INTO `authorization` (authorization_name,url_pattern_value,http_method_co
      ('사용자 정보 수정','/user-service/api/v1/users/info/?*','PUT',126,'65a00f65-8460-49af-98ec-042977e56f4b',now(),'65a00f65-8460-49af-98ec-042977e56f4b',now()),
      ('사용자 회원탈퇴','/user-service/api/v1/users/leave','POST',127,'65a00f65-8460-49af-98ec-042977e56f4b',now(),'65a00f65-8460-49af-98ec-042977e56f4b',now()),
      ('사용자 삭제','/user-service/api/v1/users/delete/?*','DELETE',128,'65a00f65-8460-49af-98ec-042977e56f4b',now(),'65a00f65-8460-49af-98ec-042977e56f4b',now()),
-     ('사용자 삭제','/user-service/api/v1/users/social','POST',129,'65a00f65-8460-49af-98ec-042977e56f4b',now(),'65a00f65-8460-49af-98ec-042977e56f4b',now());
+     ('사용자 소셜 정보 조회,'/user-service/api/v1/users/social','POST',129,'65a00f65-8460-49af-98ec-042977e56f4b',now(),'65a00f65-8460-49af-98ec-042977e56f4b',now());
 
 
 INSERT INTO `role` (role_id,role_name,role_content,sort_seq,created_date) VALUES
