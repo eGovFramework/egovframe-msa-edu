@@ -1,5 +1,6 @@
 package org.egovframe.cloud.reservechecksevice.service.reserve;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -534,17 +535,16 @@ public class ReserveService extends ReactiveAbstractService {
                 if (!Category.EDUCATION.isEquals(reserve1.getCategoryId())) {
                     return Mono.just(reserve1);
                 }
-//                return reserveItemServiceClient.updateInventory(reserve.getReserveItemId(), reserve.getReserveQty())
-//                    .transform(CircuitBreakerOperator.of(circuitBreakerRegistry.circuitBreaker(RESERVE_ITEM_CIRCUIT_BREAKER_NAME)))
-//                    .onErrorResume(throwable -> Mono.just(false))
-//                    .flatMap(isSuccess -> {
-//                        if (isSuccess) {
-//                            return Mono.just(reserve);
-//                        }
-//                        //재고 업데이트에 실패했습니다.
-//                        return Mono.error(new BusinessMessageException(getMessage("msg.inventory_failed")));
-//                    });
-                return null;
+                return reserveItemServiceClient.updateInventory(reserve.getReserveItemId(), reserve.getReserveQty())
+                    .transform(CircuitBreakerOperator.of(circuitBreakerRegistry.circuitBreaker(RESERVE_ITEM_CIRCUIT_BREAKER_NAME)))
+                    .onErrorResume(throwable -> Mono.just(false))
+                    .flatMap(isSuccess -> {
+                        if (isSuccess) {
+                            return Mono.just(reserve);
+                        }
+                        //재고 업데이트에 실패했습니다.
+                        return Mono.error(new BusinessMessageException(getMessage("msg.inventory_failed")));
+                    });
             });
     }
 
@@ -561,6 +561,7 @@ public class ReserveService extends ReactiveAbstractService {
             .transform(CircuitBreakerOperator.of(circuitBreakerRegistry.circuitBreaker(RESERVE_ITEM_CIRCUIT_BREAKER_NAME)))
             .onErrorResume(throwable -> Mono.empty())
             .zipWith(getMaxByReserveDate(reserveItemId, startDate, endDate))
+            .log("countinventory")
             .flatMap(tuple -> Mono.just(tuple.getT1().getTotalQty() - tuple.getT2()));
     }
 
@@ -607,20 +608,33 @@ public class ReserveService extends ReactiveAbstractService {
         }
 
         long between = ChronoUnit.DAYS.between(startDate, endDate);
+
+        if (between == 0) {
+            return reserveFlux.map(reserve -> {
+                if (startDate.isAfter(reserve.getReserveStartDate())
+                    || startDate.isBefore(reserve.getReserveEndDate())
+                    || startDate.isEqual(reserve.getReserveStartDate()) || startDate.isEqual(reserve.getReserveEndDate())) {
+                    return reserve.getReserveQty();
+                }
+                return 0;
+            }).reduce(0, (x1, x2) -> x1 + x2);
+        }
+
         return Flux.fromStream(IntStream.iterate(0, i -> i + 1)
             .limit(between)
             .mapToObj(i -> startDate.plusDays(i)))
             .flatMap(localDateTime ->
                 reserveFlux.map(findReserve -> {
                     if (localDateTime.isAfter(findReserve.getReserveStartDate())
-                        || localDateTime.isBefore(findReserve.getReserveEndDate())) {
+                        || localDateTime.isBefore(findReserve.getReserveEndDate())
+                        || localDateTime.isEqual(findReserve.getReserveStartDate()) || localDateTime.isEqual(findReserve.getReserveEndDate())) {
                         return findReserve.getReserveQty();
                     }
                     return 0;
                 }).reduce(0, (x1, x2) -> x1 + x2))
             .groupBy(integer -> integer)
             .flatMap(group -> group.reduce((x1,x2) -> x1 > x2?x1:x2))
-            .last();
+            .last(0);
     }
 
 }

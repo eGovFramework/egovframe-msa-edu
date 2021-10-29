@@ -197,7 +197,10 @@ public class Reserve extends BaseEntity {
      * @return
      */
     public Reserve conversionReserveQty() {
-        this.reserveQty = (this.reserveQty * -1);
+        if (this.reserveQty != null) {
+            this.reserveQty = (this.reserveQty * -1);
+        }
+
         return this;
     }
 }

@@ -278,20 +278,34 @@ public class ReserveService extends ReactiveAbstractService {
         }
 
         long between = ChronoUnit.DAYS.between(startDate, endDate);
+
+        if (between == 0) {
+            return reserveFlux.map(reserve -> {
+                if (startDate.isAfter(reserve.getReserveStartDate())
+                    || startDate.isBefore(reserve.getReserveEndDate())
+                    || startDate.isEqual(reserve.getReserveStartDate()) || startDate.isEqual(reserve.getReserveEndDate())) {
+                    return reserve.getReserveQty();
+                }
+                return 0;
+            }).reduce(0, (x1, x2) -> x1 + x2);
+        }
+
         return Flux.fromStream(IntStream.iterate(0, i -> i + 1)
             .limit(between)
             .mapToObj(i -> startDate.plusDays(i)))
             .flatMap(localDateTime ->
                 reserveFlux.map(findReserve -> {
                     if (localDateTime.isAfter(findReserve.getReserveStartDate())
-                        || localDateTime.isBefore(findReserve.getReserveEndDate())) {
+                        || localDateTime.isBefore(findReserve.getReserveEndDate())
+                        || localDateTime.isEqual(findReserve.getReserveStartDate()) || localDateTime.isEqual(findReserve.getReserveEndDate())
+                    ) {
                         return findReserve.getReserveQty();
                     }
                     return 0;
                 }).reduce(0, (x1, x2) -> x1 + x2))
             .groupBy(integer -> integer)
             .flatMap(group -> group.reduce((x1,x2) -> x1 > x2?x1:x2))
-            .last();
+            .last(0);
     }
 
     /**

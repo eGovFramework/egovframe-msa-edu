@@ -84,7 +84,8 @@ public class ReserveApiController {
     @PostMapping("/api/v1/requests")
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<ReserveResponseDto> save(@RequestBody Mono<ReserveSaveRequestDto> saveRequestDtoMono) {
-        return saveRequestDtoMono.flatMap(saveRequestDto -> {
+        return saveRequestDtoMono
+            .flatMap(saveRequestDto -> {
             if (Category.EDUCATION.isEquals(saveRequestDto.getCategoryId())) {
                 return reserveService.saveForEvent(saveRequestDto);
             }

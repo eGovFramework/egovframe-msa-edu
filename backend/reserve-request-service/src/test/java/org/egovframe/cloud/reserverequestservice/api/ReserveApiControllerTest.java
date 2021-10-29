@@ -3,6 +3,7 @@ package org.egovframe.cloud.reserverequestservice.api;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import org.egovframe.cloud.common.domain.Role;
 import org.egovframe.cloud.reserverequestservice.api.dto.ReserveResponseDto;

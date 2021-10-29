@@ -34,6 +34,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -57,6 +58,9 @@ public class ReserveApiControllerTest {
 
 	@Autowired
 	private WebTestClient webTestClient;
+
+	@Autowired
+	private R2dbcEntityTemplate entityTemplate;
 
 	private static final String API_URL = "/api/v1/reserves";
 
@@ -525,6 +529,41 @@ public class ReserveApiControllerTest {
 			.exchange()
 			.expectStatus().isBadRequest()
 		;
+	}
+
+	@Test
+	public void 물품재고조회_성공() throws Exception {
+
+		BDDMockito.when(reserveItemServiceClient.findById(ArgumentMatchers.anyLong()))
+			.thenReturn(Mono.just(ReserveItemResponseDto.builder().reserveItem(reserveItem).build()));
+
+		Reserve inventoryreserve = Reserve.builder()
+			.reserveId("1")
+			.reserveItemId(reserveItem.getReserveItemId())
+			.reserveQty(50)
+			.reservePurposeContent("test")
+			.reserveStatusId("request")
+			.reserveStartDate(LocalDateTime.of(2021, 9, 9, 0, 0))
+			.reserveEndDate(LocalDateTime.of(2021, 9, 9, 0, 0))
+			.userId(user.getUserId())
+			.userEmail("user@email.com")
+			.userContactNo("contact")
+			.build();
+		inventoryreserve.setReserveItem(reserveItem);
+		inventoryreserve.setUser(user);
+		Reserve saved = reserveRepository.insert(inventoryreserve).block();
+		assertNotNull(saved);
+
+		Integer responseBody = webTestClient.get()
+			.uri("/api/v1/reserves/" + reserveItem.getReserveItemId()
+				+ "/inventories?startDate=2021-09-09&endDate=2021-09-09")
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody(Integer.class)
+			.returnResult().getResponseBody();
+
+		assertThat(responseBody).isEqualTo(50);
+
 	}
 
 }
