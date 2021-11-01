@@ -4,10 +4,14 @@ spring:
     username: msaportal
     password: msaportal
   cloud:
+    bus:
+      destination: springCloudBus
     stream:
       function:
-        definition: reserveRequest # 예약 요청후 물품 재고업데이트 이벤트에 대한 consumer function
+        definition: reserveRequest;busConsumer # 예약 요청후 물품 재고업데이트 이벤트에 대한 consumer function & springcloudbus consumer function
       bindings:
+        busConsumer-in-0:
+          destination: ${spring.cloud.bus.destination}
         reserveRequest-in-0: # 예약 요청후 물품 재고업데이트 이벤트에 대한 consumer binding
           destination: reserve-request.topic # queue name
           group: reserved
