@@ -51,22 +51,18 @@ public class UserApiController {
      *
      * @return
      */
-    @GetMapping("/actuator/health-user")
+    @GetMapping("/actuator/health-info")
     public String status() {
         return String.format("GET User Service on" +
                 "\n local.server.port :" + env.getProperty("local.server.port")
-                + "\n token expiration time :" + env.getProperty("token.expiration_time")
-                + "\n spring.datasource.username :" + env.getProperty("spring.datasource.username")
                 + "\n egov.message :" + env.getProperty("egov.message")
         );
     }
 
-    @PostMapping("/actuator/health-user")
+    @PostMapping("/actuator/health-info")
     public String poststatus() {
         return String.format("POST User Service on" +
                 "\n local.server.port :" + env.getProperty("local.server.port")
-                + "\n token expiration time :" + env.getProperty("token.expiration_time")
-                + "\n spring.datasource.username :" + env.getProperty("spring.datasource.username")
                 + "\n egov.message :" + env.getProperty("egov.message")
         );
     }

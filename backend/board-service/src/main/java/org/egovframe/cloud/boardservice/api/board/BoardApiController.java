@@ -7,6 +7,7 @@ import org.egovframe.cloud.boardservice.api.board.dto.BoardResponseDto;
 import org.egovframe.cloud.boardservice.api.board.dto.BoardSaveRequestDto;
 import org.egovframe.cloud.boardservice.api.board.dto.BoardUpdateRequestDto;
 import org.egovframe.cloud.boardservice.service.board.BoardService;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -40,6 +41,21 @@ public class BoardApiController {
      * 게시판 서비스
      */
     private final BoardService boardService;
+
+    private final Environment env;
+
+    /**
+     * 서비스 상태 확인
+     *
+     * @return
+     */
+    @GetMapping("/actuator/health-info")
+    public String status() {
+        return String.format("GET Board Service on" +
+                "\n local.server.port :" + env.getProperty("local.server.port")
+                + "\n egov.message :" + env.getProperty("egov.message")
+        );
+    }
 
     /**
      * 게시판 페이지 목록 조회
