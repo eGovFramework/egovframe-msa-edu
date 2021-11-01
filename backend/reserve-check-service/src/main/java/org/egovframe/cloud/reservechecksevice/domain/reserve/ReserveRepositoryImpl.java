@@ -2,7 +2,9 @@ package org.egovframe.cloud.reservechecksevice.domain.reserve;
 
 import static org.springframework.data.relational.core.query.Criteria.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -174,6 +176,7 @@ public class ReserveRepositoryImpl implements ReserveRepositoryCustom{
                 .matching(Query.query(where("reserve_item_id").is(reserveItemId)
                         .and ("reserve_start_date").lessThanOrEquals(endDate)
                         .and("reserve_end_date").greaterThanOrEquals(startDate)
+                        .and("reserve_status_id").not(ReserveStatus.CANCEL.getKey())
                 ))
                 .all();
     }
@@ -194,6 +197,7 @@ public class ReserveRepositoryImpl implements ReserveRepositoryCustom{
                 .and ("reserve_start_date").lessThanOrEquals(endDate)
                 .and("reserve_end_date").greaterThanOrEquals(startDate)
                 .and("reserve_id").not(reserveId)
+                .and("reserve_status_id").not(ReserveStatus.CANCEL.getKey())
             ))
             .all();
     }
@@ -214,6 +218,7 @@ public class ReserveRepositoryImpl implements ReserveRepositoryCustom{
                 .and ("reserve_start_date").lessThanOrEquals(endDate)
                 .and("reserve_end_date").greaterThanOrEquals(startDate)
                 .and("reserve_id").not(reserveId)
+                .and("reserve_status_id").not(ReserveStatus.CANCEL.getKey())
             ))
             .count();
     }

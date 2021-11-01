@@ -66,7 +66,9 @@ const ReserveEdit = (props: ReserveEditProps) => {
     reserveItem.inventoryQty || null,
   )
 
-  const [reserve, setReserve] = useState<IReserve | undefined>(undefined)
+  const [reserve, setReserve] = useState<
+    { reserve: IReserve; category: string } | undefined
+  >(undefined)
   const [isEvent, setEvents] = useState<boolean>(false)
 
   const methods = useForm<ReserveSavePayload>()
@@ -129,14 +131,20 @@ const ReserveEdit = (props: ReserveEditProps) => {
   const successCallback = useCallback(() => {
     setComplete({
       done: true,
-      reserveId: reserve.reserveId,
+      reserveId: reserve.reserve.reserveId,
     })
     setLoading(false)
   }, [reserve])
 
+  useEffect(() => {
+    if (reserve && reserve.category !== 'education') {
+      successCallback()
+    }
+  }, [reserve])
+
   const errorCallback = useCallback(
     (errors: any, attachmentCode: string) => {
-      setErrorState({ errors })
+      setErrorState(errors)
       setLoading(false)
       if (attachmentCode) {
         uploadRef.current.rollback(attachmentCode)
@@ -152,7 +160,10 @@ const ReserveEdit = (props: ReserveEditProps) => {
     try {
       const result = await reserveService.createAudit(formData)
       if (result) {
-        successCallback()
+        setReserve({
+          reserve: result.data,
+          category: formData.categoryId,
+        })
       } else {
         errorCallback(
           { message: DEFAULT_ERROR_MESSAGE },
@@ -160,7 +171,7 @@ const ReserveEdit = (props: ReserveEditProps) => {
         )
       }
     } catch (error) {
-      errorCallback(error, formData.attachmentCode)
+      errorCallback({ error }, formData.attachmentCode)
     }
   }
 
@@ -171,11 +182,12 @@ const ReserveEdit = (props: ReserveEditProps) => {
     try {
       const result = await reserveService.create(formData)
       if (result) {
-        setReserve(result.data)
+        setReserve({
+          reserve: result.data,
+          category: formData.categoryId,
+        })
         if (formData.categoryId === 'education') {
           setEvents(true)
-        } else {
-          successCallback()
         }
       } else {
         errorCallback(
@@ -184,7 +196,7 @@ const ReserveEdit = (props: ReserveEditProps) => {
         )
       }
     } catch (error) {
-      errorCallback(error, formData.attachmentCode)
+      errorCallback({ error }, formData.attachmentCode)
     }
   }
 
@@ -221,6 +233,14 @@ const ReserveEdit = (props: ReserveEditProps) => {
       draft.attachmentCode = attachmentCode
       draft.userId = user.userId
       draft.userEmail = user.email
+      draft.reserveStartDate = convertStringToDateFormat(
+        draft.reserveStartDate,
+        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+      )
+      draft.reserveEndDate = convertStringToDateFormat(
+        draft.reserveEndDate,
+        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+      )
     })
 
     if (
@@ -372,7 +392,7 @@ const ReserveEdit = (props: ReserveEditProps) => {
       </Backdrop>
       {reserve && isEvent && (
         <ReserveEventSource
-          data={reserve}
+          data={reserve.reserve}
           successCallback={successCallback}
           errorCallback={errorCallback}
         />

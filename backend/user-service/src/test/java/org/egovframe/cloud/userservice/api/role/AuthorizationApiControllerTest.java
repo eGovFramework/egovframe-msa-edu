@@ -218,7 +218,7 @@ class AuthorizationApiControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 // .andExpect(MockMvcResultMatchers.content().string("11"));
-                .andExpect(MockMvcResultMatchers.content().string("129")); // /src/test/resources/h2/data.sql 초기화 데이터의 마지막 순번 + 1
+                .andExpect(MockMvcResultMatchers.content().string("130")); // /src/test/resources/h2/data.sql 초기화 데이터의 마지막 순번 + 1
 
         deleteTestDatas();
     }

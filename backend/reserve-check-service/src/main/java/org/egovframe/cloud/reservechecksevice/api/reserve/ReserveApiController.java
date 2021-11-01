@@ -168,7 +168,7 @@ public class ReserveApiController {
     public Mono<Integer> countInventory(@PathVariable Long reserveItemId,
                                         @RequestParam(name = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                         @RequestParam(name = "endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
-        return reserveService.countInventory(reserveItemId,startDate.atTime(1,1), endDate.atTime(1,1));
+        return reserveService.countInventory(reserveItemId,startDate.atTime(0,0), endDate.atTime(23, 59));
     }
 
 }

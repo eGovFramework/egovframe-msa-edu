@@ -78,6 +78,7 @@ public class ReserveRepositoryImpl implements ReserveRepositoryCustom {
             .matching(Query.query(where("reserve_item_id").is(reserveItemId)
                 .and ("reserve_start_date").lessThanOrEquals(endDate)
                 .and("reserve_end_date").greaterThanOrEquals(startDate)
+                .and("reserve_status_id").not(ReserveStatus.CANCEL.getKey())
             ))
             .count();
     }

@@ -95,7 +95,7 @@ const App = ({ component: Component, ...pageProps }: AppProps) => {
   )
 
   useEffect(() => {
-    if (mounted && flatMenus) {
+    if (mounted && data?.length > 0 && flatMenus?.length > 0) {
       let path =
         router.asPath.indexOf('?') === -1
           ? router.asPath
@@ -110,7 +110,7 @@ const App = ({ component: Component, ...pageProps }: AppProps) => {
       }
 
       // 권한 없는 페이지 대해 호출이 있으면 404로 redirect
-      if (!authPage && flatMenus.length > 0 && !current) {
+      if (!authPage && !current) {
         if (!PUBLIC_PAGES.includes(router.asPath)) {
           router.push('/404')
         }
@@ -118,7 +118,7 @@ const App = ({ component: Component, ...pageProps }: AppProps) => {
 
       setCurrentMenus(current)
     }
-  }, [router, mounted, flatMenus])
+  }, [router, mounted, flatMenus, data])
 
   if (loading) {
     return <Loader />
@@ -126,6 +126,10 @@ const App = ({ component: Component, ...pageProps }: AppProps) => {
 
   if (!authPage && !(currentMenu || PUBLIC_PAGES.includes(router.asPath))) {
     return null
+  }
+
+  if (data?.length <= 0 || flatMenus?.length <= 0) {
+    return <Loader />
   }
 
   return errorPage || naverLoginCallbackPage ? (
