@@ -31,6 +31,11 @@ import React, {
 } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
+import CustomAlert, { CustomAlertPrpps } from '@components/CustomAlert'
+
+interface AlertProps extends CustomAlertPrpps {
+  message: string
+}
 
 interface BaordViewProps {
   post: IPosts
@@ -47,6 +52,12 @@ const BoardView = (props: BaordViewProps) => {
   const replyRef = createRef<EditCommentsType>()
 
   const setErrorState = useSetRecoilState(errorStateSelector)
+
+  const [customAlert, setCustomAlert] = useState<AlertProps | undefined>({
+    open: false,
+    message: '',
+    handleAlert: () => {},
+  })
 
   // 첨부파일
   const [attachList, setAttachList] = useState<IAttachmentResponse[]>(undefined)
@@ -126,7 +137,20 @@ const BoardView = (props: BaordViewProps) => {
   }
 
   useEffect(() => {
-    if (post) {
+    if (typeof post.postsNo === 'undefined') {
+      setCustomAlert({
+        open: true,
+        message: t('err.entity.not.found'),
+        handleAlert: () => {
+          setCustomAlert({
+            ...customAlert,
+            open: false,
+          })
+          router.back()
+        },
+      })
+    }
+    if (post.postsNo) {
       getComments({
         boardNo: post.boardNo,
         postsNo: post.postsNo,
@@ -241,7 +265,7 @@ const BoardView = (props: BaordViewProps) => {
           </dl>
           <dl>
             <dt>{t('common.written_date')}</dt>
-            <dd>{dateFormat(new Date(post.createdDate), 'yyyy-MM-dd')}</dd>
+            <dd>{post.createdDate && dateFormat(new Date(post.createdDate), 'yyyy-MM-dd')}</dd>
           </dl>
           <dl>
             <dt>{t('common.read_count')}</dt>
@@ -361,6 +385,11 @@ const BoardView = (props: BaordViewProps) => {
         </div>
       )}
       <BottomButtons handleButtons={bottomButtons} />
+      <CustomAlert
+        contentText={customAlert.message}
+        open={customAlert.open}
+        handleAlert={customAlert.handleAlert}
+      />
     </div>
   )
 }

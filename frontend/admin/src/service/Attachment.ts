@@ -55,4 +55,22 @@ export const attachmentService = {
       errorCallback(error)
     }
   },
+  download: (id: string) => { // 첨부파일 다운로드 - 삭제 파일 가능
+    axios.get(`${ATTACHMENT_API}/download/${id}`, {
+      responseType: 'blob',
+    })
+      .then(response =>{
+        const downloadFileName = decodeURIComponent(response.headers['content-disposition'].replace('attachment; filename*=UTF-8\'\'', ''))
+
+        const url = window.URL.createObjectURL(new Blob([response.data], { type: response.headers['content-type'] }))
+        let link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', downloadFileName)
+        document.body.appendChild(link)
+        link.click()
+
+        const element = { link }
+        delete element.link
+      })
+  },
 }

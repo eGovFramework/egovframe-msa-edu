@@ -8,7 +8,7 @@ import {
   IPostsForm,
   PostsReqPayload,
   SKINT_TYPE_CODE_NORMAL,
-  SKINT_TYPE_CODE_QNA,
+  SKINT_TYPE_CODE_QNA, UploadInfoReqeust,
 } from '@service'
 import { errorStateSelector } from '@stores'
 import { AxiosError } from 'axios'
@@ -17,6 +17,13 @@ import { useRouter } from 'next/router'
 import React, { createContext, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSetRecoilState } from 'recoil'
+import CustomAlert, { CustomAlertPrpps } from '@components/CustomAlert'
+import { UploadType } from '@components/Upload'
+import produce from 'immer'
+
+interface AlertProps extends CustomAlertPrpps {
+  message: string
+}
 
 interface BoardEditProps {
   post: IPosts
@@ -29,12 +36,14 @@ export const BoardFormContext = createContext<{
   attachList: IAttachmentResponse[]
   setPostDataHandler: (data: IPostsForm) => void
   setAttachListHandler: (data: IAttachmentResponse[]) => void
+  setUploaderHandler: (uploadType: React.MutableRefObject<UploadType>) => void
 }>({
   post: undefined,
   board: undefined,
   attachList: undefined,
   setPostDataHandler: () => {},
   setAttachListHandler: () => {},
+  setUploaderHandler: () => {},
 })
 
 const BoardEdit = (props: BoardEditProps) => {
@@ -44,6 +53,12 @@ const BoardEdit = (props: BoardEditProps) => {
   const { t } = useTranslation()
   const setErrorState = useSetRecoilState(errorStateSelector)
 
+  const [customAlert, setCustomAlert] = useState<AlertProps | undefined>({
+    open: false,
+    message: '',
+    handleAlert: () => {},
+  })
+
   const [postData, setPostData] = useState<IPostsForm>(undefined)
   const setPostDataHandler = (data: IPostsForm) => {
     setPostData(data)
@@ -51,6 +66,10 @@ const BoardEdit = (props: BoardEditProps) => {
   const [attachList, setAttachList] = useState<IAttachmentResponse[]>(undefined)
   const setAttachListHandler = (data: IAttachmentResponse[]) => {
     setAttachList(data)
+  }
+  const [uploader, setUploader] = useState<React.MutableRefObject<UploadType>>(undefined)
+  const setUploaderHandler = (uploadType: React.MutableRefObject<UploadType>) => {
+    setUploader(uploadType)
   }
 
   // callback
@@ -66,13 +85,23 @@ const BoardEdit = (props: BoardEditProps) => {
     router.back()
   }, [])
 
-  const save = useCallback(() => {
-    const data: IPosts = {
-      boardNo: post.boardNo,
-      postsNo: post.postsNo,
-      ...postData,
+  useEffect(() => {
+    if (typeof post.postsNo === 'undefined') {
+      setCustomAlert({
+        open: true,
+        message: t('err.entity.not.found'),
+        handleAlert: () => {
+          setCustomAlert({
+            ...customAlert,
+            open: false,
+          })
+          router.back()
+        },
+      })
     }
+  }, [post])
 
+  const save = useCallback((data: IPosts) => {
     if (post.postsNo === -1) {
       boardService.savePost({
         boardNo: post.boardNo,
@@ -90,11 +119,41 @@ const BoardEdit = (props: BoardEditProps) => {
       })
     }
     // boardService.
-  }, [postData, post, successCallback, errorCallback])
+  }, [post, successCallback, errorCallback])
 
   useEffect(() => {
     if (postData) {
-      save()
+      let data: IPosts = {
+        boardNo: post.boardNo,
+        postsNo: post.postsNo,
+        ...postData,
+      }
+
+      if (board.uploadUseAt) {
+        uploader.current.isModified(attachList)
+          .then(isUpload => {
+            if (isUpload === true) {
+              const info: UploadInfoReqeust = {
+                entityName: 'posts',
+                entityId: board.boardNo?.toString(),
+              }
+
+              // 업로드 및 저장
+              uploader.current.upload(info, attachList)
+                .then(result => {
+                  if (result) {
+                    if (result !== 'no attachments' && result !== 'no update list') {
+                      data = produce(data, draft => {
+                        draft.attachmentCode = result
+                      })
+                    }
+                  }
+                })
+            }
+          })
+      }
+
+      save(data)
     }
   }, [postData, attachList])
 
@@ -130,6 +189,7 @@ const BoardEdit = (props: BoardEditProps) => {
             attachList,
             setPostDataHandler,
             setAttachListHandler,
+            setUploaderHandler,
           }}
         >
           {board.skinTypeCode === SKINT_TYPE_CODE_NORMAL && (
@@ -141,6 +201,11 @@ const BoardEdit = (props: BoardEditProps) => {
           {/* <QnAEditForm /> */}
         </BoardFormContext.Provider>
       </div>
+      <CustomAlert
+        contentText={customAlert.message}
+        open={customAlert.open}
+        handleAlert={customAlert.handleAlert}
+      />
     </div>
   )
 }

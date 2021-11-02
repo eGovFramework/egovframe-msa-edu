@@ -96,7 +96,7 @@ const QnAEditForm = (props: QnAEditFormProps) => {
                   ref={uploadRef}
                   multi
                   uploadLimitCount={board.uploadLimitCount}
-                  uploadLimitSize={board.uploadLimitSize * 1024 * 1024}
+                  uploadLimitSize={board.uploadLimitSize}
                   attachmentCode={post.attachmentCode}
                   attachData={attachList}
                 />

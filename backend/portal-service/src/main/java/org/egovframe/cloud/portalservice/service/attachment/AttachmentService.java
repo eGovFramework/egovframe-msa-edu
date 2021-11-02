@@ -1,6 +1,5 @@
 package org.egovframe.cloud.portalservice.service.attachment;
 
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
@@ -21,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URL;
-import java.net.URLConnection;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -170,7 +167,7 @@ public class AttachmentService extends AbstractService {
     }
 
     /**
-     * 첨부파일 다운로드
+     * 첨부파일 다운로드 - 삭제 파일 불가
      *
      * @param uniqueId
      * @return
@@ -179,6 +176,10 @@ public class AttachmentService extends AbstractService {
         Attachment attachment = attachmentRepository.findAllByUniqueId(uniqueId)
                 // 파일을 찾을 수 없습니다.
                 .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + uniqueId));
+
+        if (Boolean.TRUE.equals(attachment.getIsDelete())) {
+            throw new BusinessMessageException(getMessage("err.entity.not.found"));
+        }
 
         Resource resource = storageUtils.downloadFile(attachment.getPhysicalFileName());
 
@@ -203,6 +204,28 @@ public class AttachmentService extends AbstractService {
         return attachmentList.stream()
                 .map(attachment -> AttachmentResponseDto.builder().attachment(attachment).build())
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 첨부파일 다운로드 - 삭제 파일 가능
+     *
+     * @param uniqueId
+     * @return
+     */
+    public AttachmentDownloadResponseDto downloadAttachment(String uniqueId) {
+        Attachment attachment = attachmentRepository.findAllByUniqueId(uniqueId)
+                // 파일을 찾을 수 없습니다.
+                .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + uniqueId));
+
+        Resource resource = storageUtils.downloadFile(attachment.getPhysicalFileName());
+
+        // 첨부파일 다운로드 할 때 마다 Download 횟수 + 1
+        attachment.updateDownloadCnt();
+
+        return AttachmentDownloadResponseDto.builder()
+                .file(resource)
+                .originalFileName(attachment.getOriginalFileName())
+                .build();
     }
 
     /**

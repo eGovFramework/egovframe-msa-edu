@@ -8,11 +8,10 @@ import { EDITOR_MAX_LENGTH } from '@constants'
 import Divider from '@material-ui/core/Divider'
 import Hidden from '@material-ui/core/Hidden'
 import { BoardFormContext } from '@pages/board/[skin]/[board]/edit/[id]'
-import { IPostsForm, UploadInfoReqeust } from '@service'
+import { IPostsForm } from '@service'
 import { getTextLength } from '@utils'
-import produce from 'immer'
 import { useRouter } from 'next/router'
-import React, { useContext, useMemo, useRef } from 'react'
+import React, { useContext, useEffect, useMemo, useRef } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { EditFormProps } from '.'
@@ -24,7 +23,7 @@ const NormalEditForm = (props: NormalEditFormProps) => {
   const { t } = useTranslation()
 
   const uploadRef = useRef<UploadType>()
-  const { post, board, attachList, setPostDataHandler, setAttachListHandler } =
+  const { post, board, attachList, setPostDataHandler, setAttachListHandler, setUploaderHandler } =
     useContext(BoardFormContext)
 
   // form hook
@@ -41,28 +40,11 @@ const NormalEditForm = (props: NormalEditFormProps) => {
     formState: { errors },
   } = methods
 
+  useEffect(() => {
+    setUploaderHandler(uploadRef)
+  }, [setUploaderHandler, uploadRef])
+
   const handleFormSubmit = async (data: IPostsForm) => {
-    if (board.uploadUseAt) {
-      const isUpload = await uploadRef.current.isModified(attachList)
-
-      if (isUpload) {
-        const info: UploadInfoReqeust = {
-          entityName: 'posts',
-          entityId: board.boardNo?.toString(),
-        }
-
-        // 업로드 및 저장
-        const result = await uploadRef.current.upload(info, attachList)
-        if (result) {
-          if (result !== 'no attachments' && result !== 'no update list') {
-            data = produce(data, draft => {
-              draft.attachmentCode = result
-            })
-          }
-        }
-      }
-    }
-
     setPostDataHandler(data)
   }
 
@@ -71,17 +53,20 @@ const NormalEditForm = (props: NormalEditFormProps) => {
       {
         id: 'board-edit-save',
         title: t('label.button.save'),
-        href: '',
+        href: '#',
         className: 'blue',
         handleClick: handleSubmit(handleFormSubmit),
       },
       {
         id: 'board-edit-list',
-        title: t('label.button.list'),
-        href: `/board/${router.query.skin}/${router.query.board}`,
+        title: router.query.id === '-1' ? t('label.button.list') : t('label.button.cancel'),
+        href: '#',
+        handleClick: () => {
+          router.back()
+        },
       },
     ],
-    [router.query.board, router.query.skin],
+    [router],
   )
 
   return (

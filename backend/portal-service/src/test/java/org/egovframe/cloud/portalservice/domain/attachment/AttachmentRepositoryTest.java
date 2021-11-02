@@ -156,40 +156,5 @@ class AttachmentRepositoryTest {
         System.out.println(byId.get());
     }
 
-    @Test
-    public void 중복된유니크인덱스_오류() throws Exception {
-        //given
-        String code = UUID.randomUUID().toString();
-        String uniqueId = UUID.randomUUID().toString();
-        AttachmentId attachmentId1 = AttachmentId.builder()
-                .code(code)
-                .seq(1L).build();
-        Attachment attachment1 = Attachment.builder()
-                .attachmentId(attachmentId1)
-                .uniqueId(uniqueId)
-                .originalFileName("test1.png")
-                .physicalFileName(UUID.randomUUID().toString())
-                .size(1232L)
-                .build();
-
-        AttachmentId attachmentId2 = AttachmentId.builder()
-                .code(code)
-                .seq(2L)
-                .build();
-        Attachment attachment2 = Attachment.builder()
-                .attachmentId(attachmentId2)
-                .uniqueId(uniqueId)
-                .originalFileName("test2.png")
-                .physicalFileName(UUID.randomUUID().toString())
-                .size(1232L)
-                .build();
-
-        //when
-        attachmentRepository.save(attachment1);
-        attachmentRepository.save(attachment2);
-
-        //then
-
-    }
 
 }

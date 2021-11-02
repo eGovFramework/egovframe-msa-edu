@@ -35,10 +35,7 @@ const AttachList = (props: AttachListProps) => {
   const classes = useStyles()
 
   const handleClick = (item: IAttachmentResponse) => () => {
-    let a = document.createElement('a')
-    a.href = `${fileService.downloadUrl}/${item.id}`
-    a.download = item.originalFileName
-    a.click()
+    fileService.download(item.id)
   }
 
   const handleDelete = (item: IAttachmentResponse) => () => {

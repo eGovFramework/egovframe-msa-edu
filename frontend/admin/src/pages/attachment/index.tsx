@@ -100,6 +100,10 @@ const getColumns: ColumnType = (
             href={`${fileService.downloadUrl}/${params.row.id}`}
             download={params.value}
             variant="body2"
+            onClick={(event) => {
+              event.preventDefault()
+              attachmentService.download(params.row.id)
+            }}
           >
             {params.value}
           </Link>

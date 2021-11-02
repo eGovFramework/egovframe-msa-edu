@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.List;
 
 /**
@@ -125,7 +124,6 @@ public class AttachmentApiController {
      */
     @GetMapping(value = "/api/v1/download/{uniqueId}")
     public ResponseEntity<?> downloadFile(@PathVariable String uniqueId) {
-
         AttachmentDownloadResponseDto downloadFile = attachmentService.downloadFile(uniqueId);
 
         String mimeType = null;
@@ -164,6 +162,44 @@ public class AttachmentApiController {
     @GetMapping(value = "/api/v1/attachments/{attachmentCode}")
     public List<AttachmentResponseDto> findByCode(@PathVariable String attachmentCode) {
         return attachmentService.findByCode(attachmentCode);
+    }
+
+    /**
+     * 첨부파일 다운로드
+     *
+     * @param uniqueId
+     * @return
+     * @throws IOException
+     */
+    @GetMapping(value = "/api/v1/attachments/download/{uniqueId}")
+    public ResponseEntity<?> downloadAttachment(@PathVariable String uniqueId) {
+        AttachmentDownloadResponseDto downloadFile = attachmentService.downloadAttachment(uniqueId);
+
+        String mimeType = null;
+        try {
+            // get mime type
+            URLConnection connection = new URL(downloadFile.getFile().getURL().toString()).openConnection();
+            mimeType = connection.getContentType();
+        } catch (IOException ex) {
+            log.error("download fail", ex);
+            throw new BusinessMessageException("Sorry. download fail... \uD83D\uDE3F");
+        }
+
+        if (mimeType == null) {
+            mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+        }
+
+        ContentDisposition contentDisposition = ContentDisposition.builder("attachment")
+                .filename(downloadFile.getOriginalFileName(), StandardCharsets.UTF_8)
+                .build();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, mimeType);
+        headers.setContentDisposition(contentDisposition);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(downloadFile.getFile());
     }
 
     /**
