@@ -57,10 +57,6 @@ dependencies {
     // openapi docs
     implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.8'
 
-    // bolcking 호출 감지
-    implementation 'io.projectreactor:reactor-tools:3.4.9'
-    implementation 'io.projectreactor.tools:blockhound:1.0.6.RELEASE'
-
     //lombok
     implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
