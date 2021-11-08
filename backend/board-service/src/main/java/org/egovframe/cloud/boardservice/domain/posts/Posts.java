@@ -13,6 +13,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -137,7 +138,7 @@ public class Posts extends BaseEntity {
         this.noticeAt = noticeAt;
         this.deleteAt = deleteAt;
         this.creator = creator;
-        this.comments = comments;
+        this.comments = new ArrayList<>(comments);
     }
 
     /**

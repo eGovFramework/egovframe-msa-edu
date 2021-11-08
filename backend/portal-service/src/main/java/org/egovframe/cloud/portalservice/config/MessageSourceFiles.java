@@ -74,7 +74,7 @@ public class MessageSourceFiles {
         try {
             Files.createDirectory(Paths.get(fileMessagesDirectory).toAbsolutePath().normalize());
         } catch (FileAlreadyExistsException e) {
-            log.info("메시지 폴더 경로에 파일이나 디렉토리가 이미 존재, {}", e.getMessage());
+            log.error("메시지 폴더 경로에 파일이나 디렉토리가 이미 존재", e);
         } catch (IOException e) {
             log.error("메시지 폴더 생성 오류", e);
         }
@@ -102,7 +102,7 @@ public class MessageSourceFiles {
             try (FileOutputStream out = new FileOutputStream(propFile)) {
                 prop.store(out, "messages");
             } catch (IOException e) {
-                log.error("Messages FileOutputStream IOException = {}, {}", e.getMessage(), e.getCause());
+                log.error("Messages FileOutputStream IOException", e);
             }
 
             // files

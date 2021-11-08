@@ -113,7 +113,7 @@ public class AttachmentService extends AbstractService {
      * @param editorRequestDto
      * @return
      */
-    public AttachmentEditorResponseDto uploadEditor(AttachmentBase64RequestDto editorRequestDto) {
+    public AttachmentEditorResponseDto uploadEditor(AttachmentBase64RequestDto editorRequestDto) throws BusinessMessageException {
         String fileBase64 = editorRequestDto.getFileBase64();
 
         if (fileBase64 == null || fileBase64.equals("")) {
@@ -158,7 +158,7 @@ public class AttachmentService extends AbstractService {
      * @return
      */
     @Transactional(readOnly = true)
-    public AttachmentImageResponseDto loadImageByUniqueId(String uniqueId) {
+    public AttachmentImageResponseDto loadImageByUniqueId(String uniqueId) throws EntityNotFoundException {
         Attachment attachment = attachmentRepository.findAllByUniqueId(uniqueId)
                 // 파일을 찾을 수 없습니다.
                 .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + uniqueId));
@@ -172,7 +172,7 @@ public class AttachmentService extends AbstractService {
      * @param uniqueId
      * @return
      */
-    public AttachmentDownloadResponseDto downloadFile(String uniqueId) {
+    public AttachmentDownloadResponseDto downloadFile(String uniqueId) throws EntityNotFoundException, BusinessMessageException {
         Attachment attachment = attachmentRepository.findAllByUniqueId(uniqueId)
                 // 파일을 찾을 수 없습니다.
                 .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + uniqueId));
@@ -212,7 +212,7 @@ public class AttachmentService extends AbstractService {
      * @param uniqueId
      * @return
      */
-    public AttachmentDownloadResponseDto downloadAttachment(String uniqueId) {
+    public AttachmentDownloadResponseDto downloadAttachment(String uniqueId) throws EntityNotFoundException {
         Attachment attachment = attachmentRepository.findAllByUniqueId(uniqueId)
                 // 파일을 찾을 수 없습니다.
                 .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + uniqueId));
@@ -272,7 +272,7 @@ public class AttachmentService extends AbstractService {
      * @param saveRequestDtoList
      * @return
      */
-    public String saveByCode(String attachmentCode, List<AttachmentTempSaveRequestDto> saveRequestDtoList) {
+    public String saveByCode(String attachmentCode, List<AttachmentTempSaveRequestDto> saveRequestDtoList) throws EntityNotFoundException {
         for (AttachmentTempSaveRequestDto saveRequestDto : saveRequestDtoList) {
             // 사용자 삭제인 경우 삭제여부 Y
             if (saveRequestDto.isDelete()) {
@@ -322,7 +322,7 @@ public class AttachmentService extends AbstractService {
      * @param isDelete
      * @return
      */
-    public String toggleDelete(String uniqueId, boolean isDelete) {
+    public String toggleDelete(String uniqueId, boolean isDelete) throws EntityNotFoundException {
         Attachment attachment = attachmentRepository.findAllByUniqueId(uniqueId)
                 // 파일을 찾을 수 없습니다.
                 .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + uniqueId));
@@ -336,7 +336,7 @@ public class AttachmentService extends AbstractService {
      *
      * @param uniqueId
      */
-    public void delete(String uniqueId) {
+    public void delete(String uniqueId) throws EntityNotFoundException {
         Attachment attachment = attachmentRepository.findAllByUniqueId(uniqueId)
                 // 파일을 찾을 수 없습니다.
                 .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + uniqueId));
@@ -400,7 +400,7 @@ public class AttachmentService extends AbstractService {
     public String uploadAndUpdate(List<MultipartFile> files,
                                   String attachmentCode,
                                   AttachmentUploadRequestDto uploadRequestDto,
-                                  List<AttachmentUpdateRequestDto> updateRequestDtoList) {
+                                  List<AttachmentUpdateRequestDto> updateRequestDtoList) throws EntityNotFoundException {
         String basePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
 
         // 기존 파일 삭제 처리
@@ -466,7 +466,7 @@ public class AttachmentService extends AbstractService {
      *
      * @param attachmentCode
      */
-    public void deleteAllEmptyEntity(String attachmentCode) {
+    public void deleteAllEmptyEntity(String attachmentCode) throws EntityNotFoundException, BusinessMessageException {
         List<Attachment> attachmentList = attachmentRepository.findByCode(attachmentCode);
 
         if (attachmentList == null || attachmentList.size() <= 0) {

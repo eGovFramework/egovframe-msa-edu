@@ -225,7 +225,7 @@ public class UserApiController {
      * @return String 사용자 id
      */
     @PutMapping("/api/v1/users/info/{userId}")
-    public String updateInfo(@PathVariable String userId, @RequestBody @Valid UserUpdateInfoRequestDto requestDto) {
+    public String updateInfo(@PathVariable String userId, @RequestBody @Valid UserUpdateInfoRequestDto requestDto) throws BusinessMessageException {
         final String authUserId = SecurityContextHolder.getContext().getAuthentication().getName();
         if (!authUserId.equals(userId)) {
             throw new BusinessMessageException(messageUtil.getMessage("err.access.denied"));

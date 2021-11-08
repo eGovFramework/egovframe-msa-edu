@@ -8,6 +8,7 @@ import org.egovframe.cloud.boardservice.domain.board.Board;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -193,7 +194,7 @@ public class BoardResponseDto implements Serializable {
      * @param posts 게시물 목록
      */
     public void setNewestPosts(List<PostsSimpleResponseDto> posts) {
-        this.posts = posts;
+        this.posts = new ArrayList<>(posts);
     }
 
 }

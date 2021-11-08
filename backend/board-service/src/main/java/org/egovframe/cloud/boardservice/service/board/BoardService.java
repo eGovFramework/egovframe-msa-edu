@@ -128,7 +128,7 @@ public class BoardService extends AbstractService {
      * @param boardNo 게시판 번호
      * @return Board 게시판 엔티티
      */
-    private Board findBoard(Integer boardNo) {
+    private Board findBoard(Integer boardNo) throws EntityNotFoundException {
         return boardRepository.findById(boardNo)
                 .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("board")})));
     }

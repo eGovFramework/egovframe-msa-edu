@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,6 +54,6 @@ public class MenuRoleRequestDto {
         this.sortSeq = sortSeq;
         this.icon = icon;
         this.level = level;
-        this.children = children;
+        this.children = new ArrayList<>(children);
     }
 }

@@ -10,6 +10,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -89,7 +90,7 @@ public class Authorization extends BaseEntity {
         this.urlPatternValue = urlPatternValue;
         this.httpMethodCode = httpMethodCode;
         this.sortSeq = sortSeq;
-        this.roleAuthorizations = roleAuthorizations;
+        this.roleAuthorizations = new ArrayList<>(roleAuthorizations);
     }
 
     /**

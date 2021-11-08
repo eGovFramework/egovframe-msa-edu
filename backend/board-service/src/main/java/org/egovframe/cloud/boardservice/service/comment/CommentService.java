@@ -125,7 +125,7 @@ public class CommentService extends AbstractService {
      * @param requestDto 댓글 등록 요청 DTO
      */
     @Transactional
-    public CommentResponseDto save(CommentSaveRequestDto requestDto) {
+    public CommentResponseDto save(CommentSaveRequestDto requestDto) throws InvalidValueException {
         if (requestDto.getBoardNo() == null || requestDto.getPostsNo() == null) {
             throw new InvalidValueException(getMessage("err.invalid.input.value"));
         }
@@ -225,7 +225,7 @@ public class CommentService extends AbstractService {
      * @param commentNo 댓글 번호
      * @return Comment 댓글 엔티티
      */
-    private Comment findComment(Integer boardNo, Integer postsNo, Integer commentNo) {
+    private Comment findComment(Integer boardNo, Integer postsNo, Integer commentNo) throws InvalidValueException {
         if (boardNo == null || postsNo == null || commentNo == null) {
             throw new InvalidValueException(getMessage("err.invalid.input.value"));
         }
@@ -252,7 +252,7 @@ public class CommentService extends AbstractService {
      * @param userId    사용자 id
      * @return Comment 댓글 엔티티
      */
-    private Comment findCommentByCreatedBy(Integer boardNo, Integer postsNo, Integer commentNo, String userId) {
+    private Comment findCommentByCreatedBy(Integer boardNo, Integer postsNo, Integer commentNo, String userId) throws BusinessMessageException {
         if (userId == null) {
             throw new BusinessMessageException(getMessage("err.required.login")); // 로그인 후 다시 시도해주세요.
         }
@@ -272,7 +272,7 @@ public class CommentService extends AbstractService {
      *
      * @param posts 게시물 엔티티
      */
-    private void checkEditableComment(Posts posts) {
+    private void checkEditableComment(Posts posts) throws EntityNotFoundException, BusinessMessageException {
         Board board = posts.getBoard();
         if (board == null) {
             throw new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("board")})); // 게시판이(가) 없습니다.

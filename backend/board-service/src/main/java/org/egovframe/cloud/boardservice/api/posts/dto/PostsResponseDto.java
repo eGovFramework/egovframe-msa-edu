@@ -8,6 +8,7 @@ import org.egovframe.cloud.boardservice.domain.posts.Posts;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -202,14 +203,14 @@ public class PostsResponseDto implements Serializable {
      * 이전 게시물
      */
     public void setPrevPosts(List<PostsSimpleResponseDto> prevPosts) {
-        this.prevPosts = prevPosts;
+        this.prevPosts = new ArrayList<>(prevPosts);
     }
 
     /**
      * 다음 게시물
      */
     public void setNextPosts(List<PostsSimpleResponseDto> nextPosts) {
-        this.nextPosts = nextPosts;
+        this.nextPosts = new ArrayList<>(nextPosts);
     }
 
 }

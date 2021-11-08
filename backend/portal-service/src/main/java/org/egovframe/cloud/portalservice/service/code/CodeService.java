@@ -46,7 +46,7 @@ public class CodeService extends AbstractService {
      * @param codeId
      * @return
      */
-    public CodeResponseDto findByCodeId(String codeId) {
+    public CodeResponseDto findByCodeId(String codeId) throws EntityNotFoundException {
         Code code = codeRepository.findByCodeId(codeId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 데이터가 존재하지 않습니다. ID =" + codeId));
         return new CodeResponseDto(code);
@@ -59,7 +59,7 @@ public class CodeService extends AbstractService {
      * @return
      */
     @Transactional
-    public String save(CodeSaveRequestDto saveRequestDto) {
+    public String save(CodeSaveRequestDto saveRequestDto) throws BusinessException {
         Optional<Code> byCodeId = codeRepository.findByCodeId(saveRequestDto.getCodeId());
         if (byCodeId.isPresent()) {
             throw new BusinessException("코드ID 중복 : " + byCodeId, ErrorCode.DUPLICATE_INPUT_INVALID);
@@ -75,7 +75,7 @@ public class CodeService extends AbstractService {
      * @return
      */
     @Transactional
-    public String update(String codeId, CodeUpdateRequestDto requestDto) {
+    public String update(String codeId, CodeUpdateRequestDto requestDto) throws EntityNotFoundException {
         Code code = codeRepository.findByCodeId(codeId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 데이터가 존재하지 않습니다. ID =" + codeId));
 
@@ -90,7 +90,7 @@ public class CodeService extends AbstractService {
      * @param codeId
      */
     @Transactional
-    public void delete(String codeId) {
+    public void delete(String codeId) throws BusinessMessageException {
         Code code = codeRepository.findByCodeId(codeId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 데이터가 존재하지 않습니다. ID =" + codeId));
 
@@ -111,7 +111,7 @@ public class CodeService extends AbstractService {
      * @return
      */
     @Transactional
-    public String updateUseAt(String codeId, boolean useAt) {
+    public String updateUseAt(String codeId, boolean useAt) throws EntityNotFoundException {
         Code code = codeRepository.findByCodeId(codeId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 데이터가 존재하지 않습니다. ID =" + codeId));
 

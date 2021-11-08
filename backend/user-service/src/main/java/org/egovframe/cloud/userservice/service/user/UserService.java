@@ -596,32 +596,9 @@ public class UserService extends AbstractService implements UserDetailsService {
      */
     @Transactional
     public UserResponseDto loadUserBySocial(UserLoginRequestDto requestDto) {
-        /*SocialUserResponseDto socialUserDto = getSocialUserInfo(requestDto.getProvider(), requestDto.getToken());
-
-        UserResponseDto userDto = getAndSaveSocialUser(requestDto.getProvider(), socialUserDto);
-
-        if (userDto == null) {
-            throw new BusinessMessageException(getMessage("err.user.join.social"));
-        }
-        if (!UserStateCode.NORMAL.getKey().equals(userDto.getUserStateCode())) {
-            throw new BusinessMessageException(getMessage("err.user.state.cantlogin"));
-        }
-
-        return userDto;*/
         SocialUserResponseDto socialUserResponseDto = getSocialUserInfo(requestDto.getProvider(), requestDto.getToken());
 
         User user = findSocialUser(requestDto.getProvider(), socialUserResponseDto.getId());
-
-        /*// 이메일이 없는 사용자가 이메일을 직접입력하고 나중에 원래 이메일을 가지고 있는 사용자가 다른 접근할 경우 문제가 생길 수 있음
-        if (user == null && socialUserResponseDto.getEmail() != null) {
-            user = userRepository.findByEmail(socialUserResponseDto.getEmail()).orElse(null);
-
-            // 공급자 id로 조회되지 않지만 이메일로 조회되는 경우 공급자 id 등록
-            if (user != null) {
-                user.setSocial(requestDto.getProvider(), socialUserResponseDto.getId());
-            }
-        }*/
-
         if (user == null) {
             throw new BusinessException(ErrorCode.REQUIRE_USER_JOIN);
         }

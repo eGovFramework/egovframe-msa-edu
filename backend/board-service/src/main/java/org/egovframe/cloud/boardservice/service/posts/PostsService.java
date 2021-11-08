@@ -86,7 +86,7 @@ public class PostsService extends AbstractService {
      * @param postsCount 게시물 수
      * @return Map<Integer, BoardResponseDto> 최근 게시물이 포함된 게시판 상세 응답 DTO Map
      */
-    public Map<Integer, BoardResponseDto> findNewest(List<Integer> boardNos, Integer postsCount) {
+    public Map<Integer, BoardResponseDto> findNewest(List<Integer> boardNos, Integer postsCount) throws InvalidValueException {
         if (boardNos == null || boardNos.isEmpty())
             throw new InvalidValueException(getMessage("err.invalid.input.value"));
 
@@ -133,7 +133,7 @@ public class PostsService extends AbstractService {
      * @return PostsResponseDto 게시물 응답 DTO
      */
     @Transactional
-    public PostsResponseDto findById(Integer boardNo, Integer postsNo, Integer deleteAt, String userId, String ipAddr, RequestDto requestDto) {
+    public PostsResponseDto findById(Integer boardNo, Integer postsNo, Integer deleteAt, String userId, String ipAddr, RequestDto requestDto) throws EntityNotFoundException, BusinessMessageException {
         PostsResponseDto dto = postsRepository.findById(boardNo, postsNo, userId, ipAddr);
 
         if (dto == null) {

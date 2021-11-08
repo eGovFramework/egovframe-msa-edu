@@ -5,7 +5,7 @@ public class UserPasswordChangeEmailTemplate {
     /**
      * 객체 생성 금지
      */
-    private UserPasswordChangeEmailTemplate() {
+    private UserPasswordChangeEmailTemplate() throws IllegalStateException {
         throw new IllegalStateException("user password change email template class");
     }
 

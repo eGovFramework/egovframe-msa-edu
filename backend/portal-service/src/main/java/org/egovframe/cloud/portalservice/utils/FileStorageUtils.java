@@ -149,9 +149,9 @@ public class FileStorageUtils implements StorageUtils {
             Base64.Decoder decoder = Base64.getDecoder();
             byte[] decodeBytes = decoder.decode(requestDto.getFileBase64().getBytes());
 
-            FileOutputStream outputStream = new FileOutputStream(file);
-            outputStream.write(decodeBytes);
-            outputStream.close();
+            try (FileOutputStream outputStream = new FileOutputStream(file)) {
+                outputStream.write(decodeBytes);
+            }
 
             return filename;
 
@@ -285,20 +285,20 @@ public class FileStorageUtils implements StorageUtils {
     public AttachmentImageResponseDto loadImage(String imagename) {
         try {
             Path imagePath = this.fileStorageLocation.resolve(imagename).normalize();
-            InputStream is = new FileInputStream(imagePath.toFile());
+            try (InputStream is = new FileInputStream(imagePath.toFile())) {
+                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                int read;
+                byte[] data = new byte[(int) imagePath.toFile().length()];
+                while ((read = is.read(data, 0, data.length)) != -1) {
+                    buffer.write(data, 0, read);
+                }
 
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            int read;
-            byte[] data = new byte[(int) imagePath.toFile().length()];
-            while ((read = is.read(data, 0, data.length)) != -1) {
-                buffer.write(data, 0, read);
+                return AttachmentImageResponseDto.builder()
+                        .mimeType(getContentType(imagename))
+                        .data(data)
+                        .build();
             }
-            is.close();
 
-            return AttachmentImageResponseDto.builder()
-                    .mimeType(getContentType(imagename))
-                    .data(data)
-                    .build();
         } catch (FileNotFoundException | NoSuchFileException ex) {
             // 파일을 찾을 수 없습니다.
             throw new BusinessMessageException(messageUtil.getMessage("valid.file.not_found"));
