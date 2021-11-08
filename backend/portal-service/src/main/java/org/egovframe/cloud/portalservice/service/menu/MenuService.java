@@ -103,7 +103,7 @@ public class MenuService extends AbstractService {
      * @return
      */
     @Transactional
-    public MenuTreeResponseDto updateName(Long menuId, String name) {
+    public MenuTreeResponseDto updateName(Long menuId, String name) throws EntityNotFoundException {
         Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(() ->
                         new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu")}) + " ID= " + menuId));
@@ -122,7 +122,7 @@ public class MenuService extends AbstractService {
      * @return
      */
     @Transactional
-    public MenuResponseDto update(Long menuId, MenuUpdateRequestDto updateRequestDto) {
+    public MenuResponseDto update(Long menuId, MenuUpdateRequestDto updateRequestDto) throws EntityNotFoundException, BusinessMessageException {
         Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(() ->
                         new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu")}) + " ID= " + menuId));

@@ -208,7 +208,7 @@ public class FtpStorageUtils implements StorageUtils {
      * @param isTemp   .temp 파일 생성 여부
      * @return
      */
-    public String storeFile(MultipartFile file, String basePath, boolean isTemp) {
+    public String storeFile(MultipartFile file, String basePath, boolean isTemp) throws BusinessMessageException {
         String filename = getPhysicalFileName(file.getOriginalFilename(), isTemp);
 
         if (filename.contains("..")) {

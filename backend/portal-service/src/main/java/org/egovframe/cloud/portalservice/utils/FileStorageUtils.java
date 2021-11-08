@@ -104,7 +104,7 @@ public class FileStorageUtils implements StorageUtils {
         try {
             mimeType = Files.probeContentType(filePath);
         } catch (IOException ex) {
-            //ignore
+            log.error("Files.probeContentType", ex);
         }
 
         return mimeType == null ? URLConnection.guessContentTypeFromName(filePath.toString()) : mimeType;
@@ -279,24 +279,25 @@ public class FileStorageUtils implements StorageUtils {
      * image 태그에서 호출 시 byte 배열로 return
      *
      * @param imagename
-     * @return
+     * @return public String getContentType(String filename) {
      * @throws IOException
      */
     public AttachmentImageResponseDto loadImage(String imagename) {
         try {
             Path imagePath = this.fileStorageLocation.resolve(imagename).normalize();
             try (InputStream is = new FileInputStream(imagePath.toFile())) {
-                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                int read;
-                byte[] data = new byte[(int) imagePath.toFile().length()];
-                while ((read = is.read(data, 0, data.length)) != -1) {
-                    buffer.write(data, 0, read);
-                }
+                try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
+                    int read;
+                    byte[] data = new byte[(int) imagePath.toFile().length()];
+                    while ((read = is.read(data, 0, data.length)) != -1) {
+                        buffer.write(data, 0, read);
+                    }
 
-                return AttachmentImageResponseDto.builder()
-                        .mimeType(getContentType(imagename))
-                        .data(data)
-                        .build();
+                    return AttachmentImageResponseDto.builder()
+                            .mimeType(getContentType(imagename))
+                            .data(data)
+                            .build();
+                }
             }
 
         } catch (FileNotFoundException | NoSuchFileException ex) {
