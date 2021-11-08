@@ -233,14 +233,16 @@ const ReserveEdit = (props: ReserveEditProps) => {
       draft.attachmentCode = attachmentCode
       draft.userId = user.userId
       draft.userEmail = user.email
-      draft.reserveStartDate = convertStringToDateFormat(
-        draft.reserveStartDate,
-        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-      )
-      draft.reserveEndDate = convertStringToDateFormat(
-        draft.reserveEndDate,
-        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-      )
+      if (draft.categoryId !== 'education') {
+        draft.reserveStartDate = convertStringToDateFormat(
+          draft.reserveStartDate,
+          "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+        )
+        draft.reserveEndDate = convertStringToDateFormat(
+          draft.reserveEndDate,
+          "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+        )
+      }
     })
 
     if (
