@@ -22,10 +22,14 @@ npm run dev
 # or
 yarn dev
 
-# 소규모 모드
+# 소규모 모드 for Windows
+npm run dev:smWin
+# 소규모 모드 for others
 npm run dev:sm
 
-# 대규모 모드
+# 대규모 모드 for Windows
+npm run dev:lgWin
+# 대규모 모드 for others
 npm run dev:lg
 ```
 

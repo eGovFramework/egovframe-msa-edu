@@ -8,8 +8,10 @@
   },
   "scripts": {
     "dev": "ts-node --project tsconfig.server.json server/index.ts",
-    "dev:sm": "set SITE_ID=3&&npm run dev",
-    "dev:lg": "set SITE_ID=2&&npm run dev",
+    "dev:sm": "SITE_ID=3 npm run dev",
+    "dev:lg": "SITE_ID=2 npm run dev",
+    "dev:smWin": "set SITE_ID=3&&npm run dev",
+    "dev:lgWin": "set SITE_ID=2&&npm run dev",
     "build:server": "tsc --project tsconfig.server.json",
     "build:next": "next build",
     "prebuild": "rimraf ./build",
