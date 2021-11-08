@@ -59,12 +59,12 @@ class PolicyApiControllerTest {
             }
 
             policyRepository.save(Policy.builder()
-                .type(type)
-                .title(title)
-                .isUse(true)
-                .regDate(ZonedDateTime.now())
-                .contents(contents)
-                .build());
+                    .type(type)
+                    .title(title)
+                    .isUse(true)
+                    .regDate(ZonedDateTime.now())
+                    .contents(contents)
+                    .build());
         }
     }
 
@@ -81,12 +81,12 @@ class PolicyApiControllerTest {
         String contents = "test contents";
 
         PolicySaveRequestDto requestDto = PolicySaveRequestDto.builder()
-            .type(type)
-            .title(title)
-            .isUse(true)
-            .regDate(ZonedDateTime.now())
-            .contents(contents)
-            .build();
+                .type(type)
+                .title(title)
+                .isUse(true)
+                .regDate(ZonedDateTime.now())
+                .contents(contents)
+                .build();
 
 
         //when
@@ -106,7 +106,7 @@ class PolicyApiControllerTest {
         String url = API_URL+"?size=3%page=0";
         //when
         ResponseEntity<RestResponsePage<PolicyResponseDto>> responseEntity =
-            restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<PolicyResponseDto>>() {});
+                restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<PolicyResponseDto>>() {});
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -147,17 +147,17 @@ class PolicyApiControllerTest {
     public void 이용약관_수정_된다() throws Exception {
         //given
         Long id = policyRepository.save(Policy.builder()
-            .type("TOS")
-            .title("title")
-            .contents("contents!!!!")
-            .build()
+                .type("TOS")
+                .title("title")
+                .contents("contents!!!!")
+                .build()
         ).getId();
         String url = API_URL +"/"+id;
 
         PolicyUpdateRequestDto requestDto = PolicyUpdateRequestDto.builder()
-            .title("update title")
-            .contents("update Details")
-            .build();
+                .title("update title")
+                .contents("update Details")
+                .build();
 
         //when
         HttpEntity<PolicyUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
@@ -177,10 +177,10 @@ class PolicyApiControllerTest {
     public void 이용약관_삭제_한다() {
         //given
         Long id = policyRepository.save(Policy.builder()
-            .type("TOS")
-            .title("title")
-            .contents("contents!!!!")
-            .build()
+                .type("TOS")
+                .title("title")
+                .contents("contents!!!!")
+                .build()
         ).getId();
         String url = API_URL +"/"+id;
 
@@ -196,11 +196,11 @@ class PolicyApiControllerTest {
     public void 사용여부_수정_한다() throws Exception {
         //given
         Long id = policyRepository.save(Policy.builder()
-            .type("TOS")
-            .title("title")
-            .isUse(true)
-            .contents("contents!!!")
-            .build()
+                .type("TOS")
+                .title("title")
+                .isUse(true)
+                .contents("contents!!!")
+                .build()
         ).getId();
         String url = API_URL +"/"+id+"/"+false;
 

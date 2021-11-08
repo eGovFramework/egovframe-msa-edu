@@ -29,8 +29,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
-    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
-    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.8'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

@@ -38,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable()
             .and()
                 .authorizeRequests()
+                .antMatchers("/actuator/?*").permitAll()
                 .anyRequest().authenticated()
             .and()
                 .httpBasic();

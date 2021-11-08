@@ -41,26 +41,25 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j'
     implementation 'com.playtika.reactivefeign:feign-reactor-spring-cloud-starter:3.1.0'
 
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'        // logstash logback
 
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
-
     implementation 'dev.miku:r2dbc-mysql:0.8.2.RELEASE'
     implementation 'mysql:mysql-connector-java'
 
-    // swagger api docs
-    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.10'
+    // openapi docs
+    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.8'
 
     // bolcking 호출 감지
-//    implementation 'io.projectreactor:reactor-tools:3.4.9'
-//    implementation 'io.projectreactor.tools:blockhound:1.0.6.RELEASE'
+    implementation 'io.projectreactor:reactor-tools:3.4.9'
+    implementation 'io.projectreactor.tools:blockhound:1.0.6.RELEASE'
 
     //messaging
     implementation 'org.springframework.cloud:spring-cloud-stream'
     implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
-//    implementation 'net.java.dev.jna:jna:5.9.0' // byte-buddy (No compatible attachment provider is available.)
 
     //lombok
     implementation 'org.projectlombok:lombok'

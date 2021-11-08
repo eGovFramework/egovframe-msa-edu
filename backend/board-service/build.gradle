@@ -54,9 +54,8 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-stream'
     implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
 
-    // swagger
-    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
-    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+    // openapi docs
+    implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.5.8'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     // lombok
