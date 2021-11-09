@@ -16,6 +16,7 @@ services:
       MYSQL_HOSTNAME: mysql
       RABBITMQ_HOSTNAME: rabbitmq
       ZIPKIN_HOSTNAME: zipkin
+      TOKEN_SECRET: egovframe
       TZ: Asia/Seoul
     depends_on:
       config:
@@ -30,11 +31,14 @@ services:
     environment:
       SPRING_CLOUD_CONFIG_URI: http://config:8888
       SPRING_PROFILES_ACTIVE: default
-      EUREKA_INSTANCE_HOSTNAME: discovery
       MESSAGES_DIRECTORY: /usr/app/msa-attach-volume/messages
       APP_HOME: /usr/app
       logstash_hostname: logstash:5001
+      EUREKA_INSTANCE_HOSTNAME: discovery
       MYSQL_HOSTNAME: mysql
+      RABBITMQ_HOSTNAME: rabbitmq
+      ZIPKIN_HOSTNAME: zipkin
+      TOKEN_SECRET: egovframe
       TZ: Asia/Seoul
     depends_on:
       config:
@@ -49,11 +53,14 @@ services:
     environment:
       SPRING_CLOUD_CONFIG_URI: http://config:8888
       SPRING_PROFILES_ACTIVE: default
-      EUREKA_INSTANCE_HOSTNAME: discovery
       MESSAGES_DIRECTORY: /usr/app/msa-attach-volume/messages
       APP_HOME: /usr/app
       logstash_hostname: logstash:5001
+      EUREKA_INSTANCE_HOSTNAME: discovery
       MYSQL_HOSTNAME: mysql
+      RABBITMQ_HOSTNAME: rabbitmq
+      ZIPKIN_HOSTNAME: zipkin
+      TOKEN_SECRET: egovframe
       TZ: Asia/Seoul
     depends_on:
       config:
