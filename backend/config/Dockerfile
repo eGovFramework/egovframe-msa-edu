@@ -2,6 +2,8 @@
 # base image - openjdk8
 FROM openjdk:8-jre-alpine
 
+# curl(healthcheck)
+RUN apk --no-cache add curl
 # directory 생성
 RUN mkdir -p /usr/app/config
 # jar 파일이 복사되는 위치

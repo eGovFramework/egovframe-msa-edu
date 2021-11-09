@@ -13,7 +13,7 @@ spring:
           search-locations: ${search.location:file:///${user.home}/workspace.edu/egovframe-msa-edu/config} # Windows
 #           search-locations: file://${user.home}/workspace.edu/egovframe-msa-edu/config # MacOS
   rabbitmq:
-    host: localhost
+    host: ${rabbitmq.hostname:localhost}
     port: 5672
     username: guest
     password: guest

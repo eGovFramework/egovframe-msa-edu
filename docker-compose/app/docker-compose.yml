@@ -1,4 +1,4 @@
-version: '3'
+version: '3.2'
 services:
   rabbitmq:
     container_name: rabbitmq
@@ -28,12 +28,19 @@ services:
     volumes:
       - ${HOME}/workspace.edu/egovframe-msa-edu/config:/usr/app/config # volume bind
     environment:
-      ENCRYPT_KEY: token_secret
       SPRING_PROFILES_ACTIVE: native
-      # logstash_hostname: logstash:5001
+      ENCRYPT_KEY: token_secret
+      logstash_hostname: logstash:5001
+      SEARCH_LOCATION: file:///usr/app/config
       RABBITMQ_HOSTNAME: rabbitmq
       ZIPKIN_HOSTNAME: zipkin
       TZ: Asia/Seoul
+    healthcheck:
+      test: curl -f http://localhost:8888/actuator/health || exit 1
+      interval: 10s
+      timeout: 1s
+      retries: 10
+      start_period: 30s
 
   discovery:
     container_name: discovery
@@ -51,7 +58,7 @@ services:
     image: egovframe/msa-apigateway:latest
     ports:
       - "8000:8000"
-    restart: on-failure
+    restart: always
     volumes:
       - ${HOME}/workspace:/usr/app/msa-attach-volume
     environment:
@@ -60,25 +67,33 @@ services:
       EUREKA_INSTANCE_HOSTNAME: discovery
       RABBITMQ_HOSTNAME: rabbitmq
       ZIPKIN_HOSTNAME: zipkin
+      TOKEN_SECRET: egovframe
       APP_HOME: /usr/app
       TZ: Asia/Seoul
+    depends_on:
+      config:
+        condition: service_healthy
 
   userservice:
     container_name: userservice
     image: egovframe/msa-user-service:latest
     restart: always
     volumes:
-      - ${HOME}/workspace.edu/docker-compose:/usr/app/msa-attach-volume
+      - ${HOME}/workspace:/usr/app/msa-attach-volume
     environment:
       SPRING_CLOUD_CONFIG_URI: http://config:8888
       SPRING_PROFILES_ACTIVE: default
+      MESSAGES_DIRECTORY: /usr/app/msa-attach-volume/messages
       APP_HOME: /usr/app
-      # logstash_hostname: logstash:5001
+      logstash_hostname: logstash:5001
       EUREKA_INSTANCE_HOSTNAME: discovery
       MYSQL_HOSTNAME: mysql
       RABBITMQ_HOSTNAME: rabbitmq
       ZIPKIN_HOSTNAME: zipkin
       TZ: Asia/Seoul
+    depends_on:
+      config:
+        condition: service_healthy
 
   boardservice:
     container_name: boardservice
@@ -90,10 +105,14 @@ services:
       SPRING_CLOUD_CONFIG_URI: http://config:8888
       SPRING_PROFILES_ACTIVE: default
       EUREKA_INSTANCE_HOSTNAME: discovery
+      MESSAGES_DIRECTORY: /usr/app/msa-attach-volume/messages
       APP_HOME: /usr/app
-      # logstash_hostname: logstash:5001
+      logstash_hostname: logstash:5001
       MYSQL_HOSTNAME: mysql
       TZ: Asia/Seoul
+    depends_on:
+      config:
+        condition: service_healthy
 
   portalservice:
     container_name: portalservice
@@ -105,10 +124,14 @@ services:
       SPRING_CLOUD_CONFIG_URI: http://config:8888
       SPRING_PROFILES_ACTIVE: default
       EUREKA_INSTANCE_HOSTNAME: discovery
+      MESSAGES_DIRECTORY: /usr/app/msa-attach-volume/messages
       APP_HOME: /usr/app
-      # logstash_hostname: logstash:5001
+      logstash_hostname: logstash:5001
       MYSQL_HOSTNAME: mysql
       TZ: Asia/Seoul
+    depends_on:
+      config:
+        condition: service_healthy
 
 networks:
   default:

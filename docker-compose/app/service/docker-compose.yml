@@ -1,4 +1,4 @@
-version: '3'
+version: '3.2'
 services:
   userservice:
     container_name: userservice
@@ -9,6 +9,7 @@ services:
     environment:
       SPRING_CLOUD_CONFIG_URI: http://config:8888
       SPRING_PROFILES_ACTIVE: default
+      MESSAGES_DIRECTORY: /usr/app/msa-attach-volume/messages
       APP_HOME: /usr/app
       logstash_hostname: logstash:5001
       EUREKA_INSTANCE_HOSTNAME: discovery
@@ -16,6 +17,9 @@ services:
       RABBITMQ_HOSTNAME: rabbitmq
       ZIPKIN_HOSTNAME: zipkin
       TZ: Asia/Seoul
+    depends_on:
+      config:
+        condition: service_healthy
 
   boardservice:
     container_name: boardservice
@@ -27,10 +31,14 @@ services:
       SPRING_CLOUD_CONFIG_URI: http://config:8888
       SPRING_PROFILES_ACTIVE: default
       EUREKA_INSTANCE_HOSTNAME: discovery
+      MESSAGES_DIRECTORY: /usr/app/msa-attach-volume/messages
       APP_HOME: /usr/app
       logstash_hostname: logstash:5001
       MYSQL_HOSTNAME: mysql
       TZ: Asia/Seoul
+    depends_on:
+      config:
+        condition: service_healthy
 
   portalservice:
     container_name: portalservice
@@ -42,10 +50,14 @@ services:
       SPRING_CLOUD_CONFIG_URI: http://config:8888
       SPRING_PROFILES_ACTIVE: default
       EUREKA_INSTANCE_HOSTNAME: discovery
+      MESSAGES_DIRECTORY: /usr/app/msa-attach-volume/messages
       APP_HOME: /usr/app
       logstash_hostname: logstash:5001
       MYSQL_HOSTNAME: mysql
       TZ: Asia/Seoul
+    depends_on:
+      config:
+        condition: service_healthy
 
 networks:
   default:

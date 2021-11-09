@@ -1,4 +1,4 @@
-version: '3'
+version: '3.2'
 services:
   config:
     container_name: config
@@ -9,11 +9,19 @@ services:
     volumes:
       - ${HOME}/workspace.edu/egovframe-msa-edu/config:/usr/app/config # volume bind
     environment:
+      SPRING_PROFILES_ACTIVE: native
       ENCRYPT_KEY: token_secret
       logstash_hostname: logstash:5001
+      SEARCH_LOCATION: file:///usr/app/config
       RABBITMQ_HOSTNAME: rabbitmq
       ZIPKIN_HOSTNAME: zipkin
       TZ: Asia/Seoul
+    healthcheck:
+      test: curl -f http://localhost:8888/actuator/health || exit 1
+      interval: 10s
+      timeout: 1s
+      retries: 10
+      start_period: 30s
 
   discovery:
     container_name: discovery
@@ -31,7 +39,7 @@ services:
     image: egovframe/msa-apigateway:latest
     ports:
       - "8000:8000"
-    restart: on-failure
+    restart: always
     volumes:
       - ${HOME}/workspace:/usr/app/msa-attach-volume
     environment:
@@ -40,10 +48,12 @@ services:
       EUREKA_INSTANCE_HOSTNAME: discovery
       RABBITMQ_HOSTNAME: rabbitmq
       ZIPKIN_HOSTNAME: zipkin
+      TOKEN_SECRET: egovframe
       APP_HOME: /usr/app
       TZ: Asia/Seoul
     depends_on:
-      - config
+      config:
+        condition: service_healthy
 
   rabbitmq:
     container_name: rabbitmq
