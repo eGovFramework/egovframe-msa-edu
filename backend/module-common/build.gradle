@@ -1,0 +1,94 @@
+plugins {
+    id 'org.springframework.boot' version '2.4.5'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    // querydsl
+    id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
+    id 'java'
+}
+
+group 'org.egovframe.cloud'
+version '0.1'
+
+repositories {
+    mavenCentral()
+    maven { url "http://www.egovframe.go.kr/maven/" } // egovframe maven 원격 저장소 TODO https
+}
+
+bootJar {
+    enabled(false)
+}
+jar {
+    enabled(true)
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+ext {
+    set('springCloudVersion', "2020.0.3")
+}
+
+dependencies {
+    // EgovAbstractServiceImpl
+    implementation('org.egovframe.rte:org.egovframe.rte.fdl.cmmn:4.0.0') {
+        exclude group: 'org.egovframe.rte', module: 'org.egovframe.rte.fdl.logging'
+    }
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // LocalValidatorFactoryBean
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    // querydsl
+    implementation 'com.querydsl:querydsl-jpa'
+
+    //openapi docs
+    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+    implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.5.8'
+    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.8'
+
+    //reactive
+    implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    //messaging
+    implementation 'org.springframework.cloud:spring-cloud-stream'
+    implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
+
+    // lombok
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+// querydsl 추가 시작
+def querydslDir = "$buildDir/generated/querydsl"
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+configurations {
+    querydsl.extendsFrom compileClasspath
+}
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+// querydsl 추가 끝
