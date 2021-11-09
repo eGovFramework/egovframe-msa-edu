@@ -74,7 +74,7 @@ public class MessageSourceFiles {
         try {
             Files.createDirectory(Paths.get(fileMessagesDirectory).toAbsolutePath().normalize());
         } catch (FileAlreadyExistsException e) {
-            log.error("메시지 폴더 경로에 파일이나 디렉토리가 이미 존재", e);
+            log.info("메시지 폴더 경로에 파일이나 디렉토리가 이미 존재");
         } catch (IOException e) {
             log.error("메시지 폴더 생성 오류", e);
         }
