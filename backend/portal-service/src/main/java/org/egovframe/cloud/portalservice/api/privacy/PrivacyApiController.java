@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -83,6 +84,7 @@ public class PrivacyApiController {
      * @return PrivacyResponseDto 개인정보처리방침 상세 응답 DTO
      */
     @PostMapping("/api/v1/privacies")
+    @ResponseStatus(HttpStatus.CREATED)
     public PrivacyResponseDto save(@RequestBody @Valid PrivacySaveRequestDto requestDto) {
         return privacyService.save(requestDto);
     }
@@ -117,6 +119,7 @@ public class PrivacyApiController {
      * @param privacyNo 개인정보처리방침 번호
      */
     @DeleteMapping("/api/v1/privacies/{privacyNo}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer privacyNo) {
         privacyService.delete(privacyNo);
     }

@@ -238,7 +238,7 @@ public class BoardApiControllerTest {
         );
 
         // then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         BoardResponseDto dto = responseEntity.getBody();
         assertThat(dto).isNotNull();
@@ -354,7 +354,7 @@ public class BoardApiControllerTest {
         );
 
         // then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
         Optional<Board> board = selectData(boardNo);
         assertThat(board).isNotPresent();

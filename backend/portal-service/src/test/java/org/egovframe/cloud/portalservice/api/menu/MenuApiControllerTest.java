@@ -232,7 +232,7 @@ class MenuApiControllerTest {
         ResponseEntity<MenuTreeResponseDto> responseEntity = restTemplate.postForEntity(url, menuTreeRequestDto, MenuTreeResponseDto.class);
 
         //then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         System.out.println(responseEntity.getBody());
         assertThat(responseEntity.getBody()).extracting("name").isEqualTo(menuTreeRequestDto.getName());
 

@@ -8,6 +8,7 @@ import org.egovframe.cloud.userservice.api.role.dto.RoleAuthorizationSaveRequest
 import org.egovframe.cloud.userservice.service.role.RoleAuthorizationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -59,6 +60,7 @@ public class RoleAuthorizationApiController {
      * @return List<RoleAuthorizationListResponseDto> 등록한 권한 인가 목록 응답 DTO
      */
     @PostMapping("/api/v1/role-authorizations")
+    @ResponseStatus(HttpStatus.CREATED)
     public List<RoleAuthorizationListResponseDto> save(@RequestBody @Valid List<RoleAuthorizationSaveRequestDto> requestDtoList) {
         return roleAuthorizationService.save(requestDtoList);
     }
@@ -69,6 +71,7 @@ public class RoleAuthorizationApiController {
      * @param requestDtoList 권한 인가 삭제 요청 DTO List
      */
     @PutMapping("/api/v1/role-authorizations")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@RequestBody @Valid List<RoleAuthorizationDeleteRequestDto> requestDtoList) {
         roleAuthorizationService.delete(requestDtoList);
     }

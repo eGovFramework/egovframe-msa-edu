@@ -48,6 +48,6 @@ public class MenuDnDRequestDto {
         this.parentId = parentId;
         this.level = level;
         this.icon = icon;
-        this.children = new ArrayList<>(children);
+        this.children = children == null ? null : new ArrayList<>(children);
     }
 }

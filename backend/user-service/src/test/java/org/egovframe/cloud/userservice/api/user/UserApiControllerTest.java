@@ -324,7 +324,7 @@ class UserApiControllerTest {
         // then
         resultActions
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().string("true"));
 
 //        userRepository.findByEmail("test_join" + TEST_COM).ifPresent(u -> deleteUser(u.getId()));

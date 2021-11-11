@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -72,6 +73,7 @@ public class ContentApiController {
      * @return ContentResponseDto 컨텐츠 상세 응답 DTO
      */
     @PostMapping("/api/v1/contents")
+    @ResponseStatus(HttpStatus.CREATED)
     public ContentResponseDto save(@RequestBody @Valid ContentSaveRequestDto requestDto) {
         return contentService.save(requestDto);
     }
@@ -94,6 +96,7 @@ public class ContentApiController {
      * @param contentNo 컨텐츠 번호
      */
     @DeleteMapping("/api/v1/contents/{contentNo}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer contentNo) {
         contentService.delete(contentNo);
     }

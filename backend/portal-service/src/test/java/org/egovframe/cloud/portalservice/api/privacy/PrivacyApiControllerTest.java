@@ -232,7 +232,7 @@ class PrivacyApiControllerTest {
         );
 
         // then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         PrivacyResponseDto dto = responseEntity.getBody();
         assertThat(dto).isNotNull();
@@ -354,7 +354,7 @@ class PrivacyApiControllerTest {
         );
 
         // then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
         Optional<Privacy> privacy = selectData(privacyNo);
         assertThat(privacy).isNotPresent();

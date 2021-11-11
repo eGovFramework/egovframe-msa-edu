@@ -2,6 +2,7 @@ package org.egovframe.cloud.portalservice.api.message;
 
 import java.util.List;
 
+import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.egovframe.cloud.portalservice.api.message.dto.MessageListResponseDto;
 import org.egovframe.cloud.portalservice.domain.message.Message;
@@ -52,10 +53,14 @@ class MessageApiControllerTest {
         String lang = "ko";
 
         // when
-        ResponseEntity<List<MessageListResponseDto>> responseEntity = restTemplate.exchange(API_URL + lang, HttpMethod.GET, null, new ParameterizedTypeReference<List<MessageListResponseDto>>(){});
+        ResponseEntity<Map<String, String>> responseEntity =
+            restTemplate.exchange(API_URL + lang, HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, String>>(){});
 
         // then
-        responseEntity.getBody().forEach(messageListResponseDto -> System.out.println("id = " + messageListResponseDto.getMessageId() + ", messageName() = " + messageListResponseDto.getMessageName()));
+        Map<String, String> body = responseEntity.getBody();
+        body.entrySet().stream().forEach(entry -> {
+            System.out.println("id = " + entry.getKey() + ", messageName() = " + entry.getValue());
+        });
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(responseEntity.getBody().size()).isEqualTo(3);
     }

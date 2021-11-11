@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.portalservice.api.menu.dto.*;
 import org.egovframe.cloud.portalservice.domain.menu.SiteRepository;
 import org.egovframe.cloud.portalservice.service.menu.MenuService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -75,6 +76,7 @@ public class MenuApiController {
      * @return
      */
     @PostMapping(value = "/api/v1/menus")
+    @ResponseStatus(HttpStatus.CREATED)
     public MenuTreeResponseDto save(@RequestBody @Valid MenuTreeRequestDto menuTreeRequestDto) {
         return menuService.save(menuTreeRequestDto);
     }
@@ -121,6 +123,7 @@ public class MenuApiController {
      * @param menuId
      */
     @DeleteMapping(value = "/api/v1/menus/{menuId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long menuId) {
         menuService.delete(menuId);
     }

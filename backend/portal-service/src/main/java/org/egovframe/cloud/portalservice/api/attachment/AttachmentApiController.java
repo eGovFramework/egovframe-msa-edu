@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +57,7 @@ public class AttachmentApiController {
      * @throws Exception
      */
     @PostMapping(value = "/api/v1/upload")
+    @ResponseStatus(HttpStatus.CREATED)
     public AttachmentFileResponseDto upload(@RequestParam("file") MultipartFile file) {
         return attachmentService.uploadFile(file);
     }
@@ -69,6 +71,7 @@ public class AttachmentApiController {
      * @return
      */
     @PostMapping(value = "/api/v1/upload/multi")
+    @ResponseStatus(HttpStatus.CREATED)
     public List<AttachmentFileResponseDto> uploadMulti(@RequestParam("files") List<MultipartFile> files) {
         return attachmentService.uploadFiles(files);
     }
@@ -81,6 +84,7 @@ public class AttachmentApiController {
      * @return
      */
     @PostMapping(value = "/api/v1/upload/editor")
+    @ResponseStatus(HttpStatus.CREATED)
     public AttachmentEditorResponseDto uploadEditor(@RequestBody AttachmentBase64RequestDto editorRequestDto) {
         return attachmentService.uploadEditor(editorRequestDto);
     }
@@ -210,6 +214,7 @@ public class AttachmentApiController {
      * @return 새로 생성한 첨부파일 code
      */
     @PostMapping(value = "/api/v1/attachments/file")
+    @ResponseStatus(HttpStatus.CREATED)
     public String save(@RequestBody List<AttachmentTempSaveRequestDto> saveRequestDtoList) {
         return attachmentService.save(saveRequestDtoList);
     }
@@ -260,6 +265,7 @@ public class AttachmentApiController {
      * @param uniqueId
      */
     @DeleteMapping(value = "/api/v1/attachments/{uniqueId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable String uniqueId) {
         attachmentService.delete(uniqueId);
     }
@@ -273,6 +279,7 @@ public class AttachmentApiController {
      * @return
      */
     @PostMapping(value = "/api/v1/attachments/upload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @ResponseStatus(HttpStatus.CREATED)
     public String uploadAndSave(@RequestPart(value = "files", required = true) List<MultipartFile> files,
                                 @RequestPart(value = "info", required = false) AttachmentUploadRequestDto uploadRequestDto) {
         return attachmentService.uploadAndSave(files, uploadRequestDto);
@@ -339,6 +346,7 @@ public class AttachmentApiController {
      * @param attachmentCode
      */
     @DeleteMapping("/api/v1/attachments/{attachmentCode}/children")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAllEmptyEntity(@PathVariable String attachmentCode) {
         attachmentService.deleteAllEmptyEntity(attachmentCode);
     }

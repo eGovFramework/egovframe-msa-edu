@@ -189,7 +189,7 @@ class MenuRoleApiControllerTest {
                 restTemplate.exchange("/api/v1/menu-roles", HttpMethod.POST, httpEntity, String.class);
 
         //then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(responseEntity.getBody()).isEqualTo("Success");
 
         List<MenuRole> roles = menuRoleRepository.findAll();

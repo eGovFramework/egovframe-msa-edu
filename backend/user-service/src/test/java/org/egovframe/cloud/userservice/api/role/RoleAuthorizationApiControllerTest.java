@@ -228,7 +228,7 @@ class RoleAuthorizationApiControllerTest {
         // then
         resultActions
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isCreated());
 
         String responseData = resultActions.andReturn().getResponse().getContentAsString();
         JSONArray jsonArray = new JSONArray(responseData);
@@ -282,7 +282,7 @@ class RoleAuthorizationApiControllerTest {
         // then
         resultActions
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         List<RoleAuthorization> entityList = roleAuthorizationRepository.findAll(Sort.by(Sort.Direction.ASC, "roleAuthorizationId.authorizationNo"));
         for (int i = entityList.size() - 1; i >= 0; i--) {

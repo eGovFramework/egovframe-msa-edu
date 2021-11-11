@@ -187,7 +187,7 @@ class AttachmentApiControllerTest {
         ResponseEntity<AttachmentEditorResponseDto> responseEntity =
                 restTemplate.postForEntity(url, requestDto, AttachmentEditorResponseDto.class);
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(responseEntity.getBody().getOriginalFileName()).isEqualTo(testFile.getFilename());
     }
 
@@ -209,7 +209,7 @@ class AttachmentApiControllerTest {
                 restTemplate.postForEntity(url, requestEntity, AttachmentFileResponseDto.class);
 
         //then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
     }
 
@@ -234,7 +234,7 @@ class AttachmentApiControllerTest {
                         new ParameterizedTypeReference<List<AttachmentFileResponseDto>>() {});
 
         //then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
     }
 
@@ -273,7 +273,7 @@ class AttachmentApiControllerTest {
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, saveRequestDtoList, String.class);
 
         //then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
     @Test
@@ -454,7 +454,7 @@ class AttachmentApiControllerTest {
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestEntity, String.class);
 
         //then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         List<Attachment> attachmentList = attachmentRepository.findByCode(responseEntity.getBody());
         attachmentList.stream().forEach(attachment -> {
             Path filePath = Paths.get(fileStorageUtils.getFileStorageLocation()+"/" +attachment.getPhysicalFileName())

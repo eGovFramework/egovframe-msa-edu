@@ -289,7 +289,7 @@ class BannerApiControllerTest {
         );
 
         // then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         BannerResponseDto dto = responseEntity.getBody();
         assertThat(dto).isNotNull();
@@ -386,7 +386,7 @@ class BannerApiControllerTest {
         );
 
         // then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
         Optional<Banner> banner = selectData(bannerNo);
         assertThat(banner).isNotPresent();

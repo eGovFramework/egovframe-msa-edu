@@ -320,7 +320,7 @@ class CommentApiControllerTest {
         );
 
         // then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         CommentResponseDto dto = responseEntity.getBody();
         assertThat(dto).isNotNull();
@@ -476,7 +476,7 @@ class CommentApiControllerTest {
         );
 
         // then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
         Optional<Comment> comment = selectData(boardNo, postsNo, commentNo);
         assertThat(comment).isPresent();

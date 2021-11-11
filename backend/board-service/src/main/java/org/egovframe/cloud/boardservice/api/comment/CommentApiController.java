@@ -6,6 +6,7 @@ import org.egovframe.cloud.boardservice.api.comment.dto.CommentSaveRequestDto;
 import org.egovframe.cloud.boardservice.api.comment.dto.CommentUpdateRequestDto;
 import org.egovframe.cloud.boardservice.service.comment.CommentService;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -94,6 +95,7 @@ public class CommentApiController {
      * @param requestDto 댓글 등록 요청 DTO
      */
     @PostMapping("/api/v1/comments")
+    @ResponseStatus(HttpStatus.CREATED)
     public CommentResponseDto save(@RequestBody @Valid CommentSaveRequestDto requestDto) {
         return commentService.save(requestDto);
     }
@@ -119,6 +121,7 @@ public class CommentApiController {
      * @param commentNo 댓글 번호
      */
     @DeleteMapping("/api/v1/comments/delete/{boardNo}/{postsNo}/{commentNo}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteByCreator(@PathVariable Integer boardNo, @PathVariable Integer postsNo, @PathVariable Integer commentNo) {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -143,6 +146,7 @@ public class CommentApiController {
      * @param commentNo 댓글 번호
      */
     @DeleteMapping("/api/v1/comments/{boardNo}/{postsNo}/{commentNo}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer boardNo, @PathVariable Integer postsNo, @PathVariable Integer commentNo) {
         commentService.delete(boardNo, postsNo, commentNo);
     }

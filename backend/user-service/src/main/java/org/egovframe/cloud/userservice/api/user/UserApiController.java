@@ -11,6 +11,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,6 +73,7 @@ public class UserApiController {
      * @return
      */
     @PostMapping("/api/v1/users")
+    @ResponseStatus(HttpStatus.CREATED)
     public Long save(@RequestBody @Valid UserSaveRequestDto requestDto) {
         return userService.save(requestDto);
     }
@@ -153,6 +155,7 @@ public class UserApiController {
      * @return Boolean 성공 여부
      */
     @PostMapping("/api/v1/users/join")
+    @ResponseStatus(HttpStatus.CREATED)
     public Boolean join(@RequestBody @Valid UserJoinRequestDto requestDto) {
         return userService.join(requestDto);
     }

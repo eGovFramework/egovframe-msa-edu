@@ -245,7 +245,7 @@ class AuthorizationApiControllerTest {
         // then
         resultActions
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isCreated());
 
         String responseData = resultActions.andReturn().getResponse().getContentAsString();
         JSONObject jsonObject = new JSONObject(responseData);
@@ -333,7 +333,7 @@ class AuthorizationApiControllerTest {
         // then
         resultActions
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         Optional<Authorization> authorization = selectData(authorizationNo);
         assertThat(authorization).isNotPresent();

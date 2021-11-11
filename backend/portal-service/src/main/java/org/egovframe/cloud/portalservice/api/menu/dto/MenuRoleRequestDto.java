@@ -54,6 +54,6 @@ public class MenuRoleRequestDto {
         this.sortSeq = sortSeq;
         this.icon = icon;
         this.level = level;
-        this.children = new ArrayList<>(children);
+        this.children = children == null ? null : new ArrayList<>(children);
     }
 }

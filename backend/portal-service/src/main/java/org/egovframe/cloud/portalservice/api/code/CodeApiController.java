@@ -10,6 +10,7 @@ import org.egovframe.cloud.portalservice.domain.code.CodeRepository;
 import org.egovframe.cloud.portalservice.service.code.CodeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -79,6 +80,7 @@ public class CodeApiController {
      * @return
      */
     @PostMapping("/api/v1/codes")
+    @ResponseStatus(HttpStatus.CREATED)
     public String save(@RequestBody @Valid CodeSaveRequestDto requestDto) {
         return codeService.save(requestDto);
     }
@@ -113,6 +115,7 @@ public class CodeApiController {
      * @param codeId
      */
     @DeleteMapping("/api/v1/codes/{codeId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable String codeId) {
         codeService.delete(codeId);
     }

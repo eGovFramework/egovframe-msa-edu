@@ -203,14 +203,14 @@ public class PostsResponseDto implements Serializable {
      * 이전 게시물
      */
     public void setPrevPosts(List<PostsSimpleResponseDto> prevPosts) {
-        this.prevPosts = new ArrayList<>(prevPosts);
+        this.prevPosts = prevPosts == null ? null : new ArrayList<>(prevPosts);
     }
 
     /**
      * 다음 게시물
      */
     public void setNextPosts(List<PostsSimpleResponseDto> nextPosts) {
-        this.nextPosts = new ArrayList<>(nextPosts);
+        this.nextPosts = nextPosts == null ? null : new ArrayList<>(nextPosts);
     }
 
 }

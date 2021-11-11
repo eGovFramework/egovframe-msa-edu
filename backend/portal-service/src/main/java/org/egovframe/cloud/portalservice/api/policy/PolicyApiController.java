@@ -9,6 +9,7 @@ import org.egovframe.cloud.portalservice.api.policy.dto.PolicyUpdateRequestDto;
 import org.egovframe.cloud.portalservice.service.policy.PolicyService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -76,6 +77,7 @@ public class PolicyApiController {
      * @return
      */
     @PostMapping("/api/v1/policies")
+    @ResponseStatus(HttpStatus.CREATED)
     public Long save(@RequestBody PolicySaveRequestDto saveRequestDto) {
         return policyService.save(saveRequestDto);
     }
@@ -110,6 +112,7 @@ public class PolicyApiController {
      * @param id
      */
     @DeleteMapping("/api/v1/policies/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         policyService.delete(id);
     }

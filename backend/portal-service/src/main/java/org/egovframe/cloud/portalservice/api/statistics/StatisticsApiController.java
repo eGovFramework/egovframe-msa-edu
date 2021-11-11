@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.egovframe.cloud.portalservice.api.statistics.dto.StatisticsResponseDto;
 import org.egovframe.cloud.portalservice.api.statistics.dto.StatisticsYMRequestDto;
 import org.egovframe.cloud.portalservice.service.statistics.StatisticsService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,6 +60,7 @@ public class StatisticsApiController {
      * @param request
      */
     @PostMapping("/api/v1/statistics/{statisticsId}")
+    @ResponseStatus(HttpStatus.CREATED)
     public void save(@PathVariable String statisticsId, HttpServletRequest request) {
         statisticsService.save(request, statisticsId);
     }

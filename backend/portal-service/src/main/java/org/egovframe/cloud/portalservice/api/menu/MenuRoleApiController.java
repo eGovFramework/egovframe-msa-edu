@@ -7,6 +7,7 @@ import org.egovframe.cloud.portalservice.api.menu.dto.MenuRoleResponseDto;
 import org.egovframe.cloud.portalservice.api.menu.dto.MenuSideResponseDto;
 import org.egovframe.cloud.portalservice.domain.user.User;
 import org.egovframe.cloud.portalservice.service.menu.MenuRoleService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,6 +55,7 @@ public class MenuRoleApiController {
      * @return
      */
     @PostMapping("/api/v1/menu-roles")
+    @ResponseStatus(HttpStatus.CREATED)
     public String save(@RequestBody List<MenuRoleRequestDto> menuRoleRequestDtoList) {
         return menuRoleService.save(menuRoleRequestDtoList);
     }

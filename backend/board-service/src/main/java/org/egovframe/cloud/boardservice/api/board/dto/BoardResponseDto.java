@@ -194,7 +194,7 @@ public class BoardResponseDto implements Serializable {
      * @param posts 게시물 목록
      */
     public void setNewestPosts(List<PostsSimpleResponseDto> posts) {
-        this.posts = new ArrayList<>(posts);
+        this.posts = posts == null ? null : new ArrayList<>(posts);
     }
 
 }

@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -132,6 +133,7 @@ public class PostsApiController {
      * @return PostsResponseDto 게시물 상세 응답 DTO
      */
     @PostMapping("/api/v1/posts/save/{boardNo}")
+    @ResponseStatus(HttpStatus.CREATED)
     public PostsResponseDto saveByCreator(@PathVariable Integer boardNo, @RequestBody @Valid PostsSimpleSaveRequestDto requestDto) {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
         return postsService.save(boardNo, requestDto, userId);
@@ -159,6 +161,7 @@ public class PostsApiController {
      * @param postsNo 게시물 번호
      */
     @DeleteMapping("/api/v1/posts/remove/{boardNo}/{postsNo}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteByCreator(@PathVariable Integer boardNo, @PathVariable Integer postsNo) {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -173,6 +176,7 @@ public class PostsApiController {
      * @return PostsResponseDto 게시물 상세 응답 DTO
      */
     @PostMapping("/api/v1/posts/{boardNo}")
+    @ResponseStatus(HttpStatus.CREATED)
     public PostsResponseDto save(@PathVariable Integer boardNo, @RequestBody @Valid PostsSaveRequestDto requestDto) {
         return postsService.save(boardNo, requestDto);
     }
@@ -222,6 +226,7 @@ public class PostsApiController {
      * @param requestDtoList 게시물 삭제 요청 DTO List
      */
     @PutMapping("/api/v1/posts/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@RequestBody @Valid List<PostsDeleteRequestDto> requestDtoList) {
         postsService.delete(requestDtoList);
     }

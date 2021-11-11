@@ -138,7 +138,7 @@ public class Posts extends BaseEntity {
         this.noticeAt = noticeAt;
         this.deleteAt = deleteAt;
         this.creator = creator;
-        this.comments = new ArrayList<>(comments);
+        this.comments = comments == null ? null : new ArrayList<>(comments);
     }
 
     /**

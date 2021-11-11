@@ -90,7 +90,7 @@ public class Authorization extends BaseEntity {
         this.urlPatternValue = urlPatternValue;
         this.httpMethodCode = httpMethodCode;
         this.sortSeq = sortSeq;
-        this.roleAuthorizations = new ArrayList<>(roleAuthorizations);
+        this.roleAuthorizations = roleAuthorizations == null ? null : new ArrayList<>(roleAuthorizations);
     }
 
     /**

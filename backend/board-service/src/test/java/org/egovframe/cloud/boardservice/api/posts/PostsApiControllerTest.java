@@ -442,7 +442,7 @@ class PostsApiControllerTest {
         );
 
         // then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         PostsResponseDto dto = responseEntity.getBody();
         assertThat(dto).isNotNull();
@@ -640,7 +640,7 @@ class PostsApiControllerTest {
         );
 
         // then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
         List<Posts> list = postsRepository.findAll();
 

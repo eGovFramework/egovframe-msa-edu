@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -88,6 +89,7 @@ public class BoardApiController {
      * @return BoardResponseDto 게시판 상세 응답 DTO
      */
     @PostMapping("/api/v1/boards")
+    @ResponseStatus(HttpStatus.CREATED)
     public BoardResponseDto save(@RequestBody @Valid BoardSaveRequestDto requestDto) {
         return boardService.save(requestDto);
     }
@@ -110,6 +112,7 @@ public class BoardApiController {
      * @param boardNo 게시판 번호
      */
     @DeleteMapping("/api/v1/boards/{boardNo}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer boardNo) {
         boardService.delete(boardNo);
     }

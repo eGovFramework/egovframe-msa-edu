@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -94,6 +95,7 @@ public class BannerApiController {
      * @return BannerResponseDto 배너 상세 응답 DTO
      */
     @PostMapping("/api/v1/banners")
+    @ResponseStatus(HttpStatus.CREATED)
     public BannerResponseDto save(@RequestBody @Valid BannerSaveRequestDto requestDto) {
         return bannerService.save(requestDto);
     }
@@ -128,6 +130,7 @@ public class BannerApiController {
      * @param bannerNo 배너 번호
      */
     @DeleteMapping("/api/v1/banners/{bannerNo}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer bannerNo) {
         bannerService.delete(bannerNo);
     }

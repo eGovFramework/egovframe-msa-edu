@@ -193,7 +193,7 @@ class ContentApiControllerTest {
 				});
 
 		// then
-		assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
 		ContentResponseDto dto = responseEntity.getBody();
 		assertThat(dto).isNotNull();
@@ -270,7 +270,7 @@ class ContentApiControllerTest {
 				ContentResponseDto.class);
 
 		// then
-		assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
 		Optional<Content> content = selectData(contentNo);
 		assertThat(content).isNotPresent();

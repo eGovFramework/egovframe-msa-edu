@@ -26,7 +26,7 @@ public class HttpUtil {
      * static method 만으로 구성된 유틸리티 클래스
      * 객체 생성 금지
      */
-    private HttpUtil() {
+    private HttpUtil() throws IllegalStateException {
         throw new IllegalStateException("Http Utility Class");
     }
 

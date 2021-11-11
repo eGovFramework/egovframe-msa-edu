@@ -93,7 +93,7 @@ class PolicyApiControllerTest {
         ResponseEntity<Long> responseEntity = restTemplate.postForEntity(API_URL, requestDto, Long.class);
 
         //then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         Optional<Policy> policy = policyRepository.findById(responseEntity.getBody().longValue());
 
         System.out.println(policy.get().toString());
