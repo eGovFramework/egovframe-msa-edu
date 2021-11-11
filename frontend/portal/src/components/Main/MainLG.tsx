@@ -141,7 +141,7 @@ const MainLG = (props: MainLGProps) => {
       return (
         board && (
           <div key={`board-div-${board.boardNo}`}>
-            {board.posts.map(post => (
+            {board.posts?.map(post => (
               <dl key={`posts-dl-${post.postsNo}`}>
                 <dt>
                   <ActiveLink

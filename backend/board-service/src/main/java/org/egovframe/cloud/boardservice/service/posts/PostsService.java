@@ -1,9 +1,23 @@
 package org.egovframe.cloud.boardservice.service.posts;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.egovframe.cloud.boardservice.api.board.dto.BoardResponseDto;
-import org.egovframe.cloud.boardservice.api.posts.dto.*;
-import org.egovframe.cloud.boardservice.domain.posts.*;
+import org.egovframe.cloud.boardservice.api.posts.dto.PostsDeleteRequestDto;
+import org.egovframe.cloud.boardservice.api.posts.dto.PostsListResponseDto;
+import org.egovframe.cloud.boardservice.api.posts.dto.PostsResponseDto;
+import org.egovframe.cloud.boardservice.api.posts.dto.PostsSaveRequestDto;
+import org.egovframe.cloud.boardservice.api.posts.dto.PostsSimpleResponseDto;
+import org.egovframe.cloud.boardservice.api.posts.dto.PostsSimpleSaveRequestDto;
+import org.egovframe.cloud.boardservice.api.posts.dto.PostsUpdateRequestDto;
+import org.egovframe.cloud.boardservice.domain.posts.Posts;
+import org.egovframe.cloud.boardservice.domain.posts.PostsId;
+import org.egovframe.cloud.boardservice.domain.posts.PostsRead;
+import org.egovframe.cloud.boardservice.domain.posts.PostsReadRepository;
+import org.egovframe.cloud.boardservice.domain.posts.PostsRepository;
 import org.egovframe.cloud.boardservice.service.board.BoardService;
 import org.egovframe.cloud.common.dto.AttachmentEntityMessage;
 import org.egovframe.cloud.common.dto.RequestDto;
@@ -17,11 +31,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * org.egovframe.cloud.postsservice.service.posts.PostsService
@@ -97,10 +106,12 @@ public class PostsService extends AbstractService {
 
         Map<Integer, BoardResponseDto> data = new HashMap<>(); // 요청한 게시판 순서로 리턴하기 위해서 map 리턴
         for (BoardResponseDto board : boards) {
-            List<PostsSimpleResponseDto> posts = postsGroup.get(board.getBoardNo())
-                .stream().map(post -> post.setIsNew(board))
-                .collect(Collectors.toList());
-            board.setNewestPosts(posts);
+            List<PostsSimpleResponseDto> posts = postsGroup.get(board.getBoardNo());
+            if (posts != null) {
+                board.setNewestPosts(posts.stream().map(post -> post.setIsNew(board))
+                    .collect(Collectors.toList()));
+            }
+
             data.put(board.getBoardNo(), board);
         }
 
