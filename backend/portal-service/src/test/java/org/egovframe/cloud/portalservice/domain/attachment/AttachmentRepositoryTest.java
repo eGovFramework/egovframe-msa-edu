@@ -1,25 +1,23 @@
 package org.egovframe.cloud.portalservice.domain.attachment;
 
-import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentResponseDto;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import javax.persistence.EntityManager;
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import javax.persistence.EntityManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@EnableConfigurationProperties
+@TestPropertySource(properties = {"spring.config.location=classpath:application-test.yml"})
+@ActiveProfiles(profiles = "test")
 class AttachmentRepositoryTest {
     @Autowired
     EntityManager em;
@@ -40,7 +38,7 @@ class AttachmentRepositoryTest {
     public void 첨부파일_등록() throws Exception {
         //given
         AttachmentId attachmentId = AttachmentId.builder()
-                .code(UUID.randomUUID().toString())
+                .code("testAttachmentCode")
                 .seq(1L).build();
 
         Attachment attachment = Attachment.builder()
@@ -63,7 +61,7 @@ class AttachmentRepositoryTest {
     @Test
     public void 여러건_등록() throws Exception {
         //given
-        String code = UUID.randomUUID().toString();
+        String code = "testAttachmentCode";
         AttachmentId attachmentId1 = AttachmentId.builder()
                 .code(code)
                 .seq(1L).build();
@@ -100,7 +98,7 @@ class AttachmentRepositoryTest {
     @Test
     public void code로다건조회() throws Exception {
         //given
-        String code = UUID.randomUUID().toString();
+        String code = "testAttachmentCode";
         for (Long i = 1L; i <= 5L; i++) {
             AttachmentId attachmentId = AttachmentId.builder()
                     .code(code)
@@ -127,7 +125,7 @@ class AttachmentRepositoryTest {
     @Test
     public void 대체키로한건조회() throws Exception {
         //given
-        String code = UUID.randomUUID().toString();
+        String code = "testAttachmentCode";
         String id = "";
         for (Long i = 1L; i <= 5L; i++) {
             AttachmentId attachmentId = AttachmentId.builder()

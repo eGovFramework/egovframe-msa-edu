@@ -7,6 +7,7 @@ import org.egovframe.cloud.portalservice.api.code.dto.CodeResponseDto;
 import org.egovframe.cloud.portalservice.api.code.dto.CodeSaveRequestDto;
 import org.egovframe.cloud.portalservice.api.code.dto.CodeUpdateRequestDto;
 import org.json.JSONObject;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -69,6 +70,7 @@ class CodeApiControllerTest {
 
     @Test
     @Order(Integer.MIN_VALUE)
+    @Disabled
     public void setup() throws Exception {
         // 사용자 등록
         HttpHeaders headers = new HttpHeaders();

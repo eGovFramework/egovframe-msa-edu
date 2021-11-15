@@ -3,14 +3,20 @@ package org.egovframe.cloud.portalservice.domain.statistics;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.persistence.EntityManager;
 import java.util.UUID;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@EnableConfigurationProperties
+@TestPropertySource(properties = {"spring.config.location=classpath:application-test.yml"})
+@ActiveProfiles(profiles = "test")
 class StatisticsRepositoryTest {
     @Autowired
     EntityManager em;
