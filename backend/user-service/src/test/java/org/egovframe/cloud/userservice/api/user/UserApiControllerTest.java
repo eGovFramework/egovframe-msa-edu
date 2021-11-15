@@ -362,8 +362,7 @@ class UserApiControllerTest {
         // then
         resultActions
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("true")); // 이메일 수신 확인
+                .andExpect(MockMvcResultMatchers.status().isBadRequest()); // 계정 설정 안되어 있으므로 연결하지 못함.
 
         deleteUser(user.getId());
     }
