@@ -134,6 +134,7 @@ class PolicyRepositoryTest {
 
     @Test
     public void ID로_한건조회() throws Exception {
+        Policy save = null;
         //given
         for (int i = 1; i <= 10; i++) {
             String title = "title_"+i;
@@ -143,20 +144,19 @@ class PolicyRepositoryTest {
                 type = "PP";
             }
 
-            policyRepository.save(Policy.builder()
-                    .type(type)
-                    .title(title)
-                    .contents(contentStr)
-                    .build());
+            save = policyRepository.save(Policy.builder()
+                .type(type)
+                .title(title)
+                .contents(contentStr)
+                .build());
         }
 
         //when
-        Optional<Policy> optionalTerms = policyRepository.findById(1L);
+        Optional<Policy> optionalTerms = policyRepository.findById(save.getId());
 
         //then
         System.out.println(optionalTerms.get());
-        assertThat(optionalTerms.get().getTitle()).isEqualTo("title_1");
-        assertThat(optionalTerms.get().getContents()).isEqualTo("contents 1");
+        assertThat(optionalTerms.get().getTitle()).isEqualTo(save.getTitle());
 
     }
 

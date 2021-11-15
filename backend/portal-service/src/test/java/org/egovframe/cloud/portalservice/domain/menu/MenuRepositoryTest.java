@@ -1,5 +1,6 @@
 package org.egovframe.cloud.portalservice.domain.menu;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,12 @@ class MenuRepositoryTest {
         sites.add(site1);
         sites.add(site2);
         siteRepository.saveAll(sites);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        menuRepository.deleteAll();
+        siteRepository.deleteAll();
     }
 
     @Test
