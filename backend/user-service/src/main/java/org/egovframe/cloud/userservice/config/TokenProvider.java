@@ -130,9 +130,11 @@ public class TokenProvider {
         // 사용자가 있으면 access token 을 새로 발급하여 리턴한다.
         String accessToken = createAccessToken(user.getRoleKey(), user.getUserId());
 
+        String filteredRefreshToken = refreshToken.replaceAll("\r", "").replaceAll("\n", "");
+
         // Header에 토큰 세팅
         response.addHeader(TOKEN_ACCESS_KEY, accessToken);
-        response.addHeader(TOKEN_REFRESH_KEY, refreshToken);
+        response.addHeader(TOKEN_REFRESH_KEY, filteredRefreshToken);
         response.addHeader(TOKEN_USER_ID, user.getUserId());
         return accessToken;
     }

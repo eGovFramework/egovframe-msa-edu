@@ -1,5 +1,6 @@
 package org.egovframe.cloud.userservice.api.role.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
@@ -49,4 +50,12 @@ public class AuthorizationUpdateRequestDto {
     @NotNull(message = "{authorization.sortSeq} {err.required}")
     private Integer sortSeq;
 
+    @Builder
+    public AuthorizationUpdateRequestDto(String authorizationName, String urlPatternValue,
+        String httpMethodCode, Integer sortSeq) {
+        this.authorizationName = authorizationName;
+        this.urlPatternValue = urlPatternValue;
+        this.httpMethodCode = httpMethodCode;
+        this.sortSeq = sortSeq;
+    }
 }

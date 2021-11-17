@@ -219,33 +219,8 @@ public class AuthorizationService extends AbstractService {
     @Transactional
     public AuthorizationResponseDto update(Integer authorizationNo, AuthorizationUpdateRequestDto requestDto) {
         Authorization entity = findAuthorization(authorizationNo);
-
         // 정렬 순서가 변경된 경우 사이 구간 정렬 순서 조정
-        Integer beforeSortSeq = entity.getSortSeq();
-        Integer afterSortSeq = requestDto.getSortSeq();
-        Integer startSortSeq = null;
-        Integer endSortSeq = null;
-        int increaseSortSeq = 0;
-        if (beforeSortSeq == null && afterSortSeq != null) {
-            startSortSeq = afterSortSeq;
-            increaseSortSeq = 1;
-        } else if (beforeSortSeq != null && afterSortSeq == null) {
-            startSortSeq = beforeSortSeq + 1;
-            increaseSortSeq = -1;
-        } else if (beforeSortSeq != null && afterSortSeq != null && beforeSortSeq.compareTo(afterSortSeq) != 0) {
-            if (beforeSortSeq.compareTo(afterSortSeq) > 0) {
-                startSortSeq = afterSortSeq;
-                endSortSeq = beforeSortSeq - 1;
-                increaseSortSeq = 1;
-            } else {
-                startSortSeq = beforeSortSeq + 1;
-                endSortSeq = afterSortSeq;
-                increaseSortSeq = -1;
-            }
-        }
-        if (startSortSeq != null || endSortSeq != null) {
-            authorizationRepository.updateSortSeq(startSortSeq, endSortSeq, increaseSortSeq);
-        }
+        updateSortSeq(entity, requestDto);
 
         // 수정
         entity.update(requestDto.getAuthorizationName(), requestDto.getUrlPatternValue(), requestDto.getHttpMethodCode(), requestDto.getSortSeq());
@@ -253,6 +228,39 @@ public class AuthorizationService extends AbstractService {
         clearAuthorizationCache();
 
         return new AuthorizationResponseDto(entity);
+    }
+
+    /**
+     * 정렬순서 update
+     *
+     * @param entity        인가 엔티티
+     * @param requestDto    인가 수정 요청 DTO
+     */
+    private void updateSortSeq(Authorization entity, AuthorizationUpdateRequestDto requestDto) {
+        // 정렬 순서가 변경된 경우 사이 구간 정렬 순서 조정
+        Integer beforeSortSeq = entity.getSortSeq();
+        Integer afterSortSeq = requestDto.getSortSeq();
+
+        if (beforeSortSeq == null) {
+            authorizationRepository.updateSortSeq(afterSortSeq, null, 1);
+            return;
+        }
+
+        if (afterSortSeq == null) {
+            authorizationRepository.updateSortSeq(beforeSortSeq+1, null, -1);
+            return;
+        }
+        int compareTo = beforeSortSeq.compareTo(afterSortSeq);
+        if (compareTo > 0) {
+            authorizationRepository.updateSortSeq(afterSortSeq, beforeSortSeq-1, 1);
+            return;
+        }
+
+        if (compareTo < 0) {
+            authorizationRepository.updateSortSeq(beforeSortSeq+1, afterSortSeq, -1);
+            return;
+        }
+
     }
 
     /**

@@ -452,8 +452,8 @@ public class UserService extends AbstractService implements UserDetailsService {
             User entity = findUserVerify(userId, requestDto);
 
             entity.updatePassword(passwordEncoder.encode(requestDto.getNewPassword())); // 비밀번호 수정
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            log.error(e.getLocalizedMessage());
             throw e;
         }
 
@@ -471,8 +471,6 @@ public class UserService extends AbstractService implements UserDetailsService {
         try {
             findUserVerifyPassword(userId, password);
         } catch (BusinessMessageException e) {
-            return false;
-        } catch (Exception e) {
             return false;
         }
 
@@ -848,34 +846,11 @@ public class UserService extends AbstractService implements UserDetailsService {
                     .build();
             user.setSocial(providerCode, providerId);
 
-            if (user != null) {
-                userRepository.save(user);
-            }
+            userRepository.save(user);
+
         }
 
-        return user == null ? null : new UserResponseDto(user);
-    }
-
-    /**
-     * 임의 비밀번호 10자리 생성
-     *
-     * @return String 비밀번호
-     */
-    private String makeRandomPassword() {
-        char[] terms = new char[]{
-                '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
-                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-                'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-                '!', '@', '#', '$', '%', '^', '&', '*', '(', ')'};
-
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < 10; i++) {
-            int index = (int) (Math.random() * terms.length);
-            sb.append(terms[index]);
-        }
-
-        return sb.toString();
+        return new UserResponseDto(user);
     }
 
 }

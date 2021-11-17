@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.egovframe.cloud.servlet.domain.BaseEntity;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -34,6 +35,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
+@ToString
 public class Authorization extends BaseEntity {
 
     /**
@@ -70,6 +72,7 @@ public class Authorization extends BaseEntity {
     /**
      * 권한 인가 엔티티
      */
+    @ToString.Exclude
     @OneToMany(mappedBy = "authorization", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<RoleAuthorization> roleAuthorizations;

@@ -108,9 +108,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         } catch (IOException e) {
             log.error(e.getLocalizedMessage());
             throw new RuntimeException(e);
-        } catch (Exception e) {
-            log.error(e.getLocalizedMessage());
-            throw e;
         }
     }
 
@@ -190,7 +187,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
             httpServletResponse.setStatus(e.getErrorCode().getStatus());
             log.error("AuthenticationFilter doFilter error: {}", e.getMessage());
-        } catch (Exception e) {
+        } catch (ServletException | IOException e) {
             SecurityContextHolder.getContext().setAuthentication(null);
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
             httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());

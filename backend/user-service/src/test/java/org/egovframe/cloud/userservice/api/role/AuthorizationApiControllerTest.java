@@ -1,6 +1,8 @@
 package org.egovframe.cloud.userservice.api.role;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.egovframe.cloud.userservice.api.role.dto.AuthorizationUpdateRequestDto;
 import org.egovframe.cloud.userservice.domain.role.Authorization;
 import org.egovframe.cloud.userservice.domain.role.AuthorizationRepository;
 import org.egovframe.cloud.userservice.domain.role.RoleAuthorization;
@@ -304,6 +306,49 @@ class AuthorizationApiControllerTest {
         assertThat(updatedAuthorization.getSortSeq()).isEqualTo(UPDATE_SORT_SEQ);
 
         deleteTestData(authorizationNo);
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void 인가_정렬순서_변경() throws Exception {
+        // given
+        insertTestDatas();
+
+        testDatas.stream().forEach(System.out::println);
+
+        Authorization authorization = testDatas.get(4);
+
+        assertThat(authorization.getSortSeq()).isEqualTo(5);
+
+        AuthorizationUpdateRequestDto requestDto = AuthorizationUpdateRequestDto.builder()
+            .authorizationName(authorization.getAuthorizationName())
+            .httpMethodCode(authorization.getHttpMethodCode())
+            .urlPatternValue(authorization.getUrlPatternValue())
+            .sortSeq(7)
+            .build();
+
+        // when
+        ResultActions resultActions = mvc.perform(MockMvcRequestBuilders.put(URL + "/" + authorization.getAuthorizationNo())
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType("application/json;charset=UTF-8")
+            .content(objectMapper.writeValueAsString(requestDto)));
+
+        // then
+        resultActions
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk());
+
+        Optional<Authorization> optional = selectData(authorization.getAuthorizationNo());
+        assertThat(optional.isPresent()).isTrue();
+        Authorization updateAuthorization = optional.get();
+
+        assertThat(updateAuthorization.getSortSeq()).isEqualTo(7);
+
+        List<Authorization> all = authorizationRepository.findAll();
+        all.stream().forEach(System.out::println);
+
+        deleteTestDatas();
+
     }
 
     /**
