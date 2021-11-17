@@ -2,6 +2,7 @@ package org.egovframe.cloud.apigateway.config;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,8 +24,7 @@ import reactor.core.publisher.Mono;
 /**
  * org.egovframe.cloud.apigateway.config.ReactiveAuthorization
  * <p>
- * Spring Security 에 의해 요청 url에 대한 사용자 인가 서비스를 수행하는 클래스
- * 요청에 대한 사용자의 권한여부 체크하여 true/false 리턴한다
+ * Spring Security 에 의해 요청 url에 대한 사용자 인가 서비스를 수행하는 클래스 요청에 대한 사용자의 권한여부 체크하여 true/false 리턴한다
  *
  * @author 표준프레임워크센터 jaeyeolkim
  * @version 1.0
@@ -54,8 +54,7 @@ public class ReactiveAuthorization implements ReactiveAuthorizationManager<Autho
     public static final String REFRESH_TOKEN_URI = "/user-service" + "/api/v1/users/token/refresh";
 
     /**
-     * 요청에 대한 사용자의 권한여부 체크하여 true/false 리턴한다
-     * 헤더에 토큰이 있으면 유효성을 체크한다.
+     * 요청에 대한 사용자의 권한여부 체크하여 true/false 리턴한다 헤더에 토큰이 있으면 유효성을 체크한다.
      *
      * @param authentication
      * @param context
@@ -63,27 +62,34 @@ public class ReactiveAuthorization implements ReactiveAuthorizationManager<Autho
      * @see WebFluxSecurityConfig
      */
     @Override
-    public Mono<AuthorizationDecision> check(Mono<Authentication> authentication, AuthorizationContext context) {
+    public Mono<AuthorizationDecision> check(Mono<Authentication> authentication,
+        AuthorizationContext context) {
         ServerHttpRequest request = context.getExchange().getRequest();
         RequestPath requestPath = request.getPath();
         HttpMethod httpMethod = request.getMethod();
 
-        String baseUrl = APIGATEWAY_HOST + AUTHORIZATION_URI + "?httpMethod=" + httpMethod + "&requestPath=" + requestPath;
+        String baseUrl =
+            APIGATEWAY_HOST + AUTHORIZATION_URI + "?httpMethod=" + httpMethod + "&requestPath="
+                + requestPath;
         log.info("baseUrl={}", baseUrl);
 
         String authorizationHeader = "";
-        if (request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)
-                && StringUtils.hasLength(
-                request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0))
-                && !"undefined".equals(request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0))
+
+        List<String> authorizations =
+            request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION) ?
+                request.getHeaders().get(HttpHeaders.AUTHORIZATION) : null;
+
+        if (authorizations != null && authorizations.size() > 0
+            && StringUtils.hasLength(authorizations.get(0))
+            && !"undefined".equals(authorizations.get(0))
         ) {
             try {
-                authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
+                authorizationHeader = authorizations.get(0);
                 String jwt = authorizationHeader.replace("Bearer", "");
                 String subject = Jwts.parser().setSigningKey(TOKEN_SECRET)
-                        .parseClaimsJws(jwt)
-                        .getBody()
-                        .getSubject();
+                    .parseClaimsJws(jwt)
+                    .getBody()
+                    .getSubject();
 
                 // refresh token 요청 시 토큰 검증만 하고 인가 처리 한다.
                 if (REFRESH_TOKEN_URI.equals(requestPath + "")) {
@@ -105,16 +111,16 @@ public class ReactiveAuthorization implements ReactiveAuthorizationManager<Autho
             }
         }
 
-        Boolean granted = false;
+        boolean granted = false;
         try {
             String token = authorizationHeader; // Variable used in lambda expression should be final or effectively final
             Mono<Boolean> body = WebClient.create(baseUrl)
-                    .get()
-                    .headers(httpHeaders -> {
-                        httpHeaders.add(HttpHeaders.AUTHORIZATION, token);
-                    })
-                    .retrieve().bodyToMono(Boolean.class);
-            granted = body.block();
+                .get()
+                .headers(httpHeaders -> {
+                    httpHeaders.add(HttpHeaders.AUTHORIZATION, token);
+                })
+                .retrieve().bodyToMono(Boolean.class);
+            granted = body.blockOptional().orElse(false);
             log.info("Security AuthorizationDecision granted={}", granted);
         } catch (Exception e) {
             log.error("인가 서버에 요청 중 오류 : {}", e.getMessage());
