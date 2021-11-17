@@ -18,14 +18,20 @@ import org.egovframe.cloud.boardservice.domain.board.BoardRepository;
 import org.egovframe.cloud.boardservice.domain.posts.Posts;
 import org.egovframe.cloud.boardservice.domain.posts.PostsId;
 import org.egovframe.cloud.boardservice.domain.posts.PostsRepository;
+import org.egovframe.cloud.boardservice.service.posts.PostsService;
 import org.egovframe.cloud.boardservice.util.RestResponsePage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -428,7 +434,6 @@ class PostsApiControllerTest {
         params.put("postsTitle", INSERT_POSTS_TITLE);
         params.put("postsContent", INSERT_POSTS_CONTENT);
         params.put("postsAnswerContent", INSERT_POSTS_ANSWER_CONTENT);
-        params.put("attachmentCode", INSERT_ATTACHMENT_CODE);
         params.put("noticeAt", INSERT_NOTICE_AT);
         HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<>(params);
 
@@ -459,7 +464,6 @@ class PostsApiControllerTest {
         assertThat(entity.getPostsTitle()).isEqualTo(INSERT_POSTS_TITLE);
         assertThat(entity.getPostsContent()).isEqualTo(INSERT_POSTS_CONTENT);
         assertThat(entity.getPostsAnswerContent()).isEqualTo(INSERT_POSTS_ANSWER_CONTENT);
-        assertThat(entity.getAttachmentCode()).isEqualTo(INSERT_ATTACHMENT_CODE);
         assertThat(entity.getReadCount()).isZero();
         assertThat(entity.getNoticeAt()).isEqualTo(INSERT_NOTICE_AT);
         assertThat(entity.getDeleteAt()).isZero();
@@ -652,7 +656,7 @@ class PostsApiControllerTest {
      * 테스트 데이터 등록
      */
     private void insertPosts(Boolean deleteAt) {
-        log.info("###테스트 데이터 등록");
+        log.info("###테스트 데이터 등록");    
 
         // 게시물 등록
         List<Posts> list = new ArrayList<>();

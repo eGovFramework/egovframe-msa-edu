@@ -203,7 +203,9 @@ public class PostsService extends AbstractService {
         /**
          * 첨부파일 entity 정보 저장 이벤트 발생
          */
-        sendAttachmentEvent(entity);
+        if (StringUtils.hasText(entity.getAttachmentCode())) {
+            sendAttachmentEvent(entity);
+        }
 
         return new PostsResponseDto(entity);
     }
