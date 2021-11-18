@@ -13,6 +13,7 @@ import org.egovframe.cloud.portalservice.domain.policy.PolicyRepository;
 import org.egovframe.cloud.portalservice.util.RestResponsePage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,6 +132,7 @@ class PolicyApiControllerTest {
     }
 
     @Test
+    @Order(1)
     public void ID로_한건조회_정상() throws Exception {
 
         String url = API_URL +"/9";
