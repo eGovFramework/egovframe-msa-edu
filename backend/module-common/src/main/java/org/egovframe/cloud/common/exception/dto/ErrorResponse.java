@@ -48,7 +48,7 @@ public class ErrorResponse {
         this.message = messageSource.getMessage(code.getMessage(), new Object[]{}, DEFAULT_ERROR_MESSAGE, LocaleContextHolder.getLocale());
         this.status = code.getStatus();
         this.code = code.getCode();
-        this.errors = errors;
+        this.errors = new ArrayList<>(errors);
     }
 
     private ErrorResponse(final ErrorCode code, MessageSource messageSource) {
@@ -125,8 +125,12 @@ public class ErrorResponse {
      * @return
      */
     public static ErrorResponse of(MethodArgumentTypeMismatchException e, MessageSource messageSource) {
-        final String value = e.getValue() == null ? "" : e.getValue().toString();
-        final List<ErrorResponse.FieldError> errors = ErrorResponse.FieldError.of(e.getName(), value, e.getErrorCode());
+        if (e.getValue() == null) {
+            return new ErrorResponse(ErrorCode.INVALID_TYPE_VALUE, ErrorResponse.FieldError.of(e.getName(), "", e.getErrorCode()), messageSource);
+        }
+
+        final List<ErrorResponse.FieldError> errors =
+            ErrorResponse.FieldError.of(e.getName(), String.valueOf(e.getValue()), e.getErrorCode());
         return new ErrorResponse(ErrorCode.INVALID_TYPE_VALUE, errors, messageSource);
     }
 

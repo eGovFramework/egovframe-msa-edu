@@ -4,6 +4,7 @@ plugins {
     // querydsl
     id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
     id 'java'
+    id "org.sonarqube" version "2.7"
 }
 
 group 'org.egovframe.cloud'
