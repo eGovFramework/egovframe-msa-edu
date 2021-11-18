@@ -72,6 +72,10 @@ public class AttachmentRepositoryImpl implements AttachmentRepositoryCustom{
                 .where(attachment.attachmentId.code.eq(attachmentCode))
                 .fetchOne();
 
+        if (seq == null) {
+            seq = 0L;
+        }
+
         return AttachmentId.builder()
                 .code(attachmentCode)
                 .seq(seq+1L)

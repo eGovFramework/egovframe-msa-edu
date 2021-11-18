@@ -1,5 +1,6 @@
 package org.egovframe.cloud.portalservice.utils;
 
+import java.util.ArrayList;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.net.ftp.FTPClient;
@@ -58,7 +59,7 @@ public class FtpClientDto {
     }
 
     public FtpClientDto addFiles(List<File> files, String path) {
-        this.files = files;
+        this.files = new ArrayList<>(files);
         this.path = path;
         return this;
     }

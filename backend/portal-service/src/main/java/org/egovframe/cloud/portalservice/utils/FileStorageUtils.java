@@ -2,6 +2,7 @@ package org.egovframe.cloud.portalservice.utils;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.egovframe.cloud.common.exception.BusinessException;
 import org.egovframe.cloud.common.exception.BusinessMessageException;
 import org.egovframe.cloud.common.exception.dto.ErrorCode;
@@ -78,16 +79,8 @@ public class FileStorageUtils implements StorageUtils {
      */
     public Path getStorePath(String basePath) {
 
-        StringBuffer sb = new StringBuffer();
-        sb.append(fileStorageLocation.toString());
-        if (!basePath.equals("")) {
-            sb.append("/");
-            sb.append(StringUtils.cleanPath(basePath));
-        }
-
         try {
-            Path path = Paths.get(StringUtils.cleanPath(sb.toString()))
-                    .toAbsolutePath().normalize();
+            Path path = fileStorageLocation.resolve(basePath);
             Files.createDirectories(path);
             return path;
         } catch (IOException ex) {
@@ -118,10 +111,11 @@ public class FileStorageUtils implements StorageUtils {
      */
     public String renameTemp(String physicalFileName) {
         String rename = physicalFileName.replace(".temp", "");
+
         //물리적 파일 처리
         Path path = getStorePath("");
-        File file = new File(path + "/" + physicalFileName);
-        File renameFile = new File(path + "/" + rename);
+        File file = path.resolve(physicalFileName).toFile();
+        File renameFile = path.resolve(rename).toFile();
         try {
             file.renameTo(renameFile);
         } catch (NullPointerException ex) {
@@ -143,8 +137,7 @@ public class FileStorageUtils implements StorageUtils {
 
         try {
             Path path = getStorePath(basePath);
-
-            File file = new File(path + "/" + filename);
+            File file = path.resolve(filename).toFile();
 
             Base64.Decoder decoder = Base64.getDecoder();
             byte[] decodeBytes = decoder.decode(requestDto.getFileBase64().getBytes());
@@ -257,9 +250,7 @@ public class FileStorageUtils implements StorageUtils {
     public Resource downloadFile(String filename) {
         Path path = getStorePath("");
         try {
-            Path filePath = Paths.get(StringUtils.cleanPath(path.toString() + StringUtils.cleanPath("/" + filename)))
-                    .toAbsolutePath().normalize();
-            Resource resource = new UrlResource(filePath.toUri());
+            Resource resource = new UrlResource(path.resolve(filename).toUri());
 
             if (resource.exists()) {
                 return resource;
@@ -319,9 +310,8 @@ public class FileStorageUtils implements StorageUtils {
     public boolean deleteFile(String filename) {
         Path path = getStorePath("");
         try {
-            Path filePath = Paths.get(StringUtils.cleanPath(path.toString() + StringUtils.cleanPath("/" + filename)))
-                    .toAbsolutePath().normalize();
-            return Files.deleteIfExists(filePath);
+            System.out.println("==== paths :" + path.resolve(filename));
+            return Files.deleteIfExists(path.resolve(filename));
         } catch (IOException e) {
             log.error("Could not deleted file.", e);
             return false;

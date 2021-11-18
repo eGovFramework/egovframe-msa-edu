@@ -1,33 +1,8 @@
 package org.egovframe.cloud.portalservice.api.attachment;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.util.encoders.Base64;
-import org.egovframe.cloud.portalservice.api.attachment.dto.*;
-import org.egovframe.cloud.portalservice.domain.attachment.Attachment;
-import org.egovframe.cloud.portalservice.domain.attachment.AttachmentRepository;
-import org.egovframe.cloud.portalservice.service.attachment.AttachmentService;
-import org.egovframe.cloud.portalservice.util.RestResponsePage;
-import org.egovframe.cloud.portalservice.utils.FileStorageUtils;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.*;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.multipart.MultipartFile;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -38,8 +13,43 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.util.encoders.Base64;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentBase64RequestDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentEditorResponseDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentFileResponseDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentResponseDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentTempSaveRequestDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentUpdateRequestDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentUploadRequestDto;
+import org.egovframe.cloud.portalservice.domain.attachment.Attachment;
+import org.egovframe.cloud.portalservice.domain.attachment.AttachmentRepository;
+import org.egovframe.cloud.portalservice.service.attachment.AttachmentService;
+import org.egovframe.cloud.portalservice.util.RestResponsePage;
+import org.egovframe.cloud.portalservice.utils.FileStorageUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -47,9 +57,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = {"spring.config.location=classpath:application-test.yml"})
 @ActiveProfiles(profiles = "test")
 class AttachmentApiControllerTest {
-    @LocalServerPort
-    private int port;
-
     @Autowired
     TestRestTemplate restTemplate;
 
@@ -282,6 +289,7 @@ class AttachmentApiControllerTest {
         List<AttachmentTempSaveRequestDto> saveRequestDtoList = getTempSaveDto(2);
         String attachmentCode = attachmentService.save(saveRequestDtoList);
 
+        System.out.println("attachmentCode : " + attachmentCode);
         String url = "/api/v1/attachments/"+attachmentCode;
 
         //when
@@ -363,6 +371,7 @@ class AttachmentApiControllerTest {
     }
 
     @Test
+    @Order(1)
     public void 관리자_첨부파일_목록_검색조회_정상() throws Exception {
         //given
         List<AttachmentTempSaveRequestDto> saveRequestDtoList1 = getTempSaveDto(2);
@@ -534,8 +543,6 @@ class AttachmentApiControllerTest {
                             .build()
             );
         }
-
-        saveRequestDtoList.stream().forEach(System.out::println);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);

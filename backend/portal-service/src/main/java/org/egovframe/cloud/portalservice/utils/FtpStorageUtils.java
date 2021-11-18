@@ -1,7 +1,9 @@
 package org.egovframe.cloud.portalservice.utils;
 
+import java.nio.file.Files;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -366,15 +368,15 @@ public class FtpStorageUtils implements StorageUtils {
      */
     public AttachmentImageResponseDto loadImage(String imagename) {
         try {
-            Resource resource = new UrlResource(environment.getProperty("file.url") + StringUtils.cleanPath("/" + imagename));
-            InputStream inputStream = new URL(resource.getURL().toString()).openStream();
+            String paths = environment.getProperty("file.url") + imagename;
+            Resource resource = new UrlResource(paths);
+            InputStream inputStream = resource.getInputStream();
 
             byte[] data = IOUtils.toByteArray(inputStream);
             inputStream.close();
 
             // get mime type
-            URLConnection connection = new URL(resource.getURL().toString()).openConnection();
-            String contentType = connection.getContentType();
+            String contentType = Files.probeContentType(resource.getFile().toPath());
 
             return AttachmentImageResponseDto.builder()
                     .mimeType(contentType)
@@ -434,14 +436,14 @@ public class FtpStorageUtils implements StorageUtils {
             FtpClientDto ftpClientDto = new FtpClientDto(environment);
             this.connect(ftpClientDto);
             FTPClient ftpClient = ftpClientDto.getFtpClient();
-
             // 디렉토리 생성 및 권한 부여
-            String directory = StringUtils.cleanPath(ftpClientDto.getDirectory() + "/" + basePath);
-            makePermissionDirectory(ftpClient, directory);
+            Path directory = Paths.get(ftpClientDto.getDirectory()).toAbsolutePath().normalize();
+            directory.resolve(basePath);
+            makePermissionDirectory(ftpClient, directory.toString());
 
             this.disconnect(ftpClient);
 
-            return Paths.get(directory).toAbsolutePath().normalize();
+            return directory;
         } catch (IOException ex) {
             log.error("Could not create file store directory.", ex);
             // 파일을 저장할 수 없습니다. 다시 시도해 주세요.

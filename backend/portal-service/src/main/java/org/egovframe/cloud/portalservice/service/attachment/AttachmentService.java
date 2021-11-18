@@ -11,6 +11,7 @@ import org.egovframe.cloud.portalservice.api.attachment.dto.*;
 import org.egovframe.cloud.portalservice.domain.attachment.Attachment;
 import org.egovframe.cloud.portalservice.domain.attachment.AttachmentId;
 import org.egovframe.cloud.portalservice.domain.attachment.AttachmentRepository;
+import org.egovframe.cloud.portalservice.utils.PortalUtils;
 import org.egovframe.cloud.portalservice.utils.StorageUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -235,7 +236,7 @@ public class AttachmentService extends AbstractService {
      * @return 생성된 첨부파일 코드
      */
     public String save(List<AttachmentTempSaveRequestDto> saveRequestDtoList) {
-        String attachmentCode = RandomStringUtils.randomAlphanumeric(20);
+        String attachmentCode = PortalUtils.randomAlphanumeric(20);
         for (int i = 0; i < saveRequestDtoList.size(); i++) {
             AttachmentTempSaveRequestDto requestDto = saveRequestDtoList.get(i);
             AttachmentId attachmentId = AttachmentId.builder()
@@ -357,7 +358,7 @@ public class AttachmentService extends AbstractService {
      */
     public String uploadAndSave(List<MultipartFile> files, AttachmentUploadRequestDto uploadRequestDto) {
         String basePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
-        String attachmentCode = RandomStringUtils.randomAlphanumeric(20);
+        String attachmentCode = PortalUtils.randomAlphanumeric(20);
 
         for (int i = 0; i < files.size(); i++) {
             AttachmentId attachmentId = AttachmentId.builder()
