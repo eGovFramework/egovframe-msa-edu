@@ -310,7 +310,6 @@ public class FileStorageUtils implements StorageUtils {
     public boolean deleteFile(String filename) {
         Path path = getStorePath("");
         try {
-            System.out.println("==== paths :" + path.resolve(filename));
             return Files.deleteIfExists(path.resolve(filename));
         } catch (IOException e) {
             log.error("Could not deleted file.", e);

@@ -846,7 +846,7 @@ public class UserService extends AbstractService implements UserDetailsService {
                     .build();
             user.setSocial(providerCode, providerId);
 
-            userRepository.save(user);
+            user = userRepository.save(user);
 
         }
 
