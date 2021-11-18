@@ -87,7 +87,7 @@ public class FtpStorageUtils implements StorageUtils {
 
                 this.disconnect(ftpClient);
             }
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Could not create the directory where the uploaded files will be stored.");
         }
     }
@@ -191,7 +191,7 @@ public class FtpStorageUtils implements StorageUtils {
                 }
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.error("FTPClient Exception", e);
             throw new BusinessMessageException(messageUtil.getMessage("valid.file.not_saved_try_again"));
         } finally {
@@ -405,7 +405,7 @@ public class FtpStorageUtils implements StorageUtils {
             ftpClient.deleteFile(ftpClientDto.getDirectory() + StringUtils.cleanPath("/" + filename));
             this.disconnect(ftpClient);
             return true;
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.error("Could not deleted file.", e);
             return false;
         }

@@ -88,7 +88,9 @@ public class MenuRoleService extends AbstractService {
             }else {
                 MenuRole menuRole = menuRoleRepository.findById(menuRoleRequestDto.getMenuRoleId()).orElse(null);
 
-                menuRole.setMenu(menu);
+                if (menuRole != null) {
+                    menuRole.setMenu(menu);
+                }
             }
         } else {
             //unchecked 인 경우 menurole 삭제

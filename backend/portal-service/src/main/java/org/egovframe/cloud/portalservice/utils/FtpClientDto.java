@@ -44,7 +44,7 @@ public class FtpClientDto {
     public FtpClientDto(Environment env) {
         this.ftpClient = new FTPClient();
         this.hostname = env.getProperty("ftp.hostname");
-        this.port = Integer.parseInt(env.getProperty("ftp.port"));
+        this.port = Integer.parseInt(env.getProperty("ftp.port", ""));
         this.username = env.getProperty("ftp.username");
         this.password = env.getProperty("ftp.password");
         this.directory = env.getProperty("ftp.directory");

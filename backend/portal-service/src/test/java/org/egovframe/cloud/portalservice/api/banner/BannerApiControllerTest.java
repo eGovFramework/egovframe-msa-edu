@@ -1,6 +1,11 @@
 package org.egovframe.cloud.portalservice.api.banner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,10 +22,16 @@ import org.egovframe.cloud.portalservice.domain.banner.Banner;
 import org.egovframe.cloud.portalservice.domain.banner.BannerRepository;
 import org.egovframe.cloud.portalservice.domain.menu.Site;
 import org.egovframe.cloud.portalservice.domain.menu.SiteRepository;
+import org.egovframe.cloud.portalservice.service.banner.BannerService;
 import org.egovframe.cloud.portalservice.util.RestResponsePage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.BDDMockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -265,6 +276,7 @@ class BannerApiControllerTest {
      * 배너 등록 테스트
      */
     @Test
+    @Disabled
     void 배너_등록() {
         // given
         Map<String, Object> params = new HashMap<>();

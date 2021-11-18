@@ -124,7 +124,7 @@ public class FileStorageUtils implements StorageUtils {
         File renameFile = new File(path + "/" + rename);
         try {
             file.renameTo(renameFile);
-        } catch (Exception ex) {
+        } catch (NullPointerException ex) {
             // 파일을 찾을 수 없습니다.
             throw new BusinessMessageException(messageUtil.getMessage("valid.file.not_found"));
         }
