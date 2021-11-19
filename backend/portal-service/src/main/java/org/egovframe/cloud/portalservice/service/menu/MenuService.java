@@ -35,7 +35,7 @@ import java.util.List;
  */
 @Slf4j
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 @Service
 public class MenuService extends AbstractService {
 
@@ -48,6 +48,7 @@ public class MenuService extends AbstractService {
      * @param siteId
      * @return
      */
+    @Transactional(readOnly = true)
     public List<MenuTreeResponseDto> findTreeBySiteId(Long siteId) {
         return menuRepository.findTreeBySiteId(siteId);
     }
@@ -58,7 +59,8 @@ public class MenuService extends AbstractService {
      * @param menuId
      * @return
      */
-    public MenuResponseDto findById(Long menuId) {
+    @Transactional(readOnly = true)
+    public MenuResponseDto findMenuResponseDtoById(Long menuId) {
         return menuRepository.findByIdWithConnectName(menuId);
     }
 
@@ -68,7 +70,6 @@ public class MenuService extends AbstractService {
      * @param menuTreeRequestDto
      * @return
      */
-    @Transactional
     public MenuTreeResponseDto save(MenuTreeRequestDto menuTreeRequestDto) {
         Site site = siteRepository.findById(menuTreeRequestDto.getSiteId())
                 .orElseThrow(() ->
@@ -77,9 +78,7 @@ public class MenuService extends AbstractService {
         Menu parent = null;
 
         if (menuTreeRequestDto.getParentId() != null) {
-            parent = menuRepository.findById(menuTreeRequestDto.getParentId())
-                    .orElseThrow(() ->
-                            new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu")}) + " ID= " + menuTreeRequestDto.getParentId()));
+            parent = findById(menuTreeRequestDto.getParentId());
         }
 
         Menu menu = menuRepository.save(Menu.builder()
@@ -102,11 +101,8 @@ public class MenuService extends AbstractService {
      * @param name
      * @return
      */
-    @Transactional
     public MenuTreeResponseDto updateName(Long menuId, String name) throws EntityNotFoundException {
-        Menu menu = menuRepository.findById(menuId)
-                .orElseThrow(() ->
-                        new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu")}) + " ID= " + menuId));
+        Menu menu = findById(menuId);
 
         menu.updateName(name);
 
@@ -121,11 +117,8 @@ public class MenuService extends AbstractService {
      * @param updateRequestDto
      * @return
      */
-    @Transactional
     public MenuResponseDto update(Long menuId, MenuUpdateRequestDto updateRequestDto) throws EntityNotFoundException, BusinessMessageException {
-        Menu menu = menuRepository.findById(menuId)
-                .orElseThrow(() ->
-                        new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu")}) + " ID= " + menuId));
+        Menu menu = findById(menuId);
 
         //컨텐츠 or 게시판인 경우 connectId 필수
         if ("contents".equals(updateRequestDto.getMenuType()) || "board".equals(updateRequestDto.getMenuType())) {
@@ -153,11 +146,8 @@ public class MenuService extends AbstractService {
      *
      * @param menuId
      */
-    @Transactional
     public void delete(Long menuId) {
-        Menu menu = menuRepository.findById(menuId)
-                .orElseThrow(() ->
-                        new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu")}) + " ID= " + menuId));
+        Menu menu = findById(menuId);
         menuRepository.delete(menu);
     }
 
@@ -170,10 +160,10 @@ public class MenuService extends AbstractService {
      * @param level
      */
     private void recursive(MenuDnDRequestDto dto, Menu parent, Integer sortSeq, Integer level) {
-        Menu menu = menuRepository.findById(dto.getMenuId())
-                .orElseThrow(() ->
-                        new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu")}) + " ID= " + dto.getMenuId()));
+        Menu menu = findById(dto.getMenuId());
+
         menu.updateDnD(parent, sortSeq, level);
+
         if (dto.getChildren() == null || dto.getChildren().size() <= 0) {
             return;
         }
@@ -191,11 +181,21 @@ public class MenuService extends AbstractService {
      * @param menuDnDRequestDtoList
      * @return
      */
-    @Transactional
     public Long updateDnD(Long siteId, List<MenuDnDRequestDto> menuDnDRequestDtoList) {
         for (int i = 0; i < menuDnDRequestDtoList.size(); i++) {
-            recursive(menuDnDRequestDtoList.get(i), null, i+1, 1);
+            MenuDnDRequestDto requestDto = menuDnDRequestDtoList.get(i);
+            Menu parent = null;
+            if (requestDto.getParentId() != null) {
+                parent = findById(requestDto.getParentId());
+            }
+            recursive(requestDto, parent, requestDto.getSortSeq(), requestDto.getLevel());
         }
         return siteId;
+    }
+
+    private Menu findById(Long id) {
+        return menuRepository.findById(id)
+            .orElseThrow(() ->
+                new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu")}) + " ID= " + id));
     }
 }

@@ -302,81 +302,119 @@ const PostsItem = ({ boardNo, postsNo, board, initData }: IPostsItemsProps) => {
   return (
     <div className={classes.root}>
       <FormProvider {...methods}>
-        <form>
-          <Grid container spacing={1}>
-            <Grid item xs={12} sm={12}>
+        <Grid container spacing={1}>
+          <Grid item xs={12} sm={12}>
+            <Box boxShadow={1}>
+              <Controller
+                name="postsTitle"
+                render={({ field }) => (
+                  <TextField
+                    autoFocus
+                    label={t('posts.posts_title')}
+                    name="postsTitle"
+                    required
+                    inputProps={{ maxLength: 100 }}
+                    id="outlined-full-width"
+                    placeholder={format(t('msg.placeholder.format'), [
+                      t('posts.posts_title'),
+                    ])}
+                    fullWidth
+                    variant="outlined"
+                    {...field}
+                  />
+                )}
+                control={control}
+                rules={{ required: true, maxLength: 100 }}
+              />
+              {errors.postsTitle && (
+                <ValidationAlert
+                  fieldError={errors.postsTitle}
+                  target={[100]}
+                  label={t('posts.posts_title')}
+                />
+              )}
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm={12}>
+            <Box boxShadow={1} className={classes.switchBox}>
+              <FormControlLabel
+                label={t('posts.notice_at')}
+                labelPlacement="start"
+                control={
+                  <Controller
+                    name="noticeAt"
+                    control={control}
+                    render={({ field: { onChange, ref, value } }) => (
+                      <Switch
+                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                        onChange={onChange}
+                        inputRef={ref}
+                        checked={value}
+                      />
+                    )}
+                  />
+                }
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm={12}>
+            {board.editorUseAt && (
+              <Editor contents={postsContent} setContents={setPostsContent} />
+            )}
+            {!board.editorUseAt && (
               <Box boxShadow={1}>
                 <Controller
-                  name="postsTitle"
+                  name="postsContent"
+                  control={control}
+                  rules={{ required: true }}
                   render={({ field }) => (
                     <TextField
-                      autoFocus
-                      label={t('posts.posts_title')}
-                      name="postsTitle"
-                      required
-                      inputProps={{ maxLength: 100 }}
+                      label={t('posts.posts_content')}
+                      name="postsContent"
+                      multiline
+                      minRows={9.2}
                       id="outlined-full-width"
                       placeholder={format(t('msg.placeholder.format'), [
-                        t('posts.posts_title'),
+                        t('posts.posts_content'),
                       ])}
                       fullWidth
                       variant="outlined"
                       {...field}
                     />
                   )}
-                  control={control}
-                  rules={{ required: true, maxLength: 100 }}
                 />
-                {errors.postsTitle && (
+                {errors.postsContent && (
                   <ValidationAlert
-                    fieldError={errors.postsTitle}
-                    target={[100]}
-                    label={t('posts.posts_title')}
+                    fieldError={errors.postsContent}
+                    label={t('posts.posts_content')}
                   />
                 )}
               </Box>
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <Box boxShadow={1} className={classes.switchBox}>
-                <FormControlLabel
-                  label={t('posts.notice_at')}
-                  labelPlacement="start"
-                  control={
-                    <Controller
-                      name="noticeAt"
-                      control={control}
-                      render={({ field: { onChange, ref, value } }) => (
-                        <Switch
-                          inputProps={{ 'aria-label': 'secondary checkbox' }}
-                          onChange={onChange}
-                          inputRef={ref}
-                          checked={value}
-                        />
-                      )}
-                    />
-                  }
-                />
-              </Box>
-            </Grid>
+            )}
+          </Grid>
+          {(board.skinTypeCode === SKINT_TYPE_CODE_FAQ ||
+            board.skinTypeCode === SKINT_TYPE_CODE_QNA) && (
             <Grid item xs={12} sm={12}>
               {board.editorUseAt && (
-                <Editor contents={postsContent} setContents={setPostsContent} />
+                <Editor
+                  contents={postsAnswerContent}
+                  setContents={setPostsAnswerContent}
+                />
               )}
               {!board.editorUseAt && (
                 <Box boxShadow={1}>
                   <Controller
-                    name="postsContent"
+                    name="postsAnswerContent"
                     control={control}
-                    rules={{ required: true }}
                     render={({ field }) => (
                       <TextField
-                        label={t('posts.posts_content')}
-                        name="postsContent"
+                        label={t('posts.posts_answer_content')}
+                        name="postsAnswerContent"
                         multiline
                         minRows={9.2}
                         id="outlined-full-width"
                         placeholder={format(t('msg.placeholder.format'), [
-                          t('posts.posts_content'),
+                          t('posts.posts_answer_content'),
                         ])}
                         fullWidth
                         variant="outlined"
@@ -384,68 +422,28 @@ const PostsItem = ({ boardNo, postsNo, board, initData }: IPostsItemsProps) => {
                       />
                     )}
                   />
-                  {errors.postsContent && (
-                    <ValidationAlert
-                      fieldError={errors.postsContent}
-                      label={t('posts.posts_content')}
-                    />
-                  )}
                 </Box>
               )}
             </Grid>
-            {(board.skinTypeCode === SKINT_TYPE_CODE_FAQ ||
-              board.skinTypeCode === SKINT_TYPE_CODE_QNA) && (
-              <Grid item xs={12} sm={12}>
-                {board.editorUseAt && (
-                  <Editor
-                    contents={postsAnswerContent}
-                    setContents={setPostsAnswerContent}
-                  />
+          )}
+          {board.uploadUseAt && (
+            <Grid item xs={12} sm={12}>
+              <Box boxShadow={1}>
+                <Upload
+                  ref={uploadRef}
+                  multi
+                  uploadLimitCount={board.uploadLimitCount}
+                  uploadLimitSize={board.uploadLimitSize}
+                  attachmentCode={initData.attachmentCode}
+                  attachData={attachData}
+                />
+                {attachData && (
+                  <AttachList data={attachData} setData={setAttachData} />
                 )}
-                {!board.editorUseAt && (
-                  <Box boxShadow={1}>
-                    <Controller
-                      name="postsAnswerContent"
-                      control={control}
-                      render={({ field }) => (
-                        <TextField
-                          label={t('posts.posts_answer_content')}
-                          name="postsAnswerContent"
-                          multiline
-                          minRows={9.2}
-                          id="outlined-full-width"
-                          placeholder={format(t('msg.placeholder.format'), [
-                            t('posts.posts_answer_content'),
-                          ])}
-                          fullWidth
-                          variant="outlined"
-                          {...field}
-                        />
-                      )}
-                    />
-                  </Box>
-                )}
-              </Grid>
-            )}
-            {board.uploadUseAt && (
-              <Grid item xs={12} sm={12}>
-                <Box boxShadow={1}>
-                  <Upload
-                    ref={uploadRef}
-                    multi
-                    uploadLimitCount={board.uploadLimitCount}
-                    uploadLimitSize={board.uploadLimitSize}
-                    attachmentCode={initData.attachmentCode}
-                    attachData={attachData}
-                  />
-                  {attachData && (
-                    <AttachList data={attachData} setData={setAttachData} />
-                  )}
-                </Box>
-              </Grid>
-            )}
-          </Grid>
-        </form>
+              </Box>
+            </Grid>
+          )}
+        </Grid>
       </FormProvider>
       <CustomButtons buttons={[saveButton, prevButton]} />
       <CustomAlert

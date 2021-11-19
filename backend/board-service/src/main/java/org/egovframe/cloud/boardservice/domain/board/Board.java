@@ -1,12 +1,17 @@
 package org.egovframe.cloud.boardservice.domain.board;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.egovframe.cloud.boardservice.domain.posts.Posts;
 import org.egovframe.cloud.servlet.domain.BaseEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * org.egovframe.cloud.boardservice.domain.board.Board
@@ -113,9 +118,9 @@ public class Board extends BaseEntity {
     /**
      * 게시물 엔티티
      */
-    /*@OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<Posts> posts;*/
+    private List<Posts> posts = new ArrayList<>();
 
     /**
      * 빌더 패턴 클래스 생성자

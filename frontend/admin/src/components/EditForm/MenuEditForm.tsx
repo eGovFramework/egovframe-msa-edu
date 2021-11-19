@@ -91,12 +91,6 @@ const MenuEditForm = (props: MenuEditFormProps) => {
     menuTypes[0]?.codeId,
   )
 
-  useEffect(() => {
-    if (errors) {
-      console.log(errors)
-    }
-  }, [errors])
-
   const [connectIdState, setConnectIdState] = useState<IConnectId>({})
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
@@ -189,7 +183,6 @@ const MenuEditForm = (props: MenuEditFormProps) => {
   }
 
   const handleSaveBefore = (formData: IMenuInfoForm) => {
-    console.log('before ', formData)
     formData = produce(formData, draft => {
       draft.menuType = menuTypeState
       draft.menuTypeName = menuTypes.find(

@@ -1,12 +1,12 @@
-import React, { useCallback } from 'react'
-import { useRouter } from 'next/router'
-import Typography from '@material-ui/core/Typography'
 import Breadcrumbs from '@material-ui/core/Breadcrumbs'
 import Link from '@material-ui/core/Link'
-import { Theme, makeStyles } from '@material-ui/core/styles'
-import { currentMenuStateAtom, flatMenusSelect } from '@stores'
-import { useRecoilValue } from 'recoil'
+import { makeStyles, Theme } from '@material-ui/core/styles'
+import Typography from '@material-ui/core/Typography'
+import { currentMenuStateAtom, ISideMenu, menuStateAtom } from '@stores'
+import { useRouter } from 'next/router'
+import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useRecoilValue } from 'recoil'
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -17,9 +17,32 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Bread: React.FC = () => {
   const classes = useStyles()
   const router = useRouter()
-  const flatMenus = useRecoilValue(flatMenusSelect)
+  const menus = useRecoilValue(menuStateAtom)
   const current = useRecoilValue(currentMenuStateAtom)
   const { i18n } = useTranslation()
+
+  const findParent = useCallback(
+    (menu: ISideMenu) => {
+      let parent: ISideMenu
+      const findItems = item => {
+        if (item.id === menu.parentId) {
+          parent = item
+        }
+
+        if (item.children) {
+          item.children.map(v => {
+            return findItems(v)
+          })
+        }
+      }
+
+      menus.map(item => {
+        findItems(item)
+      })
+      return parent
+    },
+    [menus, current],
+  )
 
   const hierarchy = useCallback(() => {
     if (!current) {
@@ -35,21 +58,16 @@ const Bread: React.FC = () => {
     }
 
     let trees = []
-    const arr = flatMenus.slice(
-      0,
-      flatMenus.findIndex(item => item.id === current.id) + 1,
-    )
-
     trees.push(current)
-    arr.reverse().some(item => {
-      if (item.level < current.level) {
-        trees.push(item)
+    let findMenu = current
+    while (true) {
+      let parent = findParent(findMenu)
+      trees.push(parent)
+      findMenu = parent
+      if (parent.level === 1) {
+        break
       }
-
-      if (item.level === 1) {
-        return true
-      }
-    })
+    }
 
     let nodes = trees.reverse().map(item =>
       item.id === current.id ? (

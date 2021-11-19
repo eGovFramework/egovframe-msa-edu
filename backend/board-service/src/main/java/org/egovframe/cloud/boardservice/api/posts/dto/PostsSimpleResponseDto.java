@@ -1,6 +1,7 @@
 package org.egovframe.cloud.boardservice.api.posts.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.egovframe.cloud.boardservice.api.board.dto.BoardResponseDto;
@@ -92,7 +93,8 @@ public class PostsSimpleResponseDto implements Serializable {
      */
     public PostsSimpleResponseDto setIsNew(BoardResponseDto boardResponseDto) {
         if (boardResponseDto.getNewDisplayDayCount() != null) {
-            this.isNew = createdDate.plusDays(boardResponseDto.getNewDisplayDayCount()).compareTo(LocalDateTime.now()) <= 0;
+            int compareTo = createdDate.toLocalDate().compareTo(LocalDate.now());
+            this.isNew = 0 <= compareTo && compareTo <= boardResponseDto.getNewDisplayDayCount();
         } else {
             this.isNew = false;
         }

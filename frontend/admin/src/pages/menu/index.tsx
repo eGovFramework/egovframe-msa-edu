@@ -166,7 +166,6 @@ const Menu = ({ sites, menuTypes }: MenuProps) => {
   }
 
   const handleSave = async (formData: IMenuInfoForm) => {
-    console.log(formData)
     setSuccessSnackBar('loading')
     try {
       const result = await menuService.update(treeSelected.menuId, formData)

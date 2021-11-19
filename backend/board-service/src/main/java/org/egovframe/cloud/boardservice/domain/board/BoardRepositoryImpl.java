@@ -1,11 +1,14 @@
 package org.egovframe.cloud.boardservice.domain.board;
 
+import static com.querydsl.core.types.Projections.constructor;
+
 import com.google.common.base.CaseFormat;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -58,12 +61,16 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     @Override
 	public Page<BoardListResponseDto> findPage(RequestDto requestDto, Pageable pageable) {
         JPQLQuery<BoardListResponseDto> query = jpaQueryFactory
-                .select(new QBoardListResponseDto(
+                .select(constructor(BoardListResponseDto.class,
                         QBoard.board.boardNo,
                         QBoard.board.boardName,
                         QBoard.board.skinTypeCode,
                         Expressions.as(QCode.code.codeName, "skinTypeCodeName"),
-                        QBoard.board.createdDate
+                        QBoard.board.createdDate,
+                        new CaseBuilder()
+                            .when(QBoard.board.posts.size().gt(0))
+                            .then(Boolean.TRUE)
+                            .otherwise(Boolean.FALSE).as("isPosts")
                 ))
                 .from(QBoard.board)
                 .leftJoin(QCode.code).on(QBoard.board.skinTypeCode.eq(QCode.code.codeId).and(QCode.code.parentCodeId.eq("skin_type_code")))

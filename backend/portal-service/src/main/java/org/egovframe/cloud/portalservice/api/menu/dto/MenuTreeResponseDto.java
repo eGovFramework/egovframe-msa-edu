@@ -1,5 +1,6 @@
 package org.egovframe.cloud.portalservice.api.menu.dto;
 
+import java.util.Comparator;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,6 +53,9 @@ public class MenuTreeResponseDto {
         this.level = entity.getLevel();
         this.children = entity.getChildren().stream()
                 .map(children -> new MenuTreeResponseDto(children))
+                .sorted(Comparator.comparing(MenuTreeResponseDto::getSortSeq))
                 .collect(Collectors.toList());
+
     }
+
 }

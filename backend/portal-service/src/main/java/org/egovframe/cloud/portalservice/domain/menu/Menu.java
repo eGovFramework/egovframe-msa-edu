@@ -127,20 +127,9 @@ public class Menu extends BaseEntity {
     public Menu updateDnD(Menu parent, Integer sortSeq, Integer level) {
         this.sortSeq = sortSeq;
         this.level = level;
+
         if (parent == null) {
-            Menu oldParent = this.getParent();
-
-            if (oldParent == null) {
-                return this;
-            }
-
-            Menu old = oldParent.getChildren().stream().filter(item -> item.getId().equals(this.id)).findAny().orElse(null);
-            if (old != null) {
-                oldParent.getChildren().remove(old);
-            }
-            this.parent = null;
-
-            return this;
+            return updateOldParent();
         }
 
         if (parent.equals(this.parent)) {
@@ -149,7 +138,21 @@ public class Menu extends BaseEntity {
 
         this.parent = parent;
         parent.getChildren().add(this);
+        return this;
+    }
 
+    private Menu updateOldParent() {
+        Menu oldParent = this.getParent();
+
+        if (oldParent == null) {
+            return this;
+        }
+
+        Menu old = oldParent.getChildren().stream().filter(item -> item.getId().equals(this.id)).findAny().orElse(null);
+        if (old != null) {
+            oldParent.getChildren().remove(old);
+        }
+        this.parent = null;
         return this;
     }
 

@@ -1,9 +1,14 @@
-import React, { useCallback, useMemo } from 'react'
-import { AxiosError } from 'axios'
-import { NextPage } from 'next'
-import { useRouter } from 'next/router'
-import { TFunction, useTranslation } from 'next-i18next'
-
+import { CustomButtons, IButtonProps } from '@components/Buttons'
+import { ConfirmDialog } from '@components/Confirm'
+import { PopupProps } from '@components/DialogPopup'
+import Search, { IKeywordType } from '@components/Search'
+import CustomDataGrid from '@components/Table/CustomDataGrid'
+import { GRID_PAGE_SIZE } from '@constants'
+import usePage from '@hooks/usePage'
+import useSearchTypes from '@hooks/useSearchType'
+// 내부 컴포넌트 및 custom hook, etc...
+import { convertStringToDateFormat } from '@libs/date'
+import Button from '@material-ui/core/Button'
 // material-ui deps
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import {
@@ -12,28 +17,21 @@ import {
   GridValueFormatterParams,
   GridValueGetterParams,
 } from '@material-ui/data-grid'
-
-// 내부 컴포넌트 및 custom hook, etc...
-import { convertStringToDateFormat } from '@libs/date'
-import CustomDataGrid from '@components/Table/CustomDataGrid'
-import { CustomButtons, IButtonProps } from '@components/Buttons'
-import { Page, rownum } from '@utils'
-import Search, { IKeywordType } from '@components/Search'
-
-// 상태관리 recoil
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+// api
+import { boardService } from '@service'
 import {
   conditionAtom,
   detailButtonsSnackAtom,
   errorStateSelector,
 } from '@stores'
-
-// api
-import { boardService } from '@service'
-import { PopupProps } from '@components/DialogPopup'
-import Button from '@material-ui/core/Button'
-import usePage from '@hooks/usePage'
-import { GRID_PAGE_SIZE } from '@constants'
+import { Page, rownum } from '@utils'
+import { AxiosError } from 'axios'
+import { NextPage } from 'next'
+import { TFunction, useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
+import React, { useCallback, useMemo, useState } from 'react'
+// 상태관리 recoil
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 
 // material-ui style
 const useStyles = makeStyles((theme: Theme) =>
@@ -133,12 +131,12 @@ const Board: NextPage<BoardProps> = props => {
   const setSuccessSnackBar = useSetRecoilState(detailButtonsSnackAtom)
 
   // 조회조건 select items
-  const searchTypes: IKeywordType[] = [
+  const searchTypes: IKeywordType[] = useSearchTypes([
     {
       key: 'boardName',
       label: t('board.board_name'),
     },
-  ]
+  ])
 
   /**
    * 상태관리 필요한 훅
@@ -149,6 +147,14 @@ const Board: NextPage<BoardProps> = props => {
 
   // 현 페이지내 필요한 hook
   const { page, setPageValue } = usePage(conditionKey)
+
+  const [deleteConfirmState, setDeleteConfirmState] = useState<{
+    open: boolean
+    boardNo: number
+  }>({
+    open: false,
+    boardNo: null,
+  })
 
   // 목록 데이터 조회 및 관리
   const { data, mutate } = boardService.search({
@@ -177,19 +183,17 @@ const Board: NextPage<BoardProps> = props => {
   // 삭제
   const handleDelete = useCallback(
     (row: any) => {
-      const { boardNo } = row
+      const { boardNo, isPosts } = row
 
-      setSuccessSnackBar('loading')
+      if (isPosts) {
+        setDeleteConfirmState({
+          open: true,
+          boardNo,
+        })
+        return
+      }
 
-      boardService.delete({
-        boardNo,
-        callback: () => {
-          setSuccessSnackBar('success')
-
-          mutate()
-        },
-        errorCallback,
-      })
+      deleteBoard(boardNo)
     },
     [errorCallback, mutate, setSuccessSnackBar],
   )
@@ -251,6 +255,36 @@ const Board: NextPage<BoardProps> = props => {
     route.push('board/-1')
   }
 
+  const handleConfirmClose = () => {
+    setDeleteConfirmState({
+      open: false,
+      boardNo: null,
+    })
+  }
+
+  const deleteBoard = (boardNo: number) => {
+    setSuccessSnackBar('loading')
+
+    boardService.delete({
+      boardNo,
+      callback: () => {
+        setSuccessSnackBar('success')
+
+        mutate()
+      },
+      errorCallback,
+    })
+  }
+
+  const handleConfirm = () => {
+    const { boardNo } = deleteConfirmState
+    deleteBoard(boardNo)
+    setDeleteConfirmState({
+      open: false,
+      boardNo: null,
+    })
+  }
+
   return (
     <div className={classes.root}>
       <Search
@@ -269,6 +303,12 @@ const Board: NextPage<BoardProps> = props => {
         pageSize={GRID_PAGE_SIZE}
         onPageChange={handlePageChange}
         getRowId={r => r.boardNo}
+      />
+      <ConfirmDialog
+        open={deleteConfirmState.open}
+        contentText={'게시물이 존재합니다. 삭제하시겠습니까?'}
+        handleClose={handleConfirmClose}
+        handleConfirm={handleConfirm}
       />
     </div>
   )

@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import Tree, {
   ItemId,
   moveItemOnTree,
@@ -9,11 +7,14 @@ import Tree, {
   TreeDestinationPosition,
   TreeSourcePosition,
 } from '@atlaskit/tree'
-import { convertTreeDataToJson, convertJsonToTreeData } from './TreeUtils'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { IMenuTree } from '@service'
-import DraaggableTreeMenuItem from './DraaggableTreeMenuItem'
-import { useRecoilState, useRecoilValue } from 'recoil'
 import { draggableTreeExpandedAtom, draggableTreeSelectedAtom } from '@stores'
+import React, { useEffect, useState } from 'react'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import DraaggableTreeMenuItem from './DraaggableTreeMenuItem'
+import { TreeJson } from './TreeJson'
+import { convertJsonToTreeData } from './TreeUtils'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -126,8 +127,9 @@ function DraggableTreeMenu(props: DraggableTreeMenuProps) {
 
     const newTree = moveItemOnTree(tree, source, destination)
 
-    const convert = await convertTreeDataToJson(newTree)
-    handleTreeDnD(convert)
+    const treeJson = new TreeJson(newTree, source, destination)
+    const convertTree = treeJson.convert()
+    handleTreeDnD(convertTree)
 
     setTree(newTree)
   }

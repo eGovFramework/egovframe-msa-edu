@@ -59,6 +59,11 @@ public class BoardListResponseDto implements Serializable {
     private LocalDateTime createdDate;
 
     /**
+     * 게시글이 있는지 여부
+     */
+    private Boolean isPosts;
+
+    /**
      * 게시판 목록 응답 DTO 생성자
      *
      * @param boardNo          게시판 번호
@@ -66,10 +71,11 @@ public class BoardListResponseDto implements Serializable {
      * @param skinTypeCode     스킨 유형 코드
      */
     @QueryProjection
-    public BoardListResponseDto(Integer boardNo, String boardName, String skinTypeCode) {
+    public BoardListResponseDto(Integer boardNo, String boardName, String skinTypeCode, Boolean isPosts) {
         this.boardNo = boardNo;
         this.boardName = boardName;
         this.skinTypeCode = skinTypeCode;
+        this.isPosts = isPosts;
     }
 
     /**
@@ -82,12 +88,13 @@ public class BoardListResponseDto implements Serializable {
      * @param createdDate      생성 일시
      */
     @QueryProjection
-    public BoardListResponseDto(Integer boardNo, String boardName, String skinTypeCode, String skinTypeCodeName, LocalDateTime createdDate) {
+    public BoardListResponseDto(Integer boardNo, String boardName, String skinTypeCode, String skinTypeCodeName, LocalDateTime createdDate, Boolean isPosts) {
         this.boardNo = boardNo;
         this.boardName = boardName;
         this.skinTypeCode = skinTypeCode;
         this.skinTypeCodeName = skinTypeCodeName;
         this.createdDate = createdDate;
+        this.isPosts = isPosts;
     }
 
 }

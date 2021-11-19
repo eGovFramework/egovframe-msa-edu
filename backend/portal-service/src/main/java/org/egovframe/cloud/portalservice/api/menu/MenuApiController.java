@@ -66,7 +66,7 @@ public class MenuApiController {
      */
     @GetMapping("/api/v1/menus/{menuId}")
     public MenuResponseDto findById(@PathVariable Long menuId) {
-        return menuService.findById(menuId);
+        return menuService.findMenuResponseDtoById(menuId);
     }
 
     /**

@@ -1,6 +1,7 @@
 package org.egovframe.cloud.boardservice.api.posts.dto;
 
 import lombok.Getter;
+import org.egovframe.cloud.boardservice.domain.board.Board;
 import org.egovframe.cloud.boardservice.domain.posts.Posts;
 import org.egovframe.cloud.boardservice.domain.posts.PostsId;
 
@@ -49,6 +50,9 @@ public class PostsDeleteRequestDto {
                         .boardNo(boardNo)
                         .postsNo(postsNo)
                         .build())
+                .board(Board.builder()
+                    .boardNo(boardNo)
+                    .build())
                 .build();
     }
 

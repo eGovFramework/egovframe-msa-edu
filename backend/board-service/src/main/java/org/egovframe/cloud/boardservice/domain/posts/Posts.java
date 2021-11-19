@@ -128,7 +128,6 @@ public class Posts extends BaseEntity {
                  String postsContent, String postsAnswerContent, String attachmentCode,
                  Integer readCount, Boolean noticeAt, Integer deleteAt,
                  User creator, List<Comment> comments) {
-        this.board = board;
         this.postsId = postsId;
         this.postsTitle = postsTitle;
         this.postsContent = postsContent;
@@ -139,6 +138,17 @@ public class Posts extends BaseEntity {
         this.deleteAt = deleteAt;
         this.creator = creator;
         this.comments = comments == null ? null : new ArrayList<>(comments);
+        setBoard(board);
+    }
+
+    /**
+     * 연관관계 설정
+     *
+     * @param board
+     */
+    public void setBoard(Board board) {
+        this.board = board;
+        board.getPosts().add(this);
     }
 
     /**
