@@ -367,21 +367,21 @@ public class FtpStorageUtils implements StorageUtils {
      * @throws IOException
      */
     public AttachmentImageResponseDto loadImage(String imagename) {
+        InputStream inputStream = null;
         try {
-            String paths = environment.getProperty("file.url") + imagename;
+            String paths = environment.getProperty("file.url")+StringUtils.cleanPath("/"+ imagename);
             Resource resource = new UrlResource(paths);
-            InputStream inputStream = resource.getInputStream();
+            inputStream = resource.getInputStream();
 
             byte[] data = IOUtils.toByteArray(inputStream);
+            String contentType = URLConnection.guessContentTypeFromName(resource.getFilename());
+
             inputStream.close();
 
-            // get mime type
-            String contentType = Files.probeContentType(resource.getFile().toPath());
-
             return AttachmentImageResponseDto.builder()
-                    .mimeType(contentType)
-                    .data(data)
-                    .build();
+                .mimeType(contentType)
+                .data(data)
+                .build();
         } catch (FileNotFoundException | NoSuchFileException ex) {
             // 파일을 찾을 수 없습니다.
             throw new BusinessMessageException(messageUtil.getMessage("valid.file.not_found"));
@@ -389,6 +389,14 @@ public class FtpStorageUtils implements StorageUtils {
             log.error("Could not read file.", iex);
             // 파일을 찾을 수 없습니다.
             throw new BusinessMessageException(messageUtil.getMessage("valid.file.not_found"));
+        }finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    log.error(e.getLocalizedMessage());
+                }
+            }
         }
     }
 
