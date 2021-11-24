@@ -1,0 +1,31 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-service
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/eGovFramework/config-server
+          username: '{cipher}ba3...'
+          password: '{cipher}26a...'
+          search-paths: config # repository 폴더 경로
+          default-label: main  # main branch
+          ignore-local-ssh-settings: true
+          skip-ssl-validation: true
+    bus:
+      enabled: true # webhook 활성화: /monitor 엔드포인트 호출 가능해진다
+  rabbitmq:
+    host: ${rabbitmq.hostname:localhost}
+    port: 5672
+    username: guest
+    password: guest
+
+# config server actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: busrefresh
