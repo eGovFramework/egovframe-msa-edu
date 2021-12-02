@@ -22,7 +22,7 @@ messages:
   directory: ${file.directory}/messages
 
 apigateway:
-  host: http://localhost:${server.port}
+  host: http://${apigateway.hostname:localhost}:${server.port}
 
 # rabbitmq server
 spring:
