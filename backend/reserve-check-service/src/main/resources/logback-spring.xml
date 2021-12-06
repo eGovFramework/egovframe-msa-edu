@@ -3,7 +3,7 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %thread %-5level %logger - %m%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %magenta(%-4relative) - [%thread{10}, %X{traceId:-}, %X{spanId:-}] %cyan(%logger{20}): %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -20,9 +20,23 @@
 
         <!-- ELK - Logstash 로 로그를 전송하기 위한 appender -->
         <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-            <destination>${destination}</destination><!-- native profile => localhost:8088 -->
-            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-                <customFields>{"app.name":"${app_name}"}</customFields>
+            <destination>${destination}</destination>
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <mdc/>
+                    <context/>
+                    <logLevel/>
+                    <loggerName/>
+                    <pattern>
+                        <pattern>
+                            {"appName": "${app_name}"}
+                        </pattern>
+                    </pattern>
+                    <threadName/>
+                    <message/>
+                    <logstashMarkers/>
+                    <stackTrace/>
+                </providers>
             </encoder>
         </appender>
         <root level="WARN">
