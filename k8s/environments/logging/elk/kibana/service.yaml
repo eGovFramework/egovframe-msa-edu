@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  labels:
+    env: production
+    tier: backend
+    app: kibana
+    name: kibana-service
+spec:
+  selector:
+    env: production
+    tier: backend
+    app: kibana
+    name: kibana-pod
+  ports:
+  - protocol: TCP
+    port: 5601
+    targetPort: 5601

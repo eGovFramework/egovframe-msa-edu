@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: zipkin-ingress
+  labels:
+    env: production
+    tier: backend
+    app: zipkin
+    name: zipkin-ingress
+spec:
+  rules:
+  - host: <Zipkin 도메인> # TODO
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: zipkin
+          servicePort: 9411

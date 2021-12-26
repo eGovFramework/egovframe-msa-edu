@@ -19,6 +19,10 @@
     "start:prodlg": "env-cmd -f ./.env.production-lg node dist/index.js",
     "build:prodsm": "env-cmd -f ./.env.production-sm npm run build:next && npm run build:server",
     "start:prodsm": "env-cmd -f ./.env.production-sm node dist/index.js",
+    "build:prodk8slg": "env-cmd -f ./.env.production-k8s-lg npm run build:next && npm run build:server",
+    "start:prodk8slg": "env-cmd -f ./.env.production-k8s-lg node dist/index.js",
+    "build:prodk8ssm": "env-cmd -f ./.env.production-k8s-sm npm run build:next && npm run build:server",
+    "start:prodk8ssm": "env-cmd -f ./.env.production-k8s-sm node dist/index.js",
     "start": "NODE_ENV=production node dist/index.js",
     "test": "jest --coverage"
   },

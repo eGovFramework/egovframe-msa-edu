@@ -1,0 +1,74 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+    # control-plane
+    config.vm.define "control-plane1" do |config|
+      config.vm.box = "ubuntu/focal64"
+      config.vm.provider "virtualbox" do |vb|
+        vb.name = "control-plane1"
+        vb.cpus = 2
+        vb.memory = 4000
+        unless File.exist?('./.disk/ceph1.vdi')
+          vb.customize ['createmedium', 'disk', '--filename', './.disk/ceph1.vdi', '--size', 10240]
+        end
+        vb.customize ['storageattach', :id, '--storagectl', 'SCSI', '--port', 2, '--device', 0, '--type', 'hdd', '--medium',
+  './.disk/ceph1.vdi']
+      end
+      config.vm.hostname = "control-plane1"
+      config.vm.network "private_network", ip: "192.168.56.21", nic_type: "virtio"
+      config.vm.network "forwarded_port", guest: 6443, host: 6443, protocol: "tcp"
+      config.vm.network "forwarded_port", guest: 80, host: 8080, protocol: "tcp"
+    end
+  
+    # worker1
+    config.vm.define "worker1" do |config|
+      config.vm.box = "ubuntu/focal64"
+      config.vm.provider "virtualbox" do |vb|
+        vb.name = "worker1"
+        vb.cpus = 2
+        vb.memory = 4000
+        unless File.exist?('./.disk/ceph2.vdi')
+          vb.customize ['createmedium', 'disk', '--filename', './.disk/ceph2.vdi', '--size', 10240]
+        end
+        vb.customize ['storageattach', :id, '--storagectl', 'SCSI', '--port', 2, '--device', 0, '--type', 'hdd', '--medium',
+  './.disk/ceph2.vdi']
+      end
+      config.vm.hostname = "worker1"
+      config.vm.network "private_network", ip: "192.168.56.22", nic_type: "virtio"
+    end
+  
+    # worker2
+    config.vm.define "worker2" do |config|
+      config.vm.box = "ubuntu/focal64"
+      config.vm.provider "virtualbox" do |vb|
+        vb.name = "worker2"
+        vb.cpus = 2
+        vb.memory = 4000
+        unless File.exist?('./.disk/ceph3.vdi')
+          vb.customize ['createmedium', 'disk', '--filename', './.disk/ceph3.vdi', '--size', 10240]
+        end
+        vb.customize ['storageattach', :id, '--storagectl', 'SCSI', '--port', 2, '--device', 0, '--type', 'hdd', '--medium',
+  './.disk/ceph3.vdi']
+      end
+      config.vm.hostname = "worker2"
+      config.vm.network "private_network", ip: "192.168.56.23", nic_type: "virtio"
+    end
+  
+    # Hostmanager plugin
+    # vagrant plugin install vagrant-hostmanager
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_guest = true
+  
+    # Disable Synced Folder
+    config.vm.synced_folder ".", "/vagrant", disabled: true
+  
+    # Enable SSH Password Authentication
+    config.vm.provision "shell", inline: <<-SHELL
+      sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+      sed -i 's/archive.ubuntu.com/mirror.kakao.com/g' /etc/apt/sources.list
+      sed -i 's/security.ubuntu.com/mirror.kakao.com/g' /etc/apt/sources.list
+      systemctl restart ssh
+    SHELL
+  end
+  

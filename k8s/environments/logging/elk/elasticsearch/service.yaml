@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  labels:
+    env: production
+    tier: backend
+    app: elasticsearch
+    name: elasticsearch-service
+spec:
+  selector:
+    env: production
+    tier: backend
+    app: elasticsearch
+    name: elasticsearch-pod
+  ports:
+    - port: 9200
+      protocol: TCP
+      targetPort: 9200

@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: apigateway-ingress
+  labels:
+    env: production
+    tier: backend
+    app: apigateway
+    name: apigateway-ingress
+spec:
+  rules:
+    - host: <백엔드 API 게이트웨이 도메인> # TODO
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: apigateway
+              servicePort: 8000

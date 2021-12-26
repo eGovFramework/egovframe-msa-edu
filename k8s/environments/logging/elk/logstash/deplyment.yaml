@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logstash-deployment
+  labels:
+    env: production
+    tier: backend
+    app: logstash
+    name: logstash-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: production
+      tier: backend
+      app: logstash
+      name: logstash-pod
+  template:
+    metadata:
+      labels:
+        env: production
+        tier: backend
+        app: logstash
+        name: logstash-pod
+    spec:
+      containers:
+      - name: logstash
+        image: docker.elastic.co/logstash/logstash:7.10.1
+        ports:
+          - containerPort: 8088
+        resources:
+          requests:
+            cpu: 300m
+            memory: 512Mi
+          limits:
+            cpu: 300m
+            memory: 512Mi
+        volumeMounts:
+          - name: logstash-config-volume
+            mountPath: /usr/share/logstash/config
+          - name: logstash-pipeline-volume
+            mountPath: /usr/share/logstash/pipeline
+      volumes:
+        - name: logstash-config-volume
+          configMap:
+            name: logstash-configmap
+            items:
+              - key: logstash.yml
+                path: logstash.yml
+        - name: logstash-pipeline-volume
+          configMap:
+            name: logstash-configmap
+            items:
+              - key: logstash.conf
+                path: logstash.conf

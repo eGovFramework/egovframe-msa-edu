@@ -1,0 +1,16 @@
+# admin
+FROM node:14.8.0-alpine
+
+ENV APP_TYPE="prodk8slg"
+ENV APP_HOME=/usr/app/
+ENV NODE_OPTIONS=--max_old_space_size=2048
+
+RUN mkdir -p ${APP_HOME}
+WORKDIR $APP_HOME
+
+COPY package*.json .
+RUN npm install
+COPY . .
+RUN npm run build:${APP_TYPE}
+
+CMD npm run start:${APP_TYPE}

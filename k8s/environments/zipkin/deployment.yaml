@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zipkin-deployment
+  labels:
+    env: production
+    tier: backend
+    app: zipkin
+    name: zipkin-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: production
+      tier: backend
+      app: zipkin
+      name: zipkin-pod
+  template:
+    metadata:
+      labels:
+        env: production
+        tier: backend
+        app: zipkin
+        name: zipkin-pod
+    spec:
+      containers:
+        - name: zipkin
+          image: openzipkin/zipkin
+          ports:
+            - containerPort: 9411
+              name: http-9411
+          env:
+            - name: TZ
+              valueFrom:
+                configMapKeyRef:
+                  name: common-configmap
+                  key: TZ
+          startupProbe:
+            httpGet:
+              path: /zipkin/
+              port: 9411
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 36
+          readinessProbe:
+            httpGet:
+              path: /zipkin/
+              port: 9411
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3

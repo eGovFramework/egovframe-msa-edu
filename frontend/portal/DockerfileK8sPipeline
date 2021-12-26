@@ -1,0 +1,3 @@
+FROM node:14.8.0-alpine
+COPY ./ ./
+CMD ["npm", "run", "start:prodk8slg"]

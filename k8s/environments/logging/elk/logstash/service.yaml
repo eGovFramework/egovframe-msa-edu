@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: logstash
+  labels:
+    env: production
+    tier: backend
+    app: logstash
+    name: logstash-service
+spec:
+  selector:
+    env: production
+    tier: backend
+    app: logstash
+    name: logstash-pod
+  ports:
+    - protocol: TCP
+      port: 8088
+      targetPort: 8088

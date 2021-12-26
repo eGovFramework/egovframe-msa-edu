@@ -1,0 +1,36 @@
+#kubectl create configmap logstash-configmap --from-file=config/logstash.yml --from-file=pipeline/logstash.conf
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-configmap
+  labels:
+    env: production
+    tier: backend
+    app: logstash
+    name: logstash-configmap
+data:
+  logstash.conf: |
+    # LogstashTcpSocketAppender
+    input {
+      tcp {
+        port => 8088
+        codec => json_lines
+      }
+    }
+
+    output {
+      elasticsearch {
+        hosts => "http://elasticsearch.default.svc.cluster.local:9200"
+      }
+    }
+  logstash.yml: |-
+    # http.host: "0.0.0.0"
+    http.host: "127.0.0.1"
+    path.config: /usr/share/logstash/pipeline
+    # pipeline.workers: 2
+
+    ## X-Pack security credentials
+    #
+    # xpack.monitoring.enabled: true
+    # xpack.monitoring.elasticsearch.username: elastic
+    # xpack.monitoring.elasticsearch.password: changeme

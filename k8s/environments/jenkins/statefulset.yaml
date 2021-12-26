@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: jenkins-statefulset
+  labels:
+    env: production
+    tier: cicd
+    app: jenkins
+    name: jenkins-statefulset
+spec:
+  serviceName: jenkins
+  replicas: 1
+  selector:
+    matchLabels:
+      env: production
+      tier: cicd
+      app: jenkins
+      name: jenkins-pod
+  template:
+    metadata:
+      labels:
+        env: production
+        tier: cicd
+        app: jenkins
+        name: jenkins-pod
+    spec:
+      serviceAccountName: jenkins
+      containers:
+        - name: jenkins
+          image: jenkins/jenkins:lts
+          imagePullPolicy: Always
+          ports:
+            - name: http-port
+              containerPort: 8080
+            - name: jnlp-port
+              containerPort: 50000
+          volumeMounts:
+            - name: jenkins-volume
+              mountPath: /var/jenkins_home
+      volumes:
+        - name: jenkins-volume
+          persistentVolumeClaim:
+            claimName: jenkins-pvc

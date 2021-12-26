@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq-deployment
+  labels:
+    env: production
+    tier: backend
+    app: rabbitmq
+    name: rabbitmq-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: production
+      tier: backend
+      app: rabbitmq
+      name: rabbitmq-pod
+  template:
+    metadata:
+      labels:
+        env: production
+        tier: backend
+        app: rabbitmq
+        name: rabbitmq-pod
+    spec:
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:management
+          ports:
+            - containerPort: 5672
+              name: http-5672
+            - containerPort: 15672
+              name: http-15672
+          env:
+            - name: TZ
+              valueFrom:
+                configMapKeyRef:
+                  name: common-configmap
+                  key: TZ
+          startupProbe:
+            httpGet:
+              path: /
+              port: 15672
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 36
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 15672
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3

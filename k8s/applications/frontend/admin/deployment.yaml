@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-admin-deployment
+  annotations:
+    kubernetes.io/change-cause: "Initialized by manifest files."
+  labels:
+    env: production
+    tier: frontend
+    app: admin
+    name: frontend-admin-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: production
+      tier: frontend
+      app: admin
+      name: frontend-admin-pod
+  template:
+    metadata:
+      labels:
+        env: production
+        tier: frontend
+        app: admin
+        name: frontend-admin-pod
+    spec:
+      containers:
+        - name: frontend-admin
+          image: egovframe/egovframe-msa-edu-frontend-admin:latest # TODO
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          startupProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 36
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3

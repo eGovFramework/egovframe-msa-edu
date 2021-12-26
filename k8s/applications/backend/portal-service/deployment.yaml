@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portal-service-deployment
+  annotations:
+    kubernetes.io/change-cause: "Initialized by manifest files."
+  labels:
+    env: production
+    tier: backend
+    app: portal-service
+    name: portal-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: production
+      tier: backend
+      app: portal-service
+      name: portal-service-pod
+  template:
+    metadata:
+      labels:
+        env: production
+        tier: backend
+        app: portal-service
+        name: portal-service-pod
+    spec:
+      tolerations:
+        - key: pvc
+          operator: Equal
+          value: backend-pvc
+          effect: NoSchedule
+      containers:
+        - name: portal-service
+          image: egovframe/egovframe-msa-edu-backend-portal-service:latest # TODO
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: SERVER_PORT
+              value: "80"
+            - name: APP_HOME
+              valueFrom:
+                configMapKeyRef:
+                  name: common-configmap
+                  key: APP_HOME
+            - name: EUREKA_INSTANCE_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-configmap
+                  key: EUREKA_INSTANCE_HOSTNAME
+            - name: APIGATEWAY_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-configmap
+                  key: APIGATEWAY_HOSTNAME
+            - name: SPRING_CLOUD_CONFIG_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-configmap
+                  key: SPRING_CLOUD_CONFIG_URI
+            - name: MYSQL_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-configmap
+                  key: MYSQL_HOSTNAME
+            - name: ZIPKIN_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-configmap
+                  key: ZIPKIN_HOSTNAME
+            - name: RABBITMQ_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-configmap
+                  key: RABBITMQ_HOSTNAME
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 36
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          volumeMounts:
+            - name: backend-volume
+              mountPath: /srv/nfs
+      volumes:
+        - name: backend-volume
+          persistentVolumeClaim:
+            claimName: backend-pvc

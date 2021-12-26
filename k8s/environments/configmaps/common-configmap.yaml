@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: common-configmap
+  labels:
+    env: production
+    tier: backend
+    app: configmap
+    name: common-configmap
+data:
+  APP_HOME: "/srv/nfs"
+  TZ: "Asia/Seoul"

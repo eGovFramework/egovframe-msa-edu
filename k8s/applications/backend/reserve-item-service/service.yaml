@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: reserve-item-service
+  labels:
+    env: production
+    tier: backend
+    app: reserve-item-service
+    name: reserve-item-service-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    env: production
+    tier: backend
+    app: reserve-item-service
+    name: reserve-item-service-pod

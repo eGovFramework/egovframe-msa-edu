@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-portal-deployment
+  annotations:
+    kubernetes.io/change-cause: "Initialized by manifest files."
+  labels:
+    env: production
+    tier: frontend
+    app: portal
+    name: frontend-portal-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: production
+      tier: frontend
+      app: portal
+      name: frontend-portal-pod
+  template:
+    metadata:
+      labels:
+        env: production
+        tier: frontend
+        app: portal
+        name: frontend-portal-pod
+    spec:
+      containers:
+        - name: frontend-portal
+          image: egovframe/egovframe-msa-edu-frontend-portal:latest # TODO
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          startupProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 36
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3

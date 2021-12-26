@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-configmap
+  labels:
+    env: production
+    tier: backend
+    app: configmap
+    name: backend-configmap
+data:
+  # default namespace 기준
+  EUREKA_INSTANCE_HOSTNAME: "discovery.default.svc.cluster.local"
+  APIGATEWAY_HOSTNAME: "apigateway.default.svc.cluster.local"
+  SPRING_CLOUD_CONFIG_URI: "http://config.default.svc.cluster.local:8888"
+  MYSQL_HOSTNAME: "mysql.default.svc.cluster.local"
+  RABBITMQ_HOSTNAME: "rabbitmq.default.svc.cluster.local"
+  ZIPKIN_HOSTNAME: "zipkin.default.svc.cluster.local"

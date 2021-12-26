@@ -1,0 +1,19 @@
+# kubectl create configmap kibana-configmap --from-file=config/kibana.yml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kibana-configmap
+  labels:
+    env: production
+    tier: backend
+    app: kibana
+    name: kibana-configmap
+data:
+  kibana.yml: |
+    server.name: kibana
+    server.host: "0.0.0.0"
+
+    ## X-Pack security credentials
+    # xpack.monitoring.ui.container.elasticsearch.enabled: true
+    # elasticsearch.username: elastic
+    # elasticsearch.password: changeme

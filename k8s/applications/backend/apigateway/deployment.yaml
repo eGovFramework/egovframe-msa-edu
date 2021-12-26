@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apigateway-deployment
+  annotations:
+    kubernetes.io/change-cause: "Initialized by manifest files."
+  labels:
+    env: production
+    tier: backend
+    app: apigateway
+    name: apigateway-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: production
+      tier: backend
+      app: apigateway
+      name: apigateway-pod
+  template:
+    metadata:
+      labels:
+        env: production
+        tier: backend
+        app: apigateway
+        name: apigateway-pod
+    spec:
+      containers:
+        - name: apigateway
+          image: egovframe/egovframe-msa-edu-backend-apigateway:latest # TODO
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          env:
+            - name: EUREKA_INSTANCE_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-configmap
+                  key: EUREKA_INSTANCE_HOSTNAME
+            - name: APIGATEWAY_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-configmap
+                  key: APIGATEWAY_HOSTNAME
+            - name: SPRING_CLOUD_CONFIG_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-configmap
+                  key: SPRING_CLOUD_CONFIG_URI
+            - name: RABBITMQ_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-configmap
+                  key: RABBITMQ_HOSTNAME
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 36
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3

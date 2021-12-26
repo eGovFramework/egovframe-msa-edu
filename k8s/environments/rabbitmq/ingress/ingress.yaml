@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: rabbitmq-ingress
+  labels:
+    env: production
+    tier: backend
+    app: rabbitmq
+    name: rabbitmq-ingress
+spec:
+  rules:
+    - host: <RabbitMQ 도메인> # TODO
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: rabbitmq
+              servicePort: 15672

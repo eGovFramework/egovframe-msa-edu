@@ -1,0 +1,89 @@
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: nfs-provisioner-sa
+  labels:
+    env: production
+    tier: storage
+    app: nfs
+    name: nfs-provisioner-sa
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1 
+metadata:
+  name: nfs-provisioner-cr
+  labels:
+    env: production
+    tier: storage
+    app: nfs
+    name: nfs-provisioner-cr
+rules:
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list", "watch", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list", "watch", "update"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["watch", "create", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["services", "endpoints"]
+    verbs: ["get"]
+  - apiGroups: ["extensions"]
+    resources: ["podsecuritypolicies"]
+    resourceNames: ["nfs-provisioner"]
+    verbs: ["use"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: nfs-provisioner-crb
+  labels:
+    env: production
+    tier: storage
+    app: nfs
+    name: nfs-provisioner-crb
+subjects:
+  - kind: ServiceAccount
+    name: nfs-provisioner-sa
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: nfs-provisioner-cr
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: nfs-provisioner-r
+  labels:
+    env: production
+    tier: storage
+    app: nfs
+    name: nfs-provisioner-r
+rules:
+  - apiGroups: [""]
+    resources: ["endpoints"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: nfs-provisioner-rb
+  labels:
+    env: production
+    tier: storage
+    app: nfs
+    name: nfs-provisioner-rb
+subjects:
+  - kind: ServiceAccount
+    name: nfs-provisioner-sa
+    namespace: default
+roleRef:
+  kind: Role
+  name: nfs-provisioner-r
+  apiGroup: rbac.authorization.k8s.io

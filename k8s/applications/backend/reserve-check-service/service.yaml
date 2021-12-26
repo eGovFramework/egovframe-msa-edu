@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: reserve-check-service
+  labels:
+    env: production
+    tier: backend
+    app: reserve-check-service
+    name: reserve-check-service-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    env: production
+    tier: backend
+    app: reserve-check-service
+    name: reserve-check-service-pod

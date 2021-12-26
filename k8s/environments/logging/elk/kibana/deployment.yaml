@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana-deployment
+  labels:
+    env: production
+    tier: backend
+    app: kibana
+    name: kibana-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: production
+      tier: backend
+      app: kibana
+      name: kibana-pod
+  template:
+    metadata:
+      labels:
+        env: production
+        tier: backend
+        app: kibana
+        name: kibana-pod
+    spec:
+      containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:7.10.1
+        env:
+          - name: ELASTICSEARCH_URL
+            value: http://elasticsearch.default.svc.cluster.local:9200
+          - name: ELASTICSEARCH_HOSTS
+            value: '["http://elasticsearch.default.svc.cluster.local:9200"]'
+          - name: TZ
+            valueFrom:
+              configMapKeyRef:
+                name: common-configmap
+                key: TZ
+        ports:
+        - containerPort: 5601
+          name: http
+        volumeMounts:
+          - name: kibana-config-volumne
+            mountPath: /usr/share/kibana/config/
+      volumes:
+      - name: kibana-config-volumne
+        configMap:
+          name: kibana-configmap

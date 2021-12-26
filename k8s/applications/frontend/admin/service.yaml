@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-admin
+  labels:
+    env: production
+    tier: frontend
+    app: admin
+    name: frontend-admin-service
+spec:
+  ports:
+    - name: frontend-admin-http
+      port: 3000
+      targetPort: 3000
+  selector:
+    env: production
+    tier: frontend
+    app: admin
+    name: frontend-admin-pod

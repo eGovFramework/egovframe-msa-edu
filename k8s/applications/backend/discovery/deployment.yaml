@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discovery-deployment
+  annotations:
+    kubernetes.io/change-cause: "Initialized by manifest files."
+  labels:
+    env: production
+    tier: backend
+    app: discovery
+    name: discovery-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      env: production
+      tier: backend
+      app: discovery
+      name: discovery-pod
+  template:
+    metadata:
+      labels:
+        env: production
+        tier: backend
+        app: discovery
+        name: discovery-pod
+    spec:
+      containers:
+        - name: discovery
+          image: egovframe/egovframe-msa-edu-backend-discovery:latest # TODO
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8761
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8761
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 36
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8761
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3

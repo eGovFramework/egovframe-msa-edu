@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin
+  labels:
+    env: production
+    tier: backend
+    app: zipkin
+    name: zipkin-service
+spec:
+  selector:
+    env: production
+    tier: backend
+    app: zipkin
+    name: zipkin-pod
+  ports:
+    - name: http-9411
+      protocol: TCP
+      port: 9411
+      targetPort: 9411

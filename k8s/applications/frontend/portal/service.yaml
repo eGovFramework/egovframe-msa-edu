@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-portal
+  labels:
+    env: production
+    tier: frontend
+    app: portal
+    name: frontend-portal-service
+spec:
+  ports:
+    - name: frontend-portal-http
+      port: 3000
+      targetPort: 3000
+  selector:
+    env: production
+    tier: frontend
+    app: portal
+    name: frontend-portal-pod
