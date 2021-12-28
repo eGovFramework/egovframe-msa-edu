@@ -28,7 +28,7 @@ apigateway:
 spring:
   rabbitmq:
     host: ${rabbitmq.hostname:localhost}
-    port: ${rabbitmq.port:5672}
+    port: 5672
     username: guest
     password: guest
   zipkin:
