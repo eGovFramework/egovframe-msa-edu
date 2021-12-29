@@ -16,7 +16,12 @@ function Logout() {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  res,
+  query,
+}) => {
+  console.log(query)
   if (!process.browser) {
     const Cookies = require('cookies')
     const cookies = new Cookies(req, res)
@@ -26,12 +31,17 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     axios.defaults.headers.common[CLAIM_NAME] = ''
     axios.defaults.headers.common[AUTH_USER_ID] = ''
 
-    const { redirect } = req['query']
+    try {
+      const { redirect } = req['query']
 
-    res.writeHead(307, {
-      Location: typeof redirect !== 'undefined' ? redirect : '/',
-    })
-    res.end()
+      res.writeHead(307, {
+        Location: typeof redirect !== 'undefined' ? redirect : '/',
+      })
+      res.end()
+    } catch (error) {
+      res.writeHead(307, { Location: '/' })
+      res.end()
+    }
   }
 
   return {

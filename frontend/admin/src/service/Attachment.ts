@@ -1,7 +1,7 @@
+import { Page } from '@utils'
 import axios, { AxiosError } from 'axios'
 import useSWR from 'swr'
 import { common, SearchPayload } from './common'
-import { Page } from '@utils'
 
 /**
  * request payload
@@ -55,14 +55,23 @@ export const attachmentService = {
       errorCallback(error)
     }
   },
-  download: (id: string) => { // 첨부파일 다운로드 - 삭제 파일 가능
-    axios.get(`${ATTACHMENT_API}/download/${id}`, {
-      responseType: 'blob',
-    })
-      .then(response =>{
-        const downloadFileName = decodeURIComponent(response.headers['content-disposition'].replace('attachment; filename*=UTF-8\'\'', ''))
+  download: (id: string) => {
+    // 첨부파일 다운로드 - 삭제 파일 가능
+    axios
+      .get(`/portal-service/api/v1/download/${id}`, {
+        responseType: 'blob',
+      })
+      .then(response => {
+        const downloadFileName = decodeURIComponent(
+          response.headers['content-disposition'].replace(
+            "attachment; filename*=UTF-8''",
+            '',
+          ),
+        )
 
-        const url = window.URL.createObjectURL(new Blob([response.data], { type: response.headers['content-type'] }))
+        const url = window.URL.createObjectURL(
+          new Blob([response.data], { type: response.headers['content-type'] }),
+        )
         let link = document.createElement('a')
         link.href = url
         link.setAttribute('download', downloadFileName)
