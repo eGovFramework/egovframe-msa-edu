@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
-
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import Box from '@material-ui/core/Box'
-import { Button } from '@material-ui/core'
-import { useTranslation } from 'react-i18next'
 import { ConfirmPopover } from '@components/Confirm'
+import { Button } from '@material-ui/core'
+import Box from '@material-ui/core/Box'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,6 +37,7 @@ const GridButtons: React.FC<IGridButtonProps> = ({
   const onClickDelete = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
     handleDelete(id)
+    setAnchorEl(null)
   }
 
   const handlePopover = (target: HTMLButtonElement | null) => {

@@ -1,6 +1,6 @@
 export const DEV = process.env.NODE_ENV !== 'production'
 
-export const PORT = process.env.PORT || '3000'
+export const PORT = process.env.PORT
 export const PROXY_HOST = process.env.PROXY_HOST || `http://localhost:${PORT}`
 
 export const TZ = process.env.TZ || 'Asia/Seoul'
