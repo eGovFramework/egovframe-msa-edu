@@ -7,7 +7,7 @@
     "npm": "6.14.7"
   },
   "scripts": {
-    "dev": "cross-env next dev -p ${PORT-3000}",
+    "dev": "next dev",
     "dev:sm": "SITE_ID=3 npm run dev",
     "dev:lg": "SITE_ID=2 npm run dev",
     "dev:smWin": "set SITE_ID=3&&npm run dev",
@@ -35,7 +35,6 @@
     "axios": "^0.21.1",
     "cookies": "^0.8.0",
     "cors": "^2.8.5",
-    "cross-env": "^7.0.3",
     "date-fns": "^2.23.0",
     "date-fns-tz": "^1.1.6",
     "eventsource": "^1.1.0",

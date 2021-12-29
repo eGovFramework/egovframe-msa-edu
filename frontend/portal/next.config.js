@@ -1,7 +1,9 @@
 const { i18n } = require('./next-i18next.config')
 const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
+const { loadEnvConfig } = require('@next/env')
+loadEnvConfig('./', process.env.NODE_ENV !== 'production')
 
-const port = process.env.PORT
+const port = process.env.PORT || 3000
 const serverApiUrl = process.env.SERVER_API_URL || 'http://localhost:8000'
 const siteId = process.env.SITE_ID || '3'
 const mode = siteId === '2' ? 'lg' : siteId === '3' ? 'sm' : 'sm'
