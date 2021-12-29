@@ -5,7 +5,14 @@ import {
   KakaoLoginButton,
   NaverLoginButton,
 } from '@components/Buttons'
+import CustomConfirm, { CustomConfirmPrpps } from '@components/CustomConfirm'
 import Loader from '@components/Loader'
+import {
+  GOOGLE_CLIENT_ID,
+  KAKAO_JAVASCRIPT_KEY,
+  NAVER_CLIENT_ID,
+  SOCIAL_LOGIN_ENABLED,
+} from '@constants/env'
 import useUser from '@hooks/useUser'
 import { ILogin, loginSerivce } from '@service'
 import { userAtom } from '@stores'
@@ -13,7 +20,6 @@ import Router, { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRecoilValue } from 'recoil'
-import CustomConfirm, { CustomConfirmPrpps } from '@components/CustomConfirm'
 
 interface AlertProps extends CustomConfirmPrpps {
   message: string
@@ -62,7 +68,9 @@ const Login = () => {
             })
 
             // recoil 쓰려했는데 회원가입에 스탭이 있어서 진행중에 새로고침하면 상태가 삭제되면서 일반회원으로 가입될 수 있어서 소셜 정보를 파라미터로 넘김
-            router.push(`/auth/join?provider=${data.provider}&token=${data.token}`)
+            router.push(
+              `/auth/join?provider=${data.provider}&token=${data.token}`,
+            )
           },
           handleCancel: () => {
             if (data.provider === 'kakao') {
@@ -131,16 +139,29 @@ const Login = () => {
           {t('login.password_find')}
         </ActiveLink>
       </div>
-      <article>
-        <h3>
-          <span>{t('label.title.login.oauth')}</span>
-        </h3>
-        <div>
-          <KakaoLoginButton handleClick={handleKakaoLogin} kakaoLoginMode={kakaoLoginMode} setKakaoLoginMode={setKakaoLoginMode} />
-          <NaverLoginButton handleClick={handleNaverLogin} />
-          <GoogleLoginButton handleClick={handleGoogleLogin} />
-        </div>
-      </article>
+      {/** 소셜 로그인을 사용하는 경우 enabled 됨. */}
+      {SOCIAL_LOGIN_ENABLED === 'true' && (
+        <article>
+          <h3>
+            <span>{t('label.title.login.oauth')}</span>
+          </h3>
+          <div>
+            {KAKAO_JAVASCRIPT_KEY && (
+              <KakaoLoginButton
+                handleClick={handleKakaoLogin}
+                kakaoLoginMode={kakaoLoginMode}
+                setKakaoLoginMode={setKakaoLoginMode}
+              />
+            )}
+            {NAVER_CLIENT_ID && (
+              <NaverLoginButton handleClick={handleNaverLogin} />
+            )}
+            {GOOGLE_CLIENT_ID && (
+              <GoogleLoginButton handleClick={handleGoogleLogin} />
+            )}
+          </div>
+        </article>
+      )}
       {customConfirm && (
         <CustomConfirm
           handleConfirm={customConfirm.handleConfirm}

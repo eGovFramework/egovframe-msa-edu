@@ -4,11 +4,11 @@ import { makeStyles, Theme } from '@material-ui/core/styles'
 import Alert from '@material-ui/lab/Alert'
 import { ISocialUser, userService } from '@service'
 import { format, isValidPassword } from '@utils'
+import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import React, { createRef, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { GetServerSideProps } from 'next'
 
 const useStyles = makeStyles((theme: Theme) => ({
   alert: {
@@ -81,7 +81,6 @@ const Form = (props: FormProps) => {
   useEffect(() => {
     if (socialUser) {
       if (socialUser.name) {
-
       }
     }
   }, [socialUser])
@@ -175,7 +174,9 @@ const Form = (props: FormProps) => {
                     <input
                       ref={emailRef}
                       type="text"
-                      readOnly={/*typeof socialUser.email !== 'undefined' && socialUser.email !== null*/false}
+                      readOnly={
+                        /*typeof socialUser.email !== 'undefined' && socialUser.email !== null*/ false
+                      }
                       value={field.value}
                       onChange={field.onChange}
                       placeholder={t('user.email')}
@@ -284,7 +285,9 @@ const Form = (props: FormProps) => {
                   >
                     <input
                       type="text"
-                      readOnly={/*typeof socialUser.name !== 'undefined' && socialUser.name !== null*/false}
+                      readOnly={
+                        /*typeof socialUser.name !== 'undefined' && socialUser.name !== null*/ false
+                      }
                       value={field.value}
                       onChange={field.onChange}
                       placeholder={t('label.title.name')}
@@ -355,7 +358,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 
   return {
     props: {
-      socialUser
+      socialUser,
     },
   }
 }

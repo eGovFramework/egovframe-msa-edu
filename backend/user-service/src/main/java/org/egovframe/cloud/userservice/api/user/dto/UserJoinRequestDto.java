@@ -1,5 +1,6 @@
 package org.egovframe.cloud.userservice.api.user.dto;
 
+import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.egovframe.cloud.common.domain.Role;
@@ -63,6 +64,11 @@ public class UserJoinRequestDto {
      * 소셜 토큰
      */
     private String token;
+
+    public Boolean isProvider() {
+        return Objects.nonNull(provider) && !"".equals(provider) & !"undefined".equals(provider)
+            && Objects.nonNull(token) && !"".equals(token) && !"undefined".equals(token);
+    }
 
     /**
      * UserSaveRequestDto 의 필드 값을 User Entity 빌더를 사용하여 주입 후 User를 리턴한다.

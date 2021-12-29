@@ -319,7 +319,7 @@ public class UserService extends AbstractService implements UserDetailsService {
 
         User user = requestDto.toEntity(passwordEncoder);
 
-        if (requestDto.getProvider() != null && !"".equals(requestDto.getProvider()) && requestDto.getToken() != null && !"".equals(requestDto.getToken())) {
+        if (requestDto.isProvider()) {
             SocialUserResponseDto socialUserResponseDto = getSocialUserInfo(requestDto.getProvider(), requestDto.getToken());
             user.setSocial(requestDto.getProvider(), socialUserResponseDto.getId());
         }
@@ -328,6 +328,7 @@ public class UserService extends AbstractService implements UserDetailsService {
 
         return true;
     }
+
 
     /**
      * 사용자 비밀번호 찾기
