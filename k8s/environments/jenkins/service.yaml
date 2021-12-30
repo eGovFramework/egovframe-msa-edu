@@ -8,9 +8,11 @@ metadata:
     app: jenkins
     name: jenkins-service
 spec:
+  type: NodePort
   ports:
     - port: 8080
       targetPort: 8080
+      nodePort: 30006
   selector:
     env: production
     tier: cicd
@@ -27,9 +29,11 @@ metadata:
     app: jenkins
     name: jenkins-jnlp-service
 spec:
+  type: NodePort
   ports:
     - port: 50000
       targetPort: 50000
+      nodePort: 30007
   selector:
     env: production
     tier: cicd

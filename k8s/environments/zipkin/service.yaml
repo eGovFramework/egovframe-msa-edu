@@ -8,6 +8,7 @@ metadata:
     app: zipkin
     name: zipkin-service
 spec:
+  type: NodePort
   selector:
     env: production
     tier: backend
@@ -18,3 +19,4 @@ spec:
       protocol: TCP
       port: 9411
       targetPort: 9411
+      nodePort: 30008

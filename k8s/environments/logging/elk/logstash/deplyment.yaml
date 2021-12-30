@@ -28,13 +28,6 @@ spec:
         image: docker.elastic.co/logstash/logstash:7.10.1
         ports:
           - containerPort: 8088
-        resources:
-          requests:
-            cpu: 300m
-            memory: 512Mi
-          limits:
-            cpu: 300m
-            memory: 512Mi
         volumeMounts:
           - name: logstash-config-volume
             mountPath: /usr/share/logstash/config

@@ -8,6 +8,7 @@ metadata:
     app: rabbitmq
     name: rabbitmq-service
 spec:
+  type: NodePort
   selector:
     env: production
     tier: backend
@@ -18,7 +19,9 @@ spec:
       protocol: TCP
       port: 5672
       targetPort: 5672
+      nodePort: 30003
     - name: http-15672
       protocol: TCP
       port: 15672
       targetPort: 15672
+      nodePort: 30004
