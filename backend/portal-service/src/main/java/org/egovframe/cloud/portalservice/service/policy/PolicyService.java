@@ -70,11 +70,7 @@ public class PolicyService extends AbstractService {
      */
     @Transactional(readOnly = true)
     public PolicyResponseDto findById(Long id) {
-        Policy policy = policyRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("policy")}) + " ID= " + id));
-
-
-
+        Policy policy = findPolicy(id);
         return new PolicyResponseDto(policy);
     }
 
@@ -96,8 +92,7 @@ public class PolicyService extends AbstractService {
      * @return
      */
     public Long update(Long id, PolicyUpdateRequestDto updateRequestDto) {
-        Policy policy = policyRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("policy")}) + " ID= " + id));
+        Policy policy = findPolicy(id);
 
         policy.update(updateRequestDto.getTitle(), updateRequestDto.getIsUse(), updateRequestDto.getContents());
 
@@ -110,8 +105,7 @@ public class PolicyService extends AbstractService {
      * @param id
      */
     public void delete(Long id) {
-        Policy policy = policyRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("policy")}) + " ID= " + id));
+        Policy policy = findPolicy(id);
         policyRepository.delete(policy);
     }
 
@@ -123,12 +117,16 @@ public class PolicyService extends AbstractService {
      * @return
      */
     public Long updateIsUse(Long id, boolean isUse) {
-        Policy policy = policyRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("policy")}) + " ID= " + id));
+        Policy policy = findPolicy(id);
 
         policy.updateIsUSe(isUse);
 
         return id;
+    }
+
+    private Policy findPolicy(Long id) {
+        return policyRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("policy")}) + " ID= " + id));
     }
 
 
