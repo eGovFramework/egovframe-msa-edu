@@ -49,7 +49,7 @@ public class PostsRead {
     /**
      * ip 주소
      */
-    @Column(nullable = false, columnDefinition = "varchar(50)")
+    @Column(nullable = false, columnDefinition = "varchar(100)")
     private String ipAddr;
 
     /**
