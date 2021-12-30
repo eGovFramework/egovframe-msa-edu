@@ -8,10 +8,12 @@ metadata:
     app: admin
     name: frontend-admin-service
 spec:
+  type: NodePort
   ports:
     - name: frontend-admin-http
       port: 3000
       targetPort: 3000
+      nodePort: 30011
   selector:
     env: production
     tier: frontend

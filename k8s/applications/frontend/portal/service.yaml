@@ -8,10 +8,12 @@ metadata:
     app: portal
     name: frontend-portal-service
 spec:
+  type: NodePort
   ports:
     - name: frontend-portal-http
       port: 3000
       targetPort: 3000
+      nodePort: 30012
   selector:
     env: production
     tier: frontend

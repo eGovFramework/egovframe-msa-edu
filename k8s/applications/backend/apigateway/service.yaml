@@ -8,9 +8,11 @@ metadata:
     app: apigateway
     name: apigateway-service
 spec:
+  type: NodePort
   ports:
     - port: 8000
       targetPort: 8000
+      nodePort: 30001
   selector:
     env: production
     tier: backend

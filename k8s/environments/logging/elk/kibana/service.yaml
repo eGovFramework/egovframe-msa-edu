@@ -8,6 +8,7 @@ metadata:
     app: kibana
     name: kibana-service
 spec:
+  type: NodePort
   selector:
     env: production
     tier: backend
@@ -17,3 +18,4 @@ spec:
   - protocol: TCP
     port: 5601
     targetPort: 5601
+    nodePort: 30005
