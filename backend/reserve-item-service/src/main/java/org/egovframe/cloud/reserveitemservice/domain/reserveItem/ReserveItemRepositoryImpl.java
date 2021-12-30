@@ -4,11 +4,13 @@ import static org.springframework.data.relational.core.query.Criteria.where;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemRequestDto;
 import org.egovframe.cloud.reserveitemservice.domain.code.Code;
 import org.egovframe.cloud.reserveitemservice.domain.location.Location;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
@@ -98,8 +100,10 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
      */
     @Override
     public Flux<ReserveItem> findLatestByCategory(Integer count, String categoryId) {
-        Query query =Query.query(where("category_id").is(categoryId)
-            .and("use_at").isTrue()).sort(Sort.by(Sort.Order.desc(SORT_COLUMN)));
+        Query query = Query.query(
+            where("category_id").is(categoryId)
+            .and("use_at").isTrue())
+            .sort(Sort.by(Sort.Order.desc(SORT_COLUMN)));
 
         if (count > 0) {
             query.limit(count);
@@ -152,19 +156,16 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
      * @return
      */
     private Mono<ReserveItem> loadRelationsAll(final ReserveItem reserveItem) {
-        //load common code
-        Mono<ReserveItem> mono = Mono.just(reserveItem)
-                .zipWith(findCodeById(reserveItem.getCategoryId()))
-                .map(tuple -> tuple.getT1().setCategoryName(tuple.getT2().getCodeName()))
-                .zipWith(findCodeById(reserveItem.getReserveMethodId()))
-                .map(tuple -> tuple.getT1().setReserveMethodName(tuple.getT2().getCodeName()))
-                .zipWith(findCodeById(reserveItem.getReserveMeansId()))
-                .map(tuple -> tuple.getT1().setReserveMeansName(tuple.getT2().getCodeName()))
-                .zipWith(findCodeById(reserveItem.getSelectionMeansId()))
-                .map(tuple -> tuple.getT1().setSelectionMeansName(tuple.getT2().getCodeName()))
-                .zipWith(findCodeById(reserveItem.getTargetId()))
-                .map(tuple -> tuple.getT1().setTargetName(tuple.getT2().getCodeName()))
-                .switchIfEmpty(Mono.just(reserveItem));
+
+        Mono<ReserveItem> mono = findCode(reserveItem.getRelationCodeIds())
+            .collectList()
+            .zipWith(Mono.just(reserveItem))
+            .map(tuple -> {
+                ReserveItem item = tuple.getT2();
+                List<Code> codes = tuple.getT1();
+                item.setCodeName(codes);
+                return item;
+            }).switchIfEmpty(Mono.just(reserveItem));
 
         // load location
         mono = mono.zipWith(findLocationById(reserveItem.getLocationId()))
@@ -194,11 +195,16 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
      * @return
      */
     private Mono<Code> findCodeById(String codeId ) {
-        return entityTemplate.select(Code.class)
-                .matching(Query.query(where("code_id").is(codeId)))
-                .one()
+        if (Objects.isNull(codeId)) {
+            return Mono.empty();
+        }
+        return entityTemplate.selectOne(Query.query(where("code_id").is(codeId)), Code.class)
                 .switchIfEmpty(Mono.empty());
+    }
 
+    private Flux<Code> findCode(List<String> codeIds) {
+        return entityTemplate
+            .select(Query.query(where("code_id").in(codeIds)), Code.class);
     }
 
     /**
@@ -226,9 +232,12 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
             whereCriteria.add(where("category_id").in(requestDto.getCategoryId()));
         }
 
-        // 물품 팝업에서 조회하는 경우 인터넷 예약이 가능한 물품만 조회
         if (requestDto.getIsUse()) {
             whereCriteria.add(where("use_at").isTrue());
+        }
+
+        // 물품 팝업에서 조회하는 경우 인터넷 예약이 가능한 물품만 조회
+        if (requestDto.isPopup()) {
             whereCriteria.add(where("reserve_method_id").is("internet"));
         }
 

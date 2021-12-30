@@ -68,7 +68,7 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
             return validateInternet(value, context);
         }
 
-        if ("telephone".equals(reserveMethodId)) {
+        if ("phone".equals(reserveMethodId)) {
             return validateTelephone(value, context);
         }
 
@@ -171,8 +171,7 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
             context.disableDefaultConstraintViolation();
             //문의처 값은 필수입니다.
             context.buildConstraintViolationWithTemplate(
-                messageUtil.getMessage("reserve_item.contact") + messageUtil
-                    .getMessage("valid.required"))
+                messageUtil.getMessage("reserve_item.contact") + messageUtil.getMessage("valid.required"))
                 .addPropertyNode("contact")
                 .addConstraintViolation();
             return false;

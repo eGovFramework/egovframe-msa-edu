@@ -3,6 +3,12 @@ package org.egovframe.cloud.reserveitemservice.domain.reserveItem;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.Builder;
@@ -11,6 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.egovframe.cloud.reactive.domain.BaseEntity;
 import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemUpdateRequestDto;
+import org.egovframe.cloud.reserveitemservice.domain.code.Code;
 import org.egovframe.cloud.reserveitemservice.domain.location.Location;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -271,6 +278,13 @@ public class ReserveItem extends BaseEntity {
         return this;
     }
 
+    public List<String> getRelationCodeIds() {
+        return Arrays.asList(categoryId, reserveMethodId, reserveMeansId, selectionMeansId, targetId)
+            .stream()
+            .filter(it -> Objects.nonNull(it))
+            .collect(Collectors.toList());
+    }
+
 
     /**
      * 예약 물품 정보 업데이트
@@ -396,6 +410,28 @@ public class ReserveItem extends BaseEntity {
 
     private int calcInventoryQty(int reserveQty) {
         return inventoryQty - reserveQty;
+    }
+
+    public void setCodeName(List<Code> codes) {
+        codes.stream().filter(it -> it.getParentCodeId().equals("reserve-category"))
+            .findFirst()
+            .ifPresent(it -> setCategoryName(it.getCodeName()));
+
+        codes.stream().filter(it -> it.getParentCodeId().equals("reserve-method"))
+            .findFirst()
+            .ifPresent(it -> setReserveMethodName(it.getCodeName()));
+
+        codes.stream().filter(it -> it.getParentCodeId().equals("reserve-means"))
+            .findFirst()
+            .ifPresent(it -> setReserveMeansName(it.getCodeName()));
+
+        codes.stream().filter(it -> it.getParentCodeId().equals("reserve-selection"))
+            .findFirst()
+            .ifPresent(it -> setSelectionMeansName(it.getCodeName()));
+
+        codes.stream().filter(it -> it.getParentCodeId().equals("reserve-target"))
+            .findFirst()
+            .ifPresent(it -> setTargetName(it.getCodeName()));
     }
 }
 

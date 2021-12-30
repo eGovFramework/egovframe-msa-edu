@@ -32,6 +32,7 @@ public class ReserveItemRequestDto extends RequestDto {
     private Long locationId;
     private String categoryId;
     private Boolean isUse;
+    private Boolean isPopup;
 
     public boolean hasLocationId() {
         return hasId(locationId);
@@ -43,5 +44,9 @@ public class ReserveItemRequestDto extends RequestDto {
 
     private boolean hasId(Object id) {
         return Objects.nonNull(id) && !Objects.equals("null", id) && !Objects.equals("undefined", id);
+    }
+
+    public boolean isPopup() {
+        return Boolean.TRUE.equals(isPopup);
     }
 }
