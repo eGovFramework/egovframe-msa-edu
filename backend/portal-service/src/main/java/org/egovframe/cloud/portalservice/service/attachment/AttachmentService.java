@@ -1,5 +1,7 @@
 package org.egovframe.cloud.portalservice.service.attachment;
 
+import java.io.File;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
@@ -50,6 +52,11 @@ import java.util.stream.Collectors;
 @Transactional
 @Service
 public class AttachmentService extends AbstractService {
+    private static final String SUCCESS_MESSAGE = "Success";
+    private static final String FILE_SEPARATOR = File.separator;
+    private static final String EDITOR_FILE_SEPARATOR = "-";
+    private static final String BASE_PATH = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
+    private static final String EDITOR_PATH = "editor/"+BASE_PATH;
 
     private final AttachmentRepository attachmentRepository;
     private final StorageUtils storageUtils;
@@ -63,10 +70,7 @@ public class AttachmentService extends AbstractService {
      * @return
      */
     public AttachmentFileResponseDto uploadFile(MultipartFile file) {
-
-        String basePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
-
-        return upload(file, basePath, true);
+        return upload(file, BASE_PATH, true);
     }
 
     /**
@@ -82,8 +86,8 @@ public class AttachmentService extends AbstractService {
         String storeFile = storageUtils.storeFile(file, basePath, isTemp);
         return AttachmentFileResponseDto.builder()
                 .originalFileName(file.getOriginalFilename())
-                .physicalFileName(StringUtils.cleanPath(basePath + "/" + storeFile))
-                .message("Success")
+                .physicalFileName(StringUtils.cleanPath(basePath + FILE_SEPARATOR + storeFile))
+                .message(SUCCESS_MESSAGE)
                 .size(file.getSize())
                 .fileType(file.getContentType())
                 .build();
@@ -99,11 +103,10 @@ public class AttachmentService extends AbstractService {
      * @return
      */
     public List<AttachmentFileResponseDto> uploadFiles(List<MultipartFile> files) {
-        String basePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
         List<AttachmentFileResponseDto> responseDtoList = new ArrayList<>();
 
         for (MultipartFile file : files) {
-            responseDtoList.add(upload(file, basePath, true));
+            responseDtoList.add(upload(file, BASE_PATH, true));
         }
         return responseDtoList;
     }
@@ -117,7 +120,7 @@ public class AttachmentService extends AbstractService {
     public AttachmentEditorResponseDto uploadEditor(AttachmentBase64RequestDto editorRequestDto) throws BusinessMessageException {
         String fileBase64 = editorRequestDto.getFileBase64();
 
-        if (fileBase64 == null || fileBase64.equals("")) {
+        if (Objects.isNull(fileBase64) || "".equals(fileBase64)) {
             // 업로드할 파일이 없습니다.
             throw new BusinessMessageException("valid.file.not_exists");
         }
@@ -127,16 +130,15 @@ public class AttachmentService extends AbstractService {
             throw new BusinessMessageException(getMessage("valid.file.too_big"));
         }
 
-        String basePath = "editor/" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
-        String storeFile = storageUtils.storeBase64File(editorRequestDto, basePath);
+        String storeFile = storageUtils.storeBase64File(editorRequestDto, EDITOR_PATH);
 
         return AttachmentEditorResponseDto.builder()
                 .uploaded(1)
-                .url(basePath.replaceAll("/", "-") + "-" + storeFile)
+                .url(EDITOR_PATH.replaceAll(FILE_SEPARATOR, EDITOR_FILE_SEPARATOR) + EDITOR_FILE_SEPARATOR + storeFile)
                 .originalFileName(editorRequestDto.getOriginalName())
                 .size(editorRequestDto.getSize())
                 .fileType(editorRequestDto.getFileType())
-                .message("Success")
+                .message(SUCCESS_MESSAGE)
                 .build();
     }
 
@@ -148,8 +150,7 @@ public class AttachmentService extends AbstractService {
      */
     @Transactional(readOnly = true)
     public AttachmentImageResponseDto loadImage(String imagename) {
-        imagename = imagename.replaceAll("-", "/");
-        return storageUtils.loadImage(imagename);
+        return storageUtils.loadImage(imagename.replaceAll(EDITOR_FILE_SEPARATOR, FILE_SEPARATOR));
     }
 
     /**
@@ -160,9 +161,7 @@ public class AttachmentService extends AbstractService {
      */
     @Transactional(readOnly = true)
     public AttachmentImageResponseDto loadImageByUniqueId(String uniqueId) throws EntityNotFoundException {
-        Attachment attachment = attachmentRepository.findAllByUniqueId(uniqueId)
-                // 파일을 찾을 수 없습니다.
-                .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + uniqueId));
+        Attachment attachment = findAttachmentByUniqueId(uniqueId);
 
         return storageUtils.loadImage(attachment.getPhysicalFileName());
     }
@@ -174,11 +173,9 @@ public class AttachmentService extends AbstractService {
      * @return
      */
     public AttachmentDownloadResponseDto downloadFile(String uniqueId) throws EntityNotFoundException, BusinessMessageException {
-        Attachment attachment = attachmentRepository.findAllByUniqueId(uniqueId)
-                // 파일을 찾을 수 없습니다.
-                .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + uniqueId));
+        Attachment attachment = findAttachmentByUniqueId(uniqueId);
 
-        if (Boolean.TRUE.equals(attachment.getIsDelete())) {
+        if (attachment.isDeleted()) {
             throw new BusinessMessageException(getMessage("err.entity.not.found"));
         }
 
@@ -214,9 +211,7 @@ public class AttachmentService extends AbstractService {
      * @return
      */
     public AttachmentDownloadResponseDto downloadAttachment(String uniqueId) throws EntityNotFoundException {
-        Attachment attachment = attachmentRepository.findAllByUniqueId(uniqueId)
-                // 파일을 찾을 수 없습니다.
-                .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + uniqueId));
+        Attachment attachment = findAttachmentByUniqueId(uniqueId);
 
         Resource resource = storageUtils.downloadFile(attachment.getPhysicalFileName());
 
@@ -277,11 +272,12 @@ public class AttachmentService extends AbstractService {
         for (AttachmentTempSaveRequestDto saveRequestDto : saveRequestDtoList) {
             // 사용자 삭제인 경우 삭제여부 Y
             if (saveRequestDto.isDelete()) {
-                Attachment attachment = attachmentRepository.findAllByUniqueId(saveRequestDto.getUniqueId())
-                        // 파일을 찾을 수 없습니다.
-                        .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + saveRequestDto.getUniqueId()));
+                Attachment attachment = findAttachmentByUniqueId(saveRequestDto.getUniqueId());
                 attachment.updateIsDelete(saveRequestDto.isDelete());
-            } else if (saveRequestDto.getUniqueId() == null || saveRequestDto.getUniqueId().equals("")) {
+                continue;
+            }
+
+            if (!saveRequestDto.hasUniqueId()) {
                 // 해당 attachment에 seq 조회해서 attachmentid 생성
                 AttachmentId attachmentId = attachmentRepository.getId(attachmentCode);
                 //새로운 첨부파일 저장 (물리적 파일 .temp 제거)
@@ -324,10 +320,7 @@ public class AttachmentService extends AbstractService {
      * @return
      */
     public String toggleDelete(String uniqueId, boolean isDelete) throws EntityNotFoundException {
-        Attachment attachment = attachmentRepository.findAllByUniqueId(uniqueId)
-                // 파일을 찾을 수 없습니다.
-                .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + uniqueId));
-
+        Attachment attachment = findAttachmentByUniqueId(uniqueId);
         attachment.updateIsDelete(isDelete);
         return uniqueId;
     }
@@ -338,16 +331,8 @@ public class AttachmentService extends AbstractService {
      * @param uniqueId
      */
     public void delete(String uniqueId) throws EntityNotFoundException {
-        Attachment attachment = attachmentRepository.findAllByUniqueId(uniqueId)
-                // 파일을 찾을 수 없습니다.
-                .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + uniqueId));
-        // 물리적 파일 삭제
-        boolean deleted = storageUtils.deleteFile(attachment.getPhysicalFileName());
-        if (deleted) {
-            attachmentRepository.delete(attachment);
-        } else {
-            throw new BusinessMessageException(getMessage("valid.file.not_deleted"));
-        }
+        Attachment attachment = findAttachmentByUniqueId(uniqueId);
+        deleteFile(attachment);
     }
 
     /**
@@ -357,7 +342,6 @@ public class AttachmentService extends AbstractService {
      * @param uploadRequestDto
      */
     public String uploadAndSave(List<MultipartFile> files, AttachmentUploadRequestDto uploadRequestDto) {
-        String basePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
         String attachmentCode = PortalUtils.randomAlphanumeric(20);
 
         for (int i = 0; i < files.size(); i++) {
@@ -367,7 +351,7 @@ public class AttachmentService extends AbstractService {
                     .build();
 
             // 물리적 파일 생성
-            AttachmentFileResponseDto fileResponseDto = upload(files.get(i), basePath, false);
+            AttachmentFileResponseDto fileResponseDto = upload(files.get(i), BASE_PATH, false);
 
             attachmentRepository.save(
                     Attachment.builder()
@@ -402,15 +386,12 @@ public class AttachmentService extends AbstractService {
                                   String attachmentCode,
                                   AttachmentUploadRequestDto uploadRequestDto,
                                   List<AttachmentUpdateRequestDto> updateRequestDtoList) throws EntityNotFoundException {
-        String basePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
 
         // 기존 파일 삭제 처리
         if (updateRequestDtoList != null) {
             for (AttachmentUpdateRequestDto saveRequestDto : updateRequestDtoList) {
                 if (saveRequestDto.getIsDelete()) {
-                    Attachment attachment = attachmentRepository.findAllByUniqueId(saveRequestDto.getUniqueId())
-                            // 파일을 찾을 수 없습니다.
-                            .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + saveRequestDto.getUniqueId()));
+                    Attachment attachment = findAttachmentByUniqueId(saveRequestDto.getUniqueId());
                     attachment.updateIsDelete(saveRequestDto.getIsDelete());
                 }
             }
@@ -423,7 +404,7 @@ public class AttachmentService extends AbstractService {
                 AttachmentId attachmentId = attachmentRepository.getId(attachmentCode);
 
                 // 물리적 파일 생성
-                AttachmentFileResponseDto fileResponseDto = upload(files.get(i), basePath, false);
+                AttachmentFileResponseDto fileResponseDto = upload(files.get(i), BASE_PATH, false);
 
                 attachmentRepository.save(
                         Attachment.builder()
@@ -470,23 +451,44 @@ public class AttachmentService extends AbstractService {
     public void deleteAllEmptyEntity(String attachmentCode) throws EntityNotFoundException, BusinessMessageException {
         List<Attachment> attachmentList = attachmentRepository.findByCode(attachmentCode);
 
-        if (attachmentList == null || attachmentList.size() <= 0) {
+        if (Objects.isNull(attachmentList) || attachmentList.size() <= 0) {
             throw new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + attachmentCode);
         }
 
         for (Attachment attachment: attachmentList) {
             // 첨부파일 저장 후 기능 저장 시 오류 날 경우에만 첨부파일 전체 삭제를 하므로
             // entity 정보가 있는 경우에는 삭제하지 못하도록 한다.
-            if ((attachment.getEntityId() != null || StringUtils.hasText(attachment.getEntityId())) && !attachment.getEntityId().equals("-1")) {
+            if (attachment.hasEntityId()) {
                 throw new BusinessMessageException(getMessage("valid.file.not_deleted"));
             }
-            // 물리적 파일 삭제
-            boolean deleted = storageUtils.deleteFile(attachment.getPhysicalFileName());
-            if (deleted) {
-                attachmentRepository.delete(attachment);
-            } else {
-                throw new BusinessMessageException(getMessage("valid.file.not_deleted"));
-            }
+            deleteFile(attachment);
         }
     }
+
+    /**
+     * 첨부파일 삭제
+     * 
+     * @param attachment
+     */
+    private void deleteFile(Attachment attachment) {
+        // 물리적 파일 삭제
+        boolean deleted = storageUtils.deleteFile(attachment.getPhysicalFileName());
+        if (!deleted) {
+            throw new BusinessMessageException(getMessage("valid.file.not_deleted"));
+        }
+        attachmentRepository.delete(attachment);
+    }
+
+    /**
+     * unique id 로 첨부파일 조회
+     *
+     * @param uniqueId
+     * @return
+     */
+    private Attachment findAttachmentByUniqueId(String uniqueId) {
+        return attachmentRepository.findAllByUniqueId(uniqueId)
+            // 파일을 찾을 수 없습니다.
+            .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + uniqueId));
+    }
+
 }

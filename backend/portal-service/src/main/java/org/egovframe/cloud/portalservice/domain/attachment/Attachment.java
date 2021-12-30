@@ -1,5 +1,6 @@
 package org.egovframe.cloud.portalservice.domain.attachment;
 
+import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import org.egovframe.cloud.servlet.domain.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import org.springframework.util.StringUtils;
 
 /**
  * org.egovframe.cloud.portalservice.domain.attachment.Attachment
@@ -123,6 +125,14 @@ public class Attachment extends BaseEntity {
         this.entityName = entityName;
         this.entityId = entityId;
         return this;
+    }
+
+    public boolean hasEntityId()  {
+        return (Objects.nonNull(entityId) || StringUtils.hasText(entityId)) && !"-1".equals(entityId);
+    }
+
+    public boolean isDeleted() {
+        return Boolean.TRUE.equals(isDelete);
     }
 
 

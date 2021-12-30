@@ -1,9 +1,11 @@
 package org.egovframe.cloud.portalservice.api.attachment.dto;
 
+import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.util.StringUtils;
 
 /**
  * org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentSaveRequestDto
@@ -48,5 +50,9 @@ public class AttachmentTempSaveRequestDto {
         this.entityName = entityName;
         this.entityId = entityId;
         this.isDelete = isDelete;
+    }
+
+    public boolean hasUniqueId() {
+        return Objects.nonNull(uniqueId) || StringUtils.hasText(uniqueId);
     }
 }
