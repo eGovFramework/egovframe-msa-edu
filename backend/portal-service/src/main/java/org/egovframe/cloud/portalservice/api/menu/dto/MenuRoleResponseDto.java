@@ -1,5 +1,6 @@
 package org.egovframe.cloud.portalservice.api.menu.dto;
 
+import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -54,20 +55,21 @@ public class MenuRoleResponseDto {
      */
     public MenuRoleResponseDto (Menu menu, String roleId) {
 
-        MenuRole menuRole = menu.getMenuRole(roleId);
-        if (menuRole == null) {
-            this.isChecked = false;
-            this.roleId = roleId;
-        }else {
-            this.menuRoleId = menuRole.getId();
-            this.roleId = menuRole.getRoleId();
+        Optional<MenuRole> menuRole = menu.getMenuRole(roleId);
+
+        this.isChecked = false;
+        this.roleId = roleId;
+
+        if (menuRole.isPresent()) {
+            this.menuRoleId = menuRole.get().getId();
+            this.roleId = menuRole.get().getRoleId();
             this.isChecked = true;
         }
 
         this.id = menu.getId();
         this.korName = menu.getMenuKorName();
         this.engName = menu.getMenuEngName();
-        if (menu.getParent() != null) {
+        if (menu.hasParent()) {
             this.parentId = menu.getParent().getId();
         }
 

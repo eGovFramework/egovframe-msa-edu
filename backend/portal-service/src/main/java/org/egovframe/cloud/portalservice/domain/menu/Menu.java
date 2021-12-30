@@ -1,5 +1,7 @@
 package org.egovframe.cloud.portalservice.domain.menu;
 
+import java.util.Objects;
+import java.util.Optional;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -96,14 +98,16 @@ public class Menu extends BaseEntity {
 
 
     @Builder
-    public Menu(String menuKorName, Menu parent, Integer sortSeq, Site site, Integer level, Boolean isUse, Boolean isShow) {
+    public Menu(String menuKorName, Optional<Menu> parent, Integer sortSeq, Site site, Integer level, Boolean isUse, Boolean isShow) {
         this.menuKorName = menuKorName;
-        this.parent = parent;
         this.sortSeq = sortSeq;
         this.site = site;
         this.level = level;
         this.isShow = isShow;
         this.isUse = isUse;
+        if (Objects.nonNull(parent)) {
+            parent.ifPresent(it -> this.parent = it);
+        }
     }
 
     /**
@@ -124,11 +128,11 @@ public class Menu extends BaseEntity {
      * @param sortSeq
      * @return
      */
-    public Menu updateDnD(Menu parent, Integer sortSeq, Integer level) {
+    public Menu updateDnD(Optional<Menu> parent, Integer sortSeq, Integer level) {
         this.sortSeq = sortSeq;
         this.level = level;
 
-        if (parent == null) {
+        if (!parent.isPresent()) {
             return updateOldParent();
         }
 
@@ -136,22 +140,21 @@ public class Menu extends BaseEntity {
             return this;
         }
 
-        this.parent = parent;
-        parent.getChildren().add(this);
+        this.parent = parent.get();
+        parent.get().getChildren().add(this);
         return this;
     }
 
     private Menu updateOldParent() {
-        Menu oldParent = this.getParent();
-
-        if (oldParent == null) {
+        if (Objects.isNull(this.parent)) {
             return this;
         }
 
-        Menu old = oldParent.getChildren().stream().filter(item -> item.getId().equals(this.id)).findAny().orElse(null);
-        if (old != null) {
-            oldParent.getChildren().remove(old);
-        }
+        Optional<Menu> oldMenu = this.parent.getChildren().stream()
+            .filter(it -> it.getId().equals(this.id))
+            .findAny();
+
+        oldMenu.ifPresent(it -> this.parent.getChildren().remove(it));
         this.parent = null;
         return this;
     }
@@ -195,12 +198,16 @@ public class Menu extends BaseEntity {
      * @param roleId
      * @return
      */
-    public MenuRole getMenuRole(String roleId) {
+    public Optional<MenuRole> getMenuRole(String roleId) {
         return this.getMenuRoles()
                 .stream()
                 .filter(menuRole ->
                         menuRole.getRoleId().equals(roleId))
-                .findAny().orElse(null);
+                .findAny();
+    }
+
+    public boolean hasParent() {
+        return Objects.nonNull(this.parent);
     }
 
 }

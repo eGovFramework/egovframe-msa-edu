@@ -1,11 +1,14 @@
 package org.egovframe.cloud.portalservice.api.menu.dto;
 
+import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
+import org.egovframe.cloud.common.exception.BusinessMessageException;
+import org.springframework.util.StringUtils;
 
 /**
  * org.egovframe.cloud.portalservice.api.menu.dto.MenuUpdateRequestDto
@@ -57,5 +60,19 @@ public class MenuUpdateRequestDto {
         this.subName = subName;
         this.description = description;
         this.icon = icon;
+    }
+
+    public boolean hasConnectId() {
+        if ("contents".equals(menuType) || "board".equals(menuType)) {
+            return Objects.nonNull(connectId);
+        }
+        return true;
+    }
+
+    public boolean hasUrlPath() {
+        if ("inside".equals(menuType) || "outside".equals(menuType)) {
+            return Objects.nonNull(urlPath) || StringUtils.hasText(urlPath);
+        }
+        return true;
     }
 }

@@ -1,6 +1,7 @@
 package org.egovframe.cloud.portalservice.api.menu.dto;
 
 
+import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -55,5 +56,9 @@ public class MenuRoleRequestDto {
         this.icon = icon;
         this.level = level;
         this.children = children == null ? null : new ArrayList<>(children);
+    }
+
+    public boolean hasMenuRoleId() {
+        return Objects.nonNull(menuRoleId);
     }
 }

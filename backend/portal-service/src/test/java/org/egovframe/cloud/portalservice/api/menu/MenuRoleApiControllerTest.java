@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.egovframe.cloud.portalservice.api.menu.dto.MenuRoleRequestDto;
@@ -69,7 +70,7 @@ class MenuRoleApiControllerTest {
             Menu childMenu = Menu.builder()
                     .menuKorName("child_" + i)
                     .site(site)
-                    .parent(parentMenu)
+                    .parent(Optional.of(parentMenu))
                     .sortSeq(i + 1)
                     .build();
             childMenu.setParentMenu(parentMenu);
@@ -219,7 +220,7 @@ class MenuRoleApiControllerTest {
             Menu childMenu = Menu.builder()
                     .menuKorName("child-any_" + i)
                     .site(site)
-                    .parent(parentMenu)
+                    .parent(Optional.of(parentMenu))
                     .sortSeq(i + 1)
                     .isUse(true)
                     .build();

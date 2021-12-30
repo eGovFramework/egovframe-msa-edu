@@ -1,5 +1,6 @@
 package org.egovframe.cloud.portalservice.domain.menu;
 
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.egovframe.cloud.portalservice.api.menu.dto.MenuRoleResponseDto;
 import org.junit.jupiter.api.AfterEach;
@@ -75,7 +76,7 @@ class MenuRoleRepositoryTest {
             Menu child = Menu.builder()
                     .menuKorName("child_" + i)
                     .site(site)
-                    .parent(parent)
+                    .parent(Optional.of(parent))
                     .sortSeq(i + 1)
                     .level(2)
                     .build();

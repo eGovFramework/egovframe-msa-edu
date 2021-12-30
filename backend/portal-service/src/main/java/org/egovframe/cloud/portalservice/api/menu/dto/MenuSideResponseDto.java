@@ -1,5 +1,7 @@
 package org.egovframe.cloud.portalservice.api.menu.dto;
 
+import java.util.Objects;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -7,6 +9,7 @@ import org.egovframe.cloud.portalservice.domain.menu.Menu;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.egovframe.cloud.portalservice.domain.menu.MenuRole;
 
 /**
  * org.egovframe.cloud.portalservice.api.menu.dto.MenuSideResponseDto
@@ -65,8 +68,8 @@ public class MenuSideResponseDto {
         this.isShow = menu.getIsShow();
 
         this.children = menu.getChildren().stream()
-                .filter(children -> children.getIsUse())
-                .filter(children -> children.getMenuRole(roleId) != null)
+                .filter(Menu::getIsUse)
+                .filter(children -> children.getMenuRole(roleId).isPresent())
                 .map(children -> new MenuSideResponseDto(children, roleId))
                 .collect(Collectors.toList());
     }
@@ -78,5 +81,13 @@ public class MenuSideResponseDto {
      */
     public void setUrlPath(String urlPath) {
         this.urlPath = urlPath;
+    }
+
+    public boolean hasChildren() {
+        return Objects.nonNull(children) || children.size() > 0;
+    }
+
+    public boolean isRequiredUrlPath() {
+        return "board".equals(menuType) || "contents".equals(menuType);
     }
 }

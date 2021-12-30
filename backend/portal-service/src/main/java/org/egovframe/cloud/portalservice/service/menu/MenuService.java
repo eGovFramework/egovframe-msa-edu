@@ -1,20 +1,24 @@
 package org.egovframe.cloud.portalservice.service.menu;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.egovframe.cloud.common.exception.BusinessException;
 import org.egovframe.cloud.common.exception.BusinessMessageException;
 import org.egovframe.cloud.common.exception.EntityNotFoundException;
 import org.egovframe.cloud.common.service.AbstractService;
-import org.egovframe.cloud.portalservice.api.menu.dto.*;
+import org.egovframe.cloud.portalservice.api.menu.dto.MenuDnDRequestDto;
+import org.egovframe.cloud.portalservice.api.menu.dto.MenuResponseDto;
+import org.egovframe.cloud.portalservice.api.menu.dto.MenuTreeRequestDto;
+import org.egovframe.cloud.portalservice.api.menu.dto.MenuTreeResponseDto;
+import org.egovframe.cloud.portalservice.api.menu.dto.MenuUpdateRequestDto;
 import org.egovframe.cloud.portalservice.domain.menu.Menu;
 import org.egovframe.cloud.portalservice.domain.menu.MenuRepository;
 import org.egovframe.cloud.portalservice.domain.menu.Site;
 import org.egovframe.cloud.portalservice.domain.menu.SiteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * org.egovframe.cloud.portalservice.service.menu.MenuService
@@ -71,25 +75,11 @@ public class MenuService extends AbstractService {
      * @return
      */
     public MenuTreeResponseDto save(MenuTreeRequestDto menuTreeRequestDto) {
-        Site site = siteRepository.findById(menuTreeRequestDto.getSiteId())
-                .orElseThrow(() ->
-                        new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu.site")}) + " ID= " + menuTreeRequestDto.getSiteId()));
+        Site site = findSite(menuTreeRequestDto.getSiteId());
 
-        Menu parent = null;
+        Optional<Menu> parentMenu = findParentMenu(menuTreeRequestDto.getParentId());
 
-        if (menuTreeRequestDto.getParentId() != null) {
-            parent = findById(menuTreeRequestDto.getParentId());
-        }
-
-        Menu menu = menuRepository.save(Menu.builder()
-                .parent(parent)
-                .site(site)
-                .menuKorName(menuTreeRequestDto.getName())
-                .sortSeq(menuTreeRequestDto.getSortSeq())
-                .level(menuTreeRequestDto.getLevel())
-                .isShow(menuTreeRequestDto.getIsShow())
-                .isUse(menuTreeRequestDto.getIsUse())
-                .build());
+        Menu menu = menuRepository.save(menuTreeRequestDto.toEntity(parentMenu, site));
         return MenuTreeResponseDto.builder()
                 .entity(menu).build();
     }
@@ -120,20 +110,7 @@ public class MenuService extends AbstractService {
     public MenuResponseDto update(Long menuId, MenuUpdateRequestDto updateRequestDto) throws EntityNotFoundException, BusinessMessageException {
         Menu menu = findById(menuId);
 
-        //컨텐츠 or 게시판인 경우 connectId 필수
-        if ("contents".equals(updateRequestDto.getMenuType()) || "board".equals(updateRequestDto.getMenuType())) {
-            if (updateRequestDto.getConnectId() == null || updateRequestDto.getConnectId().equals("")) {
-                //컨텐츠 or 게시판을 선택해 주세요
-                throw new BusinessMessageException(getMessage("valid.selection.format", new Object[]{updateRequestDto.getMenuTypeName()}));
-            }
-        }else if ("inside".equals(updateRequestDto.getMenuType()) || "outside".equals(updateRequestDto.getMenuType())) {
-            // 내부링크 or 외부링크인 경우 링크 url 필수
-            if (updateRequestDto.getUrlPath() == null || updateRequestDto.getUrlPath().equals("")) {
-                //링크 Url 값은 필수 입니다.
-                throw new BusinessMessageException(getMessage("valid.required", new Object[]{getMessage("menu.url_path")}));
-
-            }
-        }
+        validateUpdate(updateRequestDto);
 
         menu.updateDetail(updateRequestDto);
 
@@ -147,31 +124,7 @@ public class MenuService extends AbstractService {
      * @param menuId
      */
     public void delete(Long menuId) {
-        Menu menu = findById(menuId);
-        menuRepository.delete(menu);
-    }
-
-    /**
-     * 트리 드래그 앤드 드랍 시 children 데이터 재귀호출 저장
-     *
-     * @param dto
-     * @param parent
-     * @param sortSeq
-     * @param level
-     */
-    private void recursive(MenuDnDRequestDto dto, Menu parent, Integer sortSeq, Integer level) {
-        Menu menu = findById(dto.getMenuId());
-
-        menu.updateDnD(parent, sortSeq, level);
-
-        if (dto.getChildren() == null || dto.getChildren().size() <= 0) {
-            return;
-        }
-
-        for (int i = 0; i < dto.getChildren().size(); i++) {
-            MenuDnDRequestDto child = dto.getChildren().get(i);
-            recursive(child, menu, child.getSortSeq(), menu.getLevel()+1);
-        }
+        menuRepository.delete(findById(menuId));
     }
 
     /**
@@ -184,18 +137,71 @@ public class MenuService extends AbstractService {
     public Long updateDnD(Long siteId, List<MenuDnDRequestDto> menuDnDRequestDtoList) {
         for (int i = 0; i < menuDnDRequestDtoList.size(); i++) {
             MenuDnDRequestDto requestDto = menuDnDRequestDtoList.get(i);
-            Menu parent = null;
-            if (requestDto.getParentId() != null) {
-                parent = findById(requestDto.getParentId());
-            }
-            recursive(requestDto, parent, requestDto.getSortSeq(), requestDto.getLevel());
+            Optional<Menu> parentMenu = findParentMenu(requestDto.getParentId());
+
+            recursive(requestDto, parentMenu, requestDto.getSortSeq(), requestDto.getLevel());
         }
         return siteId;
+    }
+
+    private Optional<Menu> findParentMenu(Long parentId) {
+        if (Objects.isNull(parentId)) {
+            return Optional.empty();
+        }
+        return menuRepository.findById(parentId);
     }
 
     private Menu findById(Long id) {
         return menuRepository.findById(id)
             .orElseThrow(() ->
                 new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu")}) + " ID= " + id));
+    }
+
+    private Site findSite(Long id) {
+        return siteRepository.findById(id)
+            .orElseThrow(() ->
+                new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu.site")}) + " ID= " + id));
+    }
+
+    /**
+     * 메뉴 정합성 체크
+     *
+     * @param updateRequestDto
+     */
+    private void validateUpdate(MenuUpdateRequestDto updateRequestDto) {
+        //컨텐츠 or 게시판인 경우 connectId 필수
+        if (!updateRequestDto.hasConnectId()) {
+            //컨텐츠 or 게시판을 선택해 주세요
+            throw new BusinessMessageException(getMessage("valid.selection.format", new Object[]{updateRequestDto.getMenuTypeName()}));
+        }
+
+        // 내부링크 or 외부링크인 경우 링크 url 필수
+        if (!updateRequestDto.hasUrlPath()) {
+            //링크 Url 값은 필수 입니다.
+            throw new BusinessMessageException(getMessage("valid.required", new Object[]{getMessage("menu.url_path")}));
+        }
+    }
+
+    /**
+     * 트리 드래그 앤드 드랍 시 children 데이터 재귀호출 저장
+     *
+     * @param dto
+     * @param parent
+     * @param sortSeq
+     * @param level
+     */
+    private void recursive(MenuDnDRequestDto dto, Optional<Menu> parent, Integer sortSeq, Integer level) {
+        Menu menu = findById(dto.getMenuId());
+
+        menu.updateDnD(parent, sortSeq, level);
+
+        if (Objects.isNull(dto.getChildren()) || dto.getChildren().size() <= 0) {
+            return;
+        }
+
+        for (int i = 0; i < dto.getChildren().size(); i++) {
+            MenuDnDRequestDto child = dto.getChildren().get(i);
+            recursive(child, Optional.of(menu), child.getSortSeq(), menu.getLevel()+1);
+        }
     }
 }

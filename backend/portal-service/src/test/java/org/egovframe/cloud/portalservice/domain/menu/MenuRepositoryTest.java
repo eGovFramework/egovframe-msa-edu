@@ -1,5 +1,6 @@
 package org.egovframe.cloud.portalservice.domain.menu;
 
+import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -90,7 +91,7 @@ class MenuRepositoryTest {
             Menu child = Menu.builder()
                     .menuKorName("child_" + i)
                     .site(site)
-                    .parent(parentMenu)
+                    .parent(Optional.of(parentMenu))
                     .sortSeq(i + 1)
                     .build();
             child.setParentMenu(parentMenu);
@@ -125,7 +126,7 @@ class MenuRepositoryTest {
             Menu childMenu = Menu.builder()
                     .menuKorName("child_" + i)
                     .site(site)
-                    .parent(parentMenu)
+                    .parent(Optional.of(parentMenu))
                     .sortSeq(i + 1)
                     .build();
             childMenu.setParentMenu(parentMenu);

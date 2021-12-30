@@ -77,7 +77,7 @@ class MenuApiControllerTest {
             Menu childMenu = Menu.builder()
                     .menuKorName("child_" + i)
                     .site(site)
-                    .parent(parentMenu)
+                    .parent(Optional.of(parentMenu))
                     .sortSeq(i + 1)
                     .build();
             childMenu.setParentMenu(parentMenu);
@@ -141,7 +141,7 @@ class MenuApiControllerTest {
             Menu childMenu1 = Menu.builder()
                     .menuKorName("child_1_" + i)
                     .site(site)
-                    .parent(parentMenu1)
+                    .parent(Optional.of(parentMenu1))
                     .sortSeq(i + 1)
                     .build();
             childMenu1.setParentMenu(parentMenu1);
@@ -150,7 +150,7 @@ class MenuApiControllerTest {
                 Menu childChildMenu = Menu.builder()
                         .menuKorName("child_child_1")
                         .site(site)
-                        .parent(childMenu1)
+                        .parent(Optional.of(childMenu1))
                         .sortSeq(1)
                         .build();
                 childChildMenu.setParentMenu(childMenu1);
@@ -158,7 +158,7 @@ class MenuApiControllerTest {
                 Menu childChildMenu2 = Menu.builder()
                         .menuKorName("child_child_1")
                         .site(site)
-                        .parent(childMenu1)
+                        .parent(Optional.of(childMenu1))
                         .sortSeq(2)
                         .build();
                 childChildMenu2.setParentMenu(childMenu1);
@@ -168,7 +168,7 @@ class MenuApiControllerTest {
             Menu childMenu2 = Menu.builder()
                     .menuKorName("child_2_" + i)
                     .site(site)
-                    .parent(parentMenu2)
+                    .parent(Optional.of(parentMenu2))
                     .sortSeq(i + 1)
                     .build();
             childMenu1.setParentMenu(parentMenu2);
@@ -259,7 +259,7 @@ class MenuApiControllerTest {
             Menu childMenu1 = Menu.builder()
                     .menuKorName("child_1_" + i)
                     .site(site)
-                    .parent(parentMenu1)
+                    .parent(Optional.of(parentMenu1))
                     .sortSeq(i + 1)
                     .build();
             childMenu1.setParentMenu(parentMenu1);
@@ -306,7 +306,7 @@ class MenuApiControllerTest {
             Menu childMenu1 = Menu.builder()
                     .menuKorName("child_1_" + i)
                     .site(site)
-                    .parent(parentMenu1)
+                    .parent(Optional.of(parentMenu1))
                     .sortSeq(i + 1)
                     .build();
             childMenu1.setParentMenu(parentMenu1);
@@ -380,7 +380,7 @@ class MenuApiControllerTest {
             Menu childMenu1 = Menu.builder()
                     .menuKorName("child_1_" + i)
                     .site(site)
-                    .parent(parentMenu1)
+                    .parent(Optional.of(parentMenu1))
                     .sortSeq(i + 1)
                     .build();
             childMenu1.setParentMenu(parentMenu1);
@@ -414,7 +414,7 @@ class MenuApiControllerTest {
             Menu childMenu1 = Menu.builder()
                     .menuKorName("child_1_" + i)
                     .site(site)
-                    .parent(parentMenu1)
+                    .parent(Optional.of(parentMenu1))
                     .sortSeq(i + 1)
                     .build();
             childMenu1.setParentMenu(parentMenu1);

@@ -1,5 +1,6 @@
 package org.egovframe.cloud.portalservice.api.menu.dto;
 
+import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,5 +50,9 @@ public class MenuDnDRequestDto {
         this.level = level;
         this.icon = icon;
         this.children = children == null ? null : new ArrayList<>(children);
+    }
+
+    public boolean hasParentId() {
+        return Objects.nonNull(parentId);
     }
 }
