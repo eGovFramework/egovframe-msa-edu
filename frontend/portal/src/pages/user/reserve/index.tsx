@@ -22,7 +22,7 @@ import { conditionAtom, conditionValue, userAtom } from '@stores'
 import { rownum } from '@utils'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-import React, { createRef, useEffect, useMemo, useState } from 'react'
+import React, { createRef, useMemo, useState } from 'react'
 import { TFunction, useTranslation } from 'react-i18next'
 import { useRecoilValue } from 'recoil'
 
@@ -238,12 +238,6 @@ const UserReserve = (props: UserReserveProps) => {
     categoryId:
       keywordState?.categoryId !== 'all' ? keywordState?.categoryId : null,
   })
-
-  useEffect(() => {
-    if (data) {
-      console.log(data)
-    }
-  }, [data])
 
   const handleSearch = () => {
     if (page === 0) {

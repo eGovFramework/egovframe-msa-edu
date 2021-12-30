@@ -28,6 +28,10 @@ const ReserveItemInfo = ({ data, reserveStatus }: ReserveItemInfoProps) => {
             <dd>{data.reserveItemName}</dd>
           </dl>
           <dl>
+            <dt>{'예약방법'}</dt>
+            <dd>{data.reserveMethodName}</dd>
+          </dl>
+          <dl>
             <dt>{`${t('reserve.count')}/${t('reserve.number_of_people')}`}</dt>
             <dd>{data.totalQty}</dd>
           </dl>

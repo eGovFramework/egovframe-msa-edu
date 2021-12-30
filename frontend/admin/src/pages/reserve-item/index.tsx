@@ -205,6 +205,7 @@ const ReserveItem = (props: ReserveItemProps) => {
     categoryId:
       keywordState?.categoryId !== 'all' ? keywordState?.categoryId : null,
     isUse: Boolean(handlePopup),
+    isPopup: Boolean(handlePopup),
   })
 
   //목록 조회

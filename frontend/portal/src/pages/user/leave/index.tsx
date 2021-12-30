@@ -40,7 +40,6 @@ const UserLeave = () => {
 
   // 탈퇴 처리
   const leave = async (data: IVerification) => {
-    console.log('leave', data)
     try {
       const result = await userService.leave(data)
       if (result === true) {

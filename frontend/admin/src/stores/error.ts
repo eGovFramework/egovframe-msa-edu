@@ -1,6 +1,6 @@
+import { DEFAULT_ERROR_MESSAGE } from '@constants'
 import { AxiosError } from 'axios'
 import { atom, DefaultValue, selector } from 'recoil'
-import { DEFAULT_ERROR_MESSAGE } from '@constants'
 
 /**
  * Global error 상태관리
@@ -10,6 +10,7 @@ interface IErrors {
   defaultMessage: string
   field: string
   rejectedValue?: string
+  message?: string
 }
 
 export interface IErrorProps {

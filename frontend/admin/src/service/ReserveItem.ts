@@ -106,6 +106,7 @@ interface ReserveItemSearchPayload extends SearchPayload {
   locationId?: string
   categoryId?: string
   isUse?: boolean
+  isPopup?: boolean
 }
 
 export const reserveItemService = {
@@ -117,6 +118,7 @@ export const reserveItemService = {
     locationId,
     categoryId,
     isUse = false,
+    isPopup = false,
   }: ReserveItemSearchPayload) => {
     return useSWR<Page, AxiosError>(
       [
@@ -126,6 +128,7 @@ export const reserveItemService = {
         locationId,
         categoryId,
         isUse,
+        isPopup,
       ],
       url =>
         common.fetcher(url, {
@@ -134,6 +137,7 @@ export const reserveItemService = {
           locationId,
           categoryId,
           isUse,
+          isPopup,
         }),
 
       { revalidateOnFocus: false, errorRetryCount: 0 },

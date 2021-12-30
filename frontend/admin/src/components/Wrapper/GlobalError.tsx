@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { useSnackbar } from 'notistack'
-import { errorStateAtom } from '@stores'
-import { useRecoilState } from 'recoil'
 import CustomAlert from '@components/CustomAlert'
 import { ButtonProps } from '@material-ui/core/Button'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { errorStateAtom } from '@stores'
+import { useSnackbar } from 'notistack'
+import React, { useEffect, useState } from 'react'
+import { useRecoilState } from 'recoil'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,7 +39,7 @@ const GlobalError = () => {
     if (errorState.error) {
       if (errorState.status === 400) {
         const errors = errorState.errors.map(item => {
-          return item.defaultMessage
+          return item.defaultMessage || item.message
         })
 
         setAlertState({

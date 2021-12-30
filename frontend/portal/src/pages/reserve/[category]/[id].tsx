@@ -37,7 +37,7 @@ const ReserveDetail = ({ initData }: ReserveDetailProps) => {
       },
     ]
 
-    if (initData?.isPossible) {
+    if (initData?.isPossible && initData?.reserveMethodId === 'internet') {
       buttons.push({
         id: 'item-edit-button',
         title: t('reserve_item.request'),

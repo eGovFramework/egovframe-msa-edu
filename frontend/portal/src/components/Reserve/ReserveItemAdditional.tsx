@@ -27,6 +27,10 @@ const ReserveItemAdditional = ({ data }: ReserveItemAdditionalPropps) => {
             <dt>{t('reserve_item.contact')}</dt>
             <dd>{data.contact}</dd>
           </dl>
+          <dl>
+            <dt>{'주소'}</dt>
+            <dd>{data.address}</dd>
+          </dl>
         </div>
       )}
       <h4>{t('reserve_item.manager')}</h4>

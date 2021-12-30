@@ -147,6 +147,7 @@ export const reserveService = {
           locationId,
           categoryId,
           isUse: true,
+          isPopup: false,
         }),
       { revalidateOnFocus: false, errorRetryCount: 0 },
     ),

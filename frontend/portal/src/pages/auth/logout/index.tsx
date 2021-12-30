@@ -21,7 +21,6 @@ export const getServerSideProps: GetServerSideProps = async ({
   res,
   query,
 }) => {
-  console.log(query)
   if (!process.browser) {
     const Cookies = require('cookies')
     const cookies = new Cookies(req, res)
