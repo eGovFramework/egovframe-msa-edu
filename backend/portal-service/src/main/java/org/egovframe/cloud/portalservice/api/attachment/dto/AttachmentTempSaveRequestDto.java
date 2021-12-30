@@ -1,10 +1,13 @@
 package org.egovframe.cloud.portalservice.api.attachment.dto;
 
 import java.util.Objects;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.egovframe.cloud.portalservice.domain.attachment.Attachment;
+import org.egovframe.cloud.portalservice.domain.attachment.AttachmentId;
 import org.springframework.util.StringUtils;
 
 /**
@@ -54,5 +57,18 @@ public class AttachmentTempSaveRequestDto {
 
     public boolean hasUniqueId() {
         return Objects.nonNull(uniqueId) || StringUtils.hasText(uniqueId);
+    }
+
+    public Attachment toEntity(AttachmentId attachmentId, String physicalFileName) {
+        return Attachment.builder()
+            .attachmentId(attachmentId)
+            .uniqueId(UUID.randomUUID().toString())
+            .physicalFileName(physicalFileName)
+            .originalFileName(this.originalName)
+            .size(this.size)
+            .fileType(this.fileType)
+            .entityName(this.entityName)
+            .entityId(this.entityId)
+            .build();
     }
 }

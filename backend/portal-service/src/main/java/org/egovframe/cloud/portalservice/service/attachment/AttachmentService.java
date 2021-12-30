@@ -242,18 +242,7 @@ public class AttachmentService extends AbstractService {
             // 첨부파일 .temp 제거
             String renameTemp = storageUtils.renameTemp(requestDto.getPhysicalFileName());
 
-            attachmentRepository.save(
-                    Attachment.builder()
-                            .attachmentId(attachmentId)
-                            .uniqueId(UUID.randomUUID().toString())
-                            .physicalFileName(renameTemp)
-                            .originalFileName(requestDto.getOriginalName())
-                            .size(requestDto.getSize())
-                            .fileType(requestDto.getFileType())
-                            .entityName(requestDto.getEntityName())
-                            .entityId(requestDto.getEntityId())
-                            .build()
-            );
+            attachmentRepository.save(requestDto.toEntity(attachmentId, renameTemp));
         }
         return attachmentCode;
     }
@@ -282,18 +271,8 @@ public class AttachmentService extends AbstractService {
                 AttachmentId attachmentId = attachmentRepository.getId(attachmentCode);
                 //새로운 첨부파일 저장 (물리적 파일 .temp 제거)
                 String renameTemp = storageUtils.renameTemp(saveRequestDto.getPhysicalFileName());
-                attachmentRepository.save(
-                        Attachment.builder()
-                                .attachmentId(attachmentId)
-                                .uniqueId(UUID.randomUUID().toString())
-                                .originalFileName(saveRequestDto.getOriginalName())
-                                .physicalFileName(renameTemp)
-                                .size(saveRequestDto.getSize())
-                                .fileType(saveRequestDto.getFileType())
-                                .entityName(saveRequestDto.getEntityName())
-                                .entityId(saveRequestDto.getEntityId())
-                                .build()
-                );
+
+                attachmentRepository.save(saveRequestDto.toEntity(attachmentId, renameTemp));
             }
         }
 
@@ -353,18 +332,7 @@ public class AttachmentService extends AbstractService {
             // 물리적 파일 생성
             AttachmentFileResponseDto fileResponseDto = upload(files.get(i), BASE_PATH, false);
 
-            attachmentRepository.save(
-                    Attachment.builder()
-                            .attachmentId(attachmentId)
-                            .uniqueId(UUID.randomUUID().toString())
-                            .physicalFileName(fileResponseDto.getPhysicalFileName())
-                            .originalFileName(fileResponseDto.getOriginalFileName())
-                            .size(fileResponseDto.getSize())
-                            .fileType(fileResponseDto.getFileType())
-                            .entityName(uploadRequestDto.getEntityName())
-                            .entityId(uploadRequestDto.getEntityId())
-                            .build()
-            );
+            attachmentRepository.save(fileResponseDto.toEntity(attachmentId, uploadRequestDto));
         }
 
         return attachmentCode;
@@ -388,16 +356,9 @@ public class AttachmentService extends AbstractService {
                                   List<AttachmentUpdateRequestDto> updateRequestDtoList) throws EntityNotFoundException {
 
         // 기존 파일 삭제 처리
-        if (updateRequestDtoList != null) {
-            for (AttachmentUpdateRequestDto saveRequestDto : updateRequestDtoList) {
-                if (saveRequestDto.getIsDelete()) {
-                    Attachment attachment = findAttachmentByUniqueId(saveRequestDto.getUniqueId());
-                    attachment.updateIsDelete(saveRequestDto.getIsDelete());
-                }
-            }
-        }
+        deleteExistingFile(updateRequestDtoList);
 
-        if (files != null) {
+        if (Objects.nonNull(files)) {
             //새로운 파일 저장 처리
             for (int i = 0; i < files.size(); i++) {
                 // 해당 attachment에 seq 조회해서 attachmentid 생성
@@ -406,24 +367,14 @@ public class AttachmentService extends AbstractService {
                 // 물리적 파일 생성
                 AttachmentFileResponseDto fileResponseDto = upload(files.get(i), BASE_PATH, false);
 
-                attachmentRepository.save(
-                        Attachment.builder()
-                                .attachmentId(attachmentId)
-                                .uniqueId(UUID.randomUUID().toString())
-                                .physicalFileName(fileResponseDto.getPhysicalFileName())
-                                .originalFileName(fileResponseDto.getOriginalFileName())
-                                .size(fileResponseDto.getSize())
-                                .fileType(fileResponseDto.getFileType())
-                                .entityName(uploadRequestDto.getEntityName())
-                                .entityId(uploadRequestDto.getEntityId())
-                                .build()
-                );
+                attachmentRepository.save(fileResponseDto.toEntity(attachmentId, uploadRequestDto));
             }
         }
 
 
         return attachmentCode;
     }
+
 
     /**
      * entity 정보 update
@@ -489,6 +440,23 @@ public class AttachmentService extends AbstractService {
         return attachmentRepository.findAllByUniqueId(uniqueId)
             // 파일을 찾을 수 없습니다.
             .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + uniqueId));
+    }
+
+    /**
+     * 기존 첨부파일 삭제 처리
+     *
+     * @param updateRequestDtoList
+     */
+    private void deleteExistingFile(List<AttachmentUpdateRequestDto> updateRequestDtoList) {
+        if (Objects.isNull(updateRequestDtoList)) {
+            return;
+        }
+        for (AttachmentUpdateRequestDto saveRequestDto : updateRequestDtoList) {
+            if (saveRequestDto.getIsDelete()) {
+                Attachment attachment = findAttachmentByUniqueId(saveRequestDto.getUniqueId());
+                attachment.updateIsDelete(saveRequestDto.getIsDelete());
+            }
+        }
     }
 
 }
