@@ -1,12 +1,10 @@
 package org.egovframe.cloud.reserveitemservice.service.reserveItem;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.common.exception.BusinessMessageException;
 import org.egovframe.cloud.reactive.service.ReactiveAbstractService;
 import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemListResponseDto;
@@ -17,7 +15,6 @@ import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemRes
 import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemSaveRequestDto;
 import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemUpdateRequestDto;
 import org.egovframe.cloud.reserveitemservice.config.RequestMessage;
-import org.egovframe.cloud.reserveitemservice.domain.reserveItem.Category;
 import org.egovframe.cloud.reserveitemservice.domain.reserveItem.ReserveItem;
 import org.egovframe.cloud.reserveitemservice.domain.reserveItem.ReserveItemRepository;
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -27,10 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -58,30 +51,13 @@ import reactor.core.scheduler.Schedulers;
 public class ReserveItemService extends ReactiveAbstractService {
 
     private static final String RESERVE_CATEGORY_CODE = "reserve-category";
+    private static final String RESERVE_CATEGORY_CODE_ALL = "all";
+    private static final String INVENTORY_UPDATED_BINDING_NAME = "inventoryUpdated-out-0";
+    private static final String EVENT_HEADER_NAME = "reserveUUID";
 
     private final ReserveItemRepository reserveItemRepository;
     private final StreamBridge streamBridge;
 
-
-    /**
-     * entity -> dto 변환
-     *
-     * @param reserveItem
-     * @return
-     */
-    private Mono<ReserveItemResponseDto> convertReserveItemResponseDto(ReserveItem reserveItem) {
-        return Mono.just(ReserveItemResponseDto.builder().reserveItem(reserveItem).build());
-    }
-
-    /**
-     * entity -> dto 변환
-     *
-     * @param reserveItem
-     * @return
-     */
-    private Mono<ReserveItemListResponseDto> convertReserveItemListResponseDto(ReserveItem reserveItem) {
-        return Mono.just(ReserveItemListResponseDto.builder().entity(reserveItem).build());
-    }
 
     /**
      * 목록 조회
@@ -109,7 +85,7 @@ public class ReserveItemService extends ReactiveAbstractService {
      */
     @Transactional(readOnly = true)
     public Mono<Page<ReserveItemListResponseDto>> searchForUser(String categoryId, ReserveItemRequestDto requestDto, Pageable pageable) {
-        if (!"all".equals(categoryId)) {
+        if (!RESERVE_CATEGORY_CODE_ALL.equals(categoryId)) {
             requestDto.setCategoryId(categoryId);
         }
         return reserveItemRepository.search(requestDto, pageable)
@@ -203,24 +179,11 @@ public class ReserveItemService extends ReactiveAbstractService {
         return reserveItemRepository.findById(reserveItemId)
                 .switchIfEmpty(monoResponseStatusEntityNotFoundException(reserveItemId))
                 .flatMap(reserveItem -> {
-                    if (!Category.EDUCATION.isEquals(reserveItem.getCategoryId())) {
-                        //해당 예약은 수정할 수 없습니다.
-                        return Mono.error(new BusinessMessageException(getMessage("valid.reserve_not_update")));
+                    String validate = reserveItem.validate(reserveQty);
+                    if (!"valid".equals(validate)) {
+                        return Mono.error(new BusinessMessageException(getMessage(validate)));
                     }
-
-                    LocalDateTime now = LocalDateTime.now();
-                    if (!(now.isAfter(reserveItem.getRequestStartDate()) && now.isBefore(reserveItem.getRequestEndDate()))) {
-                        //해당 날짜에는 예약할 수 없습니다.
-                        return Mono.error(new BusinessMessageException(getMessage("valid.reserve_date")));
-                    }
-
-                    int qty = reserveItem.getInventoryQty() - reserveQty;
-                    if (qty < 0) {
-                        //해당 날짜에 예약할 수 있는 재고수량이 없습니다.
-                        return Mono.error(new BusinessMessageException(getMessage("valid.reserve_count")));
-                    }
-
-                    return Mono.just(reserveItem.updateInventoryQty(qty));
+                    return Mono.just(reserveItem.updateInventoryQty(reserveQty));
                 })
                 .flatMap(reserveItemRepository::save)
                 .delayElement(Duration.ofSeconds(5))
@@ -234,23 +197,6 @@ public class ReserveItemService extends ReactiveAbstractService {
                     sendMessage(reserveId, false);
                 }).then();
 
-    }
-
-
-    /**
-     * 재고 변경 성공 여부 이벤트 발생
-     *
-     * @param reserveId
-     * @param isItemUpdated
-     */
-    private void sendMessage(String reserveId, Boolean isItemUpdated) {
-        streamBridge.send("inventoryUpdated-out-0",
-                MessageBuilder.withPayload(
-                        RequestMessage.builder()
-                                .reserveId(reserveId)
-                                .isItemUpdated(isItemUpdated)
-                                .build())
-                        .setHeader("reserveUUID", reserveId).build());
     }
 
     /**
@@ -274,13 +220,48 @@ public class ReserveItemService extends ReactiveAbstractService {
      * @return
      */
     public Mono<Map<String, Collection<ReserveItemMainResponseDto>>> findLatest(Integer count) {
-        return reserveItemRepository.findCodeDetail(
-            RESERVE_CATEGORY_CODE)
+        return reserveItemRepository.findCodeDetail(RESERVE_CATEGORY_CODE)
             .flatMap(code -> reserveItemRepository.findLatestByCategory(count, code.getCodeId()))
             .map(reserveItem -> ReserveItemMainResponseDto.builder().entity(reserveItem).build())
-            .collectMultimap(reserveItem -> reserveItem.getCategoryName());
+            .collectMultimap(ReserveItemMainResponseDto::getCategoryName);
 
     }
 
+
+    /**
+     * entity -> dto 변환
+     *
+     * @param reserveItem
+     * @return
+     */
+    private Mono<ReserveItemResponseDto> convertReserveItemResponseDto(ReserveItem reserveItem) {
+        return Mono.just(ReserveItemResponseDto.builder().reserveItem(reserveItem).build());
+    }
+
+    /**
+     * entity -> dto 변환
+     *
+     * @param reserveItem
+     * @return
+     */
+    private Mono<ReserveItemListResponseDto> convertReserveItemListResponseDto(ReserveItem reserveItem) {
+        return Mono.just(ReserveItemListResponseDto.builder().entity(reserveItem).build());
+    }
+
+    /**
+     * 재고 변경 성공 여부 이벤트 발생
+     *
+     * @param reserveId
+     * @param isItemUpdated
+     */
+    private void sendMessage(String reserveId, Boolean isItemUpdated) {
+        streamBridge.send(INVENTORY_UPDATED_BINDING_NAME,
+            MessageBuilder.withPayload(
+                RequestMessage.builder()
+                    .reserveId(reserveId)
+                    .isItemUpdated(isItemUpdated)
+                    .build())
+                .setHeader(EVENT_HEADER_NAME, reserveId).build());
+    }
 
 }

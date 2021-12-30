@@ -108,7 +108,7 @@ class ReserveItemApiControllerTest {
 
 
     @Test
-    public void 사용자목록조회_성공() throws Exception {
+    public void 사용자목록조회_성공() {
 
         ReserveItem saved = reserveItemRepository.save(reserveItem).block();
         assertNotNull(saved);
@@ -123,7 +123,7 @@ class ReserveItemApiControllerTest {
     }
 
     @Test
-    public void 관리자목록조회_성공() throws Exception {
+    public void 관리자목록조회_성공() {
 
         ReserveItem saved = reserveItemRepository.save(reserveItem).block();
         assertNotNull(saved);
@@ -138,7 +138,7 @@ class ReserveItemApiControllerTest {
     }
 
     @Test
-    public void 한건조회_성공() throws Exception {
+    public void 한건조회_성공() {
         ReserveItem saved = reserveItemRepository.save(reserveItem).block();
         assertNotNull(saved);
 
@@ -155,7 +155,7 @@ class ReserveItemApiControllerTest {
     }
 
     @Test
-    public void 사용자_포털_메인_예약목록_조회_성공() throws Exception {
+    public void 사용자_포털_메인_예약목록_조회_성공() {
         ReserveItem saved = reserveItemRepository.save(reserveItem).block();
         assertNotNull(saved);
 
@@ -176,7 +176,7 @@ class ReserveItemApiControllerTest {
     }
 
     @Test
-    public void 한건_등록_성공() throws Exception {
+    public void 한건_등록_성공() {
         ReserveItemSaveRequestDto requestDto = ReserveItemSaveRequestDto.builder()
             .reserveItemName(reserveItem.getReserveItemName())
             .categoryId(reserveItem.getCategoryId())
@@ -208,7 +208,7 @@ class ReserveItemApiControllerTest {
     }
 
     @Test
-    public void 한건_수정_성공() throws Exception {
+    public void 한건_수정_성공() {
         ReserveItem saved = reserveItemRepository.save(reserveItem).block();
         assertNotNull(saved);
 
@@ -241,7 +241,7 @@ class ReserveItemApiControllerTest {
     }
 
     @Test
-    public void 사용여부_false_수정_성공() throws Exception {
+    public void 사용여부_false_수정_성공() {
         ReserveItem saved = reserveItemRepository.save(reserveItem).block();
         assertNotNull(saved);
 
@@ -255,7 +255,7 @@ class ReserveItemApiControllerTest {
     }
 
     @Test
-    public void 한건_저장_validation_실패() throws Exception {
+    public void 한건_저장_validation_실패() {
         ReserveItemSaveRequestDto requestDto = ReserveItemSaveRequestDto.builder()
             .reserveItemName(reserveItem.getReserveItemName())
             .categoryId(reserveItem.getCategoryId())
@@ -270,6 +270,8 @@ class ReserveItemApiControllerTest {
             .isPeriod(reserveItem.getIsPeriod())
             .selectionMeansId(reserveItem.getSelectionMeansId())
             .build();
+
+        System.out.println(requestDto);
 
         ErrorResponse responseBody = webTestClient.post()
             .uri(API_URL)

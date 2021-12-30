@@ -1,10 +1,11 @@
 package org.egovframe.cloud.reserveitemservice.domain.reserveItem;
 
-import static org.springframework.data.relational.core.query.Criteria.*;
+import static org.springframework.data.relational.core.query.Criteria.where;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemRequestDto;
 import org.egovframe.cloud.reserveitemservice.domain.code.Code;
 import org.egovframe.cloud.reserveitemservice.domain.location.Location;
@@ -14,9 +15,6 @@ import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.data.relational.core.query.Query;
 import org.springframework.util.StringUtils;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -40,7 +38,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RequiredArgsConstructor
 public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
-
+    private static final String SORT_COLUMN = "create_date";
     private final R2dbcEntityTemplate entityTemplate;
 
     /**
@@ -54,7 +52,7 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
     public Flux<ReserveItem> search(ReserveItemRequestDto requestDto, Pageable pageable) {
         return entityTemplate.select(ReserveItem.class)
                 .matching(Query.query(Criteria.from(whereQuery(requestDto)))
-                        .sort(Sort.by(Sort.Direction.DESC, "create_date"))
+                        .sort(Sort.by(Sort.Direction.DESC, SORT_COLUMN))
                         .with(pageable))
                 .all()
                 .flatMap(this::loadRelations)
@@ -72,7 +70,7 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
     public Mono<Long> searchCount(ReserveItemRequestDto requestDto, Pageable pageable) {
         return entityTemplate.select(ReserveItem.class)
                 .matching(Query.query(Criteria.from(whereQuery(requestDto)))
-                        .sort(Sort.by(Sort.Direction.DESC, "create_date"))
+                        .sort(Sort.by(Sort.Direction.DESC, SORT_COLUMN))
                         .with(pageable))
                 .count();
     }
@@ -101,7 +99,7 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
     @Override
     public Flux<ReserveItem> findLatestByCategory(Integer count, String categoryId) {
         Query query =Query.query(where("category_id").is(categoryId)
-            .and("use_at").isTrue()).sort(Sort.by(Sort.Order.desc("create_date")));
+            .and("use_at").isTrue()).sort(Sort.by(Sort.Order.desc(SORT_COLUMN)));
 
         if (count > 0) {
             query.limit(count);
@@ -216,17 +214,15 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
 
         List<Criteria> whereCriteria = new ArrayList<>();
 
-        if (StringUtils.hasText(keyword)) {
-            if ("item".equals(keywordType)) {
-                whereCriteria.add(where("reserve_item_name").like(likeText(keyword)));
-            }
+        if (StringUtils.hasText(keyword) && "item".equals(keywordType)) {
+            whereCriteria.add(where("reserve_item_name").like(likeText(keyword)));
         }
 
-        if (requestDto.getLocationId() != null && !"null".equals(requestDto.getLocationId()) && !"undefined".equals(requestDto.getLocationId())) {
+        if (requestDto.hasLocationId()) {
             whereCriteria.add(where("location_id").in(requestDto.getLocationId()));
         }
 
-        if (requestDto.getCategoryId() != null && !"null".equals(requestDto.getCategoryId()) && !"undefined".equals(requestDto.getCategoryId())) {
+        if (requestDto.hasCategoryId()) {
             whereCriteria.add(where("category_id").in(requestDto.getCategoryId()));
         }
 

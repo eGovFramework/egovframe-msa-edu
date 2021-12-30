@@ -1,9 +1,9 @@
-package org.egovframe.cloud.reservechecksevice.domain.reserve;
+package org.egovframe.cloud.reservechecksevice.domain;
 
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 
 /**
- * org.egovframe.cloud.reservechecksevice.domain.reserve.ReserveRepository
+ * org.egovframe.cloud.reservechecksevice.domain.ReserveRepository
  *
  * 예약 도메인 Repository interface
  *

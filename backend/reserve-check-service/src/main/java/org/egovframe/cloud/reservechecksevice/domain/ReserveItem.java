@@ -1,6 +1,10 @@
-package org.egovframe.cloud.reservechecksevice.domain.reserve;
+package org.egovframe.cloud.reservechecksevice.domain;
 
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,12 +14,6 @@ import org.egovframe.cloud.reservechecksevice.domain.location.Location;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 /**
  * org.egovframe.cloud.reserveitemservice.domain.reserveItem.ReserveItem

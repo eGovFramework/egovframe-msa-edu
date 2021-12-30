@@ -1,13 +1,12 @@
 package org.egovframe.cloud.reservechecksevice.client.dto;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.egovframe.cloud.reservechecksevice.domain.reserve.ReserveItem;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import org.egovframe.cloud.reservechecksevice.domain.ReserveItem;
 
 /**
  * org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemResponseDto
@@ -30,6 +29,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 public class ReserveItemResponseDto {
+    private static final int MIN_QTY = 0;
+
     private Long reserveItemId;    // 예약 물품 id
     private String reserveItemName;    //예약 물품 명
     private Long locationId;
@@ -89,5 +90,17 @@ public class ReserveItemResponseDto {
         this.managerDept = reserveItem.getManagerDept();
         this.managerName = reserveItem.getManagerName();
         this.managerContact = reserveItem.getManagerContact();
+    }
+
+    public boolean isPossibleQty(Integer max, Integer reserveQty) {
+        return (totalQty - max) >= reserveQty;
+    }
+
+    public boolean isPositiveInventory() {
+        return inventoryQty > MIN_QTY;
+    }
+
+    public boolean isPossibleInventoryQty(Integer reserveQty) {
+        return inventoryQty >= reserveQty;
     }
 }

@@ -1,14 +1,15 @@
-package org.egovframe.cloud.reservechecksevice.domain.reserve;
+package org.egovframe.cloud.reservechecksevice.domain;
 
-import static org.springframework.data.relational.core.query.Criteria.*;
+import static org.springframework.data.relational.core.query.Criteria.where;
 
-import java.time.LocalDate;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.egovframe.cloud.reservechecksevice.api.reserve.dto.ReserveRequestDto;
+import lombok.RequiredArgsConstructor;
+import org.egovframe.cloud.reservechecksevice.api.dto.ReserveRequestDto;
 import org.egovframe.cloud.reservechecksevice.client.ReserveItemServiceClient;
 import org.egovframe.cloud.reservechecksevice.client.UserServiceClient;
 import org.egovframe.cloud.reservechecksevice.client.dto.UserResponseDto;
@@ -18,16 +19,11 @@ import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.data.relational.core.query.Query;
 import org.springframework.util.StringUtils;
-
-import io.github.resilience4j.circuitbreaker.CircuitBreaker;
-import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
-import io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator;
-import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * org.egovframe.cloud.reservechecksevice.domain.reserve.ReserveRepositoryImpl
+ * org.egovframe.cloud.reservechecksevice.domain.ReserveRepositoryImpl
  *
  * 예약 도메인 custom repository 구현 클래스
  *

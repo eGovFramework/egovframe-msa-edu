@@ -1,10 +1,12 @@
 package org.egovframe.cloud.reserverequestservice.api.dto;
 
+import java.util.UUID;
 import lombok.*;
 import org.egovframe.cloud.reserverequestservice.domain.Reserve;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import org.egovframe.cloud.reserverequestservice.domain.ReserveStatus;
 
 /**
  * org.egovframe.cloud.reserverequestservice.api.dto.ReserveSaveRequestDto
@@ -88,6 +90,18 @@ public class ReserveSaveRequestDto {
         this.userId = userId;
         this.userContactNo = userContactNo;
         this.userEmail = userEmail;
+    }
+
+    public Reserve createRequestReserve() {
+        this.reserveId = String.valueOf(UUID.randomUUID());
+        this.reserveStatusId = ReserveStatus.REQUEST.getKey();
+        return toEntity();
+    }
+
+    public Reserve createApproveReserve() {
+        this.reserveId = String.valueOf(UUID.randomUUID());
+        this.reserveStatusId = ReserveStatus.APPROVE.getKey();
+        return toEntity();
     }
 
     public Reserve toEntity() {

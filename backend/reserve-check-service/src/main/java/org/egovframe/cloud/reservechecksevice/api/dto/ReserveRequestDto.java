@@ -1,11 +1,11 @@
-package org.egovframe.cloud.reservechecksevice.api.reserve.dto;
+package org.egovframe.cloud.reservechecksevice.api.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.egovframe.cloud.common.dto.RequestDto;
 
 /**
- * org.egovframe.cloud.reservechecksevice.api.reserve.dto.ReserveRequestDto
+ * org.egovframe.cloud.reservechecksevice.api.dto.ReserveRequestDto
  * <p>
  * 얘약 목록 요청 dto class
  *

@@ -1,6 +1,10 @@
 package org.egovframe.cloud.reserveitemservice.api.reserveItem.dto;
 
-import lombok.*;
+import java.util.Objects;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.egovframe.cloud.common.dto.RequestDto;
 
 /**
@@ -28,4 +32,16 @@ public class ReserveItemRequestDto extends RequestDto {
     private Long locationId;
     private String categoryId;
     private Boolean isUse;
+
+    public boolean hasLocationId() {
+        return hasId(locationId);
+    }
+
+    public boolean hasCategoryId() {
+        return hasId(categoryId);
+    }
+
+    private boolean hasId(Object id) {
+        return Objects.nonNull(id) && !Objects.equals("null", id) && !Objects.equals("undefined", id);
+    }
 }

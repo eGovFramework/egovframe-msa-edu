@@ -1,10 +1,10 @@
-package org.egovframe.cloud.reservechecksevice.domain.reserve;
+package org.egovframe.cloud.reservechecksevice.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * org.egovframe.cloud.reservechecksevice.domain.reserve.Category
+ * org.egovframe.cloud.reservechecksevice.domain.Category
  *
  * 예약 유형 enum class
  *

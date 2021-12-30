@@ -55,7 +55,7 @@ class ReserveApiControllerTest {
 
 	@Test
 	@WithCustomMockUser(userId = "user", role = Role.USER)
-	public void 사용자_예약_성공() throws Exception {
+	public void 사용자_예약_성공() {
 
 		ReserveSaveRequestDto saveRequestDto =
 			ReserveSaveRequestDto.builder()

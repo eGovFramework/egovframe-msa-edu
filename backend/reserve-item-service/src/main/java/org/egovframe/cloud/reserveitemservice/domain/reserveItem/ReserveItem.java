@@ -1,8 +1,14 @@
 package org.egovframe.cloud.reserveitemservice.domain.reserveItem;
 
 
-import lombok.*;
-import lombok.experimental.Accessors;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.egovframe.cloud.reactive.domain.BaseEntity;
 import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemUpdateRequestDto;
 import org.egovframe.cloud.reserveitemservice.domain.location.Location;
@@ -10,11 +16,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 /**
  * org.egovframe.cloud.reserveitemservice.domain.reserveItem.ReserveItem
@@ -312,11 +313,11 @@ public class ReserveItem extends BaseEntity {
     /**
      * 재고 변경
      *
-     * @param inventoryQty
+     * @param reserveQty
      * @return
      */
-    public ReserveItem updateInventoryQty(Integer inventoryQty) {
-        this.inventoryQty = inventoryQty;
+    public ReserveItem updateInventoryQty(Integer reserveQty) {
+        this.inventoryQty = calcInventoryQty(reserveQty);
         return this;
     }
 
@@ -370,6 +371,31 @@ public class ReserveItem extends BaseEntity {
                 return false;
             }
         }
+    }
+
+    public String validate(int reserveQty) {
+        if (!Category.EDUCATION.isEquals(categoryId)) {
+            //해당 예약은 수정할 수 없습니다.
+            return "valid.reserve_not_update";
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        if (!(now.isAfter(requestStartDate) && now.isBefore(requestEndDate))) {
+            //해당 날짜에는 예약할 수 없습니다.
+            return "valid.reserve_date";
+        }
+
+        int qty = calcInventoryQty(reserveQty);
+        if (qty < 0) {
+            //해당 날짜에 예약할 수 있는 재고수량이 없습니다.
+            return "valid.reserve_count";
+        }
+
+        return "valid";
+    }
+
+    private int calcInventoryQty(int reserveQty) {
+        return inventoryQty - reserveQty;
     }
 }
 

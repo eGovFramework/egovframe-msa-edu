@@ -2,22 +2,19 @@ package org.egovframe.cloud.reservechecksevice.validator;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
-
 import javax.annotation.Resource;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.common.util.MessageUtil;
 import org.egovframe.cloud.reservechecksevice.validator.annotation.ReserveSaveValid;
 import org.springframework.util.StringUtils;
 
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * org.egovframe.cloud.reservechecksevice.validator.ReserveSaveValidator
- *
+ * <p>
  * 예약 신청 시 validation check를 하기 위한 custom validator
  *
  * @author 표준프레임워크센터 shinmj
@@ -42,6 +39,7 @@ public class ReserveSaveValidator implements ConstraintValidator<ReserveSaveVali
     protected MessageUtil messageUtil;
 
     private String message;
+    private boolean fieldValid;
 
 
     @Override
@@ -59,24 +57,28 @@ public class ReserveSaveValidator implements ConstraintValidator<ReserveSaveVali
     @SneakyThrows
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
-        boolean fieldValid = true;
+        fieldValid = true;
 
         String categoryId = String.valueOf(getFieldValue(value, "categoryId"));
         if ("education".equals(categoryId)) {
             //교육인 경우
             //신청인원
-            fieldValid = checkReserveQty(value, context);
+            return checkReserveQty(value, context);
+        }
 
-        }else if ("equipment".equals(categoryId)) {
+        if ("equipment".equals(categoryId)) {
             //장비인 경우
             //신청일자(기간), 신청수량
             fieldValid = checkReserveDate(value, context);
             fieldValid = checkReserveQty(value, context);
 
-        }else if ("place".equals(categoryId)) {
+            return fieldValid;
+        }
+
+        if ("place".equals(categoryId)) {
             //공간인 경우
             //신청일자(기간)
-            fieldValid = checkReserveDate(value, context);
+            return checkReserveDate(value, context);
         }
 
         return fieldValid;
@@ -94,12 +96,14 @@ public class ReserveSaveValidator implements ConstraintValidator<ReserveSaveVali
         if (isNull(value, "reserveQty")) {
             context.disableDefaultConstraintViolation();
             //예약 수량 값은 필수 입니다.
-            context.buildConstraintViolationWithTemplate(messageUtil.getMessage("reserve")+" "+messageUtil.getMessage("reserve.count") + messageUtil.getMessage("valid.required"))
-                    .addPropertyNode("reserveQty")
-                    .addConstraintViolation();
+            context.buildConstraintViolationWithTemplate(
+                messageUtil.getMessage("reserve") + " " + messageUtil.getMessage("reserve.count")
+                    + messageUtil.getMessage("valid.required"))
+                .addPropertyNode("reserveQty")
+                .addConstraintViolation();
             return false;
         }
-        return true;
+        return fieldValid;
     }
 
     /**
@@ -115,31 +119,41 @@ public class ReserveSaveValidator implements ConstraintValidator<ReserveSaveVali
         if (isNull(value, "reserveStartDate")) {
             context.disableDefaultConstraintViolation();
             // 예약 신청 시작일 값은 필수 입니다.
-            context.buildConstraintViolationWithTemplate(messageUtil.getMessage("reserve_item.request")+" "+messageUtil.getMessage("common.start_datetime") + messageUtil.getMessage("valid.required"))
-                    .addPropertyNode("reserveStartDate")
-                    .addConstraintViolation();
+            context.buildConstraintViolationWithTemplate(
+                messageUtil.getMessage("reserve_item.request") + " " + messageUtil
+                    .getMessage("common.start_datetime") + messageUtil.getMessage("valid.required"))
+                .addPropertyNode("reserveStartDate")
+                .addConstraintViolation();
             return false;
-        } else if (isNull(value, "reserveEndDate")) {
+        }
+
+        if (isNull(value, "reserveEndDate")) {
             context.disableDefaultConstraintViolation();
             // 예약 신청 종료일 값은 필수 입니다.
-            context.buildConstraintViolationWithTemplate(messageUtil.getMessage("reserve_item.request")+" "+messageUtil.getMessage("common.end_datetime") + messageUtil.getMessage("valid.required"))
-                    .addPropertyNode("reserveEndDate")
-                    .addConstraintViolation();
+            context.buildConstraintViolationWithTemplate(
+                messageUtil.getMessage("reserve_item.request") + " " + messageUtil
+                    .getMessage("common.end_datetime") + messageUtil.getMessage("valid.required"))
+                .addPropertyNode("reserveEndDate")
+                .addConstraintViolation();
             return false;
-        }else {
-            // 예약 시작일, 종료일 체크
-            LocalDateTime reserveStartDate = (LocalDateTime) getFieldValue(value, "reserveStartDate");
-            LocalDateTime reserveEndDate = (LocalDateTime) getFieldValue(value, "reserveEndDate");
-            if (reserveStartDate.isAfter(reserveEndDate)) {
-                context.disableDefaultConstraintViolation();
-                //시작일, 종료일, {0}이 {1}보다 늦습니다.
-                context.buildConstraintViolationWithTemplate(messageUtil.getMessage("valid.to_be_slow.format", new Object[]{messageUtil.getMessage("common.start_date"), messageUtil.getMessage("common.end_date")}))
-                    .addPropertyNode("reserveStartDate")
-                    .addConstraintViolation();
-                return false;
-            }
         }
-        return true;
+
+        // 예약 시작일, 종료일 체크
+        LocalDateTime reserveStartDate = (LocalDateTime) getFieldValue(value, "reserveStartDate");
+        LocalDateTime reserveEndDate = (LocalDateTime) getFieldValue(value, "reserveEndDate");
+        if (reserveStartDate.isAfter(reserveEndDate)) {
+            context.disableDefaultConstraintViolation();
+            //시작일, 종료일, {0}이 {1}보다 늦습니다.
+            context.buildConstraintViolationWithTemplate(messageUtil
+                .getMessage("valid.to_be_slow.format",
+                    new Object[]{messageUtil.getMessage("common.start_date"),
+                        messageUtil.getMessage("common.end_date")}))
+                .addPropertyNode("reserveStartDate")
+                .addConstraintViolation();
+            return false;
+        }
+
+        return fieldValid;
     }
 
     /**
@@ -151,7 +165,8 @@ public class ReserveSaveValidator implements ConstraintValidator<ReserveSaveVali
      * @throws NoSuchFieldException
      * @throws IllegalAccessException
      */
-    private Object getFieldValue(Object object, String fieldName) throws NoSuchFieldException, IllegalAccessException {
+    private Object getFieldValue(Object object, String fieldName)
+        throws NoSuchFieldException, IllegalAccessException {
         Class<?> clazz = object.getClass();
         Field field = clazz.getDeclaredField(fieldName);
         field.setAccessible(true);
@@ -167,10 +182,12 @@ public class ReserveSaveValidator implements ConstraintValidator<ReserveSaveVali
      * @throws NoSuchFieldException
      * @throws IllegalAccessException
      */
-    private boolean isNull(Object object, String fieldName) throws NoSuchFieldException, IllegalAccessException {
+    private boolean isNull(Object object, String fieldName)
+        throws NoSuchFieldException, IllegalAccessException {
         Class<?> clazz = object.getClass();
         Field field = clazz.getDeclaredField(fieldName);
         field.setAccessible(true);
-        return field.get(object) == null || !StringUtils.hasLength(String.valueOf(field.get(object)));
+        return field.get(object) == null || !StringUtils
+            .hasLength(String.valueOf(field.get(object)));
     }
 }

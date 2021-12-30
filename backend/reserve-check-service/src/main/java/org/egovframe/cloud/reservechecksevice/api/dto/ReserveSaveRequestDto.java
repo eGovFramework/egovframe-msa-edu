@@ -1,20 +1,18 @@
-package org.egovframe.cloud.reservechecksevice.api.reserve.dto;
+package org.egovframe.cloud.reservechecksevice.api.dto;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.With;
-
-import org.egovframe.cloud.reservechecksevice.domain.reserve.Reserve;
+import org.egovframe.cloud.reservechecksevice.domain.Reserve;
 import org.egovframe.cloud.reservechecksevice.validator.annotation.ReserveSaveValid;
 
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
-
 /**
- * org.egovframe.cloud.reservechecksevice.api.reserve.dto.ReserveSaveRequestDto
+ * org.egovframe.cloud.reservechecksevice.api.dto.ReserveSaveRequestDto
  * <p>
  * 예약 신청 요청 dto class
  *
@@ -75,6 +73,11 @@ public class ReserveSaveRequestDto {
         this.userId = userId;
         this.userContactNo = userContactNo;
         this.userEmail = userEmail;
+    }
+
+    public Reserve createNewReserve() {
+        this.reserveId = String.valueOf(UUID.randomUUID());
+        return toEntity();
     }
 
     public Reserve toEntity() {

@@ -1,9 +1,12 @@
 package org.egovframe.cloud.reserveitemservice.api.reserveItem.dto;
 
-import lombok.*;
-
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * org.egovframe.cloud.reserverequestservice.api.dto.ReserveSaveRequestDto

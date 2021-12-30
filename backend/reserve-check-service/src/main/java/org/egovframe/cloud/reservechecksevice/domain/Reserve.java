@@ -1,21 +1,23 @@
-package org.egovframe.cloud.reservechecksevice.domain.reserve;
+package org.egovframe.cloud.reservechecksevice.domain;
 
-import lombok.*;
+import java.time.LocalDateTime;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.With;
+import org.egovframe.cloud.common.exception.BusinessMessageException;
 import org.egovframe.cloud.reactive.domain.BaseEntity;
-import org.egovframe.cloud.reservechecksevice.api.reserve.dto.ReserveUpdateRequestDto;
+import org.egovframe.cloud.reservechecksevice.api.dto.ReserveUpdateRequestDto;
 import org.egovframe.cloud.reservechecksevice.client.dto.UserResponseDto;
-import org.egovframe.cloud.reservechecksevice.domain.location.Location;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
-
 /**
- * org.egovframe.cloud.reservechecksevice.domain.reserve.Reserve
+ * org.egovframe.cloud.reservechecksevice.domain.Reserve
  *
  * 예약 도메인 클래스
  *
@@ -112,6 +114,10 @@ public class Reserve extends BaseEntity {
         this.userEmail = userEmail;
     }
 
+    public boolean isReserveUser(String userId) {
+        return this.userId.equals(userId);
+    }
+
     /**
      * 물품 정보 세팅
      *
@@ -202,5 +208,27 @@ public class Reserve extends BaseEntity {
         }
 
         return this;
+    }
+
+    public boolean isDone() {
+        return ReserveStatus.DONE.isEquals(this.reserveStatusId);
+    }
+
+    public Reserve updateStatusCancel(String reason, String errorMessage) {
+        if (isDone()) {
+            throw new BusinessMessageException(errorMessage);
+        }
+
+        this.reserveStatusId = ReserveStatus.CANCEL.getKey();
+        this.reasonCancelContent = reason;
+        return this;
+    }
+
+    public boolean isEducation() {
+        return Category.EDUCATION.isEquals(this.getCategoryId());
+    }
+
+    public boolean isRequest() {
+        return ReserveStatus.REQUEST.isEquals(this.reserveStatusId);
     }
 }

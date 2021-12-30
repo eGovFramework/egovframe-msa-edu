@@ -1,5 +1,6 @@
 package org.egovframe.cloud.reserverequestservice.service;
 
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.common.config.GlobalConstant;
@@ -12,22 +13,22 @@ import org.egovframe.cloud.reserverequestservice.domain.Category;
 import org.egovframe.cloud.reserverequestservice.domain.Reserve;
 import org.egovframe.cloud.reserverequestservice.domain.ReserveRepository;
 import org.egovframe.cloud.reserverequestservice.domain.ReserveStatus;
-import org.springframework.amqp.core.*;
+import org.egovframe.cloud.reserverequestservice.domain.ReserveValidator;
+import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Exchange;
+import org.springframework.amqp.core.ExchangeBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.UUID;
-import java.util.stream.IntStream;
 
 /**
  * org.egovframe.cloud.reserverequestservice.service.ReserveService
@@ -52,33 +53,10 @@ import java.util.stream.IntStream;
 @Service
 public class ReserveService extends ReactiveAbstractService {
     private final ReserveRepository reserveRepository;
+    private final ReserveValidator reserveValidator;
     private final StreamBridge streamBridge;
     private final AmqpAdmin amqpAdmin;
 
-    /**
-     * entity -> dto 변환
-     *
-     * @param reserve
-     * @return
-     */
-    private Mono<ReserveResponseDto> convertReserveResponseDto(Reserve reserve) {
-        return Mono.just(ReserveResponseDto.builder()
-                .entity(reserve)
-                .build());
-    }
-
-    /**
-     * 현재 로그인 사용자 id
-     *
-     * @return
-     */
-    private Mono<String> getUserId() {
-        return ReactiveSecurityContextHolder.getContext()
-            .map(SecurityContext::getAuthentication)
-            .filter(Authentication::isAuthenticated)
-            .map(Authentication::getPrincipal)
-            .map(String.class::cast);
-    }
 
     /**
      * 예약 신청 저장
@@ -88,12 +66,7 @@ public class ReserveService extends ReactiveAbstractService {
      */
     public Mono<ReserveResponseDto> create(ReserveSaveRequestDto saveRequestDto) {
         return Mono.just(saveRequestDto)
-            .flatMap(dto -> {
-                String uuid = UUID.randomUUID().toString();
-                dto.setReserveId(uuid);
-                dto.setReserveStatusId(ReserveStatus.REQUEST.getKey());
-                return Mono.just(dto.toEntity());
-            })
+            .flatMap(dto -> Mono.just(dto.createRequestReserve()))
             .zipWith(getUserId())
             .flatMap(tuple -> {
                 tuple.getT1().setCreatedInfo(LocalDateTime.now(), tuple.getT2());
@@ -152,160 +125,12 @@ public class ReserveService extends ReactiveAbstractService {
      */
     public Mono<ReserveResponseDto> save(ReserveSaveRequestDto saveRequestDto) {
         return Mono.just(saveRequestDto)
-            .flatMap(this::checkValidation)
+            .flatMap(this::validate)
             .onErrorResume(throwable -> Mono.error(throwable))
-            .flatMap(dto -> {
-                String uuid = UUID.randomUUID().toString();
-                dto.setReserveId(uuid);
-                dto.setReserveStatusId(ReserveStatus.APPROVE.getKey());
-                return Mono.just(dto.toEntity());
-            }).zipWith(getUserId())
+            .flatMap(dto -> Mono.just(dto.createApproveReserve())).zipWith(getUserId())
             .flatMap(tuple -> Mono.just(tuple.getT1().setCreatedInfo(LocalDateTime.now(), tuple.getT2())))
             .flatMap(reserveRepository::insert)
             .flatMap(this::convertReserveResponseDto);
-    }
-
-    private Mono<ReserveSaveRequestDto> checkValidation(ReserveSaveRequestDto saveRequestDto) {
-        if (Category.EQUIPMENT.isEquals(saveRequestDto.getCategoryId())) {
-            return checkEquipment(saveRequestDto);
-        }else if (Category.SPACE.isEquals(saveRequestDto.getCategoryId())) {
-            return checkSpace(saveRequestDto);
-        }
-        //해당 날짜에는 예약할 수 없습니다.
-        return Mono.error(new BusinessMessageException(getMessage("valid.reserve_date")));
-    }
-
-    /**
-     * 예약 날자 validation
-     *
-     * @param saveRequestDto
-     * @return
-     */
-    private Mono<ReserveSaveRequestDto> checkReserveDate(ReserveSaveRequestDto saveRequestDto) {
-        LocalDateTime startDate = saveRequestDto.getReserveMeansId().equals("realtime") ?
-            saveRequestDto.getRequestStartDate() : saveRequestDto.getOperationStartDate();
-        LocalDateTime endDate = saveRequestDto.getReserveMeansId().equals("realtime") ?
-            saveRequestDto.getRequestEndDate() : saveRequestDto.getOperationEndDate();
-
-        if (saveRequestDto.getReserveStartDate().isBefore(startDate)) {
-            //{0}이 {1} 보다 빠릅니다. 시작일, 운영/예약 시작일
-            return Mono.error(new BusinessMessageException(getMessage("valid.to_be_fast.format", new Object[]{getMessage("common.start_date"),
-                getMessage("reserve_item.operation")+getMessage("reserve")+" "+getMessage("common.start_date")})));
-        }
-
-        if (saveRequestDto.getReserveEndDate().isAfter(endDate)) {
-            //{0}이 {1} 보다 늦습니다. 종료일, 운영/예약 종료일
-            return Mono.error(new BusinessMessageException(getMessage("valid.to_be_slow.format", new Object[]{getMessage("common.end_date"),
-                getMessage("reserve_item.operation")+getMessage("reserve")+" "+getMessage("common.end_date")})));
-        }
-
-        if (saveRequestDto.getIsPeriod()) {
-            long between = ChronoUnit.DAYS.between(saveRequestDto.getReserveStartDate(),
-                saveRequestDto.getReserveEndDate());
-            if (saveRequestDto.getPeriodMaxCount() < between) {
-                //최대 예약 가능 일수보다 예약기간이 깁니다. (최대 예약 가능일 수 : {0})
-                return Mono.error(new BusinessMessageException(getMessage("valid.reserve_period", new Object[]{saveRequestDto.getPeriodMaxCount()})));
-            }
-        }
-        return Mono.just(saveRequestDto);
-    }
-
-    /**
-     * 공간 예약 시 예약 날짜에 다른 예약이 있는지 체크
-     *
-     * @param saveRequestDto
-     * @return
-     */
-    private Mono<ReserveSaveRequestDto> checkSpace(ReserveSaveRequestDto saveRequestDto) {
-        return this.checkReserveDate(saveRequestDto)
-            .flatMap(result -> reserveRepository.findAllByReserveDateCount(
-                result.getReserveItemId(),
-                result.getReserveStartDate(),
-                result.getReserveEndDate())
-                .flatMap(count -> {
-                    if (count > 0) {
-                        //해당 날짜에는 예약할 수 없습니다.
-                        return Mono.error(new BusinessMessageException(getMessage("valid.reserve_date")));
-                    }
-                    return Mono.just(result);
-                })
-            );
-    }
-
-    /**
-     * 장비 예약 시 예약 날짜에 예약 가능한 재고 체크
-     *
-     * @param saveRequestDto
-     * @return
-     */
-    private Mono<ReserveSaveRequestDto> checkEquipment(ReserveSaveRequestDto saveRequestDto) {
-        return this.checkReserveDate(saveRequestDto)
-            .flatMap(result -> this.getMaxByReserveDate(
-                result.getReserveItemId(),
-                result.getReserveStartDate(),
-                result.getReserveEndDate())
-                .flatMap(max -> {
-                    if ((result.getTotalQty() - max) < result.getReserveQty()) {
-                        return Mono.just(false);
-                    }
-                    return Mono.just(true);
-                })
-                .flatMap(isValid -> {
-                    if (!isValid) {
-                        //해당 날짜에 예약할 수 있는 재고수량이 없습니다.
-                        return Mono.error(new BusinessMessageException(getMessage("valid.reserve_count")));
-                    }
-                    return Mono.just(saveRequestDto);
-                })
-            );
-    }
-
-    /**
-     * 예약물품에 대해 날짜별 예약된 수량 max 조회
-     * 현 예약 건 제외
-     *
-     * @param reserveItemId
-     * @param startDate
-     * @param endDate
-     * @return
-     */
-    private Mono<Integer> getMaxByReserveDate( Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate) {
-        Flux<Reserve> reserveFlux = reserveRepository.findAllByReserveDate(reserveItemId, startDate, endDate)
-            .switchIfEmpty(Flux.empty());
-
-        if (reserveFlux.equals(Flux.empty())) {
-            return Mono.just(0);
-        }
-
-        long between = ChronoUnit.DAYS.between(startDate, endDate);
-
-        if (between == 0) {
-            return reserveFlux.map(reserve -> {
-                if (startDate.isAfter(reserve.getReserveStartDate())
-                    || startDate.isBefore(reserve.getReserveEndDate())
-                    || startDate.isEqual(reserve.getReserveStartDate()) || startDate.isEqual(reserve.getReserveEndDate())) {
-                    return reserve.getReserveQty();
-                }
-                return 0;
-            }).reduce(0, (x1, x2) -> x1 + x2);
-        }
-
-        return Flux.fromStream(IntStream.iterate(0, i -> i + 1)
-            .limit(between)
-            .mapToObj(i -> startDate.plusDays(i)))
-            .flatMap(localDateTime ->
-                reserveFlux.map(findReserve -> {
-                    if (localDateTime.isAfter(findReserve.getReserveStartDate())
-                        || localDateTime.isBefore(findReserve.getReserveEndDate())
-                        || localDateTime.isEqual(findReserve.getReserveStartDate()) || localDateTime.isEqual(findReserve.getReserveEndDate())
-                    ) {
-                        return findReserve.getReserveQty();
-                    }
-                    return 0;
-                }).reduce(0, (x1, x2) -> x1 + x2))
-            .groupBy(integer -> integer)
-            .flatMap(group -> group.reduce((x1,x2) -> x1 > x2?x1:x2))
-            .last(0);
     }
 
     /**
@@ -334,6 +159,49 @@ public class ReserveService extends ReactiveAbstractService {
         return reserveRepository.findById(reserveId)
                 .flatMap(reserveRepository::delete)
                 .then();
+    }
+
+    /**
+     * entity -> dto 변환
+     *
+     * @param reserve
+     * @return
+     */
+    private Mono<ReserveResponseDto> convertReserveResponseDto(Reserve reserve) {
+        return Mono.just(ReserveResponseDto.builder()
+            .entity(reserve)
+            .build());
+    }
+
+    /**
+     * 현재 로그인 사용자 id
+     *
+     * @return
+     */
+    private Mono<String> getUserId() {
+        return ReactiveSecurityContextHolder.getContext()
+            .map(SecurityContext::getAuthentication)
+            .filter(Authentication::isAuthenticated)
+            .map(Authentication::getPrincipal)
+            .map(String.class::cast);
+    }
+
+    /**
+     * 저장 시 정합성 체크
+     *
+     * @param saveRequestDto
+     * @return
+     */
+    private Mono<ReserveSaveRequestDto> validate(ReserveSaveRequestDto saveRequestDto) {
+        if (Category.EQUIPMENT.isEquals(saveRequestDto.getCategoryId())) {
+            return reserveValidator.checkEquipment(saveRequestDto);
+        }
+
+        if (Category.SPACE.isEquals(saveRequestDto.getCategoryId())) {
+            return reserveValidator.checkSpace(saveRequestDto);
+        }
+        //해당 날짜에는 예약할 수 없습니다.
+        return Mono.error(new BusinessMessageException(getMessage("valid.reserve_date")));
     }
 
 }

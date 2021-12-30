@@ -1,9 +1,11 @@
 package org.egovframe.cloud.reserveitemservice.api.location.dto;
 
-import lombok.*;
-import org.egovframe.cloud.reserveitemservice.domain.location.Location;
-
 import java.time.LocalDateTime;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.egovframe.cloud.reserveitemservice.domain.location.Location;
 
 /**
  * org.egovframe.cloud.reserveitemservice.api.location.dto.LocationResponseDto

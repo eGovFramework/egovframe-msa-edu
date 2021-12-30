@@ -1,29 +1,32 @@
-package org.egovframe.cloud.reservechecksevice.api.reserve;
+package org.egovframe.cloud.reservechecksevice.api;
 
 import java.time.LocalDate;
-
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.egovframe.cloud.common.dto.RequestDto;
-import org.egovframe.cloud.reservechecksevice.api.reserve.dto.*;
-import org.egovframe.cloud.reservechecksevice.domain.reserve.Category;
-import org.egovframe.cloud.reservechecksevice.service.reserve.ReserveService;
+import org.egovframe.cloud.reservechecksevice.api.dto.ReserveCancelRequestDto;
+import org.egovframe.cloud.reservechecksevice.api.dto.ReserveListResponseDto;
+import org.egovframe.cloud.reservechecksevice.api.dto.ReserveRequestDto;
+import org.egovframe.cloud.reservechecksevice.api.dto.ReserveResponseDto;
+import org.egovframe.cloud.reservechecksevice.api.dto.ReserveSaveRequestDto;
+import org.egovframe.cloud.reservechecksevice.api.dto.ReserveUpdateRequestDto;
+import org.egovframe.cloud.reservechecksevice.service.ReserveService;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-import javax.validation.Valid;
-
 /**
- * org.egovframe.cloud.reservechecksevice.api.reserve.ReserveApiController
+ * org.egovframe.cloud.reservechecksevice.api.ReserveApiController
  * <p>
  * 예약 확인 rest controller class
  *

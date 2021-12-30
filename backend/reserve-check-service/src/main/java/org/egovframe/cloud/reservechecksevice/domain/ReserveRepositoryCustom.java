@@ -1,15 +1,13 @@
-package org.egovframe.cloud.reservechecksevice.domain.reserve;
+package org.egovframe.cloud.reservechecksevice.domain;
 
-import org.egovframe.cloud.common.dto.RequestDto;
-import org.egovframe.cloud.reservechecksevice.api.reserve.dto.ReserveRequestDto;
+import java.time.LocalDateTime;
+import org.egovframe.cloud.reservechecksevice.api.dto.ReserveRequestDto;
 import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
-
 /**
- * org.egovframe.cloud.reservechecksevice.domain.reserve.ReserveRepositoryCustom
+ * org.egovframe.cloud.reservechecksevice.domain.ReserveRepositoryCustom
  *
  * 예약 도메인 custom Repository interface
  *

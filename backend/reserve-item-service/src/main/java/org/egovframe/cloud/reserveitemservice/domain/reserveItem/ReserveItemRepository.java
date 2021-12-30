@@ -1,7 +1,6 @@
 package org.egovframe.cloud.reserveitemservice.domain.reserveItem;
 
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
-import reactor.core.publisher.Flux;
 
 /**
  * org.egovframe.cloud.reserveitemservice.domain.reserveItem.ReserveItemRepository

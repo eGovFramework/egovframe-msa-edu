@@ -1,25 +1,13 @@
 package org.egovframe.cloud.reserveitemservice.config;
 
 
+import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveSaveRequestDto;
 import org.egovframe.cloud.reserveitemservice.service.reserveItem.ReserveItemService;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
-import reactor.core.scheduler.Schedulers;
-
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * org.egovframe.cloud.reserverequestservice.config.ReserveEventConfig

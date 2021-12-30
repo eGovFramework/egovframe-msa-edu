@@ -1,17 +1,15 @@
-package org.egovframe.cloud.reservechecksevice.api.reserve.dto;
+package org.egovframe.cloud.reservechecksevice.api.dto;
 
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.egovframe.cloud.reservechecksevice.client.dto.ReserveItemRelationResponseDto;
-import org.egovframe.cloud.reservechecksevice.domain.reserve.Reserve;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import org.egovframe.cloud.reservechecksevice.domain.Reserve;
 
 /**
- * org.egovframe.cloud.reservechecksevice.api.reserve.dto.ReserveResponseDto
+ * org.egovframe.cloud.reservechecksevice.api.dto.ReserveResponseDto
  * <p>
  * 예약 확인(신청) 응답 dto class
  *

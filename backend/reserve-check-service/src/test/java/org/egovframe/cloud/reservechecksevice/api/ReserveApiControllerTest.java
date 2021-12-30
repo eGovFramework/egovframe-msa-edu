@@ -1,27 +1,26 @@
 package org.egovframe.cloud.reservechecksevice.api;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.LocalDateTime;
-
 import org.egovframe.cloud.common.domain.Role;
 import org.egovframe.cloud.common.exception.dto.ErrorCode;
 import org.egovframe.cloud.common.exception.dto.ErrorResponse;
-import org.egovframe.cloud.reservechecksevice.api.reserve.dto.ReserveCancelRequestDto;
-import org.egovframe.cloud.reservechecksevice.api.reserve.dto.ReserveListResponseDto;
-import org.egovframe.cloud.reservechecksevice.api.reserve.dto.ReserveSaveRequestDto;
-import org.egovframe.cloud.reservechecksevice.api.reserve.dto.ReserveUpdateRequestDto;
+import org.egovframe.cloud.reservechecksevice.api.dto.ReserveCancelRequestDto;
+import org.egovframe.cloud.reservechecksevice.api.dto.ReserveListResponseDto;
+import org.egovframe.cloud.reservechecksevice.api.dto.ReserveSaveRequestDto;
+import org.egovframe.cloud.reservechecksevice.api.dto.ReserveUpdateRequestDto;
 import org.egovframe.cloud.reservechecksevice.client.ReserveItemServiceClient;
 import org.egovframe.cloud.reservechecksevice.client.UserServiceClient;
 import org.egovframe.cloud.reservechecksevice.client.dto.ReserveItemRelationResponseDto;
 import org.egovframe.cloud.reservechecksevice.client.dto.ReserveItemResponseDto;
 import org.egovframe.cloud.reservechecksevice.client.dto.UserResponseDto;
+import org.egovframe.cloud.reservechecksevice.domain.Reserve;
+import org.egovframe.cloud.reservechecksevice.domain.ReserveItem;
+import org.egovframe.cloud.reservechecksevice.domain.ReserveRepository;
+import org.egovframe.cloud.reservechecksevice.domain.ReserveStatus;
 import org.egovframe.cloud.reservechecksevice.domain.location.Location;
-import org.egovframe.cloud.reservechecksevice.domain.reserve.Reserve;
-import org.egovframe.cloud.reservechecksevice.domain.reserve.ReserveItem;
-import org.egovframe.cloud.reservechecksevice.domain.reserve.ReserveRepository;
-import org.egovframe.cloud.reservechecksevice.domain.reserve.ReserveStatus;
 import org.egovframe.cloud.reservechecksevice.util.RestResponsePage;
 import org.egovframe.cloud.reservechecksevice.util.WithCustomMockUser;
 import org.junit.jupiter.api.AfterEach;
@@ -34,11 +33,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
 import reactor.core.publisher.Mono;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -59,8 +56,6 @@ public class ReserveApiControllerTest {
 	@Autowired
 	private WebTestClient webTestClient;
 
-	@Autowired
-	private R2dbcEntityTemplate entityTemplate;
 
 	private static final String API_URL = "/api/v1/reserves";
 
@@ -118,7 +113,7 @@ public class ReserveApiControllerTest {
 	}
 
 	@Test
-	public void 예약신청관리_목록_조회_성공() throws Exception {
+	public void 예약신청관리_목록_조회_성공() {
 		//given
 		BDDMockito.when(userServiceClient.findByUserId(ArgumentMatchers.anyString()))
 			.thenReturn(Mono.just(user));
@@ -146,7 +141,7 @@ public class ReserveApiControllerTest {
 
 	@Test
 	@WithCustomMockUser(userId = "admin", role = Role.ADMIN)
-	public void 관리자_취소_성공() throws Exception {
+	public void 관리자_취소_성공() {
 		BDDMockito.when(reserveItemServiceClient.updateInventory(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt()))
 			.thenReturn(Mono.just(true));
 
@@ -189,7 +184,7 @@ public class ReserveApiControllerTest {
 
 	@Test
 	@WithCustomMockUser(userId = "test", role = Role.USER)
-	public void 다른사용자_예약_취소_실패() throws Exception {
+	public void 다른사용자_예약_취소_실패() {
 		BDDMockito.when(reserveItemServiceClient.updateInventory(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt()))
 			.thenReturn(Mono.just(true));
 		Reserve saved = reserveRepository.insert(reserve).block();
@@ -209,7 +204,7 @@ public class ReserveApiControllerTest {
 
 	@Test
 	@WithCustomMockUser(userId = "user", role = Role.USER)
-	public void 예약상태_완료_취소_실패() throws Exception {
+	public void 예약상태_완료_취소_실패() {
 		Reserve done = reserve.updateStatus(ReserveStatus.DONE.getKey());
 		Reserve saved = reserveRepository.insert(done).block();
 		assertNotNull(saved);
@@ -231,7 +226,7 @@ public class ReserveApiControllerTest {
 
 	@Test
 	@WithCustomMockUser(userId = "user", role = Role.USER)
-	public void 관리자가_아닌_경우_승인_실패() throws Exception {
+	public void 관리자가_아닌_경우_승인_실패() {
 		Reserve saved = reserveRepository.insert(reserve).block();
 		assertNotNull(saved);
 
@@ -252,7 +247,7 @@ public class ReserveApiControllerTest {
 
 	@Test
 	@WithCustomMockUser(userId = "admin", role = Role.ADMIN)
-	public void 예약승인_성공() throws Exception {
+	public void 예약승인_성공() {
 
 		Reserve saved = reserveRepository.insert(reserve).block();
 		assertNotNull(saved);
@@ -274,7 +269,7 @@ public class ReserveApiControllerTest {
 
 	@Test
 	@WithCustomMockUser(userId = "admin", role = Role.ADMIN)
-	public void 예약승인_실패_재고부족() throws Exception {
+	public void 예약승인_실패_재고부족() {
 		ReserveItem failReserveItem = ReserveItem.builder()
 			.reserveItemId(1L)
 			.reserveItemName("test")
@@ -313,7 +308,7 @@ public class ReserveApiControllerTest {
 
 	@Test
 	@WithCustomMockUser(userId = "admin", role = Role.ADMIN)
-	public void 관리자_예약정보_수정_성공() throws Exception {
+	public void 관리자_예약정보_수정_성공() {
 		Reserve saved = reserveRepository.insert(reserve).block();
 		assertNotNull(saved);
 
@@ -351,7 +346,7 @@ public class ReserveApiControllerTest {
 
 	@Test
 	@WithCustomMockUser(userId = "test", role = Role.USER)
-	public void 다른사용자_예약정보_수정_실패() throws Exception {
+	public void 다른사용자_예약정보_수정_실패() {
 		Reserve saved = reserveRepository.insert(reserve).block();
 		assertNotNull(saved);
 
@@ -387,7 +382,7 @@ public class ReserveApiControllerTest {
 
 	@Test
 	@WithCustomMockUser(userId = "user", role = Role.USER)
-	public void 사용자_예약정보_수정_성공() throws Exception {
+	public void 사용자_예약정보_수정_성공() {
 		Reserve saved = reserveRepository.insert(reserve).block();
 		assertNotNull(saved);
 
@@ -426,7 +421,7 @@ public class ReserveApiControllerTest {
 
 	@Test
 	@WithCustomMockUser(userId = "user", role = Role.USER)
-	public void 사용자_상태승인인예약정보_수정_실패() throws Exception {
+	public void 사용자_상태승인인예약정보_수정_실패() {
 		Reserve failedReserve = reserve.withReserveStatusId(ReserveStatus.APPROVE.getKey());
 		Reserve saved = reserveRepository.insert(failedReserve).block();
 		assertNotNull(saved);
@@ -463,7 +458,7 @@ public class ReserveApiControllerTest {
 	}
 
 	@Test
-	public void 관리자_예약_성공() throws Exception {
+	public void 관리자_예약_성공() {
 		BDDMockito.when(reserveItemServiceClient.findById(ArgumentMatchers.anyLong()))
 			.thenReturn(Mono.just(ReserveItemResponseDto.builder().reserveItem(reserveItem).build()));
 		BDDMockito.when(reserveItemServiceClient.updateInventory(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt()))
@@ -495,7 +490,7 @@ public class ReserveApiControllerTest {
 	}
 
 	@Test
-	public void 예약신청_valid_실패() throws Exception {
+	public void 예약신청_valid_실패() {
 		ReserveItem validReserveItem = ReserveItem.builder()
 			.reserveItemId(1L)
 			.reserveItemName("test")
@@ -532,7 +527,7 @@ public class ReserveApiControllerTest {
 	}
 
 	@Test
-	public void 물품재고조회_성공() throws Exception {
+	public void 물품재고조회_성공() {
 
 		BDDMockito.when(reserveItemServiceClient.findById(ArgumentMatchers.anyLong()))
 			.thenReturn(Mono.just(ReserveItemResponseDto.builder().reserveItem(reserveItem).build()));
