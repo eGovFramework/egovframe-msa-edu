@@ -1,5 +1,5 @@
-import axios, { AxiosError } from 'axios'
 import { Page, Pageable, Sort } from '@utils'
+import axios, { AxiosError } from 'axios'
 import { common } from './common'
 
 export interface CommentPage {
@@ -102,7 +102,7 @@ export const commentService = {
   all: (boardNo: number, postsNo: number) =>
     new Promise<Page>((resolve, rejects) => {
       try {
-        axios.get(`${COMMENT_URL}/${boardNo}/${postsNo}/all`).then(result => {
+        axios.get(`${COMMENT_URL}/total/${boardNo}/${postsNo}`).then(result => {
           resolve(result.data)
         })
       } catch (error) {

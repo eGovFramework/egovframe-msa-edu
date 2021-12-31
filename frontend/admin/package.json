@@ -13,7 +13,7 @@
     "clean:dev": "rimraf .next",
     "build:server": "tsc --project tsconfig.server.json",
     "build:next": "next build",
-    "prebuild": "rimraf ./dist",
+    "prebuild": "rimraf ./dist .next",
     "build": "npm run build:next && npm run build:server",
     "build:prodlg": "env-cmd -f ./.env.production-lg npm run build:next && npm run build:server",
     "start:prodlg": "env-cmd -f ./.env.production-lg node dist/index.js",
