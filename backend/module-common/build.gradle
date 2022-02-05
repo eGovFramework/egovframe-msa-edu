@@ -12,7 +12,7 @@ version '0.1'
 
 repositories {
     mavenCentral()
-    maven { url "http://www.egovframe.go.kr/maven/" } // egovframe maven 원격 저장소 TODO https
+    maven { url "https://maven.egovframe.go.kr/maven/" }
 }
 
 bootJar {
@@ -30,7 +30,7 @@ configurations {
 
 ext {
     set('springCloudVersion', "2020.0.3")
-    set('log4j2.version', "2.15.0") // log4j 보안 패치
+    set('log4j2.version', "2.17.1") // log4j 보안 패치
 }
 
 dependencies {
@@ -45,6 +45,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     // querydsl
     implementation 'com.querydsl:querydsl-jpa'
+    implementation 'com.querydsl:querydsl-core'
 
     //openapi docs
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
