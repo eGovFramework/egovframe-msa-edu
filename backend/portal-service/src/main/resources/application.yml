@@ -30,3 +30,4 @@ management:
 logging:
   level:
     org.egovframe.cloud.portalservice.client: DEBUG   # Feign log를 확인하기 위해 해당 패키지를 디버그 모드로 설정
+
