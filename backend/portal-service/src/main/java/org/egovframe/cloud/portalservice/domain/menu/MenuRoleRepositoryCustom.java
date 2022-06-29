@@ -25,5 +25,6 @@ import java.util.List;
  */
 public interface MenuRoleRepositoryCustom {
     List<MenuRoleResponseDto> findTree(String roleId, Long siteId);
+
     List<MenuSideResponseDto> findMenu(String roleId, Long siteId);
 }

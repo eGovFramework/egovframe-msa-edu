@@ -172,7 +172,7 @@ class AuthorizationApiControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.numberOfElements").value(GIVEN_DATA_COUNT))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].authorizationName").value(AUTHORIZATION_NAME_PREFIX + "_1"));
 
-    	deleteTestDatas();
+        deleteTestDatas();
     }
 
     /**
@@ -321,22 +321,22 @@ class AuthorizationApiControllerTest {
         assertThat(authorization.getSortSeq()).isEqualTo(5);
 
         AuthorizationUpdateRequestDto requestDto = AuthorizationUpdateRequestDto.builder()
-            .authorizationName(authorization.getAuthorizationName())
-            .httpMethodCode(authorization.getHttpMethodCode())
-            .urlPatternValue(authorization.getUrlPatternValue())
-            .sortSeq(7)
-            .build();
+                .authorizationName(authorization.getAuthorizationName())
+                .httpMethodCode(authorization.getHttpMethodCode())
+                .urlPatternValue(authorization.getUrlPatternValue())
+                .sortSeq(7)
+                .build();
 
         // when
         ResultActions resultActions = mvc.perform(MockMvcRequestBuilders.put(URL + "/" + authorization.getAuthorizationNo())
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType("application/json;charset=UTF-8")
-            .content(objectMapper.writeValueAsString(requestDto)));
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType("application/json;charset=UTF-8")
+                .content(objectMapper.writeValueAsString(requestDto)));
 
         // then
         resultActions
-            .andDo(MockMvcResultHandlers.print())
-            .andExpect(MockMvcResultMatchers.status().isOk());
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
 
         Optional<Authorization> optional = selectData(authorization.getAuthorizationNo());
         assertThat(optional.isPresent()).isTrue();
@@ -402,11 +402,11 @@ class AuthorizationApiControllerTest {
      * 테스트 데이터 삭제
      */
     private void deleteTestDatas() {
-    	if (testDatas != null) {
+        if (testDatas != null) {
             if (!testDatas.isEmpty()) authorizationRepository.deleteAll(testDatas);
 
             testDatas.clear();
-    	}
+        }
     }
 
     /**

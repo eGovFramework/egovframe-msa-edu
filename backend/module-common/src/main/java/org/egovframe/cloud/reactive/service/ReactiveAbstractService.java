@@ -13,7 +13,7 @@ public class ReactiveAbstractService extends AbstractService {
      * @param <T>
      * @return
      */
-    protected  <T> Mono<T> monoResponseStatusEntityNotFoundException(Object id) {
-        return Mono.error( new EntityNotFoundException("해당 데이터가 존재하지 않습니다. ID =" + String.valueOf(id)));
+    protected <T> Mono<T> monoResponseStatusEntityNotFoundException(Object id) {
+        return Mono.error(new EntityNotFoundException("해당 데이터가 존재하지 않습니다. ID =" + String.valueOf(id)));
     }
 }

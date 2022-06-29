@@ -59,7 +59,7 @@ public class BannerApiController {
      * @param siteId          사이트 ID
      * @param bannerTypeCodes 배너 유형 코드 목록
      * @param bannerCount     배너 수
-     * @return Map<String, List<BannerImageResponseDto>> 배너 유형 코드별 배너 이미지 응답 DTO Map
+     * @return Map<String, List < BannerImageResponseDto>> 배너 유형 코드별 배너 이미지 응답 DTO Map
      */
     @GetMapping("/api/v1/{siteId}/banners/{bannerTypeCodes}/{bannerCount}")
     public Map<String, List<BannerImageResponseDto>> findUseList(@PathVariable Long siteId, @PathVariable List<String> bannerTypeCodes, @PathVariable Integer bannerCount) {
@@ -80,7 +80,7 @@ public class BannerApiController {
     /**
      * 배너 다음 정렬 순서 조회
      *
-     * @param siteId  siteId
+     * @param siteId siteId
      * @return Integer 다음 정렬 순서
      */
     @GetMapping("/api/v1/banners/{siteId}/sort-seq/next")

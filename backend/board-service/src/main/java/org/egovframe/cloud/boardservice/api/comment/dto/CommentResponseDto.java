@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 /**
  * org.egovframe.cloud.boardservice.api.comment.dto.CommentResponseDto
- *
+ * <p>
  * 댓글 상세 응답 DTO 클래스
  *
  * @author 표준프레임워크센터 jooho

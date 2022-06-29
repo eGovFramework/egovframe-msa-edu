@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 /**
  * org.egovframe.cloud.portalservice.config.CustomFeignConfiguration
  * <p>
- *  feign client custom 설정 클래스
+ * feign client custom 설정 클래스
  *
  * @author 표준프레임워크센터 shinmj
  * @version 1.0

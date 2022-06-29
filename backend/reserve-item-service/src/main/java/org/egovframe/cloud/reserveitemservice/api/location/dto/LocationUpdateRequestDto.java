@@ -1,11 +1,13 @@
 package org.egovframe.cloud.reserveitemservice.api.location.dto;
 
 import javax.validation.constraints.NotNull;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.egovframe.cloud.reserveitemservice.domain.location.Location;
+
 /**
  * org.egovframe.cloud.reserveitemservice.api.location.dto.LocationUpdateRequestDto
  * <p>

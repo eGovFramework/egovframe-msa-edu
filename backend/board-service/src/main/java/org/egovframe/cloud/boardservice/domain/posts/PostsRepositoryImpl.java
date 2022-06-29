@@ -71,7 +71,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
      * @return Page<PostsListResponseDto> 페이지 게시물 목록 응답 DTO
      */
     @Override
-	public Page<PostsListResponseDto> findPage(Integer boardNo, Integer deleteAt, RequestDto requestDto, Pageable pageable) {
+    public Page<PostsListResponseDto> findPage(Integer boardNo, Integer deleteAt, RequestDto requestDto, Pageable pageable) {
         JPQLQuery<PostsListResponseDto> query = jpaQueryFactory
                 .select(new QPostsListResponseDto(
                         QPosts.posts.postsId.boardNo,
@@ -111,8 +111,8 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
             else parent = QPosts.posts;
 
             Path<Object> target = Expressions.path(Object.class, parent, CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, property));
-            @SuppressWarnings({ "unchecked", "rawtypes" })
-			OrderSpecifier<?> orderSpecifier = new OrderSpecifier(order, target);
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            OrderSpecifier<?> orderSpecifier = new OrderSpecifier(order, target);
             query.orderBy(orderSpecifier);
         });
 
@@ -142,7 +142,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
      * @return List<PostsSimpleResponseDto> 게시물 응답 DTO List
      */
     @Override
-	public List<PostsSimpleResponseDto> findAllByBoardNosLimitCount(List<Integer> boardNos, Integer postsCount) {
+    public List<PostsSimpleResponseDto> findAllByBoardNosLimitCount(List<Integer> boardNos, Integer postsCount) {
         // path 정의
         Path<Posts> postsPath = Expressions.path(Posts.class, "posts");
         NumberPath<Integer> boardNoPath = Expressions.numberPath(Integer.class, postsPath, "board_no");
@@ -191,7 +191,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
      * @return PostsResponseDto 게시물 상세 응답 DTO
      */
     @Override
-	public PostsResponseDto findById(Integer boardNo, Integer postsNo, String userId, String ipAddr) {
+    public PostsResponseDto findById(Integer boardNo, Integer postsNo, String userId, String ipAddr) {
         return jpaQueryFactory
                 .select(
                         // 게시물
@@ -253,7 +253,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
      * @return List<PostsSimpleResponseDto> 게시물 상세 응답 DTO List
      */
     @Override
-	public List<PostsSimpleResponseDto> findNearPost(Integer boardNo, Integer postsNo, long gap, Integer deleteAt, RequestDto requestDto) {
+    public List<PostsSimpleResponseDto> findNearPost(Integer boardNo, Integer postsNo, long gap, Integer deleteAt, RequestDto requestDto) {
         return jpaQueryFactory
                 .select(new QPostsSimpleResponseDto(
                         QPosts.posts.postsId.boardNo,
@@ -281,7 +281,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
      * @return Integer 다음 게시물 번호
      */
     @Override
-	public Integer findNextPostsNo(Integer boardNo) {
+    public Integer findNextPostsNo(Integer boardNo) {
         return jpaQueryFactory
                 .select(QPosts.posts.postsId.postsNo.max().add(1).coalesce(1))
                 .from(QPosts.posts)
@@ -297,7 +297,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
      * @return Long 처리 건수
      */
     @Override
-	public Long updateReadCount(Integer boardNo, Integer postsNo) {
+    public Long updateReadCount(Integer boardNo, Integer postsNo) {
         return jpaQueryFactory.update(QPosts.posts)
                 .set(QPosts.posts.readCount, QPosts.posts.readCount.add(1))
                 .where(QPosts.posts.postsId.boardNo.eq(boardNo)
@@ -314,7 +314,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
      * @return Long 수정 건수
      */
     @Override
-	public Long updateDeleteAt(Map<Integer, List<Integer>> posts, Integer deleteAt, String userId) {
+    public Long updateDeleteAt(Map<Integer, List<Integer>> posts, Integer deleteAt, String userId) {
         long updateCount = 0L;
 
         Iterator<Integer> iterator = posts.keySet().iterator();

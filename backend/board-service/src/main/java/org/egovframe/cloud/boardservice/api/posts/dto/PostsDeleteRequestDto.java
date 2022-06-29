@@ -51,8 +51,8 @@ public class PostsDeleteRequestDto {
                         .postsNo(postsNo)
                         .build())
                 .board(Board.builder()
-                    .boardNo(boardNo)
-                    .build())
+                        .boardNo(boardNo)
+                        .build())
                 .build();
     }
 

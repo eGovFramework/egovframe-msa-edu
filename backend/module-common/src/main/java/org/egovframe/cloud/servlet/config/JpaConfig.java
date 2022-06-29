@@ -10,7 +10,7 @@ import javax.persistence.EntityManager;
 
 /**
  * org.egovframe.cloud.servlet.config.JpaConfig
- *
+ * <p>
  * JPA 설정 클래스
  *
  * @author 표준프레임워크센터 jooho

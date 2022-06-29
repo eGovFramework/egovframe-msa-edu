@@ -26,6 +26,8 @@ import java.util.List;
  */
 public interface AttachmentRepositoryCustom {
     List<Attachment> findByCode(String attachmentCode);
+
     AttachmentId getId(String attachmentCode);
+
     Page<AttachmentResponseDto> search(RequestDto searchRequestDto, Pageable pageable);
 }

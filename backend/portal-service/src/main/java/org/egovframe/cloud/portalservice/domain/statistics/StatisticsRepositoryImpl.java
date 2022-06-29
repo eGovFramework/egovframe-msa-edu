@@ -50,17 +50,17 @@ public class StatisticsRepositoryImpl implements StatisticsRepositoryCustom {
         LocalDateTime now = LocalDateTime.now();
 
         List<Tuple> tuples = jpaQueryFactory.select(
-                Expressions.constant(now.getYear()),
-                statistics.createdDate.month().as("month"),
-                Expressions.constant(0),
-                statistics.createdDate.month().as("x"),
-                statistics.id.count())
+                        Expressions.constant(now.getYear()),
+                        statistics.createdDate.month().as("month"),
+                        Expressions.constant(0),
+                        statistics.createdDate.month().as("x"),
+                        statistics.id.count())
                 .from(statistics)
                 .where(
                         statistics.siteId.eq(siteId),
                         statistics.createdDate.between(
-                        LocalDateTime.of(now.getYear(), Month.JANUARY, 1, 0, 0),
-                        LocalDateTime.of(now.getYear(), Month.DECEMBER, 31, 23, 59)))
+                                LocalDateTime.of(now.getYear(), Month.JANUARY, 1, 0, 0),
+                                LocalDateTime.of(now.getYear(), Month.DECEMBER, 31, 23, 59)))
                 .groupBy(statistics.createdDate.month())
                 .orderBy(statistics.createdDate.month().asc())
                 .fetch();
@@ -81,17 +81,17 @@ public class StatisticsRepositoryImpl implements StatisticsRepositoryCustom {
         YearMonth yearMonth = YearMonth.of(requestDto.getYear(), requestDto.getMonth());
 
         List<Tuple> tuples = jpaQueryFactory.select(
-                Expressions.constant(yearMonth.getYear()),
-                Expressions.constant(yearMonth.getMonth().getValue()),
-                statistics.createdDate.dayOfMonth().as("day"),
-                statistics.createdDate.dayOfMonth().as("x"),
-                statistics.id.count())
+                        Expressions.constant(yearMonth.getYear()),
+                        Expressions.constant(yearMonth.getMonth().getValue()),
+                        statistics.createdDate.dayOfMonth().as("day"),
+                        statistics.createdDate.dayOfMonth().as("x"),
+                        statistics.id.count())
                 .from(statistics)
                 .where(
                         statistics.siteId.eq(siteId),
                         statistics.createdDate.between(
-                        LocalDateTime.of(yearMonth.getYear(), yearMonth.getMonth(), 1, 0, 0),
-                        LocalDateTime.of(yearMonth.getYear(), yearMonth.getMonth(), yearMonth.lengthOfMonth(), 23, 59)))
+                                LocalDateTime.of(yearMonth.getYear(), yearMonth.getMonth(), 1, 0, 0),
+                                LocalDateTime.of(yearMonth.getYear(), yearMonth.getMonth(), yearMonth.lengthOfMonth(), 23, 59)))
                 .groupBy(statistics.createdDate.dayOfMonth())
                 .orderBy(statistics.createdDate.dayOfMonth().asc())
                 .fetch();

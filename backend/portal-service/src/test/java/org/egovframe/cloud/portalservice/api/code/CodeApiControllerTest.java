@@ -61,7 +61,7 @@ class CodeApiControllerTest {
     private static final String TEST_COM = "@test.com";
     private static final String TEST_EMAIL = System.currentTimeMillis() + TEST_COM;
     private static final String TEST_PASSWORD = "test1234!";
-//    private static final String PORTAL_SERVICE_URL = "http://localhost:8000/portal-service";
+    //    private static final String PORTAL_SERVICE_URL = "http://localhost:8000/portal-service";
     private static final String USER_SERVICE_URL = "http://localhost:8000/user-service";
     private static final String API_URL = "/api/v1/codes";
 

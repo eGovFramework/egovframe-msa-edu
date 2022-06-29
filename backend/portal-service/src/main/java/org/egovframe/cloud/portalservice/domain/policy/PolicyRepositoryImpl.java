@@ -35,7 +35,7 @@ import static org.springframework.util.StringUtils.hasLength;
  * </pre>
  */
 @Slf4j
-public class PolicyRepositoryImpl implements PolicyRepositoryCustom{
+public class PolicyRepositoryImpl implements PolicyRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     public PolicyRepositoryImpl(EntityManager em) {
@@ -53,13 +53,13 @@ public class PolicyRepositoryImpl implements PolicyRepositoryCustom{
     public Page<PolicyResponseDto> search(RequestDto requestDto, Pageable pageable) {
 
         QueryResults<PolicyResponseDto> results = queryFactory.select(
-                constructor(PolicyResponseDto.class, policy)
-        )
+                        constructor(PolicyResponseDto.class, policy)
+                )
                 .from(policy)
                 .where(
                         searchTextLike(requestDto)
                 )
-                .orderBy( policy.regDate.desc())
+                .orderBy(policy.regDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();

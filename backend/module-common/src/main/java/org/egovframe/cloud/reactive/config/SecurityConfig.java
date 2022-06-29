@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * org.egovframe.cloud.reserveitemservice.config.SecurityConfig
- *
+ * <p>
  * Spring Security Config 클래스
  * AuthenticationFilter 를 추가하고 토큰으로 setAuthentication 인증처리를 한다
  *
@@ -77,6 +77,6 @@ public class SecurityConfig {
     public AuthenticationWebFilter authenticationWebFilter() throws Exception {
         AuthenticationWebFilter filter = new AuthenticationWebFilter(authenticationManager());
         filter.setServerAuthenticationConverter(authenticationConverter);
-        return  filter;
+        return filter;
     }
 }

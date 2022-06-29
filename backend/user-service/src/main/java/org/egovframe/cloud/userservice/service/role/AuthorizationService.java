@@ -233,8 +233,8 @@ public class AuthorizationService extends AbstractService {
     /**
      * 정렬순서 update
      *
-     * @param entity        인가 엔티티
-     * @param requestDto    인가 수정 요청 DTO
+     * @param entity     인가 엔티티
+     * @param requestDto 인가 수정 요청 DTO
      */
     private void updateSortSeq(Authorization entity, AuthorizationUpdateRequestDto requestDto) {
         // 정렬 순서가 변경된 경우 사이 구간 정렬 순서 조정
@@ -247,17 +247,17 @@ public class AuthorizationService extends AbstractService {
         }
 
         if (afterSortSeq == null) {
-            authorizationRepository.updateSortSeq(beforeSortSeq+1, null, -1);
+            authorizationRepository.updateSortSeq(beforeSortSeq + 1, null, -1);
             return;
         }
         int compareTo = beforeSortSeq.compareTo(afterSortSeq);
         if (compareTo > 0) {
-            authorizationRepository.updateSortSeq(afterSortSeq, beforeSortSeq-1, 1);
+            authorizationRepository.updateSortSeq(afterSortSeq, beforeSortSeq - 1, 1);
             return;
         }
 
         if (compareTo < 0) {
-            authorizationRepository.updateSortSeq(beforeSortSeq+1, afterSortSeq, -1);
+            authorizationRepository.updateSortSeq(beforeSortSeq + 1, afterSortSeq, -1);
             return;
         }
 

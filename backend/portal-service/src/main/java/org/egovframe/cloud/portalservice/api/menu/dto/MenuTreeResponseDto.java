@@ -1,6 +1,7 @@
 package org.egovframe.cloud.portalservice.api.menu.dto;
 
 import java.util.Comparator;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

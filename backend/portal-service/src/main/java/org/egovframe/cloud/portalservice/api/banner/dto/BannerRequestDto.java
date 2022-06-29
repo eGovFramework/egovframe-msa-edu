@@ -4,6 +4,7 @@ import org.egovframe.cloud.common.dto.RequestDto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 /**
  * org.egovframe.cloud.portalservice.api.content.dto.BannerRequestDto
  * <p>
@@ -24,5 +25,5 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class BannerRequestDto extends RequestDto {
-	private Long siteId;
+    private Long siteId;
 }

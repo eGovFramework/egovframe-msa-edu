@@ -1,6 +1,7 @@
 package org.egovframe.cloud.portalservice.api.attachment.dto;
 
 import java.util.UUID;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,14 +43,14 @@ public class AttachmentFileResponseDto extends AttachmentUploadResponseDto {
 
     public Attachment toEntity(AttachmentId attachmentId, AttachmentUploadRequestDto uploadRequestDto) {
         return Attachment.builder()
-            .attachmentId(attachmentId)
-            .uniqueId(UUID.randomUUID().toString())
-            .physicalFileName(this.physicalFileName)
-            .originalFileName(this.originalFileName)
-            .size(this.size)
-            .fileType(this.fileType)
-            .entityName(uploadRequestDto.getEntityName())
-            .entityId(uploadRequestDto.getEntityId())
-            .build();
+                .attachmentId(attachmentId)
+                .uniqueId(UUID.randomUUID().toString())
+                .physicalFileName(this.physicalFileName)
+                .originalFileName(this.originalFileName)
+                .size(this.size)
+                .fileType(this.fileType)
+                .entityName(uploadRequestDto.getEntityName())
+                .entityId(uploadRequestDto.getEntityId())
+                .build();
     }
 }

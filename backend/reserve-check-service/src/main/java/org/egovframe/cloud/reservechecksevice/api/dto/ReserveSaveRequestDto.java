@@ -3,6 +3,7 @@ package org.egovframe.cloud.reservechecksevice.api.dto;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import javax.validation.constraints.NotNull;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -82,18 +83,18 @@ public class ReserveSaveRequestDto {
 
     public Reserve toEntity() {
         Reserve reserve = Reserve.builder()
-            .reserveId(this.reserveId)
-            .reserveItemId(this.reserveItemId)
-            .reserveQty(this.reserveQty)
-            .reservePurposeContent(this.reservePurposeContent)
-            .attachmentCode(this.attachmentCode)
-            .reserveStartDate(this.reserveStartDate)
-            .reserveEndDate(this.reserveEndDate)
-            .reserveStatusId(this.reserveStatusId)
-            .userId(this.userId)
-            .userContactNo(this.userContactNo)
-            .userEmail(this.userEmail)
-            .build();
+                .reserveId(this.reserveId)
+                .reserveItemId(this.reserveItemId)
+                .reserveQty(this.reserveQty)
+                .reservePurposeContent(this.reservePurposeContent)
+                .attachmentCode(this.attachmentCode)
+                .reserveStartDate(this.reserveStartDate)
+                .reserveEndDate(this.reserveEndDate)
+                .reserveStatusId(this.reserveStatusId)
+                .userId(this.userId)
+                .userContactNo(this.userContactNo)
+                .userEmail(this.userEmail)
+                .build();
         reserve.setLocationId(this.locationId);
         reserve.setCategoryId(this.categoryId);
 

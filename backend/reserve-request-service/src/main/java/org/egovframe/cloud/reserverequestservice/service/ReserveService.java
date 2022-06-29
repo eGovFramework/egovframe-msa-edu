@@ -1,6 +1,7 @@
 package org.egovframe.cloud.reserverequestservice.service;
 
 import java.time.LocalDateTime;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.common.config.GlobalConstant;
@@ -66,20 +67,20 @@ public class ReserveService extends ReactiveAbstractService {
      */
     public Mono<ReserveResponseDto> create(ReserveSaveRequestDto saveRequestDto) {
         return Mono.just(saveRequestDto)
-            .flatMap(dto -> Mono.just(dto.createRequestReserve()))
-            .zipWith(getUserId())
-            .flatMap(tuple -> {
-                tuple.getT1().setCreatedInfo(LocalDateTime.now(), tuple.getT2());
-                return Mono.just(tuple.getT1());
-            })
-            .flatMap(reserveRepository::insert)
-            .doOnNext(reserve -> sendAttachmentEntityInfo(streamBridge,
-                AttachmentEntityMessage.builder()
-                    .attachmentCode(reserve.getAttachmentCode())
-                    .entityName(reserve.getClass().getName())
-                    .entityId(reserve.getReserveId())
-                    .build()))
-            .flatMap(this::convertReserveResponseDto);
+                .flatMap(dto -> Mono.just(dto.createRequestReserve()))
+                .zipWith(getUserId())
+                .flatMap(tuple -> {
+                    tuple.getT1().setCreatedInfo(LocalDateTime.now(), tuple.getT2());
+                    return Mono.just(tuple.getT1());
+                })
+                .flatMap(reserveRepository::insert)
+                .doOnNext(reserve -> sendAttachmentEntityInfo(streamBridge,
+                        AttachmentEntityMessage.builder()
+                                .attachmentCode(reserve.getAttachmentCode())
+                                .entityName(reserve.getClass().getName())
+                                .entityId(reserve.getReserveId())
+                                .build()))
+                .flatMap(this::convertReserveResponseDto);
     }
 
     /**
@@ -92,28 +93,28 @@ public class ReserveService extends ReactiveAbstractService {
     public Mono<ReserveResponseDto> saveForEvent(ReserveSaveRequestDto saveRequestDto) {
         return create(saveRequestDto)
                 .flatMap(reserveResponseDto ->
-                                Mono.fromCallable(() -> {
-                                    //예약 저장 후 해당 id로 queue 생성
-                                    Exchange ex = ExchangeBuilder.directExchange(GlobalConstant.SUCCESS_OR_NOT_EX_NAME)
-                                            .durable(true).build();
-                                    amqpAdmin.declareExchange(ex);
+                        Mono.fromCallable(() -> {
+                            //예약 저장 후 해당 id로 queue 생성
+                            Exchange ex = ExchangeBuilder.directExchange(GlobalConstant.SUCCESS_OR_NOT_EX_NAME)
+                                    .durable(true).build();
+                            amqpAdmin.declareExchange(ex);
 
-                                    Queue queue = QueueBuilder.durable(reserveResponseDto.getReserveId()).build();
-                                    amqpAdmin.declareQueue(queue);
+                            Queue queue = QueueBuilder.durable(reserveResponseDto.getReserveId()).build();
+                            amqpAdmin.declareQueue(queue);
 
-                                    Binding binding = BindingBuilder.bind(queue)
-                                            .to(ex)
-                                            .with(reserveResponseDto.getReserveId())
-                                            .noargs();
-                                    amqpAdmin.declareBinding(binding);
+                            Binding binding = BindingBuilder.bind(queue)
+                                    .to(ex)
+                                    .with(reserveResponseDto.getReserveId())
+                                    .noargs();
+                            amqpAdmin.declareBinding(binding);
 
-                                    log.info("Biding successfully created");
+                            log.info("Biding successfully created");
 
-                                    streamBridge.send("reserveRequest-out-0", reserveResponseDto);
+                            streamBridge.send("reserveRequest-out-0", reserveResponseDto);
 
-                                    return reserveResponseDto;
-                                }).subscribeOn(Schedulers.boundedElastic())
-                        );
+                            return reserveResponseDto;
+                        }).subscribeOn(Schedulers.boundedElastic())
+                );
     }
 
     /**
@@ -125,12 +126,12 @@ public class ReserveService extends ReactiveAbstractService {
      */
     public Mono<ReserveResponseDto> save(ReserveSaveRequestDto saveRequestDto) {
         return Mono.just(saveRequestDto)
-            .flatMap(this::validate)
-            .onErrorResume(throwable -> Mono.error(throwable))
-            .flatMap(dto -> Mono.just(dto.createApproveReserve())).zipWith(getUserId())
-            .flatMap(tuple -> Mono.just(tuple.getT1().setCreatedInfo(LocalDateTime.now(), tuple.getT2())))
-            .flatMap(reserveRepository::insert)
-            .flatMap(this::convertReserveResponseDto);
+                .flatMap(this::validate)
+                .onErrorResume(throwable -> Mono.error(throwable))
+                .flatMap(dto -> Mono.just(dto.createApproveReserve())).zipWith(getUserId())
+                .flatMap(tuple -> Mono.just(tuple.getT1().setCreatedInfo(LocalDateTime.now(), tuple.getT2())))
+                .flatMap(reserveRepository::insert)
+                .flatMap(this::convertReserveResponseDto);
     }
 
     /**
@@ -169,8 +170,8 @@ public class ReserveService extends ReactiveAbstractService {
      */
     private Mono<ReserveResponseDto> convertReserveResponseDto(Reserve reserve) {
         return Mono.just(ReserveResponseDto.builder()
-            .entity(reserve)
-            .build());
+                .entity(reserve)
+                .build());
     }
 
     /**
@@ -180,10 +181,10 @@ public class ReserveService extends ReactiveAbstractService {
      */
     private Mono<String> getUserId() {
         return ReactiveSecurityContextHolder.getContext()
-            .map(SecurityContext::getAuthentication)
-            .filter(Authentication::isAuthenticated)
-            .map(Authentication::getPrincipal)
-            .map(String.class::cast);
+                .map(SecurityContext::getAuthentication)
+                .filter(Authentication::isAuthenticated)
+                .map(Authentication::getPrincipal)
+                .map(String.class::cast);
     }
 
     /**

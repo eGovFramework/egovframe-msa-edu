@@ -1,11 +1,13 @@
 package org.egovframe.cloud.reserverequestservice.api.dto;
 
 import java.util.UUID;
+
 import lombok.*;
 import org.egovframe.cloud.reserverequestservice.domain.Reserve;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+
 import org.egovframe.cloud.reserverequestservice.domain.ReserveStatus;
 
 /**
@@ -63,11 +65,11 @@ public class ReserveSaveRequestDto {
 
     @Builder
     public ReserveSaveRequestDto(String reserveId, Long reserveItemId, Long locationId, String categoryId,
-        Integer totalQty, String reserveMethodId, String reserveMeansId, LocalDateTime operationStartDate,
-        LocalDateTime operationEndDate, LocalDateTime requestStartDate, LocalDateTime requestEndDate,
-        Boolean isPeriod, Integer periodMaxCount, Integer reserveQty, String reservePurposeContent,
-        String attachmentCode, LocalDateTime reserveStartDate, LocalDateTime reserveEndDate,
-        String reserveStatusId, String userId, String userContactNo, String userEmail) {
+                                 Integer totalQty, String reserveMethodId, String reserveMeansId, LocalDateTime operationStartDate,
+                                 LocalDateTime operationEndDate, LocalDateTime requestStartDate, LocalDateTime requestEndDate,
+                                 Boolean isPeriod, Integer periodMaxCount, Integer reserveQty, String reservePurposeContent,
+                                 String attachmentCode, LocalDateTime reserveStartDate, LocalDateTime reserveEndDate,
+                                 String reserveStatusId, String userId, String userContactNo, String userEmail) {
         this.reserveId = reserveId;
         this.reserveItemId = reserveItemId;
         this.locationId = locationId;

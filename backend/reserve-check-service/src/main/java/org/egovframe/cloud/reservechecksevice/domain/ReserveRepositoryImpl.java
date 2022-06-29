@@ -5,9 +5,11 @@ import static org.springframework.data.relational.core.query.Criteria.where;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.egovframe.cloud.reservechecksevice.api.dto.ReserveRequestDto;
 import org.egovframe.cloud.reservechecksevice.client.ReserveItemServiceClient;
@@ -24,7 +26,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * org.egovframe.cloud.reservechecksevice.domain.ReserveRepositoryImpl
- *
+ * <p>
  * 예약 도메인 custom repository 구현 클래스
  *
  * @author 표준프레임워크센터 shinmj
@@ -40,7 +42,7 @@ import reactor.core.publisher.Mono;
  * </pre>
  */
 @RequiredArgsConstructor
-public class ReserveRepositoryImpl implements ReserveRepositoryCustom{
+public class ReserveRepositoryImpl implements ReserveRepositoryCustom {
     private static final String RESERVE_ITEM_CIRCUIT_BREAKER_NAME = "reserve-item";
     private static final String USER_CIRCUIT_BREAKER_NAME = "user";
 
@@ -170,7 +172,7 @@ public class ReserveRepositoryImpl implements ReserveRepositoryCustom{
     public Flux<Reserve> findAllByReserveDate(Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate) {
         return entityTemplate.select(Reserve.class)
                 .matching(Query.query(where("reserve_item_id").is(reserveItemId)
-                        .and ("reserve_start_date").lessThanOrEquals(endDate)
+                        .and("reserve_start_date").lessThanOrEquals(endDate)
                         .and("reserve_end_date").greaterThanOrEquals(startDate)
                         .and("reserve_status_id").not(ReserveStatus.CANCEL.getKey())
                 ))
@@ -189,13 +191,13 @@ public class ReserveRepositoryImpl implements ReserveRepositoryCustom{
     @Override
     public Flux<Reserve> findAllByReserveDateWithoutSelf(String reserveId, Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate) {
         return entityTemplate.select(Reserve.class)
-            .matching(Query.query(where("reserve_item_id").is(reserveItemId)
-                .and ("reserve_start_date").lessThanOrEquals(endDate)
-                .and("reserve_end_date").greaterThanOrEquals(startDate)
-                .and("reserve_id").not(reserveId)
-                .and("reserve_status_id").not(ReserveStatus.CANCEL.getKey())
-            ))
-            .all();
+                .matching(Query.query(where("reserve_item_id").is(reserveItemId)
+                        .and("reserve_start_date").lessThanOrEquals(endDate)
+                        .and("reserve_end_date").greaterThanOrEquals(startDate)
+                        .and("reserve_id").not(reserveId)
+                        .and("reserve_status_id").not(ReserveStatus.CANCEL.getKey())
+                ))
+                .all();
     }
 
     /**
@@ -210,13 +212,13 @@ public class ReserveRepositoryImpl implements ReserveRepositoryCustom{
     @Override
     public Mono<Long> findAllByReserveDateWithoutSelfCount(String reserveId, Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate) {
         return entityTemplate.select(Reserve.class)
-            .matching(Query.query(where("reserve_item_id").is(reserveItemId)
-                .and ("reserve_start_date").lessThanOrEquals(endDate)
-                .and("reserve_end_date").greaterThanOrEquals(startDate)
-                .and("reserve_id").not(reserveId)
-                .and("reserve_status_id").not(ReserveStatus.CANCEL.getKey())
-            ))
-            .count();
+                .matching(Query.query(where("reserve_item_id").is(reserveItemId)
+                        .and("reserve_start_date").lessThanOrEquals(endDate)
+                        .and("reserve_end_date").greaterThanOrEquals(startDate)
+                        .and("reserve_id").not(reserveId)
+                        .and("reserve_status_id").not(ReserveStatus.CANCEL.getKey())
+                ))
+                .count();
     }
 
     /**
@@ -241,10 +243,10 @@ public class ReserveRepositoryImpl implements ReserveRepositoryCustom{
         CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker(RESERVE_ITEM_CIRCUIT_BREAKER_NAME);
 
         return reserveItemServiceClient.findByIdWithRelations(reserveItemId)
-            .transform(CircuitBreakerOperator.of(circuitBreaker))
-            .onErrorResume(throwable -> Mono.empty())
-            .switchIfEmpty(Mono.empty())
-            .flatMap(reserveItemRelationResponseDto -> Mono.just(reserveItemRelationResponseDto.toEntity()));
+                .transform(CircuitBreakerOperator.of(circuitBreaker))
+                .onErrorResume(throwable -> Mono.empty())
+                .switchIfEmpty(Mono.empty())
+                .flatMap(reserveItemRelationResponseDto -> Mono.just(reserveItemRelationResponseDto.toEntity()));
     }
 
     /**
@@ -253,11 +255,11 @@ public class ReserveRepositoryImpl implements ReserveRepositoryCustom{
      * @param userId
      * @return
      */
-    private Mono<UserResponseDto> findUserByUserId(String userId ) {
+    private Mono<UserResponseDto> findUserByUserId(String userId) {
         CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker(USER_CIRCUIT_BREAKER_NAME);
         return userServiceClient.findByUserId(userId)
-            .transform(CircuitBreakerOperator.of(circuitBreaker))
-            .onErrorResume(throwable -> Mono.empty());
+                .transform(CircuitBreakerOperator.of(circuitBreaker))
+                .onErrorResume(throwable -> Mono.empty());
     }
 
     /**
@@ -267,7 +269,7 @@ public class ReserveRepositoryImpl implements ReserveRepositoryCustom{
      * @return
      */
     private List<Criteria> whereQuery(ReserveRequestDto requestDto) {
-        List<Criteria>criteriaList = new ArrayList<>();
+        List<Criteria> criteriaList = new ArrayList<>();
 
         if (requestDto.getLocationId() != null) {
             criteriaList.add(where("location_id").is(requestDto.getLocationId()));

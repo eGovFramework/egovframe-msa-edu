@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.core.io.Resource;
+
 /**
  * org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentDownloadResponseDto
  * <p>

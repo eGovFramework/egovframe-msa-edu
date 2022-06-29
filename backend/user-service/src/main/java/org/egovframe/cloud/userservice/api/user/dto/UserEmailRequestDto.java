@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 
 /**
  * org.egovframe.cloud.userservice.api.user.dto.UserEmailRequestDto
- *
+ * <p>
  * 사용자 이메일 확인 요청 DTO 클래스
  *
  * @author 표준프레임워크센터 jooho

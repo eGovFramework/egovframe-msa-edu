@@ -59,17 +59,18 @@ public class SocialUser implements UserDetails, CredentialsContainer {
     /**
      * Construct the <code>User</code> with the details required by
      * {@link org.springframework.security.authentication.dao.DaoAuthenticationProvider}.
-     * @param username the username presented to the
-     * <code>DaoAuthenticationProvider</code>
-     * @param enabled set to <code>true</code> if the user is enabled
-     * @param accountNonExpired set to <code>true</code> if the account has not expired
+     *
+     * @param username              the username presented to the
+     *                              <code>DaoAuthenticationProvider</code>
+     * @param enabled               set to <code>true</code> if the user is enabled
+     * @param accountNonExpired     set to <code>true</code> if the account has not expired
      * @param credentialsNonExpired set to <code>true</code> if the credentials have not
-     * expired
-     * @param accountNonLocked set to <code>true</code> if the account is not locked
-     * @param authorities the authorities that should be granted to the caller if they
-     * presented the correct username and password and the user is enabled. Not null.
+     *                              expired
+     * @param accountNonLocked      set to <code>true</code> if the account is not locked
+     * @param authorities           the authorities that should be granted to the caller if they
+     *                              presented the correct username and password and the user is enabled. Not null.
      * @throws IllegalArgumentException if a <code>null</code> value was passed either as
-     * a parameter or as an element in the <code>GrantedAuthority</code> collection
+     *                                  a parameter or as an element in the <code>GrantedAuthority</code> collection
      */
     public SocialUser(String username, boolean enabled, boolean accountNonExpired,
                       boolean credentialsNonExpired, boolean accountNonLocked,
@@ -175,6 +176,7 @@ public class SocialUser implements UserDetails, CredentialsContainer {
 
     /**
      * Creates a UserBuilder with a specified user name
+     *
      * @param username the username to use
      * @return the UserBuilder
      */
@@ -184,6 +186,7 @@ public class SocialUser implements UserDetails, CredentialsContainer {
 
     /**
      * Creates a UserBuilder
+     *
      * @return the UserBuilder
      */
     public static SocialUser.UserBuilder builder() {
@@ -247,6 +250,7 @@ public class SocialUser implements UserDetails, CredentialsContainer {
 
         /**
          * Populates the username. This attribute is required.
+         *
          * @param username the username. Cannot be null.
          * @return the {@link SocialUser.UserBuilder} for method chaining (i.e. to populate
          * additional attributes for this user)
@@ -263,21 +267,22 @@ public class SocialUser implements UserDetails, CredentialsContainer {
          * "ROLE_". This means the following:
          *
          * <code>
-         *     builder.roles("USER","ADMIN");
+         * builder.roles("USER","ADMIN");
          * </code>
-         *
+         * <p>
          * is equivalent to
          *
          * <code>
-         *     builder.authorities("ROLE_USER","ROLE_ADMIN");
+         * builder.authorities("ROLE_USER","ROLE_ADMIN");
          * </code>
          *
          * <p>
          * This attribute is required, but can also be populated with
          * {@link #authorities(String...)}.
          * </p>
+         *
          * @param roles the roles for this user (i.e. USER, ADMIN, etc). Cannot be null,
-         * contain null values or start with "ROLE_"
+         *              contain null values or start with "ROLE_"
          * @return the {@link SocialUser.UserBuilder} for method chaining (i.e. to populate
          * additional attributes for this user)
          */
@@ -293,8 +298,9 @@ public class SocialUser implements UserDetails, CredentialsContainer {
 
         /**
          * Populates the authorities. This attribute is required.
+         *
          * @param authorities the authorities for this user. Cannot be null, or contain
-         * null values
+         *                    null values
          * @return the {@link SocialUser.UserBuilder} for method chaining (i.e. to populate
          * additional attributes for this user)
          * @see #roles(String...)
@@ -305,8 +311,9 @@ public class SocialUser implements UserDetails, CredentialsContainer {
 
         /**
          * Populates the authorities. This attribute is required.
+         *
          * @param authorities the authorities for this user. Cannot be null, or contain
-         * null values
+         *                    null values
          * @return the {@link SocialUser.UserBuilder} for method chaining (i.e. to populate
          * additional attributes for this user)
          * @see #roles(String...)
@@ -318,8 +325,9 @@ public class SocialUser implements UserDetails, CredentialsContainer {
 
         /**
          * Populates the authorities. This attribute is required.
+         *
          * @param authorities the authorities for this user (i.e. ROLE_USER, ROLE_ADMIN,
-         * etc). Cannot be null, or contain null values
+         *                    etc). Cannot be null, or contain null values
          * @return the {@link SocialUser.UserBuilder} for method chaining (i.e. to populate
          * additional attributes for this user)
          * @see #roles(String...)
@@ -330,6 +338,7 @@ public class SocialUser implements UserDetails, CredentialsContainer {
 
         /**
          * Defines if the account is expired or not. Default is false.
+         *
          * @param accountExpired true if the account is expired, false otherwise
          * @return the {@link SocialUser.UserBuilder} for method chaining (i.e. to populate
          * additional attributes for this user)
@@ -341,6 +350,7 @@ public class SocialUser implements UserDetails, CredentialsContainer {
 
         /**
          * Defines if the account is locked or not. Default is false.
+         *
          * @param accountLocked true if the account is locked, false otherwise
          * @return the {@link SocialUser.UserBuilder} for method chaining (i.e. to populate
          * additional attributes for this user)
@@ -352,6 +362,7 @@ public class SocialUser implements UserDetails, CredentialsContainer {
 
         /**
          * Defines if the credentials are expired or not. Default is false.
+         *
          * @param credentialsExpired true if the credentials are expired, false otherwise
          * @return the {@link SocialUser.UserBuilder} for method chaining (i.e. to populate
          * additional attributes for this user)
@@ -363,6 +374,7 @@ public class SocialUser implements UserDetails, CredentialsContainer {
 
         /**
          * Defines if the account is disabled or not. Default is false.
+         *
          * @param disabled true if the account is disabled, false otherwise
          * @return the {@link SocialUser.UserBuilder} for method chaining (i.e. to populate
          * additional attributes for this user)

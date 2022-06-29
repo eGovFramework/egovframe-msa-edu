@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.portalservice.domain.privacy.PrivacyRepositoryImpl
- *
+ * <p>
  * 개인정보처리방침 Querydsl 구현 클래스
  *
  * @author 표준프레임워크센터 jooho
@@ -73,7 +73,7 @@ public class PrivacyRepositoryImpl {
             String property = sort.getProperty();
 
             Path<Object> target = Expressions.path(Object.class, QPrivacy.privacy, CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, property));
-            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @SuppressWarnings({"rawtypes", "unchecked"})
             OrderSpecifier<?> orderSpecifier = new OrderSpecifier(order, target);
             query.orderBy(orderSpecifier);
         });

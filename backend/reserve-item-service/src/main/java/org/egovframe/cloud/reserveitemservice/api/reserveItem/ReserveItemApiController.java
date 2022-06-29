@@ -3,6 +3,7 @@ package org.egovframe.cloud.reserveitemservice.api.reserveItem;
 import java.util.Collection;
 import java.util.Map;
 import javax.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemListResponseDto;
@@ -94,8 +95,8 @@ public class ReserveItemApiController {
     @ResponseStatus(HttpStatus.OK)
     public Mono<Page<ReserveItemListResponseDto>> searchForUser(@PathVariable String categoryId,
                                                                 ReserveItemRequestDto requestDto,
-                                                         @RequestParam(name = "page") int page,
-                                                         @RequestParam(name = "size") int size) {
+                                                                @RequestParam(name = "page") int page,
+                                                                @RequestParam(name = "size") int size) {
         return reserveItemService.searchForUser(categoryId, requestDto, PageRequest.of(page, size));
     }
 
@@ -183,7 +184,7 @@ public class ReserveItemApiController {
      */
     @GetMapping("/api/v1/reserve-items/latest/{count}")
     @ResponseStatus(HttpStatus.OK)
-    public  Mono<Map<String, Collection<ReserveItemMainResponseDto>>> findLatest(@PathVariable Integer count) {
+    public Mono<Map<String, Collection<ReserveItemMainResponseDto>>> findLatest(@PathVariable Integer count) {
         return reserveItemService.findLatest(count);
     }
 }

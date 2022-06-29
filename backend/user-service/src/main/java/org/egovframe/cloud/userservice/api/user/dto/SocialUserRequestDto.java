@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * org.egovframe.cloud.userservice.api.user.dto.SocialUserRequestDto
- *
+ * <p>
  * 소셜 사용자 요청 DTO 클래스
  *
  * @author 표준프레임워크센터 jooho

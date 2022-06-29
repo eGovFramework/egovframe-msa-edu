@@ -1,12 +1,14 @@
 package org.egovframe.cloud.portalservice.api.menu.dto;
 
 import java.util.Objects;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
+
 import org.egovframe.cloud.common.exception.BusinessMessageException;
 import org.springframework.util.StringUtils;
 

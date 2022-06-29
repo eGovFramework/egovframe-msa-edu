@@ -56,10 +56,10 @@ public class PrivacyListResponseDto implements Serializable {
     /**
      * 개인정보처리방침 목록 응답 DTO 생성자
      *
-     * @param privacyNo 개인정보처리방침 번호
+     * @param privacyNo    개인정보처리방침 번호
      * @param privacyTitle 개인정보처리방침 제목
-     * @param useAt 사용 여부
-     * @param createdDate 생성 일시
+     * @param useAt        사용 여부
+     * @param createdDate  생성 일시
      */
     @QueryProjection
     public PrivacyListResponseDto(Integer privacyNo, String privacyTitle, Boolean useAt, LocalDateTime createdDate) {

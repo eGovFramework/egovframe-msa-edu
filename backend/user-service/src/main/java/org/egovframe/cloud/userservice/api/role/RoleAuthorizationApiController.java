@@ -44,7 +44,7 @@ public class RoleAuthorizationApiController {
      * 권한 인가 페이지 목록 조회
      *
      * @param requestDto 요청 DTO
-     * @param pageable 페이지 정보
+     * @param pageable   페이지 정보
      * @return Page<RoleAuthorizationListResponseDto> 페이지 권한 인가 목록 응답 DTO
      */
     @GetMapping("/api/v1/role-authorizations")

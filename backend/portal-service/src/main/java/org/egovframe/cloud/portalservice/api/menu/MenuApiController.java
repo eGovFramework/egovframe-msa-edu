@@ -89,7 +89,7 @@ public class MenuApiController {
      * @return
      */
     @PutMapping(value = "/api/v1/menus/{siteId}/tree")
-    public Long saveDnD(@PathVariable Long siteId,  @RequestBody List<MenuDnDRequestDto> menuDnDRequestDtoList) {
+    public Long saveDnD(@PathVariable Long siteId, @RequestBody List<MenuDnDRequestDto> menuDnDRequestDtoList) {
         return menuService.updateDnD(siteId, menuDnDRequestDtoList);
     }
 

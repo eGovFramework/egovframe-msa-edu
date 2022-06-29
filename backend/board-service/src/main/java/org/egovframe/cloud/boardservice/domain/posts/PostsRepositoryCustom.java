@@ -52,10 +52,10 @@ public interface PostsRepositoryCustom {
     /**
      * 게시물 상세 조회
      *
-     * @param boardNo  게시판 번호
-     * @param postsNo  게시물 번호
-     * @param userId   사용자 id
-     * @param ipAddr   ip 주소
+     * @param boardNo 게시판 번호
+     * @param postsNo 게시물 번호
+     * @param userId  사용자 id
+     * @param ipAddr  ip 주소
      * @return PostsResponseDto 게시물 상세 응답 DTO
      */
     PostsResponseDto findById(Integer boardNo, Integer postsNo, String userId, String ipAddr);

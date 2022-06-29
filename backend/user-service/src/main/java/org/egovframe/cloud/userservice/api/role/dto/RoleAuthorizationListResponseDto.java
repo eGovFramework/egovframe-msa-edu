@@ -70,7 +70,7 @@ public class RoleAuthorizationListResponseDto {
      * @param urlPatternValue   URL 패턴 값
      * @param httpMethodCode    Http Method 코드
      * @param sortSeq           정렬 순서
-     * @param createdAt          생성 여부
+     * @param createdAt         생성 여부
      */
     @QueryProjection
     @Builder

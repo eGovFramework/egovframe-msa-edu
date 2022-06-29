@@ -2,10 +2,12 @@ package org.egovframe.cloud.reservechecksevice.service;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.common.domain.Role;
@@ -76,13 +78,13 @@ public class ReserveService extends ReactiveAbstractService {
      */
     @Transactional(readOnly = true)
     public Mono<Page<ReserveListResponseDto>> search(ReserveRequestDto requestDto,
-        Pageable pageable) {
+                                                     Pageable pageable) {
         return reserveRepository.search(requestDto, pageable)
-            .switchIfEmpty(Flux.empty())
-            .flatMap(this::convertReserveListResponseDto)
-            .collectList()
-            .zipWith(reserveRepository.searchCount(requestDto, pageable))
-            .flatMap(tuple -> Mono.just(new PageImpl<>(tuple.getT1(), pageable, tuple.getT2())));
+                .switchIfEmpty(Flux.empty())
+                .flatMap(this::convertReserveListResponseDto)
+                .collectList()
+                .zipWith(reserveRepository.searchCount(requestDto, pageable))
+                .flatMap(tuple -> Mono.just(new PageImpl<>(tuple.getT1(), pageable, tuple.getT2())));
     }
 
     /**
@@ -94,8 +96,8 @@ public class ReserveService extends ReactiveAbstractService {
     @Transactional(readOnly = true)
     public Mono<ReserveResponseDto> findReserveById(String reserveId) {
         return reserveRepository.findReserveById(reserveId)
-            .switchIfEmpty(monoResponseStatusEntityNotFoundException(reserveId))
-            .flatMap(this::convertReserveResponseDto);
+                .switchIfEmpty(monoResponseStatusEntityNotFoundException(reserveId))
+                .flatMap(this::convertReserveResponseDto);
     }
 
     /**
@@ -108,13 +110,13 @@ public class ReserveService extends ReactiveAbstractService {
      */
     @Transactional(readOnly = true)
     public Mono<Page<ReserveListResponseDto>> searchForUser(String userId,
-        ReserveRequestDto requestDto, Pageable pageable) {
+                                                            ReserveRequestDto requestDto, Pageable pageable) {
         return reserveRepository.searchForUser(requestDto, pageable, userId)
-            .switchIfEmpty(Flux.empty())
-            .flatMap(this::convertReserveListResponseDto)
-            .collectList()
-            .zipWith(reserveRepository.searchCountForUser(requestDto, pageable, userId))
-            .flatMap(tuple -> Mono.just(new PageImpl<>(tuple.getT1(), pageable, tuple.getT2())));
+                .switchIfEmpty(Flux.empty())
+                .flatMap(this::convertReserveListResponseDto)
+                .collectList()
+                .zipWith(reserveRepository.searchCountForUser(requestDto, pageable, userId))
+                .flatMap(tuple -> Mono.just(new PageImpl<>(tuple.getT1(), pageable, tuple.getT2())));
     }
 
     /**
@@ -130,17 +132,17 @@ public class ReserveService extends ReactiveAbstractService {
                 return reserveCancel(reserveId, cancelRequestDto);
             }
             return findById(reserveId)
-                .zipWith(getUserId())
-                .flatMap(tuple -> {
-                    if (tuple.getT1().isReserveUser(tuple.getT2())) {
-                        return Mono.just(tuple.getT1());
-                    }
-                    //해당 예약은 취소할 수 없습니다.
-                    return Mono
-                        .error(new BusinessMessageException(getMessage("valid.cant_cancel")));
-                })
-                .onErrorResume(throwable -> Mono.error(throwable))
-                .flatMap(reserve -> reserveCancel(reserveId, cancelRequestDto));
+                    .zipWith(getUserId())
+                    .flatMap(tuple -> {
+                        if (tuple.getT1().isReserveUser(tuple.getT2())) {
+                            return Mono.just(tuple.getT1());
+                        }
+                        //해당 예약은 취소할 수 없습니다.
+                        return Mono
+                                .error(new BusinessMessageException(getMessage("valid.cant_cancel")));
+                    })
+                    .onErrorResume(throwable -> Mono.error(throwable))
+                    .flatMap(reserve -> reserveCancel(reserveId, cancelRequestDto));
         });
 
     }
@@ -154,14 +156,14 @@ public class ReserveService extends ReactiveAbstractService {
      */
     private Mono<Void> reserveCancel(String reserveId, ReserveCancelRequestDto cancelRequestDto) {
         return findById(reserveId)
-            .map(reserve ->
-                reserve.updateStatusCancel(cancelRequestDto.getReasonCancelContent(), getMessage("valid.cant_cancel_because_done")))
-            .flatMap(reserve -> Mono.just(reserve.conversionReserveQty()))
-            .flatMap(this::updateInventory)
-            .onErrorResume(throwable -> Mono.error(throwable))
-            .flatMap(reserve -> Mono.just(reserve.conversionReserveQty()))
-            .flatMap(reserveRepository::save)
-            .then();
+                .map(reserve ->
+                        reserve.updateStatusCancel(cancelRequestDto.getReasonCancelContent(), getMessage("valid.cant_cancel_because_done")))
+                .flatMap(reserve -> Mono.just(reserve.conversionReserveQty()))
+                .flatMap(this::updateInventory)
+                .onErrorResume(throwable -> Mono.error(throwable))
+                .flatMap(reserve -> Mono.just(reserve.conversionReserveQty()))
+                .flatMap(reserveRepository::save)
+                .then();
     }
 
     /**
@@ -172,17 +174,17 @@ public class ReserveService extends ReactiveAbstractService {
      */
     public Mono<Void> approve(String reserveId) {
         return getIsAdmin()
-            .flatMap(isAdmin -> {
-                if (isAdmin) {
-                    return Mono.just(reserveId);
-                }
-                //관리자만 승인할 수 있습니다.
-                return Mono.error(new BusinessMessageException(getMessage("valid.manager_approve")));
-            })
-            .onErrorResume(Mono::error)
-            .flatMap(this::checkApprove)
-            .onErrorResume(Mono::error)
-            .flatMap(reserveRepository::save).then();
+                .flatMap(isAdmin -> {
+                    if (isAdmin) {
+                        return Mono.just(reserveId);
+                    }
+                    //관리자만 승인할 수 있습니다.
+                    return Mono.error(new BusinessMessageException(getMessage("valid.manager_approve")));
+                })
+                .onErrorResume(Mono::error)
+                .flatMap(this::checkApprove)
+                .onErrorResume(Mono::error)
+                .flatMap(reserveRepository::save).then();
     }
 
     /**
@@ -208,22 +210,22 @@ public class ReserveService extends ReactiveAbstractService {
      */
     public Mono<ReserveResponseDto> create(ReserveSaveRequestDto saveRequestDto) {
         return Mono.just(saveRequestDto)
-            .map(ReserveSaveRequestDto::createNewReserve)
-            .zipWith(getUserId())
-            .flatMap(tuple -> Mono.just(tuple.getT1().setCreatedInfo(LocalDateTime.now(), tuple.getT2())))
-            .flatMap(validator::checkReserveItems)
-            .onErrorResume(Mono::error)
-            .flatMap(this::updateInventory)
-            .onErrorResume(Mono::error)
-            .flatMap(reserveRepository::insert)
-            .flatMap(reserveRepository::loadRelations)
-            .doOnNext(reserve -> sendAttachmentEntityInfo(streamBridge,
-                AttachmentEntityMessage.builder()
-                    .attachmentCode(reserve.getAttachmentCode())
-                    .entityName(reserve.getClass().getName())
-                    .entityId(reserve.getReserveId())
-                    .build()))
-            .flatMap(this::convertReserveResponseDto);
+                .map(ReserveSaveRequestDto::createNewReserve)
+                .zipWith(getUserId())
+                .flatMap(tuple -> Mono.just(tuple.getT1().setCreatedInfo(LocalDateTime.now(), tuple.getT2())))
+                .flatMap(validator::checkReserveItems)
+                .onErrorResume(Mono::error)
+                .flatMap(this::updateInventory)
+                .onErrorResume(Mono::error)
+                .flatMap(reserveRepository::insert)
+                .flatMap(reserveRepository::loadRelations)
+                .doOnNext(reserve -> sendAttachmentEntityInfo(streamBridge,
+                        AttachmentEntityMessage.builder()
+                                .attachmentCode(reserve.getAttachmentCode())
+                                .entityName(reserve.getClass().getName())
+                                .entityId(reserve.getReserveId())
+                                .build()))
+                .flatMap(this::convertReserveResponseDto);
 
 
     }
@@ -237,12 +239,12 @@ public class ReserveService extends ReactiveAbstractService {
      * @return
      */
     public Mono<Integer> countInventory(Long reserveItemId, LocalDateTime startDate,
-        LocalDateTime endDate) {
+                                        LocalDateTime endDate) {
         return reserveItemServiceClient.findById(reserveItemId)
-            .transform(CircuitBreakerOperator.of(circuitBreakerRegistry.circuitBreaker(RESERVE_ITEM_CIRCUIT_BREAKER_NAME)))
-            .onErrorResume(throwable -> Mono.empty())
-            .zipWith(validator.getMaxByReserveDate(reserveItemId, startDate, endDate))
-            .flatMap(tuple -> Mono.just(tuple.getT1().getTotalQty() - tuple.getT2()));
+                .transform(CircuitBreakerOperator.of(circuitBreakerRegistry.circuitBreaker(RESERVE_ITEM_CIRCUIT_BREAKER_NAME)))
+                .onErrorResume(throwable -> Mono.empty())
+                .zipWith(validator.getMaxByReserveDate(reserveItemId, startDate, endDate))
+                .flatMap(tuple -> Mono.just(tuple.getT1().getTotalQty() - tuple.getT2()));
     }
 
     /**
@@ -253,10 +255,10 @@ public class ReserveService extends ReactiveAbstractService {
      */
     private Mono<Reserve> checkApprove(String reserveId) {
         return findById(reserveId)
-            .flatMap(validator::checkReserveItems)
-            .onErrorResume(Mono::error)
-            .map(reserve -> reserve.updateStatus(ReserveStatus.APPROVE.getKey()))
-            .flatMap(this::updateInventory);
+                .flatMap(validator::checkReserveItems)
+                .onErrorResume(Mono::error)
+                .map(reserve -> reserve.updateStatus(ReserveStatus.APPROVE.getKey()))
+                .flatMap(this::updateInventory);
     }
 
     /**
@@ -267,27 +269,27 @@ public class ReserveService extends ReactiveAbstractService {
      * @return
      */
     private Mono<Reserve> updateReserveForUser(String reserveId,
-        ReserveUpdateRequestDto updateRequestDto) {
+                                               ReserveUpdateRequestDto updateRequestDto) {
         return findById(reserveId)
-            .zipWith(getUserId())
-            .map(tuple -> {
-                if (!tuple.getT1().isReserveUser(tuple.getT2())) {
-                    //"해당 예약은 수정할 수 없습니다."
-                    throw new BusinessMessageException(getMessage("valid.reserve_not_update"));
-                }
+                .zipWith(getUserId())
+                .map(tuple -> {
+                    if (!tuple.getT1().isReserveUser(tuple.getT2())) {
+                        //"해당 예약은 수정할 수 없습니다."
+                        throw new BusinessMessageException(getMessage("valid.reserve_not_update"));
+                    }
 
-                if (!tuple.getT1().isRequest()) {
-                    //예약 신청 상태인 경우에만 수정 가능합니다.
-                    throw new BusinessMessageException(getMessage("valid.reserve_not_update_status"));
-                }
+                    if (!tuple.getT1().isRequest()) {
+                        //예약 신청 상태인 경우에만 수정 가능합니다.
+                        throw new BusinessMessageException(getMessage("valid.reserve_not_update_status"));
+                    }
 
-                return tuple.getT1().update(updateRequestDto);
-            })
-            .flatMap(validator::checkReserveItems)
-            .onErrorResume(Mono::error)
-            .flatMap(this::updateInventory)
-            .onErrorResume(Mono::error)
-            .flatMap(reserveRepository::save);
+                    return tuple.getT1().update(updateRequestDto);
+                })
+                .flatMap(validator::checkReserveItems)
+                .onErrorResume(Mono::error)
+                .flatMap(this::updateInventory)
+                .onErrorResume(Mono::error)
+                .flatMap(reserveRepository::save);
     }
 
     /**
@@ -298,21 +300,21 @@ public class ReserveService extends ReactiveAbstractService {
      * @return
      */
     private Mono<Reserve> updateReserve(String reserveId,
-        ReserveUpdateRequestDto updateRequestDto) {
+                                        ReserveUpdateRequestDto updateRequestDto) {
         return findById(reserveId)
-            .map(reserve -> {
-                if (!reserve.isRequest()) {
-                    //예약 신청 상태인 경우에만 수정 가능합니다.
-                    throw new BusinessMessageException(
-                        getMessage("valid.reserve_not_update_status"));
-                }
-                return reserve.update(updateRequestDto);
-            })
-            .flatMap(validator::checkReserveItems)
-            .onErrorResume(Mono::error)
-            .flatMap(this::updateInventory)
-            .onErrorResume(Mono::error)
-            .flatMap(reserveRepository::save);
+                .map(reserve -> {
+                    if (!reserve.isRequest()) {
+                        //예약 신청 상태인 경우에만 수정 가능합니다.
+                        throw new BusinessMessageException(
+                                getMessage("valid.reserve_not_update_status"));
+                    }
+                    return reserve.update(updateRequestDto);
+                })
+                .flatMap(validator::checkReserveItems)
+                .onErrorResume(Mono::error)
+                .flatMap(this::updateInventory)
+                .onErrorResume(Mono::error)
+                .flatMap(reserveRepository::save);
     }
 
     /**
@@ -323,23 +325,23 @@ public class ReserveService extends ReactiveAbstractService {
      */
     private Mono<Reserve> updateInventory(Reserve reserve) {
         return Mono.just(reserve)
-            .flatMap(it -> {
-                if (it.isEducation()) {
-                    return reserveItemServiceClient
-                        .updateInventory(reserve.getReserveItemId(), reserve.getReserveQty())
-                        .transform(CircuitBreakerOperator.of(circuitBreakerRegistry
-                            .circuitBreaker(RESERVE_ITEM_CIRCUIT_BREAKER_NAME)))
-                        .onErrorResume(throwable -> Mono.just(false))
-                        .flatMap(isSuccess -> {
-                            if (isSuccess) {
-                                return Mono.just(reserve);
-                            }
-                            //재고 업데이트에 실패했습니다.
-                            return Mono.error(new BusinessMessageException(getMessage("msg.inventory_failed")));
-                        });
-                }
-                return Mono.just(it);
-            });
+                .flatMap(it -> {
+                    if (it.isEducation()) {
+                        return reserveItemServiceClient
+                                .updateInventory(reserve.getReserveItemId(), reserve.getReserveQty())
+                                .transform(CircuitBreakerOperator.of(circuitBreakerRegistry
+                                        .circuitBreaker(RESERVE_ITEM_CIRCUIT_BREAKER_NAME)))
+                                .onErrorResume(throwable -> Mono.just(false))
+                                .flatMap(isSuccess -> {
+                                    if (isSuccess) {
+                                        return Mono.just(reserve);
+                                    }
+                                    //재고 업데이트에 실패했습니다.
+                                    return Mono.error(new BusinessMessageException(getMessage("msg.inventory_failed")));
+                                });
+                    }
+                    return Mono.just(it);
+                });
     }
 
     /**
@@ -350,7 +352,7 @@ public class ReserveService extends ReactiveAbstractService {
      */
     private Mono<Reserve> findById(String reserveId) {
         return reserveRepository.findById(reserveId)
-            .switchIfEmpty(monoResponseStatusEntityNotFoundException(reserveId));
+                .switchIfEmpty(monoResponseStatusEntityNotFoundException(reserveId));
     }
 
     /**
@@ -361,8 +363,8 @@ public class ReserveService extends ReactiveAbstractService {
      */
     private Mono<ReserveResponseDto> convertReserveResponseDto(Reserve reserve) {
         return Mono.just(ReserveResponseDto.builder()
-            .entity(reserve)
-            .build());
+                .entity(reserve)
+                .build());
     }
 
     /**
@@ -373,8 +375,8 @@ public class ReserveService extends ReactiveAbstractService {
      */
     private Mono<ReserveListResponseDto> convertReserveListResponseDto(Reserve reserve) {
         return Mono.just(ReserveListResponseDto.builder()
-            .entity(reserve)
-            .build());
+                .entity(reserve)
+                .build());
     }
 
     /**
@@ -384,15 +386,15 @@ public class ReserveService extends ReactiveAbstractService {
      */
     private Mono<Boolean> getIsAdmin() {
         return ReactiveSecurityContextHolder.getContext()
-            .map(SecurityContext::getAuthentication)
-            .filter(Authentication::isAuthenticated)
-            .map(Authentication::getAuthorities)
-            .map(grantedAuthorities -> {
-                List<SimpleGrantedAuthority> authorities =
-                    new ArrayList<>((Collection<? extends SimpleGrantedAuthority>) grantedAuthorities);
-                SimpleGrantedAuthority adminRole = new SimpleGrantedAuthority(Role.ADMIN.getKey());
-                return authorities.contains(adminRole);
-            });
+                .map(SecurityContext::getAuthentication)
+                .filter(Authentication::isAuthenticated)
+                .map(Authentication::getAuthorities)
+                .map(grantedAuthorities -> {
+                    List<SimpleGrantedAuthority> authorities =
+                            new ArrayList<>((Collection<? extends SimpleGrantedAuthority>) grantedAuthorities);
+                    SimpleGrantedAuthority adminRole = new SimpleGrantedAuthority(Role.ADMIN.getKey());
+                    return authorities.contains(adminRole);
+                });
     }
 
     /**
@@ -402,10 +404,10 @@ public class ReserveService extends ReactiveAbstractService {
      */
     private Mono<String> getUserId() {
         return ReactiveSecurityContextHolder.getContext()
-            .map(SecurityContext::getAuthentication)
-            .filter(Authentication::isAuthenticated)
-            .map(Authentication::getPrincipal)
-            .map(String.class::cast);
+                .map(SecurityContext::getAuthentication)
+                .filter(Authentication::isAuthenticated)
+                .map(Authentication::getPrincipal)
+                .map(String.class::cast);
     }
 
 }

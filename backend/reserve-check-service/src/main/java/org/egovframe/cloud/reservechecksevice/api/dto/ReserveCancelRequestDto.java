@@ -1,6 +1,7 @@
 package org.egovframe.cloud.reservechecksevice.api.dto;
 
 import javax.validation.constraints.NotBlank;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,11 +28,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class ReserveCancelRequestDto {
-	@NotBlank
-	private String reasonCancelContent;
+    @NotBlank
+    private String reasonCancelContent;
 
-	@Builder
-	public ReserveCancelRequestDto(String reasonCancelContent) {
-		this.reasonCancelContent = reasonCancelContent;
-	}
+    @Builder
+    public ReserveCancelRequestDto(String reasonCancelContent) {
+        this.reasonCancelContent = reasonCancelContent;
+    }
 }

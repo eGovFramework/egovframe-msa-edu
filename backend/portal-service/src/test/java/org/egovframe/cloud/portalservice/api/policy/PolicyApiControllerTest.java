@@ -52,10 +52,10 @@ class PolicyApiControllerTest {
     public void setUp() {
         //given
         for (int i = 1; i <= 10; i++) {
-            String title = "title_"+i;
+            String title = "title_" + i;
             String contents = "contents " + i;
             String type = "TOS";
-            if(i % 2 == 0){
+            if (i % 2 == 0) {
                 type = "PP";
             }
 
@@ -78,7 +78,7 @@ class PolicyApiControllerTest {
     public void 이용약관_등록_정상() throws Exception {
         //given
         String type = "PP";
-        String title= "test title";
+        String title = "test title";
         String contents = "test contents";
 
         PolicySaveRequestDto requestDto = PolicySaveRequestDto.builder()
@@ -104,10 +104,11 @@ class PolicyApiControllerTest {
     @Test
     public void 목록조회한다() throws Exception {
 
-        String url = API_URL+"?size=3%page=0";
+        String url = API_URL + "?size=3%page=0";
         //when
         ResponseEntity<RestResponsePage<PolicyResponseDto>> responseEntity =
-                restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<PolicyResponseDto>>() {});
+                restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<PolicyResponseDto>>() {
+                });
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -119,7 +120,7 @@ class PolicyApiControllerTest {
     @Test
     public void 회원가입시_가장최근_이용약관_조회_된다() throws Exception {
 
-        String url = "http://localhost:"+port+API_URL + "/latest/TOS";
+        String url = "http://localhost:" + port + API_URL + "/latest/TOS";
         //when
         ResponseEntity<PolicyResponseDto> responseEntity = restTemplate.getForEntity(url, PolicyResponseDto.class);
 
@@ -135,7 +136,7 @@ class PolicyApiControllerTest {
     @Order(1)
     public void ID로_한건조회_정상() throws Exception {
 
-        String url = API_URL +"/9";
+        String url = API_URL + "/9";
 
         //when
         ResponseEntity<PolicyResponseDto> responseEntity = restTemplate.getForEntity(url, PolicyResponseDto.class);
@@ -154,7 +155,7 @@ class PolicyApiControllerTest {
                 .contents("contents!!!!")
                 .build()
         ).getId();
-        String url = API_URL +"/"+id;
+        String url = API_URL + "/" + id;
 
         PolicyUpdateRequestDto requestDto = PolicyUpdateRequestDto.builder()
                 .title("update title")
@@ -184,7 +185,7 @@ class PolicyApiControllerTest {
                 .contents("contents!!!!")
                 .build()
         ).getId();
-        String url = API_URL +"/"+id;
+        String url = API_URL + "/" + id;
 
         //when
         restTemplate.delete(url);
@@ -204,7 +205,7 @@ class PolicyApiControllerTest {
                 .contents("contents!!!")
                 .build()
         ).getId();
-        String url = API_URL +"/"+id+"/"+false;
+        String url = API_URL + "/" + id + "/" + false;
 
         //when
         ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, null, Long.class);

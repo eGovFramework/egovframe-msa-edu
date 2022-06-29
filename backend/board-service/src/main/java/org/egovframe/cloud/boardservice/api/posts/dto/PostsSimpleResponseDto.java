@@ -1,7 +1,9 @@
 package org.egovframe.cloud.boardservice.api.posts.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+
 import java.time.LocalDate;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.egovframe.cloud.boardservice.api.board.dto.BoardResponseDto;

@@ -2,6 +2,7 @@ package org.egovframe.cloud.portalservice.domain.menu;
 
 import java.util.Objects;
 import java.util.Optional;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,10 +42,10 @@ public class Menu extends BaseEntity {
     @Column(name = "menu_id")
     private Long id;    // id
 
-    @Column( length = 100)
+    @Column(length = 100)
     private String menuKorName;    // 메뉴명 kor
 
-    @Column( length = 100)
+    @Column(length = 100)
     private String menuEngName;    // 메뉴명 eng
 
     @Column(name = "type_id", length = 20)
@@ -151,8 +152,8 @@ public class Menu extends BaseEntity {
         }
 
         Optional<Menu> oldMenu = this.parent.getChildren().stream()
-            .filter(it -> it.getId().equals(this.id))
-            .findAny();
+                .filter(it -> it.getId().equals(this.id))
+                .findAny();
 
         oldMenu.ifPresent(it -> this.parent.getChildren().remove(it));
         this.parent = null;

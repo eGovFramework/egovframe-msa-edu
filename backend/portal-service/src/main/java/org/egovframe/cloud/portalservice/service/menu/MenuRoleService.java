@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.common.exception.EntityNotFoundException;
@@ -108,13 +109,13 @@ public class MenuRoleService extends AbstractService {
     private List<MenuSideResponseDto> findMenu(Long siteId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()
-            || authentication instanceof AnonymousAuthenticationToken) {
+                || authentication instanceof AnonymousAuthenticationToken) {
             return menuRoleRepository.findMenu(Role.ANONYMOUS.getKey(), siteId);
         }
         String role = authentication.getAuthorities().stream()
-            .map(GrantedAuthority::toString)
-            .collect(Collectors.toList())
-            .get(0);
+                .map(GrantedAuthority::toString)
+                .collect(Collectors.toList())
+                .get(0);
         return menuRoleRepository.findMenu(role, siteId);
     }
 
@@ -125,7 +126,7 @@ public class MenuRoleService extends AbstractService {
      */
     private void recursiveSetUrlPath(MenuSideResponseDto menuSideResponseDto) {
         if (Objects.nonNull(menuSideResponseDto.getConnectId()) &&
-            menuSideResponseDto.isRequiredUrlPath()) {
+                menuSideResponseDto.isRequiredUrlPath()) {
             menuSideResponseDto.setUrlPath(getUrlPath(menuSideResponseDto));
         }
 
@@ -147,7 +148,7 @@ public class MenuRoleService extends AbstractService {
         saveMenu(menuRoleRequestDto);
 
         if (Objects.isNull(menuRoleRequestDto.getChildren())
-            || menuRoleRequestDto.getChildren().size() <= 0) {
+                || menuRoleRequestDto.getChildren().size() <= 0) {
             return;
         }
 
@@ -171,8 +172,8 @@ public class MenuRoleService extends AbstractService {
 
         CircuitBreaker circuitBreaker = circuitBreakerFactory.create("board");
         BoardResponseDto board = circuitBreaker.run(() ->
-                boardServiceClient.findById(responseDto.getConnectId()),
-            throwable -> new BoardResponseDto());
+                        boardServiceClient.findById(responseDto.getConnectId()),
+                throwable -> new BoardResponseDto());
 
         return "/board/" + board.getSkinTypeCode() + "/" + responseDto.getConnectId();
 
@@ -180,9 +181,9 @@ public class MenuRoleService extends AbstractService {
 
     private Menu findMenuById(Long id) {
         return menuRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(
-                getMessage("valid.notexists.format", new Object[]{getMessage("menu")}) + " ID= "
-                    + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        getMessage("valid.notexists.format", new Object[]{getMessage("menu")}) + " ID= "
+                                + id));
     }
 
     /**
@@ -199,7 +200,7 @@ public class MenuRoleService extends AbstractService {
         //unchecked 인 경우 menurole 삭제
         if (menuRoleRequestDto.hasMenuRoleId()) {
             Optional<MenuRole> menuRole = menuRoleRepository
-                .findById(menuRoleRequestDto.getMenuRoleId());
+                    .findById(menuRoleRequestDto.getMenuRoleId());
             menuRole.ifPresent(it -> menuRoleRepository.delete(it));
         }
     }
@@ -214,16 +215,16 @@ public class MenuRoleService extends AbstractService {
 
         if (!menuRoleRequestDto.hasMenuRoleId()) {
             MenuRole menuRole = MenuRole.builder()
-                .roleId(menuRoleRequestDto.getRoleId())
-                .menu(menu)
-                .build();
+                    .roleId(menuRoleRequestDto.getRoleId())
+                    .menu(menu)
+                    .build();
             menuRole.setMenu(menu);
             menuRoleRepository.save(menuRole);
             return;
         }
 
         Optional<MenuRole> menuRole = menuRoleRepository
-            .findById(menuRoleRequestDto.getMenuRoleId());
+                .findById(menuRoleRequestDto.getMenuRoleId());
         menuRole.ifPresent(it -> it.setMenu(menu));
 
     }

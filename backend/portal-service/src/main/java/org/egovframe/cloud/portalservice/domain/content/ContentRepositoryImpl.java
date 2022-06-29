@@ -54,7 +54,7 @@ public class ContentRepositoryImpl implements ContentRepositoryCustom {
      * @return Page<ContentListResponseDto> 페이지 컨텐츠 목록 응답 DTO
      */
     @Override
-	public Page<ContentListResponseDto> findPage(RequestDto requestDto, Pageable pageable) {
+    public Page<ContentListResponseDto> findPage(RequestDto requestDto, Pageable pageable) {
         JPQLQuery<ContentListResponseDto> query = jpaQueryFactory
                 .select(new QContentListResponseDto(
                         QContent.content.contentNo,
@@ -73,8 +73,8 @@ public class ContentRepositoryImpl implements ContentRepositoryCustom {
             String property = sort.getProperty();
 
             Path<Object> target = Expressions.path(Object.class, QContent.content, CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, property));
-            @SuppressWarnings({ "rawtypes", "unchecked" })
-			OrderSpecifier<?> orderSpecifier = new OrderSpecifier(order, target);
+            @SuppressWarnings({"rawtypes", "unchecked"})
+            OrderSpecifier<?> orderSpecifier = new OrderSpecifier(order, target);
             query.orderBy(orderSpecifier);
         });
 

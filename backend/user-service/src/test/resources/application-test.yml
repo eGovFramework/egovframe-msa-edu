@@ -5,10 +5,10 @@ spring:
   datasource:
     url: jdbc:h2:mem:testdb;MODE=MYSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
     username: sa
-    password: 
+    password:
     driver-class-name: org.h2.Driver
     initialization-mode: always
-#    schema: classpath:h2/schema.sql
+    #    schema: classpath:h2/schema.sql
     data: classpath:h2/data.sql
   jpa:
     hibernate:

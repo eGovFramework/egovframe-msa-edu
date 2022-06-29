@@ -28,156 +28,156 @@ import org.springframework.web.reactive.function.BodyInserters;
 @Import({R2dbcConfig.class})
 public class LocationApiControllerTest {
 
-	@Autowired
-	private LocationRepository locationRepository;
+    @Autowired
+    private LocationRepository locationRepository;
 
-	@Autowired
-	private ReserveItemRepository reserveItemRepository;
+    @Autowired
+    private ReserveItemRepository reserveItemRepository;
 
-	@Autowired
-	WebTestClient webTestClient;
+    @Autowired
+    WebTestClient webTestClient;
 
-	private static final String API_URL = "/api/v1/locations";
+    private static final String API_URL = "/api/v1/locations";
 
-	@AfterEach
-	public void tearDown() {
-		reserveItemRepository.deleteAll().block();
-		locationRepository.deleteAll().block();
-	}
+    @AfterEach
+    public void tearDown() {
+        reserveItemRepository.deleteAll().block();
+        locationRepository.deleteAll().block();
+    }
 
-	@Test
-	public void 한건조회_성공() throws Exception {
+    @Test
+    public void 한건조회_성공() throws Exception {
 
-		Location location1 = locationRepository.save(Location.builder()
-			.locationName("location1")
-			.isUse(true)
-			.sortSeq(1)
-			.build()).block();
-		assertNotNull(location1);
+        Location location1 = locationRepository.save(Location.builder()
+                .locationName("location1")
+                .isUse(true)
+                .sortSeq(1)
+                .build()).block();
+        assertNotNull(location1);
 
-		webTestClient.get()
-			.uri(API_URL+"/{locationId}", location1.getLocationId())
-			.exchange()
-			.expectStatus().isOk()
-			.expectBody()
-			.jsonPath("$.locationName").isEqualTo(location1.getLocationName());
-	}
+        webTestClient.get()
+                .uri(API_URL + "/{locationId}", location1.getLocationId())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.locationName").isEqualTo(location1.getLocationName());
+    }
 
 
-	@Test
-	public void 조회조건있는경우_페이지목록조회_성공() throws Exception {
+    @Test
+    public void 조회조건있는경우_페이지목록조회_성공() throws Exception {
 
-		Location location1 = locationRepository.save(Location.builder()
-			.locationName("location1")
-			.isUse(true)
-			.sortSeq(1)
-			.build()).block();
-		assertNotNull(location1);
+        Location location1 = locationRepository.save(Location.builder()
+                .locationName("location1")
+                .isUse(true)
+                .sortSeq(1)
+                .build()).block();
+        assertNotNull(location1);
 
-		webTestClient.get()
-			.uri(API_URL+"?keywordType=locationName&keyword=location&page=0&size=3")
-			.exchange()
-			.expectStatus().isOk()
-			.expectBody()
-			.jsonPath("$.totalElements").isEqualTo(1)
-			.jsonPath("$.content[0].locationName").isEqualTo(location1.getLocationName());
-	}
+        webTestClient.get()
+                .uri(API_URL + "?keywordType=locationName&keyword=location&page=0&size=3")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.totalElements").isEqualTo(1)
+                .jsonPath("$.content[0].locationName").isEqualTo(location1.getLocationName());
+    }
 
-	@Test
-	public void 조회조건없는경우_페이지목록조회_성공() throws Exception {
-		Location location1 = locationRepository.save(Location.builder()
-			.locationName("location1")
-			.isUse(true)
-			.sortSeq(1)
-			.build()).block();
-		assertNotNull(location1);
+    @Test
+    public void 조회조건없는경우_페이지목록조회_성공() throws Exception {
+        Location location1 = locationRepository.save(Location.builder()
+                .locationName("location1")
+                .isUse(true)
+                .sortSeq(1)
+                .build()).block();
+        assertNotNull(location1);
 
-		webTestClient.get()
-			.uri(API_URL+"?page=0&size=3")
-			.exchange()
-			.expectStatus().isOk()
-			.expectBody()
-			.jsonPath("$.totalElements").isEqualTo(1)
-			.jsonPath("$.content[0].locationName").isEqualTo(location1.getLocationName());
-	}
+        webTestClient.get()
+                .uri(API_URL + "?page=0&size=3")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.totalElements").isEqualTo(1)
+                .jsonPath("$.content[0].locationName").isEqualTo(location1.getLocationName());
+    }
 
-	@Test
-	public void 한건저장_성공() throws Exception {
-		webTestClient.post()
-			.uri(API_URL)
-			.contentType(MediaType.APPLICATION_JSON)
-			.body(BodyInserters.fromValue(LocationSaveRequestDto.builder()
-				.locationName("location1")
-				.isUse(true)
-				.sortSeq(1)
-				.build()))
-			.exchange()
-			.expectStatus().isCreated()
-			.expectBody().jsonPath("$.locationName").isEqualTo("location1");
+    @Test
+    public void 한건저장_성공() throws Exception {
+        webTestClient.post()
+                .uri(API_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(LocationSaveRequestDto.builder()
+                        .locationName("location1")
+                        .isUse(true)
+                        .sortSeq(1)
+                        .build()))
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody().jsonPath("$.locationName").isEqualTo("location1");
 
-	}
+    }
 
-	@Test
-	public void 한건수정_성공() throws Exception {
-		Location location1 = locationRepository.save(Location.builder()
-			.locationName("location1")
-			.isUse(true)
-			.sortSeq(1)
-			.build()).block();
-		assertNotNull(location1);
+    @Test
+    public void 한건수정_성공() throws Exception {
+        Location location1 = locationRepository.save(Location.builder()
+                .locationName("location1")
+                .isUse(true)
+                .sortSeq(1)
+                .build()).block();
+        assertNotNull(location1);
 
-		webTestClient.put()
-			.uri(API_URL+"/{locationId}", location1.getLocationId())
-			.contentType(MediaType.APPLICATION_JSON)
-			.body(BodyInserters.fromValue(LocationUpdateRequestDto.builder()
-				.locationName("updateLocation")
-				.isUse(location1.getIsUse())
-				.sortSeq(location1.getSortSeq())
-				.build()))
-			.exchange()
-			.expectStatus().isNoContent();
+        webTestClient.put()
+                .uri(API_URL + "/{locationId}", location1.getLocationId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(LocationUpdateRequestDto.builder()
+                        .locationName("updateLocation")
+                        .isUse(location1.getIsUse())
+                        .sortSeq(location1.getSortSeq())
+                        .build()))
+                .exchange()
+                .expectStatus().isNoContent();
 
-		Location updatedLocation = locationRepository.findById(location1.getLocationId()).block();
-		assertNotNull(updatedLocation);
-		assertEquals(updatedLocation.getLocationName(), "updateLocation");
-	}
+        Location updatedLocation = locationRepository.findById(location1.getLocationId()).block();
+        assertNotNull(updatedLocation);
+        assertEquals(updatedLocation.getLocationName(), "updateLocation");
+    }
 
-	@Test
-	public void 한건삭제_참조데이터존재_삭제실패() throws Exception {
-		Location location1 = locationRepository.save(Location.builder()
-			.locationName("location1")
-			.isUse(true)
-			.sortSeq(1)
-			.build()).block();
-		assertNotNull(location1);
+    @Test
+    public void 한건삭제_참조데이터존재_삭제실패() throws Exception {
+        Location location1 = locationRepository.save(Location.builder()
+                .locationName("location1")
+                .isUse(true)
+                .sortSeq(1)
+                .build()).block();
+        assertNotNull(location1);
 
-		reserveItemRepository.save(ReserveItem.builder()
-			.locationId(location1.getLocationId())
-			.categoryId("test")
-			.build()).block();
+        reserveItemRepository.save(ReserveItem.builder()
+                .locationId(location1.getLocationId())
+                .categoryId("test")
+                .build()).block();
 
-		webTestClient.delete()
-			.uri(API_URL+"/{locationId}", location1.getLocationId())
-			.exchange()
-			.expectStatus().isBadRequest();
+        webTestClient.delete()
+                .uri(API_URL + "/{locationId}", location1.getLocationId())
+                .exchange()
+                .expectStatus().isBadRequest();
 
-	}
+    }
 
-	@Test
-	public void 한건삭제_성공() throws Exception {
-		Location location1 = locationRepository.save(Location.builder()
-			.locationName("location1")
-			.isUse(true)
-			.sortSeq(1)
-			.build()).block();
-		assertNotNull(location1);
+    @Test
+    public void 한건삭제_성공() throws Exception {
+        Location location1 = locationRepository.save(Location.builder()
+                .locationName("location1")
+                .isUse(true)
+                .sortSeq(1)
+                .build()).block();
+        assertNotNull(location1);
 
-		webTestClient.delete()
-			.uri(API_URL+"/{locationId}", location1.getLocationId())
-			.exchange()
-			.expectStatus().isNoContent();
+        webTestClient.delete()
+                .uri(API_URL + "/{locationId}", location1.getLocationId())
+                .exchange()
+                .expectStatus().isNoContent();
 
-	}
+    }
 
 
 }

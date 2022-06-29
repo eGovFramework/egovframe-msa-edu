@@ -158,8 +158,9 @@ class PostsApiControllerTest {
 
     /**
      * 최근 게시물이 포함된 게시판 목록 조회
+     *
      * @throws JsonProcessingException json exception
-     * @throws JsonMappingException json exception
+     * @throws JsonMappingException    json exception
      */
     @Test
     void 최근_게시물이_포함된_게시판_목록_조회() throws JsonMappingException, JsonProcessingException {
@@ -656,7 +657,7 @@ class PostsApiControllerTest {
      * 테스트 데이터 등록
      */
     private void insertPosts(Boolean deleteAt) {
-        log.info("###테스트 데이터 등록");    
+        log.info("###테스트 데이터 등록");
 
         // 게시물 등록
         List<Posts> list = new ArrayList<>();

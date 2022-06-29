@@ -17,7 +17,7 @@ import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator;
 @Profile("test")
 @TestConfiguration
 @EnableR2dbcRepositories
-public class R2dbcConfig{
+public class R2dbcConfig {
     @Bean
     public H2ConnectionFactory connectionFactory() {
         return new H2ConnectionFactory(H2ConnectionConfiguration.builder()

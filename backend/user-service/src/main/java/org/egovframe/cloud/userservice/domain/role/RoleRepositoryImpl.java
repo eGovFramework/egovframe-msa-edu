@@ -52,7 +52,7 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
      * @return Page<RoleListResponseDto> 페이지 권한 목록 응답 DTO
      */
     @Override
-	public Page<RoleListResponseDto> findPage(RequestDto requestDto, Pageable pageable) {
+    public Page<RoleListResponseDto> findPage(RequestDto requestDto, Pageable pageable) {
         JPQLQuery<RoleListResponseDto> query = jpaQueryFactory
                 .select(new QRoleListResponseDto(
                         QRole.role.roleId,
@@ -69,7 +69,7 @@ public class RoleRepositoryImpl implements RoleRepositoryCustom {
             String property = sort.getProperty();
 
             Path<Object> target = Expressions.path(Object.class, QRole.role, CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, property));
-            @SuppressWarnings({ "unchecked", "rawtypes" })
+            @SuppressWarnings({"unchecked", "rawtypes"})
             OrderSpecifier<?> orderSpecifier = new OrderSpecifier(order, target);
             query.orderBy(orderSpecifier);
         });

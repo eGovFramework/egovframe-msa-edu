@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * org.egovframe.cloud.boardservice.api.comment.dto.CommentSaveRequestDto
- *
+ * <p>
  * 댓글 수정 요청 DTO 클래스
  *
  * @author 표준프레임워크센터 jooho
@@ -59,7 +59,7 @@ public class CommentUpdateRequestDto {
      * 댓글 수정 요청 DTO 클래스 생성자
      * 빌더 패턴으로 객체 생성
      *
-     * @param commentContent  댓글 내용
+     * @param commentContent 댓글 내용
      */
     @Builder
     public CommentUpdateRequestDto(Integer boardNo, Integer postsNo, Integer commentNo, String commentContent) {

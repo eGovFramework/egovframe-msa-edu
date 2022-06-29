@@ -7,5 +7,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface PolicyRepositoryCustom {
     Page<PolicyResponseDto> search(RequestDto requestDto, Pageable pageable);
+
     PolicyResponseDto searchOne(String type);
 }

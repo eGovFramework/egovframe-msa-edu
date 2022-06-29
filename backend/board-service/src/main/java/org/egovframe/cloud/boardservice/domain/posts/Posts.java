@@ -154,9 +154,9 @@ public class Posts extends BaseEntity {
     /**
      * 게시물 속성 값 수정
      *
-     * @param postsTitle         게시물 제목
-     * @param postsContent       게시물 내용
-     * @param attachmentCode     첨부파일 코드
+     * @param postsTitle     게시물 제목
+     * @param postsContent   게시물 내용
+     * @param attachmentCode 첨부파일 코드
      * @return Posts 게시물 엔티티
      */
     public Posts update(String postsTitle, String postsContent, String attachmentCode) {

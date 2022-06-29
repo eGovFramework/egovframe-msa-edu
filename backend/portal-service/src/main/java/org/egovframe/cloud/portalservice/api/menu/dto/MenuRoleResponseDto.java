@@ -1,6 +1,7 @@
 package org.egovframe.cloud.portalservice.api.menu.dto;
 
 import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -53,7 +54,7 @@ public class MenuRoleResponseDto {
      * @param menu
      * @param roleId
      */
-    public MenuRoleResponseDto (Menu menu, String roleId) {
+    public MenuRoleResponseDto(Menu menu, String roleId) {
 
         Optional<MenuRole> menuRole = menu.getMenuRole(roleId);
 

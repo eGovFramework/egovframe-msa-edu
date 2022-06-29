@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 
 /**
  * org.egovframe.cloud.boardservice.api.posts.dto.PostsSimpleSaveRequestDto
- *
+ * <p>
  * 게시물 등록 요청 DTO 클래스
  *
  * @author 표준프레임워크센터 jooho

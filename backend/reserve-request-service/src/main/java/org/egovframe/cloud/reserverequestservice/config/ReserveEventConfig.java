@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 
 /**
  * org.egovframe.cloud.reserverequestservice.config.ReserveEventConfig
- *
+ * <p>
  * event stream 설정 class
  *
  * @author 표준프레임워크센터 shinmj
@@ -50,7 +50,7 @@ public class ReserveEventConfig {
             log.info("receive message: {}, headers: {}", message.getPayload(), message.getHeaders());
             if (message.getPayload().getIsItemUpdated()) {
                 reserveService.updateStatus(message.getPayload().getReserveId(), ReserveStatus.APPROVE).subscribe();
-            }else {
+            } else {
                 reserveService.delete(message.getPayload().getReserveId()).subscribe();
             }
 

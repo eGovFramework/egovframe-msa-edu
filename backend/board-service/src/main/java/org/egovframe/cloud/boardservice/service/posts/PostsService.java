@@ -100,7 +100,7 @@ public class PostsService extends AbstractService {
             List<PostsSimpleResponseDto> posts = postsGroup.get(board.getBoardNo());
             if (posts != null) {
                 board.setNewestPosts(posts.stream().map(post -> post.setIsNew(board))
-                    .collect(Collectors.toList()));
+                        .collect(Collectors.toList()));
             }
             data.put(board.getBoardNo(), board);
         }
@@ -138,7 +138,7 @@ public class PostsService extends AbstractService {
         PostsResponseDto dto = postsRepository.findById(boardNo, postsNo, userId, ipAddr);
 
         if (dto == null) {
-            throw new EntityNotFoundException("not found posts : "+ boardNo + ", " + postsNo + ", " + userId + ", " + ipAddr);
+            throw new EntityNotFoundException("not found posts : " + boardNo + ", " + postsNo + ", " + userId + ", " + ipAddr);
         }
 
         // 삭제 여부 확인
@@ -328,7 +328,7 @@ public class PostsService extends AbstractService {
      * @param boardNo 게시판 번호
      * @param postsNo 게시물 번호
      * @return Posts 게시물 엔티티
-     * @throws InvalidValueException 입력값 예외
+     * @throws InvalidValueException   입력값 예외
      * @throws EntityNotFoundException 엔티티 예외
      */
     public Posts findPosts(Integer boardNo, Integer postsNo) throws InvalidValueException, EntityNotFoundException {
@@ -393,11 +393,11 @@ public class PostsService extends AbstractService {
             return;
         }
         sendAttachmentEntityInfo(streamBridge,
-            AttachmentEntityMessage.builder()
-                .attachmentCode(entity.getAttachmentCode())
-                .entityName(entity.getClass().getName())
-                .entityId(entity.getPostsId().toString())
-                .build());
+                AttachmentEntityMessage.builder()
+                        .attachmentCode(entity.getAttachmentCode())
+                        .entityName(entity.getClass().getName())
+                        .entityId(entity.getPostsId().toString())
+                        .build());
     }
 
 }

@@ -24,5 +24,6 @@ import java.util.List;
  */
 public interface StatisticsRepositoryCustom {
     List<StatisticsResponseDto> findMonthBySiteId(Long siteId);
+
     List<StatisticsResponseDto> findDayBySiteId(Long siteId, StatisticsYMRequestDto requestDto);
 }

@@ -66,9 +66,9 @@ public class BoardListResponseDto implements Serializable {
     /**
      * 게시판 목록 응답 DTO 생성자
      *
-     * @param boardNo          게시판 번호
-     * @param boardName        게시판 명
-     * @param skinTypeCode     스킨 유형 코드
+     * @param boardNo      게시판 번호
+     * @param boardName    게시판 명
+     * @param skinTypeCode 스킨 유형 코드
      */
     @QueryProjection
     public BoardListResponseDto(Integer boardNo, String boardName, String skinTypeCode, Boolean isPosts) {

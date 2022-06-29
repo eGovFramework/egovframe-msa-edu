@@ -79,6 +79,7 @@ public interface CodeRepositoryCustom {
 
     /**
      * 공통코드 parentCodeId 에 해당코드가 존재하는지 여부를 알기 위해 건수를 카운트한다
+     *
      * @param codeId
      * @return
      */

@@ -3,6 +3,7 @@ package org.egovframe.cloud.portalservice.api.message;
 import java.util.List;
 
 import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.egovframe.cloud.portalservice.api.message.dto.MessageListResponseDto;
 import org.egovframe.cloud.portalservice.domain.message.Message;
@@ -54,7 +55,8 @@ class MessageApiControllerTest {
 
         // when
         ResponseEntity<Map<String, String>> responseEntity =
-            restTemplate.exchange(API_URL + lang, HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, String>>(){});
+                restTemplate.exchange(API_URL + lang, HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, String>>() {
+                });
 
         // then
         Map<String, String> body = responseEntity.getBody();

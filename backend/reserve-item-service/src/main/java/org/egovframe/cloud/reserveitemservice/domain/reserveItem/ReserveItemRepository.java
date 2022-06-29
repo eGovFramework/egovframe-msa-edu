@@ -4,7 +4,7 @@ import org.springframework.data.r2dbc.repository.R2dbcRepository;
 
 /**
  * org.egovframe.cloud.reserveitemservice.domain.reserveItem.ReserveItemRepository
- *
+ * <p>
  * 예약 물품 도메인 repository interface
  *
  * @author 표준프레임워크센터 shinmj

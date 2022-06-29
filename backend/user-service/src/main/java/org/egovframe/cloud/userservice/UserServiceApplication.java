@@ -26,7 +26,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  *  2021/06/30    jaeyeolkim  최초 생성
  * </pre>
  */
-@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.servlet", "org.egovframe.cloud.userservice"}) // org.egovframe.cloud.common package 포함하기 위해
+@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.servlet", "org.egovframe.cloud.userservice"})
+// org.egovframe.cloud.common package 포함하기 위해
 @EntityScan({"org.egovframe.cloud.servlet.domain", "org.egovframe.cloud.userservice.domain"})
 @EnableDiscoveryClient
 @SpringBootApplication

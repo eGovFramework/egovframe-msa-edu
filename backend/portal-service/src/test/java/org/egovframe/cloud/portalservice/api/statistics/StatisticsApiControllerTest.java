@@ -57,11 +57,12 @@ class StatisticsApiControllerTest {
     public void 월별접속통계_조회_성공() throws Exception {
         Long siteId = 1L;
         // when
-        ResponseEntity< List<StatisticsResponseDto>> responseEntity =
-                restTemplate.exchange("/api/v1/statistics/monthly/"+siteId,
+        ResponseEntity<List<StatisticsResponseDto>> responseEntity =
+                restTemplate.exchange("/api/v1/statistics/monthly/" + siteId,
                         HttpMethod.GET,
                         null,
-                        new ParameterizedTypeReference<List<StatisticsResponseDto>>(){});
+                        new ParameterizedTypeReference<List<StatisticsResponseDto>>() {
+                        });
 
         responseEntity.getBody().forEach(System.out::println);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -76,11 +77,12 @@ class StatisticsApiControllerTest {
         LocalDate now = LocalDate.now();
 
         // when
-        ResponseEntity< List<StatisticsResponseDto>> responseEntity =
-                restTemplate.exchange("/api/v1/statistics/daily/"+siteId+"?year="+now.getYear()+"&month="+now.getMonthValue(),
+        ResponseEntity<List<StatisticsResponseDto>> responseEntity =
+                restTemplate.exchange("/api/v1/statistics/daily/" + siteId + "?year=" + now.getYear() + "&month=" + now.getMonthValue(),
                         HttpMethod.GET,
                         null,
-                        new ParameterizedTypeReference<List<StatisticsResponseDto>>(){});
+                        new ParameterizedTypeReference<List<StatisticsResponseDto>>() {
+                        });
 
         responseEntity.getBody().forEach(System.out::println);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);

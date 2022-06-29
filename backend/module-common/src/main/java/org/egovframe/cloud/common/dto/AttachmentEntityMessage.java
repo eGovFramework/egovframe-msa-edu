@@ -8,14 +8,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AttachmentEntityMessage {
 
-	private String attachmentCode;
-	private String entityName;
-	private String entityId;
+    private String attachmentCode;
+    private String entityName;
+    private String entityId;
 
-	@Builder
-	public AttachmentEntityMessage(String attachmentCode, String entityName, String entityId) {
-		this.attachmentCode = attachmentCode;
-		this.entityName = entityName;
-		this.entityId = entityId;
-	}
+    @Builder
+    public AttachmentEntityMessage(String attachmentCode, String entityName, String entityId) {
+        this.attachmentCode = attachmentCode;
+        this.entityName = entityName;
+        this.entityId = entityId;
+    }
 }

@@ -3,20 +3,22 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %magenta(%-4relative) - [%thread{10}, %X{traceId:-}, %X{spanId:-}] %cyan(%logger{20}): %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %magenta(%-4relative) - [%thread{10},
+                %X{traceId:-}, %X{spanId:-}] %cyan(%logger{20}): %msg%n
+            </pattern>
         </encoder>
     </appender>
 
     <!-- 로컬에서는 로그를 전송하지 않도록 설정 -->
     <springProfile name="default">
         <root level="INFO">
-            <appender-ref ref="STDOUT" />
+            <appender-ref ref="STDOUT"/>
         </root>
     </springProfile>
     <springProfile name="!default">
         <!-- java -Ddestination="localhost:5001" 와 같이 변경할 수 있다. cf 환경에서는 manifest.yml 파일에 환경변수로 추가 -->
-        <property name="destination" value="${logstash_hostname:-localhost:5001}" />
-        <property name="app_name" value="${app_name:-reserve-request-service}" />
+        <property name="destination" value="${logstash_hostname:-localhost:5001}"/>
+        <property name="app_name" value="${app_name:-reserve-request-service}"/>
 
         <!-- ELK - Logstash 로 로그를 전송하기 위한 appender -->
         <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
@@ -40,8 +42,8 @@
             </encoder>
         </appender>
         <root level="WARN">
-            <appender-ref ref="LOGSTASH" />
-            <appender-ref ref="STDOUT" />
+            <appender-ref ref="LOGSTASH"/>
+            <appender-ref ref="STDOUT"/>
         </root>
     </springProfile>
 

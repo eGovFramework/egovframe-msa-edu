@@ -56,10 +56,10 @@ public class ContentListResponseDto implements Serializable {
     /**
      * 컨텐츠 목록 응답 DTO 생성자
      *
-     * @param contentNo 컨텐츠 번호
-     * @param contentName 컨텐츠 명
+     * @param contentNo      컨텐츠 번호
+     * @param contentName    컨텐츠 명
      * @param lastModifiedBy 수정자
-     * @param modifiedDate 수정 일시
+     * @param modifiedDate   수정 일시
      */
     @QueryProjection
     public ContentListResponseDto(Integer contentNo, String contentName, String lastModifiedBy, LocalDateTime modifiedDate) {

@@ -219,10 +219,10 @@ public class CodeRepositoryImpl implements CodeRepositoryCustom {
                         parent.codeId,
                         parent.codeName,
                         parent.useAt
-                        ))
+                ))
                 .from(code)
                 .join(parent)
-                    .on(code.parentCodeId.eq(parent.codeId))
+                .on(code.parentCodeId.eq(parent.codeId))
                 .where(code.codeId.eq(codeId))
                 .fetchOne();
     }

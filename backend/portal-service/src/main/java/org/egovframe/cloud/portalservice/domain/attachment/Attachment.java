@@ -1,6 +1,7 @@
 package org.egovframe.cloud.portalservice.domain.attachment;
 
 import java.util.Objects;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import org.egovframe.cloud.servlet.domain.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+
 import org.springframework.util.StringUtils;
 
 /**
@@ -31,8 +33,7 @@ import org.springframework.util.StringUtils;
  */
 
 /**
- * @TODO
- * 관련 엔티티를 어떻게 처리하는지 에 따라
+ * @TODO 관련 엔티티를 어떻게 처리하는지 에 따라
  * 컬럼명이 변경되거나 삭제될 수 있음.
  * 아직 용어사전에 넣지 않았으므로 기능 완료되면 용어사전에도 fix된 컬럼명을 넣어야 함.
  * 2021/07/26 shinmj!!
@@ -127,7 +128,7 @@ public class Attachment extends BaseEntity {
         return this;
     }
 
-    public boolean hasEntityId()  {
+    public boolean hasEntityId() {
         return (Objects.nonNull(entityId) || StringUtils.hasText(entityId)) && !"-1".equals(entityId);
     }
 

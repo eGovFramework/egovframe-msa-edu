@@ -632,6 +632,7 @@ class UserApiControllerTest {
 
         return insertUser(userData);
     }
+
     private User insertUser(Map<String, Object> userData) {
         return userRepository.save(User.builder()
                 .userId(userData.get("userId") != null ? (String) userData.get("userId") : UUID.randomUUID().toString())

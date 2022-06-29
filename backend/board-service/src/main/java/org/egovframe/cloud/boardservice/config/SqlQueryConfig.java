@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 
 /**
  * org.egovframe.cloud.common.config.SqlQueryConfig
- *
+ * <p>
  * Native SQL 설정 클래스
  *
  * @author 표준프레임워크센터 jooho

@@ -2,7 +2,7 @@ package org.egovframe.cloud.common.config;
 
 /**
  * org.egovframe.cloud.common.config.Constants
- *
+ * <p>
  * 공통 전역 상수 정의
  *
  * @author 표준프레임워크센터 jaeyeolkim

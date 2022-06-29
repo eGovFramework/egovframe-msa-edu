@@ -47,7 +47,7 @@ public class PolicyService extends AbstractService {
      * @return
      */
     @Transactional(readOnly = true)
-    public Page<PolicyResponseDto> search(RequestDto requestDto, Pageable pageable){
+    public Page<PolicyResponseDto> search(RequestDto requestDto, Pageable pageable) {
         return policyRepository.search(requestDto, pageable);
     }
 
@@ -126,9 +126,8 @@ public class PolicyService extends AbstractService {
 
     private Policy findPolicy(Long id) {
         return policyRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("policy")}) + " ID= " + id));
+                .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("policy")}) + " ID= " + id));
     }
-
 
 
 }

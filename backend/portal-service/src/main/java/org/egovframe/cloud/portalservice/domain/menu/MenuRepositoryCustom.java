@@ -24,5 +24,6 @@ import java.util.List;
  */
 public interface MenuRepositoryCustom {
     List<MenuTreeResponseDto> findTreeBySiteId(Long siteId);
+
     MenuResponseDto findByIdWithConnectName(Long menuId);
 }

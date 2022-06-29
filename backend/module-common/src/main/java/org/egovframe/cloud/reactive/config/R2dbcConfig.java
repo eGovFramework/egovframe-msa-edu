@@ -12,7 +12,7 @@ import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator;
 
 /**
  * org.egovframe.cloud.reserveitemservice.config.R2dbcConfig
- *
+ * <p>
  * R2DBC configuration class
  *
  * @author 표준프레임워크센터 shinmj

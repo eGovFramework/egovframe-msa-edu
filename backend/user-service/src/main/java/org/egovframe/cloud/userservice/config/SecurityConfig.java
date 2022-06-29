@@ -48,14 +48,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .headers().frameOptions().disable()
-            .and()
+                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 사용하기 때문에 세션은 비활성화
-            .and()
+                .and()
                 .authorizeRequests()
                 .antMatchers(SECURITY_PERMITALL_ANTPATTERNS).permitAll()
                 .anyRequest().access("@authorizationService.isAuthorization(request, authentication)") // 호출 시 권한 인가 데이터 확인
-            .and()
+                .and()
                 .addFilter(getAuthenticationFilter())
                 .logout()
                 .logoutSuccessUrl("/");

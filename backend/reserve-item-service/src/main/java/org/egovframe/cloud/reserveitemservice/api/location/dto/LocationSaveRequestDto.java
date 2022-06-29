@@ -1,6 +1,7 @@
 package org.egovframe.cloud.reserveitemservice.api.location.dto;
 
 import javax.validation.constraints.NotNull;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

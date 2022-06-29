@@ -1,6 +1,7 @@
 package org.egovframe.cloud.reservechecksevice.api.dto;
 
 import java.time.LocalDateTime;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

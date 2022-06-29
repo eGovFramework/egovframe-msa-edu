@@ -8,7 +8,8 @@ import org.springframework.context.annotation.ComponentScan;
 
 import java.security.Security;
 
-@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.reactive", "org.egovframe.cloud.reserverequestservice"}) // org.egovframe.cloud.common package 포함하기 위해
+@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.reactive", "org.egovframe.cloud.reserverequestservice"})
+// org.egovframe.cloud.common package 포함하기 위해
 @EnableDiscoveryClient
 @SpringBootApplication
 public class ReserveRequestServiceApplication {

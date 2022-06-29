@@ -6,7 +6,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
  * org.egovframe.cloud.userservice.config.CacheConfig
- *
+ * <p>
  * 캐시 설정 클래스
  *
  * @author 표준프레임워크센터 jooho
@@ -23,6 +23,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  */
 @Configuration
 @EnableCaching
-@EnableAspectJAutoProxy(exposeProxy=true) // AopContext.currentProxy() 사용 옵션
+@EnableAspectJAutoProxy(exposeProxy = true) // AopContext.currentProxy() 사용 옵션
 public class CacheConfig {
 }

@@ -1,6 +1,7 @@
 package org.egovframe.cloud.reservechecksevice.domain;
 
 import java.time.LocalDateTime;
+
 import org.egovframe.cloud.reservechecksevice.api.dto.ReserveRequestDto;
 import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Flux;
@@ -8,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * org.egovframe.cloud.reservechecksevice.domain.ReserveRepositoryCustom
- *
+ * <p>
  * 예약 도메인 custom Repository interface
  *
  * @author 표준프레임워크센터 shinmj
@@ -25,16 +26,21 @@ import reactor.core.publisher.Mono;
  */
 public interface ReserveRepositoryCustom {
     Flux<Reserve> search(ReserveRequestDto requestDto, Pageable pageable);
+
     Mono<Long> searchCount(ReserveRequestDto requestDto, Pageable pageable);
+
     Mono<Reserve> findReserveById(String reserveId);
 
     Flux<Reserve> searchForUser(ReserveRequestDto requestDto, Pageable pageable, String userId);
+
     Mono<Long> searchCountForUser(ReserveRequestDto requestDto, Pageable pageable, String userId);
 
     Mono<Reserve> loadRelations(Reserve reserve);
 
     Flux<Reserve> findAllByReserveDate(Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate);
+
     Flux<Reserve> findAllByReserveDateWithoutSelf(String reserveId, Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate);
+
     Mono<Long> findAllByReserveDateWithoutSelfCount(String reserveId, Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate);
 
     Mono<Reserve> insert(Reserve reserve);
