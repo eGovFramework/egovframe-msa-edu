@@ -30,7 +30,7 @@ public class PolicyUpdateRequestDto {
     private String contents;
 
     @Builder
-    public PolicyUpdateRequestDto(String title, Boolean isUse, String contents){
+    public PolicyUpdateRequestDto(String title, Boolean isUse, String contents) {
         this.title = title;
         this.isUse = isUse;
         this.contents = contents;

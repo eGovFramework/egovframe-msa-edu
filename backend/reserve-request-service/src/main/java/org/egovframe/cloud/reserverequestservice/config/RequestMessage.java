@@ -7,7 +7,7 @@ import lombok.ToString;
 
 /**
  * org.egovframe.cloud.reserverequestservice.config.RequestMessage
- *
+ * <p>
  * 예약 신청 후 이벤트 스트림 message VO class
  *
  * @author 표준프레임워크센터 shinmj

@@ -50,8 +50,8 @@ public class StatisticsResponseDto {
      */
     private String convertLabel(Integer x) {
         if (x < 10) {
-            return "0"+x;
+            return "0" + x;
         }
-        return ""+x;
+        return "" + x;
     }
 }

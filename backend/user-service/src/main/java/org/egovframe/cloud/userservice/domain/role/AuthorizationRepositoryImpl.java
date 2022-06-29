@@ -55,7 +55,7 @@ public class AuthorizationRepositoryImpl implements AuthorizationRepositoryCusto
      * @return Page<AuthorizationListResponseDto> 페이지 인가 목록 응답 DTO
      */
     @Override
-	public Page<AuthorizationListResponseDto> findPage(RequestDto requestDto, Pageable pageable) {
+    public Page<AuthorizationListResponseDto> findPage(RequestDto requestDto, Pageable pageable) {
         JPQLQuery<AuthorizationListResponseDto> query = getAuthorizationListJPQLQuery()
                 .where(getBooleanExpressionKeyword(requestDto));
 
@@ -65,8 +65,8 @@ public class AuthorizationRepositoryImpl implements AuthorizationRepositoryCusto
             String property = sort.getProperty();
 
             Path<Object> target = Expressions.path(Object.class, QAuthorization.authorization, CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, property));
-            @SuppressWarnings({ "unchecked", "rawtypes" })
-			OrderSpecifier<?> orderSpecifier = new OrderSpecifier(order, target);
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            OrderSpecifier<?> orderSpecifier = new OrderSpecifier(order, target);
             query.orderBy(orderSpecifier);
         });
 
@@ -85,7 +85,7 @@ public class AuthorizationRepositoryImpl implements AuthorizationRepositoryCusto
      * @return Page<AuthorizationListResponseDto> 페이지 인가 목록 응답 DTO
      */
     @Override
-	public List<AuthorizationListResponseDto> findByRoles(List<String> roles) {
+    public List<AuthorizationListResponseDto> findByRoles(List<String> roles) {
         JPQLQuery<AuthorizationListResponseDto> query = getAuthorizationListJPQLQuery()
                 .where(JPAExpressions
                         .selectFrom(QRoleAuthorization.roleAuthorization)
@@ -105,7 +105,7 @@ public class AuthorizationRepositoryImpl implements AuthorizationRepositoryCusto
      * @return List<AuthorizationListResponseDto> 인가 목록 응답 DTO
      */
     @Override
-	public List<AuthorizationListResponseDto> findByUserId(String userId) {
+    public List<AuthorizationListResponseDto> findByUserId(String userId) {
         JPQLQuery<AuthorizationListResponseDto> query = getAuthorizationListJPQLQuery()
                 .where(JPAExpressions
                         .selectFrom(QRoleAuthorization.roleAuthorization)
@@ -143,7 +143,7 @@ public class AuthorizationRepositoryImpl implements AuthorizationRepositoryCusto
      * @return Integer 다음 정렬 순서
      */
     @Override
-	public Integer findNextSortSeq() {
+    public Integer findNextSortSeq() {
         return jpaQueryFactory
                 .select(QAuthorization.authorization.sortSeq.max().add(1).coalesce(1))
                 .from(QAuthorization.authorization)
@@ -159,7 +159,7 @@ public class AuthorizationRepositoryImpl implements AuthorizationRepositoryCusto
      * @return Long 수정 건수
      */
     @Override
-	public Long updateSortSeq(Integer startSortSeq, Integer endSortSeq, int increaseSortSeq) {
+    public Long updateSortSeq(Integer startSortSeq, Integer endSortSeq, int increaseSortSeq) {
         return jpaQueryFactory.update(QAuthorization.authorization)
                 .set(QAuthorization.authorization.sortSeq, QAuthorization.authorization.sortSeq.add(increaseSortSeq))
                 .where(isGoeSortSeq(startSortSeq),

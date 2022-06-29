@@ -11,6 +11,7 @@ import org.springframework.security.test.context.support.WithSecurityContext;
 public @interface WithCustomMockUser {
 
     String userId() default "user";
+
     Role role() default Role.ADMIN;
 
 }

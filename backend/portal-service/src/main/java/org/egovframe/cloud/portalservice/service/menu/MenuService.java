@@ -3,6 +3,7 @@ package org.egovframe.cloud.portalservice.service.menu;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.common.exception.BusinessMessageException;
@@ -153,14 +154,14 @@ public class MenuService extends AbstractService {
 
     private Menu findById(Long id) {
         return menuRepository.findById(id)
-            .orElseThrow(() ->
-                new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu")}) + " ID= " + id));
+                .orElseThrow(() ->
+                        new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu")}) + " ID= " + id));
     }
 
     private Site findSite(Long id) {
         return siteRepository.findById(id)
-            .orElseThrow(() ->
-                new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu.site")}) + " ID= " + id));
+                .orElseThrow(() ->
+                        new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu.site")}) + " ID= " + id));
     }
 
     /**
@@ -201,7 +202,7 @@ public class MenuService extends AbstractService {
 
         for (int i = 0; i < dto.getChildren().size(); i++) {
             MenuDnDRequestDto child = dto.getChildren().get(i);
-            recursive(child, Optional.of(menu), child.getSortSeq(), menu.getLevel()+1);
+            recursive(child, Optional.of(menu), child.getSortSeq(), menu.getLevel() + 1);
         }
     }
 }

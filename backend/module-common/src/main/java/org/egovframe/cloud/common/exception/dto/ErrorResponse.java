@@ -130,7 +130,7 @@ public class ErrorResponse {
         }
 
         final List<ErrorResponse.FieldError> errors =
-            ErrorResponse.FieldError.of(e.getName(), String.valueOf(e.getValue()), e.getErrorCode());
+                ErrorResponse.FieldError.of(e.getName(), String.valueOf(e.getValue()), e.getErrorCode());
         return new ErrorResponse(ErrorCode.INVALID_TYPE_VALUE, errors, messageSource);
     }
 

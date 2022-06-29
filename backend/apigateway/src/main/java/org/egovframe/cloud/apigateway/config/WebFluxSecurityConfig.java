@@ -42,21 +42,21 @@ public class WebFluxSecurityConfig {
     /**
      * WebFlux 스프링 시큐리티 설정
      *
-     * @see ReactiveAuthorization
      * @param http
      * @param check check(Mono<Authentication> authentication, AuthorizationContext context)
      * @return
      * @throws Exception
+     * @see ReactiveAuthorization
      */
     @Bean
     public SecurityWebFilterChain configure(ServerHttpSecurity http, ReactiveAuthorizationManager<AuthorizationContext> check) throws Exception {
         http
                 .csrf().disable()
                 .headers().frameOptions().disable()
-            .and()
+                .and()
                 .formLogin().disable()
                 .httpBasic().authenticationEntryPoint(new HttpStatusServerEntryPoint(HttpStatus.UNAUTHORIZED)) // login dialog disabled & 401 HttpStatus return
-            .and()
+                .and()
                 .authorizeExchange()
                 .pathMatchers(PERMITALL_ANTPATTERNS).permitAll()
                 .pathMatchers(HttpMethod.POST, USER_JOIN_ANTPATTERNS).permitAll()

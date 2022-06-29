@@ -317,7 +317,7 @@ public class AttachmentApiController {
     @PutMapping(value = "/api/v1/attachments/{attachmentCode}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public String update(@PathVariable String attachmentCode,
                          @RequestPart(value = "info") AttachmentUploadRequestDto uploadRequestDto,
-                         @RequestPart(value = "list") List<AttachmentUpdateRequestDto> updateRequestDtoList){
+                         @RequestPart(value = "list") List<AttachmentUpdateRequestDto> updateRequestDtoList) {
 
         return attachmentService.uploadAndUpdate(null, attachmentCode,
                 uploadRequestDto, updateRequestDtoList);

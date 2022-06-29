@@ -1,6 +1,7 @@
 package org.egovframe.cloud.reserveitemservice.domain.location;
 
 import javax.validation.constraints.Size;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 /**
  * org.egovframe.cloud.reserveitemservice.domain.location.Location
- *
+ * <p>
  * 예약 지역 도메인 클래스
  *
  * @author 표준프레임워크센터 shinmj

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,12 +107,12 @@ class AttachmentRepositoryTest {
                     .build();
             attachmentRepository.save(
                     Attachment.builder()
-                    .attachmentId(attachmentId)
-                    .uniqueId(UUID.randomUUID().toString())
-                    .physicalFileName(UUID.randomUUID().toString())
-                    .originalFileName("test_"+i+".txt")
-                    .size(123L)
-                    .build()
+                            .attachmentId(attachmentId)
+                            .uniqueId(UUID.randomUUID().toString())
+                            .physicalFileName(UUID.randomUUID().toString())
+                            .originalFileName("test_" + i + ".txt")
+                            .size(123L)
+                            .build()
             );
         }
         //when
@@ -139,7 +140,7 @@ class AttachmentRepositoryTest {
                             .attachmentId(attachmentId)
                             .uniqueId(id)
                             .physicalFileName(UUID.randomUUID().toString())
-                            .originalFileName("test_"+i+".txt")
+                            .originalFileName("test_" + i + ".txt")
                             .size(123L)
                             .build()
             );

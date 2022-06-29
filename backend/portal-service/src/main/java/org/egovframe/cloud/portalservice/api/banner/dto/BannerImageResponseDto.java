@@ -76,7 +76,7 @@ public class BannerImageResponseDto implements Serializable {
      * @param bannerTypeCode 배너 구분 코드
      * @param bannerTitle    배너 제목
      * @param attachmentCode 첨부파일 코드
-     * @param uniqueId     첨부파일 unique 코드
+     * @param uniqueId       첨부파일 unique 코드
      * @param urlAddr        url 주소
      * @param newWindowAt    새 창 여부
      * @param bannerContent  배너 내용

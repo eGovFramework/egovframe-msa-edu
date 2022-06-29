@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * org.egovframe.cloud.boardservice.domain.comment.CommentRepository
- *
+ * <p>
  * 댓글 레파지토리 인터페이스
  *
  * @author 표준프레임워크센터 jooho

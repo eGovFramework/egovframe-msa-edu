@@ -105,7 +105,7 @@ class CodeRepositoryTest {
         }
 
         // then
-        assertThat(results.getTotalPages()).isEqualTo(30/5);
+        assertThat(results.getTotalPages()).isEqualTo(30 / 5);
         assertThat(results.getTotalElements()).isEqualTo(30);
     }
 

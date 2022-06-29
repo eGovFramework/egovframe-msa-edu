@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Map;
+
 import org.egovframe.cloud.common.exception.dto.ErrorCode;
 import org.egovframe.cloud.common.exception.dto.ErrorResponse;
 import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemMainResponseDto;
@@ -69,29 +70,29 @@ class ReserveItemApiControllerTest {
     public void setUp() {
         category = Code.builder().codeName("category").codeId("category").parentCodeId("reserve-category").build();
         entityTemplate.insert(Code.class)
-            .using(category).block();
+                .using(category).block();
         location = locationRepository.save(Location.builder()
-            .locationName("location1")
-            .isUse(true)
-            .sortSeq(1)
-            .build()).block();
+                .locationName("location1")
+                .isUse(true)
+                .sortSeq(1)
+                .build()).block();
         assertNotNull(location);
         reserveItem = ReserveItem.builder()
-            .categoryId(category.getCodeId())
-            .locationId(location.getLocationId())
-            .reserveItemName("test")
-            .isUse(Boolean.TRUE)
-            .operationStartDate(LocalDateTime.of(2021, 10, 1, 1, 1))
-            .operationEndDate(LocalDateTime.of(2021, 10, 31, 23, 59))
-            .reserveMethodId("internet")
-            .reserveMeansId("realtime")
-            .requestStartDate(LocalDateTime.of(2021, 10, 1, 1, 1))
-            .requestEndDate(LocalDateTime.of(2021, 10, 31, 23, 59))
-            .totalQty(100)
-            .inventoryQty(100)
-            .isPeriod(Boolean.FALSE)
-            .selectionMeansId("evaluate")
-            .build();
+                .categoryId(category.getCodeId())
+                .locationId(location.getLocationId())
+                .reserveItemName("test")
+                .isUse(Boolean.TRUE)
+                .operationStartDate(LocalDateTime.of(2021, 10, 1, 1, 1))
+                .operationEndDate(LocalDateTime.of(2021, 10, 31, 23, 59))
+                .reserveMethodId("internet")
+                .reserveMeansId("realtime")
+                .requestStartDate(LocalDateTime.of(2021, 10, 1, 1, 1))
+                .requestEndDate(LocalDateTime.of(2021, 10, 31, 23, 59))
+                .totalQty(100)
+                .inventoryQty(100)
+                .isPeriod(Boolean.FALSE)
+                .selectionMeansId("evaluate")
+                .build();
     }
 
 
@@ -102,12 +103,12 @@ class ReserveItemApiControllerTest {
         assertNotNull(saved);
 
         webTestClient.method(HttpMethod.GET)
-            .uri("/api/v1/"+category.getCodeId()+"/reserve-items"+"?page=0&size=3&isUse=true")
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody()
-            .jsonPath("$.totalElements").isEqualTo(1)
-            .jsonPath("$.content[0].reserveItemName").isEqualTo(reserveItem.getReserveItemName());
+                .uri("/api/v1/" + category.getCodeId() + "/reserve-items" + "?page=0&size=3&isUse=true")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.totalElements").isEqualTo(1)
+                .jsonPath("$.content[0].reserveItemName").isEqualTo(reserveItem.getReserveItemName());
     }
 
     @Test
@@ -117,12 +118,12 @@ class ReserveItemApiControllerTest {
         assertNotNull(saved);
 
         webTestClient.method(HttpMethod.GET)
-            .uri(API_URL+"?page=0&size=3&isUse=false")
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody()
-            .jsonPath("$.totalElements").isEqualTo(1)
-            .jsonPath("$.content[0].reserveItemName").isEqualTo(reserveItem.getReserveItemName());
+                .uri(API_URL + "?page=0&size=3&isUse=false")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.totalElements").isEqualTo(1)
+                .jsonPath("$.content[0].reserveItemName").isEqualTo(reserveItem.getReserveItemName());
     }
 
     @Test
@@ -131,11 +132,11 @@ class ReserveItemApiControllerTest {
         assertNotNull(saved);
 
         ReserveItemResponseDto responseBody = webTestClient.get()
-            .uri(API_URL+"/{reserveItemId}", saved.getReserveItemId())
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody(ReserveItemResponseDto.class)
-            .returnResult().getResponseBody();
+                .uri(API_URL + "/{reserveItemId}", saved.getReserveItemId())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ReserveItemResponseDto.class)
+                .returnResult().getResponseBody();
 
         assertThat(responseBody.getCategoryId()).isEqualTo(category.getCodeId());
         assertThat(responseBody.getReserveItemName()).isEqualTo(saved.getReserveItemName());
@@ -148,12 +149,12 @@ class ReserveItemApiControllerTest {
         assertNotNull(saved);
 
         Map<String, Collection<ReserveItemMainResponseDto>> responseBody = webTestClient.get()
-            .uri(API_URL+"/latest/3")
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody(new ParameterizedTypeReference<Map<String, Collection<ReserveItemMainResponseDto>>>() {
-            })
-            .returnResult().getResponseBody();
+                .uri(API_URL + "/latest/3")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(new ParameterizedTypeReference<Map<String, Collection<ReserveItemMainResponseDto>>>() {
+                })
+                .returnResult().getResponseBody();
 
         assertThat(responseBody.keySet().size()).isEqualTo(1);
         assertThat(responseBody.keySet().contains(category.getCodeId())).isTrue();
@@ -166,29 +167,29 @@ class ReserveItemApiControllerTest {
     @Test
     public void 한건_등록_성공() {
         ReserveItemSaveRequestDto requestDto = ReserveItemSaveRequestDto.builder()
-            .reserveItemName(reserveItem.getReserveItemName())
-            .categoryId(reserveItem.getCategoryId())
-            .locationId(reserveItem.getLocationId())
-            .inventoryQty(reserveItem.getInventoryQty())
-            .totalQty(reserveItem.getTotalQty())
-            .operationStartDate(reserveItem.getOperationStartDate())
-            .operationEndDate(reserveItem.getOperationEndDate())
-            .reserveMethodId(reserveItem.getReserveMethodId())
-            .reserveMeansId(reserveItem.getReserveMeansId())
-            .isUse(reserveItem.getIsUse())
-            .requestStartDate(reserveItem.getRequestStartDate())
-            .requestEndDate(reserveItem.getRequestEndDate())
-            .isPeriod(reserveItem.getIsPeriod())
-            .selectionMeansId(reserveItem.getSelectionMeansId())
-            .build();
+                .reserveItemName(reserveItem.getReserveItemName())
+                .categoryId(reserveItem.getCategoryId())
+                .locationId(reserveItem.getLocationId())
+                .inventoryQty(reserveItem.getInventoryQty())
+                .totalQty(reserveItem.getTotalQty())
+                .operationStartDate(reserveItem.getOperationStartDate())
+                .operationEndDate(reserveItem.getOperationEndDate())
+                .reserveMethodId(reserveItem.getReserveMethodId())
+                .reserveMeansId(reserveItem.getReserveMeansId())
+                .isUse(reserveItem.getIsUse())
+                .requestStartDate(reserveItem.getRequestStartDate())
+                .requestEndDate(reserveItem.getRequestEndDate())
+                .isPeriod(reserveItem.getIsPeriod())
+                .selectionMeansId(reserveItem.getSelectionMeansId())
+                .build();
 
         ReserveItemResponseDto responseBody = webTestClient.post()
-            .uri(API_URL)
-            .bodyValue(requestDto)
-            .exchange()
-            .expectStatus().isCreated()
-            .expectBody(ReserveItemResponseDto.class)
-            .returnResult().getResponseBody();
+                .uri(API_URL)
+                .bodyValue(requestDto)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(ReserveItemResponseDto.class)
+                .returnResult().getResponseBody();
 
         System.out.println(responseBody);
         assertThat(responseBody.getReserveItemName()).isEqualTo(requestDto.getReserveItemName());
@@ -201,27 +202,27 @@ class ReserveItemApiControllerTest {
         assertNotNull(saved);
 
         ReserveItemUpdateRequestDto requestDto = ReserveItemUpdateRequestDto.builder()
-            .reserveItemName("update")
-            .categoryId(reserveItem.getCategoryId())
-            .locationId(reserveItem.getLocationId())
-            .inventoryQty(reserveItem.getInventoryQty())
-            .totalQty(reserveItem.getTotalQty())
-            .operationStartDate(reserveItem.getOperationStartDate())
-            .operationEndDate(reserveItem.getOperationEndDate())
-            .reserveMethodId(reserveItem.getReserveMethodId())
-            .reserveMeansId(reserveItem.getReserveMeansId())
-            .isUse(reserveItem.getIsUse())
-            .requestStartDate(reserveItem.getRequestStartDate())
-            .requestEndDate(reserveItem.getRequestEndDate())
-            .isPeriod(reserveItem.getIsPeriod())
-            .selectionMeansId(reserveItem.getSelectionMeansId())
-            .build();
+                .reserveItemName("update")
+                .categoryId(reserveItem.getCategoryId())
+                .locationId(reserveItem.getLocationId())
+                .inventoryQty(reserveItem.getInventoryQty())
+                .totalQty(reserveItem.getTotalQty())
+                .operationStartDate(reserveItem.getOperationStartDate())
+                .operationEndDate(reserveItem.getOperationEndDate())
+                .reserveMethodId(reserveItem.getReserveMethodId())
+                .reserveMeansId(reserveItem.getReserveMeansId())
+                .isUse(reserveItem.getIsUse())
+                .requestStartDate(reserveItem.getRequestStartDate())
+                .requestEndDate(reserveItem.getRequestEndDate())
+                .isPeriod(reserveItem.getIsPeriod())
+                .selectionMeansId(reserveItem.getSelectionMeansId())
+                .build();
 
         webTestClient.put()
-            .uri(API_URL+"/"+saved.getReserveItemId())
-            .bodyValue(requestDto)
-            .exchange()
-            .expectStatus().isNoContent();
+                .uri(API_URL + "/" + saved.getReserveItemId())
+                .bodyValue(requestDto)
+                .exchange()
+                .expectStatus().isNoContent();
 
         ReserveItem findbyid = reserveItemRepository.findById(saved.getReserveItemId()).block();
         assertThat(findbyid.getReserveItemName()).isEqualTo("update");
@@ -234,9 +235,9 @@ class ReserveItemApiControllerTest {
         assertNotNull(saved);
 
         webTestClient.put()
-            .uri(API_URL+"/"+saved.getReserveItemId()+"/false")
-            .exchange()
-            .expectStatus().isNoContent();
+                .uri(API_URL + "/" + saved.getReserveItemId() + "/false")
+                .exchange()
+                .expectStatus().isNoContent();
 
         ReserveItem findbyid = reserveItemRepository.findById(saved.getReserveItemId()).block();
         assertThat(findbyid.getIsUse()).isEqualTo(Boolean.FALSE);
@@ -245,29 +246,29 @@ class ReserveItemApiControllerTest {
     @Test
     public void 한건_저장_validation_실패() {
         ReserveItemSaveRequestDto requestDto = ReserveItemSaveRequestDto.builder()
-            .reserveItemName(reserveItem.getReserveItemName())
-            .categoryId(reserveItem.getCategoryId())
-            .locationId(reserveItem.getLocationId())
-            .inventoryQty(reserveItem.getInventoryQty())
-            .totalQty(reserveItem.getTotalQty())
-            .operationStartDate(reserveItem.getOperationStartDate())
-            .operationEndDate(reserveItem.getOperationEndDate())
-            .reserveMethodId(reserveItem.getReserveMethodId())
-            .reserveMeansId(reserveItem.getReserveMeansId())
-            .isUse(reserveItem.getIsUse())
-            .isPeriod(reserveItem.getIsPeriod())
-            .selectionMeansId(reserveItem.getSelectionMeansId())
-            .build();
+                .reserveItemName(reserveItem.getReserveItemName())
+                .categoryId(reserveItem.getCategoryId())
+                .locationId(reserveItem.getLocationId())
+                .inventoryQty(reserveItem.getInventoryQty())
+                .totalQty(reserveItem.getTotalQty())
+                .operationStartDate(reserveItem.getOperationStartDate())
+                .operationEndDate(reserveItem.getOperationEndDate())
+                .reserveMethodId(reserveItem.getReserveMethodId())
+                .reserveMeansId(reserveItem.getReserveMeansId())
+                .isUse(reserveItem.getIsUse())
+                .isPeriod(reserveItem.getIsPeriod())
+                .selectionMeansId(reserveItem.getSelectionMeansId())
+                .build();
 
         System.out.println(requestDto);
 
         ErrorResponse responseBody = webTestClient.post()
-            .uri(API_URL)
-            .bodyValue(requestDto)
-            .exchange()
-            .expectStatus().isBadRequest()
-            .expectBody(ErrorResponse.class)
-            .returnResult().getResponseBody();
+                .uri(API_URL)
+                .bodyValue(requestDto)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(ErrorResponse.class)
+                .returnResult().getResponseBody();
 
         assertThat(responseBody.getCode()).isEqualTo(ErrorCode.INVALID_INPUT_VALUE.getCode());
         assertThat(responseBody.getErrors().size()).isEqualTo(1);

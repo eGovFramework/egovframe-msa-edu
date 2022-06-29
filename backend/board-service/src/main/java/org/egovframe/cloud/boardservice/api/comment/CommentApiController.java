@@ -42,8 +42,8 @@ public class CommentApiController {
     /**
      * 게시글의 전체 댓글 목록 조회
      *
-     * @param boardNo  게시판 번호
-     * @param postsNo  게시물 번호
+     * @param boardNo 게시판 번호
+     * @param postsNo 게시물 번호
      * @return Map<String, Object> 페이지 댓글 목록 응답 DTO
      */
     @GetMapping("/api/v1/comments/total/{boardNo}/{postsNo}")
@@ -54,8 +54,8 @@ public class CommentApiController {
     /**
      * 게시글의 전체 미삭제 댓글 목록 조회
      *
-     * @param boardNo  게시판 번호
-     * @param postsNo  게시물 번호
+     * @param boardNo 게시판 번호
+     * @param postsNo 게시물 번호
      * @return Map<String, Object> 페이지 댓글 목록 응답 DTO
      */
     @GetMapping("/api/v1/comments/all/{boardNo}/{postsNo}")

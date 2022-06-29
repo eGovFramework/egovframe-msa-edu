@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -97,12 +98,12 @@ public class ReserveItemSaveRequestDto {
 
     @Builder
     public ReserveItemSaveRequestDto(String reserveItemName, Long locationId, String categoryId, Integer totalQty,
-        Integer inventoryQty, LocalDateTime operationStartDate, LocalDateTime operationEndDate,
-        String reserveMethodId, String reserveMeansId, LocalDateTime requestStartDate,
-        LocalDateTime requestEndDate, Boolean isPeriod, Integer periodMaxCount, String externalUrl,
-        String selectionMeansId, Boolean isPaid, BigDecimal usageCost, Boolean isUse, String purpose,
-        String address, String targetId, String excluded, String homepage, String contact, String managerDept,
-        String managerName, String managerContact) {
+                                     Integer inventoryQty, LocalDateTime operationStartDate, LocalDateTime operationEndDate,
+                                     String reserveMethodId, String reserveMeansId, LocalDateTime requestStartDate,
+                                     LocalDateTime requestEndDate, Boolean isPeriod, Integer periodMaxCount, String externalUrl,
+                                     String selectionMeansId, Boolean isPaid, BigDecimal usageCost, Boolean isUse, String purpose,
+                                     String address, String targetId, String excluded, String homepage, String contact, String managerDept,
+                                     String managerName, String managerContact) {
         this.reserveItemName = reserveItemName;
         this.locationId = locationId;
         this.categoryId = categoryId;

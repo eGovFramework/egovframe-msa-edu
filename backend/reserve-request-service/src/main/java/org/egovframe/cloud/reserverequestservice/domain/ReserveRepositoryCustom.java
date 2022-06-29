@@ -4,9 +4,10 @@ import java.time.LocalDateTime;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
 /**
  * org.egovframe.cloud.reserverequestservice.domain.ReserveRepositoryCustom
- *
+ * <p>
  * 예약 도메인 repository custom interface
  *
  * @author 표준프레임워크센터 shinmj
@@ -23,6 +24,8 @@ import reactor.core.publisher.Mono;
  */
 public interface ReserveRepositoryCustom {
     Mono<Reserve> insert(Reserve reserve);
+
     Flux<Reserve> findAllByReserveDate(Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate);
+
     Mono<Long> findAllByReserveDateCount(Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate);
 }

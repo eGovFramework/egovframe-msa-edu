@@ -61,11 +61,11 @@ public class PostsUpdateRequestDto {
      * 게시물 등록 요청 DTO 클래스 생성자
      * 빌더 패턴으로 객체 생성
      *
-     * @param postsTitle     게시물 제목
-     * @param postsContent   게시물 내용
+     * @param postsTitle         게시물 제목
+     * @param postsContent       게시물 내용
      * @param postsAnswerContent 게시물 답변 내용
-     * @param attachmentCode 첨부파일 코드
-     * @param noticeAt       공지 여부
+     * @param attachmentCode     첨부파일 코드
+     * @param noticeAt           공지 여부
      */
     @Builder
     public PostsUpdateRequestDto(String postsTitle, String postsContent, String postsAnswerContent, String attachmentCode, Boolean noticeAt) {

@@ -10,9 +10,10 @@ import org.springframework.data.relational.core.query.Query;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
 /**
  * org.egovframe.cloud.reserverequestservice.domain.ReserveRepositoryImpl
- *
+ * <p>
  * 예약 도메인 repository custom interface 구현체
  *
  * @author 표준프레임워크센터 shinmj
@@ -56,11 +57,11 @@ public class ReserveRepositoryImpl implements ReserveRepositoryCustom {
     @Override
     public Flux<Reserve> findAllByReserveDate(Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate) {
         return entityTemplate.select(Reserve.class)
-            .matching(Query.query(where("reserve_item_id").is(reserveItemId)
-                .and ("reserve_start_date").lessThanOrEquals(endDate)
-                .and("reserve_end_date").greaterThanOrEquals(startDate)
-            ))
-            .all();
+                .matching(Query.query(where("reserve_item_id").is(reserveItemId)
+                        .and("reserve_start_date").lessThanOrEquals(endDate)
+                        .and("reserve_end_date").greaterThanOrEquals(startDate)
+                ))
+                .all();
     }
 
     /**
@@ -75,11 +76,11 @@ public class ReserveRepositoryImpl implements ReserveRepositoryCustom {
     @Override
     public Mono<Long> findAllByReserveDateCount(Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate) {
         return entityTemplate.select(Reserve.class)
-            .matching(Query.query(where("reserve_item_id").is(reserveItemId)
-                .and ("reserve_start_date").lessThanOrEquals(endDate)
-                .and("reserve_end_date").greaterThanOrEquals(startDate)
-                .and("reserve_status_id").not(ReserveStatus.CANCEL.getKey())
-            ))
-            .count();
+                .matching(Query.query(where("reserve_item_id").is(reserveItemId)
+                        .and("reserve_start_date").lessThanOrEquals(endDate)
+                        .and("reserve_end_date").greaterThanOrEquals(startDate)
+                        .and("reserve_status_id").not(ReserveStatus.CANCEL.getKey())
+                ))
+                .count();
     }
 }

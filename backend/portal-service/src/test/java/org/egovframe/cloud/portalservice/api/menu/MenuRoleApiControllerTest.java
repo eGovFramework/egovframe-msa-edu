@@ -90,7 +90,8 @@ class MenuRoleApiControllerTest {
         Site site = siteRepository.findAll().get(0);
         //when
         ResponseEntity<List<MenuRoleResponseDto>> responseEntity =
-                restTemplate.exchange("/api/v1/menu-roles/role/"+site.getId(), HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuRoleResponseDto>>(){});
+                restTemplate.exchange("/api/v1/menu-roles/role/" + site.getId(), HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuRoleResponseDto>>() {
+                });
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -121,7 +122,8 @@ class MenuRoleApiControllerTest {
         Site site = siteRepository.findAll().get(0);
         //when
         ResponseEntity<List<MenuRoleResponseDto>> responseEntity =
-                restTemplate.exchange("/api/v1/menu-roles/role/"+site.getId(), HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuRoleResponseDto>>(){});
+                restTemplate.exchange("/api/v1/menu-roles/role/" + site.getId(), HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuRoleResponseDto>>() {
+                });
 
 
         //then
@@ -136,7 +138,7 @@ class MenuRoleApiControllerTest {
                 System.out.println(child);
                 if (child.getKorName().equals("child_1")) {
                     assertThat(child.getIsChecked()).isTrue();
-                }else {
+                } else {
                     assertThat(child.getIsChecked()).isFalse();
                 }
             });
@@ -161,7 +163,7 @@ class MenuRoleApiControllerTest {
                         .id(menuRoleResponseDto.getId())
                         .build());
 
-            }else {
+            } else {
                 children.add(MenuRoleRequestDto.builder()
                         .menuRoleId(menuRoleResponseDto.getMenuRoleId())
                         .isChecked(false)
@@ -182,7 +184,6 @@ class MenuRoleApiControllerTest {
         HttpEntity<List<MenuRoleRequestDto>> httpEntity = new HttpEntity<>(
                 requestDtoList
         );
-
 
 
         //when
@@ -235,7 +236,8 @@ class MenuRoleApiControllerTest {
         }
         //when
         ResponseEntity<List<MenuSideResponseDto>> responseEntity =
-                restTemplate.exchange("/api/v1/menu-roles/"+site.getId(), HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuSideResponseDto>>(){});
+                restTemplate.exchange("/api/v1/menu-roles/" + site.getId(), HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuSideResponseDto>>() {
+                });
 
 
         //then

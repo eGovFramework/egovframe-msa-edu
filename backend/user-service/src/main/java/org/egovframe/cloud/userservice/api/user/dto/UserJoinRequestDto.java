@@ -1,6 +1,7 @@
 package org.egovframe.cloud.userservice.api.user.dto;
 
 import java.util.Objects;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.egovframe.cloud.common.domain.Role;
@@ -15,7 +16,7 @@ import java.util.UUID;
 
 /**
  * org.egovframe.cloud.userservice.api.user.dto.UserJoinRequestDto
- *
+ * <p>
  * 사용자 가입 요청 DTO 클래스
  *
  * @author 표준프레임워크센터 jooho
@@ -67,7 +68,7 @@ public class UserJoinRequestDto {
 
     public Boolean isProvider() {
         return Objects.nonNull(provider) && !"".equals(provider) & !"undefined".equals(provider)
-            && Objects.nonNull(token) && !"".equals(token) && !"undefined".equals(token);
+                && Objects.nonNull(token) && !"".equals(token) && !"undefined".equals(token);
     }
 
     /**

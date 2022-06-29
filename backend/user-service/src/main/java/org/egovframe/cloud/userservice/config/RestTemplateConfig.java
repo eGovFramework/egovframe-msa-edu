@@ -6,7 +6,7 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * org.egovframe.cloud.userservice.config.RestTemplateConfig
- *
+ * <p>
  * REST Template 설정 클래스
  *
  * @author 표준프레임워크센터 jooho

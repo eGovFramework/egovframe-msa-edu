@@ -6,7 +6,7 @@ import org.springframework.data.r2dbc.repository.R2dbcRepository;
 
 /**
  * org.egovframe.cloud.reserverequestservice.domain.Reserve
- *
+ * <p>
  * 예약 도메인 repository interface
  *
  * @author 표준프레임워크센터 shinmj

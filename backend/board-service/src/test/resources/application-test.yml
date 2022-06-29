@@ -5,14 +5,14 @@ spring:
   datasource:
     url: jdbc:h2:mem:testdb;MODE=MYSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
     username: sa
-    password: 
+    password:
     driver-class-name: org.h2.Driver
   jpa:
-#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    #    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       generate-ddl: true
       ddl-auto: create-drop
-#      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    #      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     properties:
       hibernate:
         format_sql: true

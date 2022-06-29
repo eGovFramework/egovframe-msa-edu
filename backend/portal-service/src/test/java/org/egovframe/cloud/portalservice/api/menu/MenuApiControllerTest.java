@@ -85,7 +85,8 @@ class MenuApiControllerTest {
         }
 
         //when
-        ResponseEntity<List<MenuTreeResponseDto>> responseEntity = restTemplate.exchange("/api/v1/menus/"+site.getId()+"/tree", HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuTreeResponseDto>>(){});
+        ResponseEntity<List<MenuTreeResponseDto>> responseEntity = restTemplate.exchange("/api/v1/menus/" + site.getId() + "/tree", HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuTreeResponseDto>>() {
+        });
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -113,7 +114,8 @@ class MenuApiControllerTest {
         );
 
         //when
-        ResponseEntity<List<SiteResponseDto>> responseEntity = restTemplate.exchange("/api/v1/sites", HttpMethod.GET, null, new ParameterizedTypeReference<List<SiteResponseDto>>(){});
+        ResponseEntity<List<SiteResponseDto>> responseEntity = restTemplate.exchange("/api/v1/sites", HttpMethod.GET, null, new ParameterizedTypeReference<List<SiteResponseDto>>() {
+        });
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).extracting("name").contains("portal", "admin");
@@ -175,7 +177,8 @@ class MenuApiControllerTest {
             menuRepository.save(childMenu2);
         }
 
-        ResponseEntity<List<MenuTreeResponseDto>> responseEntity = restTemplate.exchange("/api/v1/menus/"+site.getId()+"/tree", HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuTreeResponseDto>>(){});
+        ResponseEntity<List<MenuTreeResponseDto>> responseEntity = restTemplate.exchange("/api/v1/menus/" + site.getId() + "/tree", HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuTreeResponseDto>>() {
+        });
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         List<MenuTreeResponseDto> body = responseEntity.getBody();
@@ -204,7 +207,7 @@ class MenuApiControllerTest {
                 .build());
 
         //when
-        String url = "/api/v1/menus/"+parentMenu.getId();
+        String url = "/api/v1/menus/" + parentMenu.getId();
         ResponseEntity<MenuResponseDto> responseEntity = restTemplate.getForEntity(url, MenuResponseDto.class);
 
         //then
@@ -280,7 +283,7 @@ class MenuApiControllerTest {
         );
 
 
-        String url = "/api/v1/menus/"+site.getId()+"/tree";
+        String url = "/api/v1/menus/" + site.getId() + "/tree";
 
         //when
         ResponseEntity<Long> responseEntity =
@@ -314,7 +317,7 @@ class MenuApiControllerTest {
             menuId = save.getId();
         }
 
-        String url = "/api/v1/menus/"+menuId+"/updateName";
+        String url = "/api/v1/menus/" + menuId + "/updateName";
 
         //when
         ResponseEntity<MenuTreeResponseDto> responseEntity =
@@ -336,7 +339,7 @@ class MenuApiControllerTest {
                 .site(site)
                 .build());
 
-        String url = "/api/v1/menus/"+parentMenu1.getId();
+        String url = "/api/v1/menus/" + parentMenu1.getId();
 
 
         HttpEntity<MenuUpdateRequestDto> httpEntity = new HttpEntity<>(
@@ -350,7 +353,7 @@ class MenuApiControllerTest {
                         .isShow(true)
                         .isBlank(false)
                         .icon("icon")
-                .build()
+                        .build()
         );
 
         //when
@@ -388,7 +391,7 @@ class MenuApiControllerTest {
             menuId = save.getId();
         }
 
-        String url = "/api/v1/menus/"+menuId;
+        String url = "/api/v1/menus/" + menuId;
         //when
         restTemplate.delete(url);
 
@@ -422,7 +425,7 @@ class MenuApiControllerTest {
             menuId = save.getId();
         }
 
-        String url = "/api/v1/menus/"+parentMenu1.getId();
+        String url = "/api/v1/menus/" + parentMenu1.getId();
         //when
         restTemplate.delete(url);
 

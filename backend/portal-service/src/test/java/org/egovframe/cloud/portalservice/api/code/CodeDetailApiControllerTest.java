@@ -66,7 +66,7 @@ class CodeDetailApiControllerTest {
     private static final String TEST_COM = "@test.com";
     private static final String TEST_EMAIL = System.currentTimeMillis() + TEST_COM;
     private static final String TEST_PASSWORD = "test1234!";
-//    private static final String PORTAL_SERVICE_URL = "http://localhost:8000/portal-service";
+    //    private static final String PORTAL_SERVICE_URL = "http://localhost:8000/portal-service";
     private static final String USER_SERVICE_URL = "http://localhost:8000/user-service";
     private static final String API_URL = "/api/v1/code-details";
 
@@ -193,7 +193,8 @@ class CodeDetailApiControllerTest {
         HttpEntity<String> httpEntity = new HttpEntity<>(headers);
 
         // when
-        ResponseEntity<List<CodeDetailResponseDto>> responseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<CodeDetailResponseDto>>() {});
+        ResponseEntity<List<CodeDetailResponseDto>> responseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<CodeDetailResponseDto>>() {
+        });
 
         // then
         List<CodeDetailResponseDto> list = responseEntity.getBody();

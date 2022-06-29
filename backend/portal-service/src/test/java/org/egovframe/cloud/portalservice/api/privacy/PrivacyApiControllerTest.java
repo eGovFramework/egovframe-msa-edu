@@ -31,7 +31,7 @@ import org.springframework.test.context.TestPropertySource;
 
 /**
  * org.egovframe.cloud.portalservice.api.privacy.PrivacyApiControllerTest
- *
+ * <p>
  * 개인정보처리방침 Rest API 컨트롤러 테스트 클래스
  *
  * @author 표준프레임워크센터 jooho

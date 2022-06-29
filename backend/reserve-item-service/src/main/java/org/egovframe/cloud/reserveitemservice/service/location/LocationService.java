@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * org.egovframe.cloud.reserveitemservice.service.location.LocationService
- *
+ * <p>
  * 예약 지역 service 클래스
  *
  * @author 표준프레임워크센터 shinmj
@@ -144,8 +144,8 @@ public class LocationService extends ReactiveAbstractService {
                 .switchIfEmpty(monoResponseStatusEntityNotFoundException(locationId))
                 .map(location ->
                         location.update(updateRequestDto.getLocationName(),
-                        updateRequestDto.getSortSeq(),
-                        updateRequestDto.getIsUse())
+                                updateRequestDto.getSortSeq(),
+                                updateRequestDto.getIsUse())
                 )
                 .flatMap(locationRepository::save)
                 .then();

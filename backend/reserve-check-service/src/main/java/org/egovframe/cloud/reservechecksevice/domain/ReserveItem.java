@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ import org.springframework.data.relational.core.mapping.Column;
 
 /**
  * org.egovframe.cloud.reserveitemservice.domain.reserveItem.ReserveItem
- *
+ * <p>
  * 예약 물품 도메인 클래스
  *
  * @author 표준프레임워크센터 shinmj

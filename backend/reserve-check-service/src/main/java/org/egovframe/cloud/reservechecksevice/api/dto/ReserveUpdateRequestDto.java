@@ -2,6 +2,7 @@ package org.egovframe.cloud.reservechecksevice.api.dto;
 
 import java.time.LocalDateTime;
 import javax.validation.constraints.NotNull;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

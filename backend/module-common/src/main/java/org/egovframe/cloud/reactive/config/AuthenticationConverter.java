@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * org.egovframe.cloud.reserveitemservice.config.AuthenticationConverter
- *
+ * <p>
  * 요청을 authentiation으로 변환하는 클래스
  * AuthenticationWebFilter에서 호출됨.
  *

@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 
 /**
  * org.egovframe.cloud.userservice.api.user.dto.UserFindPasswordSaveRequestDto
- *
+ * <p>
  * 사용자 비밀번호 찾기 등록 요청 DTO 클래스
  *
  * @author 표준프레임워크센터 jooho

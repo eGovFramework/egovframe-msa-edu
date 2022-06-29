@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * org.egovframe.cloud.reserverequestservice.config.MessageListenerContainerFactory
- *
+ * <p>
  * 동적으로 이벤트 큐 생성하기 위한 component
  *
  * @author 표준프레임워크센터 shinmj

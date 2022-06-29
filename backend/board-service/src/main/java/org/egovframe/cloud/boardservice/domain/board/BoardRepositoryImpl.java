@@ -59,7 +59,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
      * @return Page<BoardListResponseDto> 페이지 게시판 목록 응답 DTO
      */
     @Override
-	public Page<BoardListResponseDto> findPage(RequestDto requestDto, Pageable pageable) {
+    public Page<BoardListResponseDto> findPage(RequestDto requestDto, Pageable pageable) {
         JPQLQuery<BoardListResponseDto> query = jpaQueryFactory
                 .select(constructor(BoardListResponseDto.class,
                         QBoard.board.boardNo,
@@ -68,9 +68,9 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         Expressions.as(QCode.code.codeName, "skinTypeCodeName"),
                         QBoard.board.createdDate,
                         new CaseBuilder()
-                            .when(QBoard.board.posts.size().gt(0))
-                            .then(Boolean.TRUE)
-                            .otherwise(Boolean.FALSE).as("isPosts")
+                                .when(QBoard.board.posts.size().gt(0))
+                                .then(Boolean.TRUE)
+                                .otherwise(Boolean.FALSE).as("isPosts")
                 ))
                 .from(QBoard.board)
                 .leftJoin(QCode.code).on(QBoard.board.skinTypeCode.eq(QCode.code.codeId).and(QCode.code.parentCodeId.eq("skin_type_code")))
@@ -83,8 +83,8 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
             String property = sort.getProperty();
 
             Path<Object> target = Expressions.path(Object.class, QBoard.board, CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, property));
-            @SuppressWarnings({ "rawtypes", "unchecked" })
-			OrderSpecifier<?> orderSpecifier = new OrderSpecifier(order, target);
+            @SuppressWarnings({"rawtypes", "unchecked"})
+            OrderSpecifier<?> orderSpecifier = new OrderSpecifier(order, target);
             query.orderBy(orderSpecifier);
         });
 
@@ -103,7 +103,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
      * @return List<BoardResponseDto> 게시판 상세 응답 DTO List
      */
     @Override
-	public List<BoardResponseDto> findAllByBoardNoIn(List<Integer> boardNos) {
+    public List<BoardResponseDto> findAllByBoardNoIn(List<Integer> boardNos) {
         return jpaQueryFactory
                 .select(new QBoardResponseDto(
                         QBoard.board.boardNo,

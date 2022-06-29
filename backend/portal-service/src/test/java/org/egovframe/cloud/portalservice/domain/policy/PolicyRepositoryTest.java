@@ -49,10 +49,10 @@ class PolicyRepositoryTest {
     public void 목록조회한다() throws Exception {
         //given
         for (int i = 0; i < 2; i++) {
-            String title = "title_"+i;
+            String title = "title_" + i;
             String contentStr = "contents " + i;
             String type = "TOS";
-            if(i > 0){
+            if (i > 0) {
                 type = "PP";
             }
 
@@ -75,10 +75,10 @@ class PolicyRepositoryTest {
     public void 이용약관_조건부조회한다() {
         //given
         for (int i = 1; i <= 10; i++) {
-            String title = "title_"+i;
+            String title = "title_" + i;
             String contentStr = "contents " + i;
             String type = "TOS";
-            if(i % 2 == 0){
+            if (i % 2 == 0) {
                 type = "PP";
             }
 
@@ -107,10 +107,10 @@ class PolicyRepositoryTest {
     public void 회원가입시_이용약관_한건조회_정상() throws Exception {
         //given
         for (int i = 1; i <= 10; i++) {
-            String title = "title_"+i;
+            String title = "title_" + i;
             String contentStr = "contents " + i;
             String type = "TOS";
-            if(i % 2 == 0){
+            if (i % 2 == 0) {
                 type = "PP";
             }
 
@@ -137,18 +137,18 @@ class PolicyRepositoryTest {
         Policy save = null;
         //given
         for (int i = 1; i <= 10; i++) {
-            String title = "title_"+i;
+            String title = "title_" + i;
             String contentStr = "contents " + i;
             String type = "TOS";
-            if(i % 2 == 0){
+            if (i % 2 == 0) {
                 type = "PP";
             }
 
             save = policyRepository.save(Policy.builder()
-                .type(type)
-                .title(title)
-                .contents(contentStr)
-                .build());
+                    .type(type)
+                    .title(title)
+                    .contents(contentStr)
+                    .build());
         }
 
         //when
@@ -168,10 +168,10 @@ class PolicyRepositoryTest {
         Long id = 1L;
         //given
         for (int i = 1; i <= 10; i++) {
-            String title = "title_"+i;
+            String title = "title_" + i;
             String contentStr = "contents " + i;
             String type = "TOS";
-            if(i % 2 == 0){
+            if (i % 2 == 0) {
                 type = "PP";
             }
 

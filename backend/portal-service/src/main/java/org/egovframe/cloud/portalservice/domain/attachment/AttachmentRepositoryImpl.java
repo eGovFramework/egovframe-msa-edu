@@ -36,7 +36,7 @@ import static org.springframework.util.StringUtils.hasLength;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class AttachmentRepositoryImpl implements AttachmentRepositoryCustom{
+public class AttachmentRepositoryImpl implements AttachmentRepositoryCustom {
 
     /**
      * DML 생성을위한 Querydsl 팩토리 클래스
@@ -51,10 +51,10 @@ public class AttachmentRepositoryImpl implements AttachmentRepositoryCustom{
      */
     @Override
     public List<Attachment> findByCode(String attachmentCode) {
-         return queryFactory.selectFrom(attachment)
-                 .where(attachment.attachmentId.code.eq(attachmentCode), attachment.isDelete.eq(false))
-                 .orderBy(attachment.attachmentId.seq.asc())
-                 .fetch();
+        return queryFactory.selectFrom(attachment)
+                .where(attachment.attachmentId.code.eq(attachmentCode), attachment.isDelete.eq(false))
+                .orderBy(attachment.attachmentId.seq.asc())
+                .fetch();
     }
 
     /**
@@ -66,7 +66,7 @@ public class AttachmentRepositoryImpl implements AttachmentRepositoryCustom{
     @Override
     public AttachmentId getId(String attachmentCode) {
         Long seq = queryFactory.select(
-                attachment.attachmentId.seq.max()
+                        attachment.attachmentId.seq.max()
                 )
                 .from(attachment)
                 .where(attachment.attachmentId.code.eq(attachmentCode))
@@ -78,7 +78,7 @@ public class AttachmentRepositoryImpl implements AttachmentRepositoryCustom{
 
         return AttachmentId.builder()
                 .code(attachmentCode)
-                .seq(seq+1L)
+                .seq(seq + 1L)
                 .build();
 
     }
@@ -95,18 +95,18 @@ public class AttachmentRepositoryImpl implements AttachmentRepositoryCustom{
 
         QueryResults<AttachmentResponseDto> results =
                 queryFactory.select(constructor(AttachmentResponseDto.class, attachment))
-                .from(attachment)
-                .where(
-                        searchTextLike(searchRequestDto)
-                )
-                .orderBy(
-                        attachment.createdDate.desc(),
-                        attachment.attachmentId.code.asc(),
-                        attachment.attachmentId.seq.asc()
-                )
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetchResults();
+                        .from(attachment)
+                        .where(
+                                searchTextLike(searchRequestDto)
+                        )
+                        .orderBy(
+                                attachment.createdDate.desc(),
+                                attachment.attachmentId.code.asc(),
+                                attachment.attachmentId.seq.asc()
+                        )
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .fetchResults();
 
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }

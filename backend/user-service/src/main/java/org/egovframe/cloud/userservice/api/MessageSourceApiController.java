@@ -34,7 +34,7 @@ public class MessageSourceApiController {
 
     @GetMapping("/api/v1/messages/{code}/{lang}")
     public String getMessage(@PathVariable String code, @PathVariable String lang) {
-        Locale locale = "en".equals(lang)? Locale.ENGLISH : Locale.KOREAN;
+        Locale locale = "en".equals(lang) ? Locale.ENGLISH : Locale.KOREAN;
         String message = messageSource.getMessage(code, null, locale);
         log.info("code={}, lang={}, message={}", code, lang, message);
         return message;

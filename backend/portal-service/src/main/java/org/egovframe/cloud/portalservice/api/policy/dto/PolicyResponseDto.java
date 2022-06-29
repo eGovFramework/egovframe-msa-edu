@@ -38,7 +38,7 @@ public class PolicyResponseDto {
     private String contents;
 
     @Builder
-    public PolicyResponseDto(Policy policy){
+    public PolicyResponseDto(Policy policy) {
         this.id = policy.getId();
         this.type = policy.getType();
         this.title = policy.getTitle();

@@ -37,7 +37,7 @@ public class PolicySaveRequestDto {
     private String contents;
 
     @Builder
-    public PolicySaveRequestDto(String type, String title, Boolean isUse, ZonedDateTime regDate, String contents){
+    public PolicySaveRequestDto(String type, String title, Boolean isUse, ZonedDateTime regDate, String contents) {
         this.type = type;
         this.title = title;
         this.isUse = isUse;
@@ -50,7 +50,7 @@ public class PolicySaveRequestDto {
      *
      * @return
      */
-    public Policy toEntity(){
+    public Policy toEntity() {
         return Policy.builder()
                 .type(this.type)
                 .title(this.title)

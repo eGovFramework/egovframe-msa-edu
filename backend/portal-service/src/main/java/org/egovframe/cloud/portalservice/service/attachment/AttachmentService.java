@@ -2,6 +2,7 @@ package org.egovframe.cloud.portalservice.service.attachment;
 
 import java.io.File;
 import java.util.Objects;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
@@ -56,7 +57,7 @@ public class AttachmentService extends AbstractService {
     private static final String FILE_SEPARATOR = File.separator;
     private static final String EDITOR_FILE_SEPARATOR = "-";
     private static final String BASE_PATH = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
-    private static final String EDITOR_PATH = "editor/"+BASE_PATH;
+    private static final String EDITOR_PATH = "editor/" + BASE_PATH;
 
     private final AttachmentRepository attachmentRepository;
     private final StorageUtils storageUtils;
@@ -406,7 +407,7 @@ public class AttachmentService extends AbstractService {
             throw new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + attachmentCode);
         }
 
-        for (Attachment attachment: attachmentList) {
+        for (Attachment attachment : attachmentList) {
             // 첨부파일 저장 후 기능 저장 시 오류 날 경우에만 첨부파일 전체 삭제를 하므로
             // entity 정보가 있는 경우에는 삭제하지 못하도록 한다.
             if (attachment.hasEntityId()) {
@@ -418,7 +419,7 @@ public class AttachmentService extends AbstractService {
 
     /**
      * 첨부파일 삭제
-     * 
+     *
      * @param attachment
      */
     private void deleteFile(Attachment attachment) {
@@ -438,8 +439,8 @@ public class AttachmentService extends AbstractService {
      */
     private Attachment findAttachmentByUniqueId(String uniqueId) {
         return attachmentRepository.findAllByUniqueId(uniqueId)
-            // 파일을 찾을 수 없습니다.
-            .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + uniqueId));
+                // 파일을 찾을 수 없습니다.
+                .orElseThrow(() -> new EntityNotFoundException(getMessage("valid.file.not_found") + " ID= " + uniqueId));
     }
 
     /**

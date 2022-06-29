@@ -35,12 +35,12 @@ public class AttachmentId implements Serializable {
     private Long seq;
 
     @Builder
-    public AttachmentId (String code, Long seq) {
+    public AttachmentId(String code, Long seq) {
         this.code = code;
         this.seq = seq;
     }
 
-    public AttachmentId () {
+    public AttachmentId() {
         this.code = UUID.randomUUID().toString();
         this.seq = 1L;
     }

@@ -11,6 +11,7 @@ import java.util.Queue;
 import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +27,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 /**
  * org.egovframe.cloud.reserveitemservice.domain.reserveItem.ReserveItem
- *
+ * <p>
  * 예약 물품 도메인 클래스
  *
  * @author 표준프레임워크센터 shinmj
@@ -280,9 +281,9 @@ public class ReserveItem extends BaseEntity {
 
     public List<String> getRelationCodeIds() {
         return Arrays.asList(categoryId, reserveMethodId, reserveMeansId, selectionMeansId, targetId)
-            .stream()
-            .filter(it -> Objects.nonNull(it))
-            .collect(Collectors.toList());
+                .stream()
+                .filter(it -> Objects.nonNull(it))
+                .collect(Collectors.toList());
     }
 
 
@@ -375,13 +376,13 @@ public class ReserveItem extends BaseEntity {
         if (this.getReserveMethodId().equals("internet") && this.getReserveMeansId().equals("realtime")) {
             if (this.getRequestStartDate().isBefore(now) && this.getRequestEndDate().isAfter(now)) {
                 return true;
-            }else {
+            } else {
                 return false;
             }
         } else {
             if (this.getOperationStartDate().isBefore(now) && this.getOperationEndDate().isAfter(now)) {
                 return true;
-            }else {
+            } else {
                 return false;
             }
         }
@@ -414,24 +415,24 @@ public class ReserveItem extends BaseEntity {
 
     public void setCodeName(List<Code> codes) {
         codes.stream().filter(it -> it.getParentCodeId().equals("reserve-category"))
-            .findFirst()
-            .ifPresent(it -> setCategoryName(it.getCodeName()));
+                .findFirst()
+                .ifPresent(it -> setCategoryName(it.getCodeName()));
 
         codes.stream().filter(it -> it.getParentCodeId().equals("reserve-method"))
-            .findFirst()
-            .ifPresent(it -> setReserveMethodName(it.getCodeName()));
+                .findFirst()
+                .ifPresent(it -> setReserveMethodName(it.getCodeName()));
 
         codes.stream().filter(it -> it.getParentCodeId().equals("reserve-means"))
-            .findFirst()
-            .ifPresent(it -> setReserveMeansName(it.getCodeName()));
+                .findFirst()
+                .ifPresent(it -> setReserveMeansName(it.getCodeName()));
 
         codes.stream().filter(it -> it.getParentCodeId().equals("reserve-selection"))
-            .findFirst()
-            .ifPresent(it -> setSelectionMeansName(it.getCodeName()));
+                .findFirst()
+                .ifPresent(it -> setSelectionMeansName(it.getCodeName()));
 
         codes.stream().filter(it -> it.getParentCodeId().equals("reserve-target"))
-            .findFirst()
-            .ifPresent(it -> setTargetName(it.getCodeName()));
+                .findFirst()
+                .ifPresent(it -> setTargetName(it.getCodeName()));
     }
 }
 

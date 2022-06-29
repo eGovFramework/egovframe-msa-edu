@@ -1,6 +1,7 @@
 package org.egovframe.cloud.reserveitemservice.api.reserveItem.dto;
 
 import java.util.Objects;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

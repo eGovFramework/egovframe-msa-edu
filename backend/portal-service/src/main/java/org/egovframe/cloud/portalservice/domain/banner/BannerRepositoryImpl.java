@@ -57,14 +57,14 @@ public class BannerRepositoryImpl implements BannerRepositoryCustom {
     public Page<BannerListResponseDto> findPage(BannerRequestDto requestDto, Pageable pageable) {
         QueryResults<BannerListResponseDto> result = jpaQueryFactory
                 .select(fields(BannerListResponseDto.class,
-                    QBanner.banner.bannerNo,
-                    QBanner.banner.bannerTypeCode,
-                    Expressions.as(QCode.code.codeName, "bannerTypeCodeName"),
-                    QBanner.banner.bannerTitle,
-                    QBanner.banner.useAt,
-                    QBanner.banner.createdDate,
-                    QBanner.banner.site.name.as("siteName")
-                    ))
+                        QBanner.banner.bannerNo,
+                        QBanner.banner.bannerTypeCode,
+                        Expressions.as(QCode.code.codeName, "bannerTypeCodeName"),
+                        QBanner.banner.bannerTitle,
+                        QBanner.banner.useAt,
+                        QBanner.banner.createdDate,
+                        QBanner.banner.site.name.as("siteName")
+                ))
                 .from(QBanner.banner)
                 .leftJoin(QCode.code).on(QBanner.banner.bannerTypeCode.eq(QCode.code.codeId).and(QCode.code.parentCodeId.eq("banner_type_code")))
                 .fetchJoin()
@@ -88,26 +88,26 @@ public class BannerRepositoryImpl implements BannerRepositoryCustom {
     public List<BannerImageResponseDto> findList(String bannerTypeCode, Integer bannerCount, Boolean useAt, Long siteId) {
         JPQLQuery<BannerImageResponseDto> query = jpaQueryFactory
                 .select(constructor(BannerImageResponseDto.class,
-                    QBanner.banner.bannerNo,
-                    QBanner.banner.bannerTypeCode,
-                    QBanner.banner.bannerTitle,
-                    QBanner.banner.attachmentCode,
-                    JPAExpressions.select(QAttachment.attachment.uniqueId)
-                        .from(QAttachment.attachment)
-                        .where(QAttachment.attachment.attachmentId.code.eq(QBanner.banner.attachmentCode)
-                            .and(QAttachment.attachment.isDelete.eq(Boolean.FALSE))
-                            .and(QAttachment.attachment.attachmentId.seq.eq(
-                                JPAExpressions.select(QAttachment.attachment.attachmentId.seq.max())
-                                    .from(QAttachment.attachment)
-                                    .where(QAttachment.attachment.attachmentId.code.eq(QBanner.banner.attachmentCode)
-                                        .and(QAttachment.attachment.isDelete.eq(Boolean.FALSE)))))),
-                    QBanner.banner.urlAddr,
-                    QBanner.banner.newWindowAt,
-                    QBanner.banner.bannerContent
-                    ))
+                        QBanner.banner.bannerNo,
+                        QBanner.banner.bannerTypeCode,
+                        QBanner.banner.bannerTitle,
+                        QBanner.banner.attachmentCode,
+                        JPAExpressions.select(QAttachment.attachment.uniqueId)
+                                .from(QAttachment.attachment)
+                                .where(QAttachment.attachment.attachmentId.code.eq(QBanner.banner.attachmentCode)
+                                        .and(QAttachment.attachment.isDelete.eq(Boolean.FALSE))
+                                        .and(QAttachment.attachment.attachmentId.seq.eq(
+                                                JPAExpressions.select(QAttachment.attachment.attachmentId.seq.max())
+                                                        .from(QAttachment.attachment)
+                                                        .where(QAttachment.attachment.attachmentId.code.eq(QBanner.banner.attachmentCode)
+                                                                .and(QAttachment.attachment.isDelete.eq(Boolean.FALSE)))))),
+                        QBanner.banner.urlAddr,
+                        QBanner.banner.newWindowAt,
+                        QBanner.banner.bannerContent
+                ))
                 .from(QBanner.banner)
                 .where(QBanner.banner.site.id.eq(siteId),
-                    getEqualsBooleanExpression("bannerTypeCode", bannerTypeCode),
+                        getEqualsBooleanExpression("bannerTypeCode", bannerTypeCode),
                         getEqualsBooleanExpression("useAt", useAt))
                 .orderBy(QBanner.banner.sortSeq.asc());
 
@@ -145,7 +145,7 @@ public class BannerRepositoryImpl implements BannerRepositoryCustom {
         return jpaQueryFactory.update(QBanner.banner)
                 .set(QBanner.banner.sortSeq, QBanner.banner.sortSeq.add(increaseSortSeq))
                 .where(QBanner.banner.site.id.eq(siteId),
-                    isGoeSortSeq(startSortSeq),
+                        isGoeSortSeq(startSortSeq),
                         isLoeSortSeq(endSortSeq))
                 .execute();
     }
@@ -153,7 +153,7 @@ public class BannerRepositoryImpl implements BannerRepositoryCustom {
     @Override
     public Optional<Banner> findBySortSeqAndSiteId(Integer sortSeq, Long siteId) {
         return Optional.ofNullable(jpaQueryFactory.selectFrom(QBanner.banner)
-            .where(QBanner.banner.site.id.eq(siteId), QBanner.banner.sortSeq.eq(sortSeq)).fetchOne());
+                .where(QBanner.banner.site.id.eq(siteId), QBanner.banner.sortSeq.eq(sortSeq)).fetchOne());
 
     }
 

@@ -63,7 +63,7 @@ public abstract class AbstractService extends EgovAbstractServiceImpl {
      */
     protected void sendAttachmentEntityInfo(StreamBridge streamBridge, AttachmentEntityMessage entityMessage) {
         streamBridge.send(ATTACHMENT_ENTITY_BINDING_NAME,
-            MessageBuilder.withPayload(entityMessage).build());
+                MessageBuilder.withPayload(entityMessage).build());
     }
 
 }

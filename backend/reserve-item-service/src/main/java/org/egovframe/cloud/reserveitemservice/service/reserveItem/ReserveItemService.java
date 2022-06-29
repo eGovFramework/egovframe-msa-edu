@@ -3,6 +3,7 @@ package org.egovframe.cloud.reserveitemservice.service.reserveItem;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.common.exception.BusinessMessageException;
@@ -29,7 +30,7 @@ import reactor.core.scheduler.Schedulers;
 
 /**
  * org.egovframe.cloud.reserveitemservice.service.reserveItem.ReserveItemService
- *
+ * <p>
  * 예약 물품 service class
  *
  * @author 표준프레임워크센터 shinmj
@@ -221,9 +222,9 @@ public class ReserveItemService extends ReactiveAbstractService {
      */
     public Mono<Map<String, Collection<ReserveItemMainResponseDto>>> findLatest(Integer count) {
         return reserveItemRepository.findCodeDetail(RESERVE_CATEGORY_CODE)
-            .flatMap(code -> reserveItemRepository.findLatestByCategory(count, code.getCodeId()))
-            .map(reserveItem -> ReserveItemMainResponseDto.builder().entity(reserveItem).build())
-            .collectMultimap(ReserveItemMainResponseDto::getCategoryName);
+                .flatMap(code -> reserveItemRepository.findLatestByCategory(count, code.getCodeId()))
+                .map(reserveItem -> ReserveItemMainResponseDto.builder().entity(reserveItem).build())
+                .collectMultimap(ReserveItemMainResponseDto::getCategoryName);
 
     }
 
@@ -256,12 +257,12 @@ public class ReserveItemService extends ReactiveAbstractService {
      */
     private void sendMessage(String reserveId, Boolean isItemUpdated) {
         streamBridge.send(INVENTORY_UPDATED_BINDING_NAME,
-            MessageBuilder.withPayload(
-                RequestMessage.builder()
-                    .reserveId(reserveId)
-                    .isItemUpdated(isItemUpdated)
-                    .build())
-                .setHeader(EVENT_HEADER_NAME, reserveId).build());
+                MessageBuilder.withPayload(
+                                RequestMessage.builder()
+                                        .reserveId(reserveId)
+                                        .isItemUpdated(isItemUpdated)
+                                        .build())
+                        .setHeader(EVENT_HEADER_NAME, reserveId).build());
     }
 
 }

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 
 /**
  * org.egovframe.cloud.reserverequestservice.domain.Reserve
- *
+ * <p>
  * 예약 도메인 클래스
  *
  * @author 표준프레임워크센터 shinmj

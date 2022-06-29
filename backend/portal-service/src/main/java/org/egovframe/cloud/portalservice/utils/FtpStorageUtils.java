@@ -3,6 +3,7 @@ package org.egovframe.cloud.portalservice.utils;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -371,7 +372,7 @@ public class FtpStorageUtils implements StorageUtils {
     public AttachmentImageResponseDto loadImage(String imagename) {
         InputStream inputStream = null;
         try {
-            String paths = environment.getProperty("file.url")+StringUtils.cleanPath("/"+ imagename);
+            String paths = environment.getProperty("file.url") + StringUtils.cleanPath("/" + imagename);
             Resource resource = new UrlResource(paths);
             inputStream = resource.getInputStream();
 
@@ -381,9 +382,9 @@ public class FtpStorageUtils implements StorageUtils {
             inputStream.close();
 
             return AttachmentImageResponseDto.builder()
-                .mimeType(contentType)
-                .data(data)
-                .build();
+                    .mimeType(contentType)
+                    .data(data)
+                    .build();
         } catch (FileNotFoundException | NoSuchFileException ex) {
             // 파일을 찾을 수 없습니다.
             throw new BusinessMessageException(messageUtil.getMessage("valid.file.not_found"));
@@ -391,7 +392,7 @@ public class FtpStorageUtils implements StorageUtils {
             log.error("Could not read file.", iex);
             // 파일을 찾을 수 없습니다.
             throw new BusinessMessageException(messageUtil.getMessage("valid.file.not_found"));
-        }finally {
+        } finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();

@@ -114,7 +114,7 @@ public class BoardUpdateRequestDto {
      * @param userWriteAt        사용자 작성 여부
      * @param commentUseAt       댓글 사용 여부
      * @param uploadUseAt        업로드 사용 여부
-     * @param uploadLimitCount    업로드 제한 수
+     * @param uploadLimitCount   업로드 제한 수
      * @param uploadLimitSize    업로드 제한 크기
      */
     @Builder

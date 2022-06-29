@@ -52,7 +52,7 @@ public class MenuRepositoryImpl implements MenuRepositoryCustom {
     @Override
     public List<MenuTreeResponseDto> findTreeBySiteId(Long siteId) {
         return jpaQueryFactory.select(
-                constructor(MenuTreeResponseDto.class, menu))
+                        constructor(MenuTreeResponseDto.class, menu))
                 .from(menu)
                 .where(menu.site.id.eq(siteId), menu.parent.isNull())
                 .orderBy(menu.sortSeq.asc())
@@ -69,35 +69,35 @@ public class MenuRepositoryImpl implements MenuRepositoryCustom {
     public MenuResponseDto findByIdWithConnectName(Long menuId) {
 
         return jpaQueryFactory.select(
-                fields(MenuResponseDto.class,
-                        menu.id.as("menuId"),
-                        menu.menuKorName,
-                        menu.menuEngName,
-                        menu.menuType,
-                        menu.connectId,
-                        new CaseBuilder()
-                                .when(
-                                        menu.menuType.eq("contents")
-                                ).then(
-                                        JPAExpressions.select(content.contentName)
-                                                .from(content)
-                                                .where(content.contentNo.eq(menu.connectId)))
-                                .when(
-                                        menu.menuType.eq("board")
-                                ).then(
-                                        JPAExpressions.select(board.boardName)
-                                                .from(board)
-                                                .where(board.boardNo.eq(menu.connectId)))
-                                .otherwise("").as("connectName"),
-                        menu.urlPath,
-                        menu.isUse,
-                        menu.isShow,
-                        menu.isBlank,
-                        menu.subName,
-                        menu.description,
-                        menu.icon
+                        fields(MenuResponseDto.class,
+                                menu.id.as("menuId"),
+                                menu.menuKorName,
+                                menu.menuEngName,
+                                menu.menuType,
+                                menu.connectId,
+                                new CaseBuilder()
+                                        .when(
+                                                menu.menuType.eq("contents")
+                                        ).then(
+                                                JPAExpressions.select(content.contentName)
+                                                        .from(content)
+                                                        .where(content.contentNo.eq(menu.connectId)))
+                                        .when(
+                                                menu.menuType.eq("board")
+                                        ).then(
+                                                JPAExpressions.select(board.boardName)
+                                                        .from(board)
+                                                        .where(board.boardNo.eq(menu.connectId)))
+                                        .otherwise("").as("connectName"),
+                                menu.urlPath,
+                                menu.isUse,
+                                menu.isShow,
+                                menu.isBlank,
+                                menu.subName,
+                                menu.description,
+                                menu.icon
                         )
-        )
+                )
                 .from(menu)
                 .where(menu.id.eq(menuId))
                 .fetchOne();

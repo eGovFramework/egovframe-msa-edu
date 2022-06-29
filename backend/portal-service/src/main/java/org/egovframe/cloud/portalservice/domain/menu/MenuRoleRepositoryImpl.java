@@ -29,7 +29,7 @@ import static org.egovframe.cloud.portalservice.domain.menu.QMenu.menu;
  * </pre>
  */
 @RequiredArgsConstructor
-public class MenuRoleRepositoryImpl implements MenuRoleRepositoryCustom{
+public class MenuRoleRepositoryImpl implements MenuRoleRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -43,7 +43,7 @@ public class MenuRoleRepositoryImpl implements MenuRoleRepositoryCustom{
     @Override
     public List<MenuRoleResponseDto> findTree(String roleId, Long siteId) {
         return jpaQueryFactory.select(
-                Projections.constructor(MenuRoleResponseDto.class, menu, Expressions.constant(roleId)))
+                        Projections.constructor(MenuRoleResponseDto.class, menu, Expressions.constant(roleId)))
                 .from(menu)
                 .where(menu.site.id.eq(siteId), menu.parent.isNull())
                 .orderBy(menu.sortSeq.asc())
@@ -53,7 +53,7 @@ public class MenuRoleRepositoryImpl implements MenuRoleRepositoryCustom{
     @Override
     public List<MenuSideResponseDto> findMenu(String roleId, Long siteId) {
         return jpaQueryFactory.select(
-                Projections.constructor(MenuSideResponseDto.class, menu, Expressions.constant(roleId)))
+                        Projections.constructor(MenuSideResponseDto.class, menu, Expressions.constant(roleId)))
                 .from(menu)
                 .where(menu.site.id.eq(siteId),
                         menu.parent.isNull(),

@@ -5,6 +5,7 @@ import static org.springframework.data.relational.core.query.Criteria.where;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemRequestDto;
@@ -22,7 +23,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * org.egovframe.cloud.reserveitemservice.domain.reserveItem.ReserveItemRepositoryImpl
- *
+ * <p>
  * 예약 물품 도메인 repository custom(query) 구현체
  *
  * @author 표준프레임워크센터 shinmj
@@ -39,7 +40,7 @@ import reactor.core.publisher.Mono;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
+public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom {
     private static final String SORT_COLUMN = "create_date";
     private final R2dbcEntityTemplate entityTemplate;
 
@@ -94,25 +95,25 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
     /**
      * 카테고리별 예약 물품 최신 데이터 count 만큼 조회
      *
-     * @param count         조회할 갯수 0:전체
-     * @param categoryId    카테고리 아이디
+     * @param count      조회할 갯수 0:전체
+     * @param categoryId 카테고리 아이디
      * @return
      */
     @Override
     public Flux<ReserveItem> findLatestByCategory(Integer count, String categoryId) {
         Query query = Query.query(
-            where("category_id").is(categoryId)
-            .and("use_at").isTrue())
-            .sort(Sort.by(Sort.Order.desc(SORT_COLUMN)));
+                        where("category_id").is(categoryId)
+                                .and("use_at").isTrue())
+                .sort(Sort.by(Sort.Order.desc(SORT_COLUMN)));
 
         if (count > 0) {
             query.limit(count);
         }
 
         return entityTemplate.select(ReserveItem.class)
-            .matching(query)
-            .all()
-            .flatMap(this::loadRelations);
+                .matching(query)
+                .all()
+                .flatMap(this::loadRelations);
     }
 
     /**
@@ -124,8 +125,8 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
     @Override
     public Flux<Code> findCodeDetail(String codeId) {
         return entityTemplate.select(Code.class)
-            .matching(Query.query(where("parent_code_id").is(codeId).and("use_at").isTrue()))
-            .all();
+                .matching(Query.query(where("parent_code_id").is(codeId).and("use_at").isTrue()))
+                .all();
     }
 
     /**
@@ -158,14 +159,14 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
     private Mono<ReserveItem> loadRelationsAll(final ReserveItem reserveItem) {
 
         Mono<ReserveItem> mono = findCode(reserveItem.getRelationCodeIds())
-            .collectList()
-            .zipWith(Mono.just(reserveItem))
-            .map(tuple -> {
-                ReserveItem item = tuple.getT2();
-                List<Code> codes = tuple.getT1();
-                item.setCodeName(codes);
-                return item;
-            }).switchIfEmpty(Mono.just(reserveItem));
+                .collectList()
+                .zipWith(Mono.just(reserveItem))
+                .map(tuple -> {
+                    ReserveItem item = tuple.getT2();
+                    List<Code> codes = tuple.getT1();
+                    item.setCodeName(codes);
+                    return item;
+                }).switchIfEmpty(Mono.just(reserveItem));
 
         // load location
         mono = mono.zipWith(findLocationById(reserveItem.getLocationId()))
@@ -181,7 +182,7 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
      * @param locationId
      * @return
      */
-    private Mono<Location> findLocationById(Long locationId ) {
+    private Mono<Location> findLocationById(Long locationId) {
         return entityTemplate.select(Location.class)
                 .matching(Query.query(where("location_id").is(locationId)))
                 .one()
@@ -194,7 +195,7 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
      * @param codeId
      * @return
      */
-    private Mono<Code> findCodeById(String codeId ) {
+    private Mono<Code> findCodeById(String codeId) {
         if (Objects.isNull(codeId)) {
             return Mono.empty();
         }
@@ -204,7 +205,7 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
 
     private Flux<Code> findCode(List<String> codeIds) {
         return entityTemplate
-            .select(Query.query(where("code_id").in(codeIds)), Code.class);
+                .select(Query.query(where("code_id").in(codeIds)), Code.class);
     }
 
     /**

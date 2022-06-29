@@ -2,6 +2,7 @@ package org.egovframe.cloud.portalservice.api.menu.dto;
 
 import java.util.Objects;
 import java.util.Optional;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import org.egovframe.cloud.portalservice.domain.menu.Menu;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
 import org.egovframe.cloud.portalservice.domain.menu.Site;
 
 /**
@@ -54,13 +56,13 @@ public class MenuTreeRequestDto {
 
     public Menu toEntity(Optional<Menu> parent, Site site) {
         return Menu.builder()
-            .parent(parent)
-            .site(site)
-            .menuKorName(name)
-            .sortSeq(sortSeq)
-            .level(level)
-            .isShow(isShow)
-            .isUse(isUse)
-            .build();
+                .parent(parent)
+                .site(site)
+                .menuKorName(name)
+                .sortSeq(sortSeq)
+                .level(level)
+                .isShow(isShow)
+                .isUse(isUse)
+                .build();
     }
 }

@@ -1,6 +1,7 @@
 package org.egovframe.cloud.portalservice.utils;
 
 import java.util.ArrayList;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.net.ftp.FTPClient;

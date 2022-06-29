@@ -2,6 +2,7 @@ package org.egovframe.cloud.reserveitemservice.config;
 
 
 import java.util.function.Consumer;
+
 import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveSaveRequestDto;
 import org.egovframe.cloud.reserveitemservice.service.reserveItem.ReserveItemService;
@@ -11,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * org.egovframe.cloud.reserverequestservice.config.ReserveEventConfig
- *
+ * <p>
  * event stream 설정 class
  *
  * @author 표준프레임워크센터 shinmj
@@ -43,9 +44,9 @@ public class ReserveEventConfig {
         return reserveSaveRequestDto -> {
             log.info("receive data => {}", reserveSaveRequestDto);
             reserveItemService.updateInventoryThenSendMessage(
-                    reserveSaveRequestDto.getReserveItemId(),
-                    reserveSaveRequestDto.getReserveQty(),
-                    reserveSaveRequestDto.getReserveId())
+                            reserveSaveRequestDto.getReserveItemId(),
+                            reserveSaveRequestDto.getReserveQty(),
+                            reserveSaveRequestDto.getReserveId())
                     .subscribe();
         };
     }

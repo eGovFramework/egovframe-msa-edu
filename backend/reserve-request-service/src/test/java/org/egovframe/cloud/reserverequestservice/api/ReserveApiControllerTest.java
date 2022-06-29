@@ -27,60 +27,60 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @ActiveProfiles(profiles = "test")
 class ReserveApiControllerTest {
 
-	@Autowired
-	private ReserveRepository reserveRepository;
+    @Autowired
+    private ReserveRepository reserveRepository;
 
-	@Autowired
-	private WebTestClient webTestClient;
+    @Autowired
+    private WebTestClient webTestClient;
 
-	private Reserve reserve;
+    private Reserve reserve;
 
-	@BeforeEach
-	public void setup() {
+    @BeforeEach
+    public void setup() {
 
-		reserve = Reserve.builder()
-			.reserveId("1")
-			.reserveQty(50)
-			.reservePurposeContent("test")
-			.reserveStatusId("request")
-			.reserveStartDate(LocalDateTime.of(2021, 9, 9, 1, 1))
-			.reserveEndDate(LocalDateTime.of(2021, 9, 20, 1, 1))
-			.build();
-	}
+        reserve = Reserve.builder()
+                .reserveId("1")
+                .reserveQty(50)
+                .reservePurposeContent("test")
+                .reserveStatusId("request")
+                .reserveStartDate(LocalDateTime.of(2021, 9, 9, 1, 1))
+                .reserveEndDate(LocalDateTime.of(2021, 9, 20, 1, 1))
+                .build();
+    }
 
-	@AfterEach
-	public void tearDown() {
-		reserveRepository.deleteAll().block();
-	}
+    @AfterEach
+    public void tearDown() {
+        reserveRepository.deleteAll().block();
+    }
 
-	@Test
-	@WithCustomMockUser(userId = "user", role = Role.USER)
-	public void 사용자_예약_성공() {
+    @Test
+    @WithCustomMockUser(userId = "user", role = Role.USER)
+    public void 사용자_예약_성공() {
 
-		ReserveSaveRequestDto saveRequestDto =
-			ReserveSaveRequestDto.builder()
-				.reserveItemId(reserve.getReserveItemId())
-				.reservePurposeContent(reserve.getReservePurposeContent())
-				.reserveQty(reserve.getReserveQty())
-				.reserveStartDate(reserve.getReserveStartDate())
-				.reserveEndDate(reserve.getReserveEndDate())
-				.attachmentCode(reserve.getAttachmentCode())
-				.userId(reserve.getUserId())
-				.userContactNo(reserve.getUserContactNo())
-				.userEmail(reserve.getUserEmail())
-				.build();
+        ReserveSaveRequestDto saveRequestDto =
+                ReserveSaveRequestDto.builder()
+                        .reserveItemId(reserve.getReserveItemId())
+                        .reservePurposeContent(reserve.getReservePurposeContent())
+                        .reserveQty(reserve.getReserveQty())
+                        .reserveStartDate(reserve.getReserveStartDate())
+                        .reserveEndDate(reserve.getReserveEndDate())
+                        .attachmentCode(reserve.getAttachmentCode())
+                        .userId(reserve.getUserId())
+                        .userContactNo(reserve.getUserContactNo())
+                        .userEmail(reserve.getUserEmail())
+                        .build();
 
-		ReserveResponseDto responseBody = webTestClient.post()
-			.uri("/api/v1/requests/evaluates")
-			.bodyValue(saveRequestDto)
-			.exchange()
-			.expectStatus().isCreated()
-			.expectBody(ReserveResponseDto.class)
-			.returnResult().getResponseBody();
+        ReserveResponseDto responseBody = webTestClient.post()
+                .uri("/api/v1/requests/evaluates")
+                .bodyValue(saveRequestDto)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(ReserveResponseDto.class)
+                .returnResult().getResponseBody();
 
-		assertThat(responseBody.getReserveQty()).isEqualTo(reserve.getReserveQty());
-		assertThat(responseBody.getReservePurposeContent()).isEqualTo(reserve.getReservePurposeContent());
+        assertThat(responseBody.getReserveQty()).isEqualTo(reserve.getReserveQty());
+        assertThat(responseBody.getReservePurposeContent()).isEqualTo(reserve.getReservePurposeContent());
 
-	}
+    }
 
 }

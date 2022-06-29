@@ -14,23 +14,21 @@ import io.swagger.v3.oas.models.servers.Server;
 @Configuration
 public class OpenApiDocsConfig {
 
-	@Value("${spring.application.name}")
-	private String appName;
+    @Value("${spring.application.name}")
+    private String appName;
 
-	/**
-	 * @TODO
-	 * api info update 필요
-	 *
-	 */
-	@Bean
-	public OpenAPI customOpenAPI() {
-		Server server = new Server();
-		server.url("/"+appName);
-		List<Server> servers = new ArrayList<>();
-		servers.add(server);
-		return new OpenAPI()
-			.components(new Components())
-			.servers(servers)
-			.info(new io.swagger.v3.oas.models.info.Info().title(appName+" API"));
-	}
+    /**
+     * @TODO api info update 필요
+     */
+    @Bean
+    public OpenAPI customOpenAPI() {
+        Server server = new Server();
+        server.url("/" + appName);
+        List<Server> servers = new ArrayList<>();
+        servers.add(server);
+        return new OpenAPI()
+                .components(new Components())
+                .servers(servers)
+                .info(new io.swagger.v3.oas.models.info.Info().title(appName + " API"));
+    }
 }

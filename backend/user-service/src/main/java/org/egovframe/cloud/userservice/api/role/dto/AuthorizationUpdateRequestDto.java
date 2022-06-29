@@ -52,7 +52,7 @@ public class AuthorizationUpdateRequestDto {
 
     @Builder
     public AuthorizationUpdateRequestDto(String authorizationName, String urlPatternValue,
-        String httpMethodCode, Integer sortSeq) {
+                                         String httpMethodCode, Integer sortSeq) {
         this.authorizationName = authorizationName;
         this.urlPatternValue = urlPatternValue;
         this.httpMethodCode = httpMethodCode;

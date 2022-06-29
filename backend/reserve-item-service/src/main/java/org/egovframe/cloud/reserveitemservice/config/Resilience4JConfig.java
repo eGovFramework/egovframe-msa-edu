@@ -2,7 +2,9 @@ package org.egovframe.cloud.reserveitemservice.config;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+
 import java.time.Duration;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,11 +34,11 @@ public class Resilience4JConfig {
     @Bean
     public CircuitBreakerRegistry circuitBreakerRegistry() {
         CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
-            .failureRateThreshold(50) // Circuit 열지 말지 결정하는 실패 threshold 퍼센테이지
-            .waitDurationInOpenState(Duration.ofSeconds(5)) // (half closed 전에) circuitBreaker가 open 되기 전에 기다리는 기간
-            .slidingWindowType(CircuitBreakerConfig.SlidingWindowType.COUNT_BASED) // circuit breaker count 기반 처리
-            .slidingWindowSize(10) // 통계 대상 건수 -> N건의 요청중..
-            .build();
+                .failureRateThreshold(50) // Circuit 열지 말지 결정하는 실패 threshold 퍼센테이지
+                .waitDurationInOpenState(Duration.ofSeconds(5)) // (half closed 전에) circuitBreaker가 open 되기 전에 기다리는 기간
+                .slidingWindowType(CircuitBreakerConfig.SlidingWindowType.COUNT_BASED) // circuit breaker count 기반 처리
+                .slidingWindowSize(10) // 통계 대상 건수 -> N건의 요청중..
+                .build();
         return CircuitBreakerRegistry.of(circuitBreakerConfig);
     }
 

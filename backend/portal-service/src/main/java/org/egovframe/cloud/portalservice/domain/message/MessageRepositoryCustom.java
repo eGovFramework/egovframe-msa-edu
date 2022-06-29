@@ -25,5 +25,6 @@ import java.util.Map;
  */
 public interface MessageRepositoryCustom {
     List<MessageListResponseDto> findAllMessages(String lang);
+
     Map<String, String> findAllMessagesMap(String lang);
 }

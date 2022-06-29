@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * org.egovframe.cloud.reserveitemservice.domain.location.LocationRepository
- *
+ * <p>
  * 예약 지역 R2dbc repository 클래스
  *
  * @author 표준프레임워크센터 shinmj
@@ -50,7 +50,7 @@ public interface LocationRepository extends R2dbcRepository<Location, Long> {
      * @param pageable
      * @return
      */
-    Flux<Location> findAllByOrderBySortSeq (Pageable pageable);
+    Flux<Location> findAllByOrderBySortSeq(Pageable pageable);
 
     Flux<Location> findAllByIsUseTrueOrderBySortSeq();
 

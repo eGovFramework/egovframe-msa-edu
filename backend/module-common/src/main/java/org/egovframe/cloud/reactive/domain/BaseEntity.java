@@ -23,7 +23,7 @@ import org.springframework.data.annotation.LastModifiedBy;
  * </pre>
  */
 @Getter
-public abstract class BaseEntity extends BaseTimeEntity{
+public abstract class BaseEntity extends BaseTimeEntity {
     @CreatedBy
     protected String createdBy;
 

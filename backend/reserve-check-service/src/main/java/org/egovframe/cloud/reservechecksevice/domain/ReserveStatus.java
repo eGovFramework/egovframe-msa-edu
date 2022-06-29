@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.reservechecksevice.domain.ReserveStatus
- *
+ * <p>
  * 예약 상태 enum class
  *
  * @author 표준프레임워크센터 shinmj

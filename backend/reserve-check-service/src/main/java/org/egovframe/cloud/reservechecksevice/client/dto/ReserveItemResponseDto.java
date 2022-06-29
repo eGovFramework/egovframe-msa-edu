@@ -2,6 +2,7 @@ package org.egovframe.cloud.reservechecksevice.client.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

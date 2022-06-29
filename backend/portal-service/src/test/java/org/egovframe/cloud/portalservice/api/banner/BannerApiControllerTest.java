@@ -132,12 +132,12 @@ class BannerApiControllerTest {
      */
     @BeforeEach
     void setUp() {
-    	// 사이트 등록
-    	site = siteRepository.save(Site.builder()
-    			.name("TEST_SITE")
-    			.isUse(true)
-    			.sortSeq(1)
-    			.build());
+        // 사이트 등록
+        site = siteRepository.save(Site.builder()
+                .name("TEST_SITE")
+                .isUse(true)
+                .sortSeq(1)
+                .build());
     }
 
     /**
@@ -410,7 +410,7 @@ class BannerApiControllerTest {
     private void insertBanners() {
         for (int i = 1; i <= GIVEN_DATA_COUNT; i++) {
             banners.add(bannerRepository.save(Banner.builder()
-            		.site(site)
+                    .site(site)
                     .bannerTypeCode(BANNER_TYPE_CODE_PREFIX + (i % 3 + 1))
                     .bannerTitle(BANNER_TITLE_PREFIX + "_" + i)
                     .attachmentCode(StringUtils.leftPad(String.valueOf(i), 10, '0'))
@@ -439,7 +439,7 @@ class BannerApiControllerTest {
      */
     private Banner insertBanner() {
         return bannerRepository.save(Banner.builder()
-        		.site(site)
+                .site(site)
                 .bannerTypeCode(INSERT_BANNER_TYPE_CODE)
                 .bannerTitle(INSERT_BANNER_TITLE)
                 .attachmentCode(INSERT_ATTACHMENT_CODE)

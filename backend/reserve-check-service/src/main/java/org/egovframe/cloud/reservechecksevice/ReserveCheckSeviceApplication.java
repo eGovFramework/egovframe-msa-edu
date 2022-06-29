@@ -10,7 +10,8 @@ import reactivefeign.spring.config.EnableReactiveFeignClients;
 
 import java.security.Security;
 
-@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.reactive", "org.egovframe.cloud.reservechecksevice"}) // org.egovframe.cloud.common package 포함하기 위해
+@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.reactive", "org.egovframe.cloud.reservechecksevice"})
+// org.egovframe.cloud.common package 포함하기 위해
 @EnableDiscoveryClient
 @EnableReactiveFeignClients
 @SpringBootApplication

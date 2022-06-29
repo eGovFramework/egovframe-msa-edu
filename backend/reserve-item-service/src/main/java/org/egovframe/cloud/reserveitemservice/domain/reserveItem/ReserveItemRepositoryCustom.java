@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * org.egovframe.cloud.reserveitemservice.domain.reserveItem.ReserveItemRepositoryCustom
- *
+ * <p>
  * 예약 물품 도메인 repository custom(query) interface
  * R2DBCEntityTemplate을 이용하여 쿼리하기 위한 Interface
  *
@@ -27,10 +27,12 @@ import reactor.core.publisher.Mono;
 public interface ReserveItemRepositoryCustom {
 
     Flux<ReserveItem> search(ReserveItemRequestDto requestDto, Pageable pageable);
+
     Mono<Long> searchCount(ReserveItemRequestDto requestDto, Pageable pageable);
 
     Mono<ReserveItem> findWithRelation(Long reserveItemId);
 
     Flux<ReserveItem> findLatestByCategory(Integer count, String categoryId);
+
     Flux<Code> findCodeDetail(String codeId);
 }

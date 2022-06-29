@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 /**
  * org.egovframe.cloud.userservice.domain.user.UserStateCode
- *
+ * <p>
  * 사용자 상태 코드 열거형 상수
  *
  * @author 표준프레임워크센터 jooho

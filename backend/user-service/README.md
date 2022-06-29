@@ -1,15 +1,19 @@
 # Getting Started
 
 ### OAUTH2 설정
+
 > 각 사이트에서 애플리케이션 API 이용을 신청하여 Client ID를 발급 받아야 한다.<br/>
 > 현재 구글과 네이버를 지원한다.
+
 - [Google](https://console.cloud.google.com)
 - [Naver](https://developers.naver.com/apps/#/register?api=nvlogin)
 - Kakao - @todo
-  
+
 ### application-oauth.yml
+
 - resources/application-oauth.yml 파일을 생성한다.
 - 아래 내용을 넣고 각 client-id, client-secret 를 입력한다.
+
 ```yaml
 spring:
   security:

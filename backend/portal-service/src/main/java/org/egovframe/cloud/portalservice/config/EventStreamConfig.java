@@ -15,16 +15,16 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 public class EventStreamConfig {
 
-	@Autowired
-	private AttachmentService attachmentService;
+    @Autowired
+    private AttachmentService attachmentService;
 
-	@Bean
-	public Consumer<AttachmentEntityMessage> attachmentEntity() {
-		return attachmentEntityMessage -> attachmentService.updateEntity(
-			attachmentEntityMessage.getAttachmentCode(),
-			AttachmentUploadRequestDto.builder()
-				.entityName(attachmentEntityMessage.getEntityName())
-				.entityId(attachmentEntityMessage.getEntityId())
-				.build());
-	}
+    @Bean
+    public Consumer<AttachmentEntityMessage> attachmentEntity() {
+        return attachmentEntityMessage -> attachmentService.updateEntity(
+                attachmentEntityMessage.getAttachmentCode(),
+                AttachmentUploadRequestDto.builder()
+                        .entityName(attachmentEntityMessage.getEntityName())
+                        .entityId(attachmentEntityMessage.getEntityId())
+                        .build());
+    }
 }

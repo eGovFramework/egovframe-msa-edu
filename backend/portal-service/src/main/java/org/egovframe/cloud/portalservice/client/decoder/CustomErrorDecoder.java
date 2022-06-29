@@ -10,7 +10,7 @@ import org.egovframe.cloud.common.exception.dto.ErrorCode;
 /**
  * org.egovframe.cloud.portalservice.client.decoder.CustomErrorDecoder
  * <p>
- *  feign client custom 에러 핸들링 클래스
+ * feign client custom 에러 핸들링 클래스
  *
  * @author 표준프레임워크센터 shinmj
  * @version 1.0

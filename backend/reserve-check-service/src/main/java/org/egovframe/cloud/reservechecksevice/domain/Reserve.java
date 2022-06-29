@@ -1,6 +1,7 @@
 package org.egovframe.cloud.reservechecksevice.domain;
 
 import java.time.LocalDateTime;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 /**
  * org.egovframe.cloud.reservechecksevice.domain.Reserve
- *
+ * <p>
  * 예약 도메인 클래스
  *
  * @author 표준프레임워크센터 shinmj
@@ -92,10 +93,10 @@ public class Reserve extends BaseEntity {
 
     @Builder
     public Reserve(String reserveId, Long reserveItemId,
-        ReserveItem reserveItem, Long locationId, String categoryId, Integer reserveQty,
-        String reservePurposeContent, String attachmentCode, LocalDateTime reserveStartDate,
-        LocalDateTime reserveEndDate, String reserveStatusId, String reasonCancelContent, String userId,
-        UserResponseDto user, String userContactNo, String userEmail) {
+                   ReserveItem reserveItem, Long locationId, String categoryId, Integer reserveQty,
+                   String reservePurposeContent, String attachmentCode, LocalDateTime reserveStartDate,
+                   LocalDateTime reserveEndDate, String reserveStatusId, String reasonCancelContent, String userId,
+                   UserResponseDto user, String userContactNo, String userEmail) {
         this.reserveId = reserveId;
         this.reserveItemId = reserveItemId;
         this.reserveItem = reserveItem;

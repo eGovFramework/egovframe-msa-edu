@@ -2,6 +2,7 @@ package org.egovframe.cloud.portalservice.api.attachment.dto;
 
 import java.util.Objects;
 import java.util.UUID;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -61,14 +62,14 @@ public class AttachmentTempSaveRequestDto {
 
     public Attachment toEntity(AttachmentId attachmentId, String physicalFileName) {
         return Attachment.builder()
-            .attachmentId(attachmentId)
-            .uniqueId(UUID.randomUUID().toString())
-            .physicalFileName(physicalFileName)
-            .originalFileName(this.originalName)
-            .size(this.size)
-            .fileType(this.fileType)
-            .entityName(this.entityName)
-            .entityId(this.entityId)
-            .build();
+                .attachmentId(attachmentId)
+                .uniqueId(UUID.randomUUID().toString())
+                .physicalFileName(physicalFileName)
+                .originalFileName(this.originalName)
+                .size(this.size)
+                .fileType(this.fileType)
+                .entityName(this.entityName)
+                .entityId(this.entityId)
+                .build();
     }
 }

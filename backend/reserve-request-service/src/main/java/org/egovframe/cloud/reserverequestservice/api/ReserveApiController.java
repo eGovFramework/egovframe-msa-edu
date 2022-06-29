@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 
 /**
  * org.egovframe.cloud.reserverequestservice.api.ReserveApiController
- *
+ * <p>
  * 예약 신청 rest controller class
  *
  * @author 표준프레임워크센터 shinmj
@@ -85,12 +85,12 @@ public class ReserveApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<ReserveResponseDto> save(@RequestBody Mono<ReserveSaveRequestDto> saveRequestDtoMono) {
         return saveRequestDtoMono
-            .flatMap(saveRequestDto -> {
-            if (Category.EDUCATION.isEquals(saveRequestDto.getCategoryId())) {
-                return reserveService.saveForEvent(saveRequestDto);
-            }
-            return reserveService.save(saveRequestDto);
-        });
+                .flatMap(saveRequestDto -> {
+                    if (Category.EDUCATION.isEquals(saveRequestDto.getCategoryId())) {
+                        return reserveService.saveForEvent(saveRequestDto);
+                    }
+                    return reserveService.save(saveRequestDto);
+                });
     }
 
     /**
@@ -105,33 +105,33 @@ public class ReserveApiController {
         MessageListenerContainer mlc = messageListenerContainerFactory.createMessageListenerContainer(reserveId);
         Flux<String> f = Flux.create(emitter -> {
 
-          mlc.setupMessageListener((MessageListener) m -> {
-              String qname = m.getMessageProperties().getConsumerQueue();
-              log.info("message received, queue={}", qname);
+            mlc.setupMessageListener((MessageListener) m -> {
+                String qname = m.getMessageProperties().getConsumerQueue();
+                log.info("message received, queue={}", qname);
 
-              if (emitter.isCancelled()) {
-                  log.info("cancelled, queue={}", qname);
-                  mlc.stop();
-                  return;
-              }
+                if (emitter.isCancelled()) {
+                    log.info("cancelled, queue={}", qname);
+                    mlc.stop();
+                    return;
+                }
 
-              String payload = new String(m.getBody());
-              log.info("message data = {}", payload);
-              emitter.next(payload);
+                String payload = new String(m.getBody());
+                log.info("message data = {}", payload);
+                emitter.next(payload);
 
-              log.info("message sent to client, queue={}", qname);
-          });
+                log.info("message sent to client, queue={}", qname);
+            });
 
-          emitter.onRequest(v -> {
-              log.info("starting container, queue={}", reserveId);
-              mlc.start();
-          });
+            emitter.onRequest(v -> {
+                log.info("starting container, queue={}", reserveId);
+                mlc.start();
+            });
 
-          emitter.onDispose(() -> {
-              log.info("on dispose, queue={}", reserveId);
-              mlc.stop();
-              amqpAdmin.deleteQueue(reserveId);
-          });
+            emitter.onDispose(() -> {
+                log.info("on dispose, queue={}", reserveId);
+                mlc.stop();
+                amqpAdmin.deleteQueue(reserveId);
+            });
 
             log.info("container started, queue={}", reserveId);
         });
@@ -141,8 +141,8 @@ public class ReserveApiController {
                     log.info("sending keepalive message...");
                     return "no news is good news";
                 })
-            .mergeWith(f)
-            .delayElements(Duration.ofSeconds(5));
+                .mergeWith(f)
+                .delayElements(Duration.ofSeconds(5));
     }
 
 }

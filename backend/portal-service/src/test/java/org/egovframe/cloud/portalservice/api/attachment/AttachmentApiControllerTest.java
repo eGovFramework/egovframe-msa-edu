@@ -3,6 +3,7 @@ package org.egovframe.cloud.portalservice.api.attachment;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.util.encoders.Base64;
 import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentBase64RequestDto;
@@ -164,7 +166,7 @@ class AttachmentApiControllerTest {
                     .size(responseDto.getSize())
                     .fileType(responseDto.getFileType())
                     .entityName("Policy")
-                    .entityId("testEntityId_"+i)
+                    .entityId("testEntityId_" + i)
                     .build()
             );
         }
@@ -237,7 +239,8 @@ class AttachmentApiControllerTest {
         //when
         ResponseEntity<List<AttachmentFileResponseDto>> responseEntity =
                 restTemplate.exchange(url, HttpMethod.POST, requestEntity,
-                        new ParameterizedTypeReference<List<AttachmentFileResponseDto>>() {});
+                        new ParameterizedTypeReference<List<AttachmentFileResponseDto>>() {
+                        });
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -259,7 +262,7 @@ class AttachmentApiControllerTest {
                 .build();
         AttachmentEditorResponseDto responseDto = attachmentService.uploadEditor(requestDto);
 
-        String url = "/api/v1/images/editor/"+responseDto.getUrl();
+        String url = "/api/v1/images/editor/" + responseDto.getUrl();
 
         //when
         ResponseEntity<byte[]> responseEntity = restTemplate.getForEntity(url, byte[].class);
@@ -289,12 +292,13 @@ class AttachmentApiControllerTest {
         String attachmentCode = attachmentService.save(saveRequestDtoList);
 
         System.out.println("attachmentCode : " + attachmentCode);
-        String url = "/api/v1/attachments/"+attachmentCode;
+        String url = "/api/v1/attachments/" + attachmentCode;
 
         //when
         ResponseEntity<List<AttachmentResponseDto>> responseEntity =
                 restTemplate.exchange(url, HttpMethod.GET, null,
-                        new ParameterizedTypeReference<List<AttachmentResponseDto>>() {});
+                        new ParameterizedTypeReference<List<AttachmentResponseDto>>() {
+                        });
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -321,7 +325,7 @@ class AttachmentApiControllerTest {
                             .size(attachmentResponseDto.getSize())
                             .entityName(attachmentResponseDto.getEntityName())
                             .entityId(attachmentResponseDto.getEntityId())
-                            .isDelete(i%2==0)
+                            .isDelete(i % 2 == 0)
                             .build()
             );
         }
@@ -332,7 +336,7 @@ class AttachmentApiControllerTest {
         HttpEntity<List<AttachmentTempSaveRequestDto>> requestEntity = new HttpEntity<>(updateRequestDtoList);
 
         //when
-        String url = "/api/v1/attachments/file/"+attachmentCode;
+        String url = "/api/v1/attachments/file/" + attachmentCode;
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
 
@@ -379,7 +383,7 @@ class AttachmentApiControllerTest {
         List<AttachmentTempSaveRequestDto> saveRequestDtoList2 = getTempSaveDto(3);
         String attachmentCode = attachmentService.save(saveRequestDtoList2);
 
-        String url = "/api/v1/attachments?keywordType=id&keyword="+attachmentCode;
+        String url = "/api/v1/attachments?keywordType=id&keyword=" + attachmentCode;
 
         //when
         ResponseEntity<RestResponsePage<AttachmentResponseDto>> responseEntity = restTemplate.exchange(
@@ -408,7 +412,7 @@ class AttachmentApiControllerTest {
         List<AttachmentResponseDto> results = attachmentService.findByCode(attachmentCode);
 
         String uniqueId = results.get(1).getId();
-        String url = "/api/v1/attachments/"+uniqueId+"/true";
+        String url = "/api/v1/attachments/" + uniqueId + "/true";
 
         //when
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, null, String.class);
@@ -417,8 +421,8 @@ class AttachmentApiControllerTest {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         List<AttachmentResponseDto> saved = attachmentService.findByCode(attachmentCode);
         Optional<AttachmentResponseDto> any = saved.stream()
-            .filter(attachmentResponseDto -> attachmentResponseDto.getId().equals(uniqueId))
-            .findAny();
+                .filter(attachmentResponseDto -> attachmentResponseDto.getId().equals(uniqueId))
+                .findAny();
         assertThat(any.isPresent()).isFalse();
     }
 
@@ -429,7 +433,7 @@ class AttachmentApiControllerTest {
         String attachmentCode = attachmentService.save(saveRequestDtoList2);
         List<AttachmentResponseDto> results = attachmentService.findByCode(attachmentCode);
 
-        String url = "/api/v1/attachments/"+results.get(1).getId();
+        String url = "/api/v1/attachments/" + results.get(1).getId();
         //when
         restTemplate.delete(url);
 
@@ -453,7 +457,7 @@ class AttachmentApiControllerTest {
                 AttachmentUploadRequestDto.builder()
                         .entityName("test")
                         .entityId("testid")
-                .build();
+                        .build();
         body.add("info", uploadRequestDto);
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity(body, headers);
@@ -465,7 +469,7 @@ class AttachmentApiControllerTest {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         List<Attachment> attachmentList = attachmentRepository.findByCode(responseEntity.getBody());
         attachmentList.stream().forEach(attachment -> {
-            Path filePath = Paths.get(fileStorageUtils.getFileStorageLocation()+"/" +attachment.getPhysicalFileName())
+            Path filePath = Paths.get(fileStorageUtils.getFileStorageLocation() + "/" + attachment.getPhysicalFileName())
                     .toAbsolutePath().normalize();
             assertThat(Files.exists(filePath));
         });
@@ -508,7 +512,7 @@ class AttachmentApiControllerTest {
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity(body, headers);
 
         //when
-        String url = "/api/v1/attachments/upload/"+attachmentCode;
+        String url = "/api/v1/attachments/upload/" + attachmentCode;
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
 
@@ -551,7 +555,7 @@ class AttachmentApiControllerTest {
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity(body, headers);
 
         //when
-        String url = "/api/v1/attachments/"+attachmentCode;
+        String url = "/api/v1/attachments/" + attachmentCode;
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
 

@@ -31,11 +31,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class RestResponsePage<T> extends PageImpl<T> {
 
     /**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = -4377617807230211193L;
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = -4377617807230211193L;
 
-	/**
+    /**
      * Rest 응답 페이지 생성자
      *
      * @param content          목록

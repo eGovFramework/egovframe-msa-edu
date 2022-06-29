@@ -76,7 +76,7 @@ public class BannerService extends AbstractService {
      * @param bannerTypeCodes 배너 유형 코드 목록
      * @param bannerCount     배너 수
      * @param useAt           사용 여부
-     * @return Map<String, List<BannerImageResponseDto>> 배너 유형 코드별 배너 이미지 응답 DTO Map
+     * @return Map<String, List < BannerImageResponseDto>> 배너 유형 코드별 배너 이미지 응답 DTO Map
      */
     public Map<String, List<BannerImageResponseDto>> findList(List<String> bannerTypeCodes, Integer bannerCount, Boolean useAt, Long siteId) {
         Map<String, List<BannerImageResponseDto>> bannerMap = new HashMap<>();
@@ -103,7 +103,7 @@ public class BannerService extends AbstractService {
     /**
      * 배너 다음 정렬 순서 조회
      *
-     * @param siteId  siteId
+     * @param siteId siteId
      * @return Integer 다음 정렬 순서
      */
     public Integer findNextSortSeq(Long siteId) {
@@ -120,8 +120,8 @@ public class BannerService extends AbstractService {
     public BannerResponseDto save(BannerSaveRequestDto requestDto) {
         //site 정보 조회
         Site site = siteRepository.findById(requestDto.getSiteId())
-            .orElseThrow(() ->
-                new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu.site")}) + " ID= " + requestDto.getSiteId()));
+                .orElseThrow(() ->
+                        new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu.site")}) + " ID= " + requestDto.getSiteId()));
 
         // 동일한 정렬 순서가 존재할 경우 +1
         Optional<Banner> authorization = bannerRepository.findBySortSeqAndSiteId(requestDto.getSortSeq(), requestDto.getSiteId());
@@ -139,11 +139,11 @@ public class BannerService extends AbstractService {
 
     public void sendAttachment(Banner entity) {
         sendAttachmentEntityInfo(streamBridge,
-            AttachmentEntityMessage.builder()
-                .attachmentCode(entity.getAttachmentCode())
-                .entityName(entity.getClass().getName())
-                .entityId(String.valueOf(entity.getBannerNo()))
-                .build());
+                AttachmentEntityMessage.builder()
+                        .attachmentCode(entity.getAttachmentCode())
+                        .entityName(entity.getClass().getName())
+                        .entityId(String.valueOf(entity.getBannerNo()))
+                        .build());
     }
 
     /**
@@ -159,8 +159,8 @@ public class BannerService extends AbstractService {
 
         //site 정보 조회
         Site site = siteRepository.findById(requestDto.getSiteId())
-            .orElseThrow(() ->
-                new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu.site")}) + " ID= " + requestDto.getSiteId()));
+                .orElseThrow(() ->
+                        new EntityNotFoundException(getMessage("valid.notexists.format", new Object[]{getMessage("menu.site")}) + " ID= " + requestDto.getSiteId()));
 
         // 동일한 정렬 순서가 존재할 경우 +1
         Optional<Banner> authorization = bannerRepository.findBySortSeqAndSiteId(requestDto.getSortSeq(), requestDto.getSiteId());

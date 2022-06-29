@@ -2,6 +2,7 @@ package org.egovframe.cloud.portalservice.api.menu.dto;
 
 import java.util.Objects;
 import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -9,6 +10,7 @@ import org.egovframe.cloud.portalservice.domain.menu.Menu;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.egovframe.cloud.portalservice.domain.menu.MenuRole;
 
 /**
@@ -52,7 +54,7 @@ public class MenuSideResponseDto {
      *
      * @param menu
      */
-    public MenuSideResponseDto (Menu menu, String roleId) {
+    public MenuSideResponseDto(Menu menu, String roleId) {
         this.id = menu.getId();
         this.korName = menu.getMenuKorName();
         this.engName = menu.getMenuEngName();

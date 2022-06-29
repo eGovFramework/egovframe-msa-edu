@@ -1,6 +1,7 @@
 package org.egovframe.cloud.portalservice.domain.menu;
 
 import java.util.Optional;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -68,7 +69,7 @@ class MenuRepositoryTest {
         assertThat(savedMenu.getMenuKorName()).isEqualTo(menu.getMenuKorName());
         System.out.println(savedMenu.toString());
     }
-    
+
     @Test
     @Transactional
     public void 새로운_하위메뉴여러개_등록() throws Exception {

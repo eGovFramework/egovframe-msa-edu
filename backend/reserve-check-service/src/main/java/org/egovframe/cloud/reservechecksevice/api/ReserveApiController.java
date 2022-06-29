@@ -2,6 +2,7 @@ package org.egovframe.cloud.reservechecksevice.api;
 
 import java.time.LocalDate;
 import javax.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 import org.egovframe.cloud.reservechecksevice.api.dto.ReserveCancelRequestDto;
 import org.egovframe.cloud.reservechecksevice.api.dto.ReserveListResponseDto;
@@ -171,7 +172,7 @@ public class ReserveApiController {
     public Mono<Integer> countInventory(@PathVariable Long reserveItemId,
                                         @RequestParam(name = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                         @RequestParam(name = "endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
-        return reserveService.countInventory(reserveItemId,startDate.atTime(0,0), endDate.atTime(23, 59));
+        return reserveService.countInventory(reserveItemId, startDate.atTime(0, 0), endDate.atTime(23, 59));
     }
 
 }

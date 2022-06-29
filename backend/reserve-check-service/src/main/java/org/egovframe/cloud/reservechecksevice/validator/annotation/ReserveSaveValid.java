@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 
 /**
  * org.egovframe.cloud.reservechecksevice.validator.annotation.ReserveSaveValid
- *
+ * <p>
  * 예약 신청 시 validation check를 하기 위한 custom annotation
  *
  * @author 표준프레임워크센터 shinmj
@@ -32,6 +32,8 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = ReserveSaveValidator.class)
 public @interface ReserveSaveValid {
     String message() default "저장할 수 없습니다.";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

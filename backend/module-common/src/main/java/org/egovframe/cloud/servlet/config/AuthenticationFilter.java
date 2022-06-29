@@ -63,7 +63,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     }
 
 
-
     /**
      * 로그인 요청 뿐만 아니라 모든 요청시마다 호출된다.
      * 토큰에 담긴 정보로 Authentication 정보를 설정한다.

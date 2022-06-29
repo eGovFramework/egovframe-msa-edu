@@ -2,6 +2,7 @@ package org.egovframe.cloud.boardservice.domain.board;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import org.egovframe.cloud.servlet.domain.BaseEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 

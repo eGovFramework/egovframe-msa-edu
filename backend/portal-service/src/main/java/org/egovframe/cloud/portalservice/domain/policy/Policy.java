@@ -32,7 +32,8 @@ import java.time.ZonedDateTime;
 @Entity
 public class Policy extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "policy_id")
     private Long id;
 

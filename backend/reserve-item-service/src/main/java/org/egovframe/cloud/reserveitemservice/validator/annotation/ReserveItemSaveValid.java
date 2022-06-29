@@ -6,11 +6,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
+
 import org.egovframe.cloud.reserveitemservice.validator.ReserveItemSaveValidator;
 
 /**
  * org.egovframe.cloud.reserveitemservice.validator.annotation.ReserveItemSaveValid
- *
+ * <p>
  * 예약 물품 저장 시 validation check를 하기 위한 custom annotation
  *
  * @author 표준프레임워크센터 shinmj
@@ -31,7 +32,9 @@ import org.egovframe.cloud.reserveitemservice.validator.ReserveItemSaveValidator
 public @interface ReserveItemSaveValid {
 
     String message() default "저장할 수 없습니다.";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 
 }

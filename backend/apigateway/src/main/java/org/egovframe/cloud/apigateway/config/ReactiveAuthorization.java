@@ -2,7 +2,9 @@ package org.egovframe.cloud.apigateway.config;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,33 +65,33 @@ public class ReactiveAuthorization implements ReactiveAuthorizationManager<Autho
      */
     @Override
     public Mono<AuthorizationDecision> check(Mono<Authentication> authentication,
-        AuthorizationContext context) {
+                                             AuthorizationContext context) {
         ServerHttpRequest request = context.getExchange().getRequest();
         RequestPath requestPath = request.getPath();
         HttpMethod httpMethod = request.getMethod();
 
         String baseUrl =
-            APIGATEWAY_HOST + AUTHORIZATION_URI + "?httpMethod=" + httpMethod + "&requestPath="
-                + requestPath;
+                APIGATEWAY_HOST + AUTHORIZATION_URI + "?httpMethod=" + httpMethod + "&requestPath="
+                        + requestPath;
         log.info("baseUrl={}", baseUrl);
 
         String authorizationHeader = "";
 
         List<String> authorizations =
-            request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION) ?
-                request.getHeaders().get(HttpHeaders.AUTHORIZATION) : null;
+                request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION) ?
+                        request.getHeaders().get(HttpHeaders.AUTHORIZATION) : null;
 
         if (authorizations != null && authorizations.size() > 0
-            && StringUtils.hasLength(authorizations.get(0))
-            && !"undefined".equals(authorizations.get(0))
+                && StringUtils.hasLength(authorizations.get(0))
+                && !"undefined".equals(authorizations.get(0))
         ) {
             try {
                 authorizationHeader = authorizations.get(0);
                 String jwt = authorizationHeader.replace("Bearer", "");
                 String subject = Jwts.parser().setSigningKey(TOKEN_SECRET)
-                    .parseClaimsJws(jwt)
-                    .getBody()
-                    .getSubject();
+                        .parseClaimsJws(jwt)
+                        .getBody()
+                        .getSubject();
 
                 // refresh token 요청 시 토큰 검증만 하고 인가 처리 한다.
                 if (REFRESH_TOKEN_URI.equals(requestPath + "")) {
@@ -115,11 +117,11 @@ public class ReactiveAuthorization implements ReactiveAuthorizationManager<Autho
         try {
             String token = authorizationHeader; // Variable used in lambda expression should be final or effectively final
             Mono<Boolean> body = WebClient.create(baseUrl)
-                .get()
-                .headers(httpHeaders -> {
-                    httpHeaders.add(HttpHeaders.AUTHORIZATION, token);
-                })
-                .retrieve().bodyToMono(Boolean.class);
+                    .get()
+                    .headers(httpHeaders -> {
+                        httpHeaders.add(HttpHeaders.AUTHORIZATION, token);
+                    })
+                    .retrieve().bodyToMono(Boolean.class);
             granted = body.blockOptional().orElse(false);
             log.info("Security AuthorizationDecision granted={}", granted);
         } catch (Exception e) {
