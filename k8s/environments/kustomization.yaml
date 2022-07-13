@@ -1,0 +1,60 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- configmaps/backend-configmap.yaml
+- configmaps/common-configmap.yaml
+- nfs/sa.yaml
+- nfs/sc.yaml
+- nfs/deployment.yaml
+- databases/mysql/secret.yaml
+- databases/mysql/configmap.yaml
+- databases/mysql/service.yaml
+- databases/mysql/pvc.yaml
+- databases/mysql/statefulset.yaml
+- rabbitmq/service.yaml
+- rabbitmq/ingress/ingress.yaml
+- rabbitmq/deployment.yaml
+- zipkin/service.yaml
+- zipkin/ingress/ingress.yaml
+- zipkin/deployment.yaml
+- jenkins/sa.yaml
+- jenkins/service.yaml
+- jenkins/ingress.yaml
+- jenkins/pvc.yaml
+- jenkins/statefulset.yaml
+- logging/elk/kibana/configmap.yaml
+- logging/elk/kibana/service.yaml
+- logging/elk/kibana/ingress/ingress.yaml
+- logging/elk/kibana/deployment.yaml
+- logging/elk/logstash/service.yaml
+- logging/elk/logstash/configmap.yaml
+- logging/elk/logstash/deplyment.yaml
+- logging/elk/elasticsearch/service.yaml
+- logging/elk/elasticsearch/deployment.yaml
+
+
+patches:
+- target:
+    name: rabbitmq-ingress
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: "<TODO: RabbitMQ 도메인>"
+- target:
+    name: zipkin-ingress
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: "<TODO: Zipkin 도메인>"
+- target:
+    name: jenkins-ingress
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: "<TODO: 젠킨스 도메인>"
+- target:
+    name: kibana-ingress
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: "<TODO: ELK Kibana 도메인>"
