@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.4.5'
+    id 'org.springframework.boot' version '2.7.0'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     // querydsl
     id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
@@ -8,7 +8,8 @@ plugins {
 }
 
 group 'org.egovframe.cloud'
-version '0.1'
+version '4.1.0'
+sourceCompatibility = '1.8'
 
 repositories {
     mavenCentral()
@@ -29,13 +30,13 @@ configurations {
 }
 
 ext {
-    set('springCloudVersion', "2020.0.3")
-    set('log4j2.version', "2.17.1") // log4j 보안 패치
+    set('springCloudVersion', "2021.0.3")
+    set('log4j2.version', "2.17.2") // log4j 보안 패치
 }
 
 dependencies {
     // EgovAbstractServiceImpl
-    implementation('org.egovframe.rte:org.egovframe.rte.fdl.cmmn:4.0.0') {
+    implementation('org.egovframe.rte:org.egovframe.rte.fdl.cmmn:4.1.0') {
         exclude group: 'org.egovframe.rte', module: 'org.egovframe.rte.fdl.logging'
     }
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -43,15 +44,19 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation' // LocalValidatorFactoryBean
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'javassist:javassist:3.12.1.GA'
+
     // querydsl
-    implementation 'com.querydsl:querydsl-jpa'
-    implementation 'com.querydsl:querydsl-core'
+    implementation 'com.querydsl:querydsl-jpa:5.0.0'
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0'
+    implementation 'com.querydsl:querydsl-sql:5.0.0'
+    implementation 'com.querydsl:querydsl-sql-spring:5.0.0'
 
     //openapi docs
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
-    implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.5.8'
-    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.8'
+    implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.6.9'
+    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.9'
 
     //reactive
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
@@ -93,5 +98,6 @@ configurations {
 }
 compileQuerydsl {
     options.annotationProcessorPath = configurations.querydsl
+    options.compilerArgs << '-Aquerydsl.generatedAnnotationClass=javax.annotation.Generated'
 }
 // querydsl 추가 끝

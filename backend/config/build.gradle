@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.4.5'
+    id 'org.springframework.boot' version '2.7.0'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
@@ -13,8 +13,8 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "2020.0.3")
-    set('log4j2.version', "2.17.1") // log4j 보안 패치
+    set('springCloudVersion', "2021.0.3")
+    set('log4j2.version', "2.17.2") // log4j 보안 패치
 }
 
 dependencies {
@@ -23,7 +23,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'  // bus
     implementation 'org.springframework.boot:spring-boot-starter-actuator'    // bus
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'        // logstash logback
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'        // logstash logback
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

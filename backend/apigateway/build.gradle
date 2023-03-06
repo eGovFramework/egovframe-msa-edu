@@ -1,6 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.4.5'
-    id "org.sonarqube" version "2.7"
+    id 'org.springframework.boot' version '2.7.0'
+    id "org.sonarqube" version "3.3"
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
@@ -14,8 +14,8 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "2020.0.3")
-    set('log4j2.version', "2.17.1") // log4j 보안 패치
+    set('springCloudVersion', "2021.0.3")
+    set('log4j2.version', "2.17.2") // log4j 보안 패치
 }
 
 dependencies {
@@ -27,11 +27,11 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-config'    // config
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // config
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'  // bus
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'        // logstash logback
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'        // logstash logback
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
-    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.8'
+    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.9'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

@@ -11,3 +11,8 @@ management:
     web:
       exposure:
         include: refresh, health, beans, info
+
+info:
+  app:
+    name: Reserve Item Service
+    description: 예약시스템 기능 중 예약지역, 예약물품 관리 기능을 제공

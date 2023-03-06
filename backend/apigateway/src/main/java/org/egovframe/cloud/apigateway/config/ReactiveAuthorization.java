@@ -120,7 +120,7 @@ public class ReactiveAuthorization implements ReactiveAuthorizationManager<Autho
                     httpHeaders.add(HttpHeaders.AUTHORIZATION, token);
                 })
                 .retrieve().bodyToMono(Boolean.class);
-            granted = body.blockOptional().orElse(false);
+            granted = body.toFuture().get().booleanValue();
             log.info("Security AuthorizationDecision granted={}", granted);
         } catch (Exception e) {
             log.error("인가 서버에 요청 중 오류 : {}", e.getMessage());

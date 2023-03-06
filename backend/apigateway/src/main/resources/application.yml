@@ -66,5 +66,11 @@ management:
       exposure:
         include: refresh, health, beans, info
 
+info:
+  app:
+    name: Spring Cloud Gateway
+    description: API 라우팅 및 보안, 모니터링/메트릭 등의 기능을 간단하고 효과적인 방법으로 제공
+  swagger-ui: http://localhost:8000/webjars/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
+
 messages:
   directory: ${user.dir}/msa-attach-volume/messages

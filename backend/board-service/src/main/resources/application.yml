@@ -26,3 +26,8 @@ management:
     web:
       exposure:
         include: refresh, health, beans, info
+
+info:
+  app:
+    name: Board Service
+    description: 게시판관리, 게시물관리, 첨부파일관리 기능을 제공

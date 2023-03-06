@@ -27,7 +27,11 @@ management:
       exposure:
         include: refresh, health, beans, info
 
+info:
+  app:
+    name: Portal Service
+    description: 메뉴관리, 권한관리, 공통코드관리 및 컨텐츠관리 등의 기능을 제공
+
 logging:
   level:
     org.egovframe.cloud.portalservice.client: DEBUG   # Feign log를 확인하기 위해 해당 패키지를 디버그 모드로 설정
-
