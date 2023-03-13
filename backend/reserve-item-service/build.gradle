@@ -40,6 +40,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // config
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'  // bus
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-el:9.0.73'
     implementation 'com.playtika.reactivefeign:feign-reactor-spring-cloud-starter:3.2.1'
 
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
