@@ -46,6 +46,10 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+    implementation 'org.apache.tomcat:tomcat-annotations-api:9.0.73'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-core:9.0.73'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-el:9.0.73'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:9.0.73'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.2'        // logstash logback
     implementation 'commons-net:commons-net:3.8.0' // FTPClient
     implementation 'mysql:mysql-connector-java'

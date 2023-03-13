@@ -20,6 +20,10 @@ ext {
 dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.apache.tomcat:tomcat-annotations-api:9.0.73'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-core:9.0.73'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-el:9.0.73'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:9.0.73'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
