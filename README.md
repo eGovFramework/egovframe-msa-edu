@@ -177,8 +177,8 @@ npm run dev
 
 ## 참조 화면
 
-![Microservices Architecture](images\msa.png)
-![Authentication/Authorization-JWT](images\jwt.png)
-![Frontend](images\frontend.png)
-![Login](images\login.png)
-![Admin](images\admin.png)
+![Microservices Architecture](./images/msa.png)
+![Authentication/Authorization-JWT](./images/jwt.png)
+![Frontend](./images/frontend.png)
+![Login](./images/login.png)
+![Admin](./images/admin.png)
