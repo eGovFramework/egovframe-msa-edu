@@ -117,6 +117,35 @@
             └─ingress
 ```
 
+### 디렉토리 설명
+
+- `/backend`: Spring Boot를 기반으로 백앤드에 올려지는 서비스들
+- `/backend/apigateway`: Microservice에 대한 API 관리 및 모니터링 서비스 (service mesh)
+- `/backend/board-service`: 게시판 서비스 (게시판, 게시물, 첨부파일 관리)
+- `/backend/config`: 별도의 통합된 설정 관리 서비스 제공을 통해 환경 독립적 서비스 제공 (service mesh)
+- `/backend/discovery`: 마이크로서비스들을 등록하여 관리하고 요청 시 해당 서비스를 찾아 호출 (service mesh)
+- `/backend/user-service`: 사용자 서비스 (로그인, 회원가입, 비밀번호 찾기, 관리자)
+- `/backend/portal-service`: 포털 공통 서비스 (메뉴, 코드, 컨텐츠, 권한, 인가, 배너, 첨부파일 관리)
+- `/backend/reserve-check-service`: 예약 확인 서비스 (non-blocking)
+- `/backend/reserve-item-service`: 예약 물품 서비스 (non-blocking)
+- `/backend/reserve-request-service`: 예약 신청 서비스 (non-blocking)
+- `/config`: backend 의 config 서버에서 사용하는 설정 yaml 파일 모음 폴더
+- `/docker-compose`: Docker에 여러 컨테이너의 실행을 관리하는 yaml 구성 파일들
+- `/frontend/admin`: Next.js + Typescript + Material UI 활용한 Admin Dashboard.
+- `/frontend/portal`: Next.js + Typescript 활용한 React 기반 프론트엔드.
+- `/frontend/practice-image`: 배너 이미지
+- `/k8s`: Kubernetes 환경 배포를 위한 Resource 템플릿 yaml 파일
+- `/k8s/applications`: Backend와 Frontend 애플리케이션의 k8s Resource 템플릿 yaml 파일
+- `/k8s/environments/configmaps`: Pods에서 사용하는 환경변수로서 Key-Value 쌍의 형태로 저장된 객체 정의
+- `/k8s/environments/databases`: MySQL 관련 객체 정의
+- `/k8s/environments/jenkins`: Jenkins 관련 객체 정의
+- `/k8s/environments/logging`: Centralized Logging을 위한 ELK 관련 객체 정의
+- `/k8s/environments/nfs`: NFS 노드 볼륨 구성
+- `/k8s/environments/rabbitmq`: Message Broker 관련 객체 정의
+- `/k8s/environments/storage`: PersistentVolumeClaim 정의
+- `/k8s/environments/vagrant`: 가상화 소프트웨어 개발환경의 생성을 쉽게 구성하도록 하는 Vagrant 관련 정의
+- `/k8s/environments/zipkin`: 분산 트랜잭션 추적을 위한 Zipkin 관련 정의
+
 ## 백앤드 구동 방법
 
 - 개발환경 Eclipse IDE 를 실행한다.
@@ -126,15 +155,15 @@
 - Project root directory 에서 ${home}/workspace.edu/egovframe-msa-edu/backend/config를 선택하고 Finish 버튼을 클릭한다.
 - 위의 과정을 반복하여 아래의 프로젝트를 import 한다. (소규모는 1-6, 대규모는 1-9)
 
-1. config : 별도의 통합된 설정 관리 서비스 제공을 통해 환경 독립적 서비스 제공 (service mesh)
-2. discovery : 서비스에 대한 물리적 위치 정보 대신 논리적 서비스 위치 정보 제공 (service mesh)
-3. apigateway : Microservice에 대한 API 관리 및 모니터링 서비스 (service mesh)
-4. user-service : 사용자 서비스 (로그인, 회원가입, 비밀번호 찾기, 관리자)
-5. portal-service : 포털 공통 서비스 (메뉴, 코드, 컨텐츠, 권한, 인가, 배너, 첨부파일 관리)
-6. board-service : 게시판 서비스 (게시판, 게시물, 첨부파일 관리)
-7. reserve-check-service : 예약 확인 서비스 (non-blocking)
-8. reserve-item-service : 예약 물품 서비스 (non-blocking)
-9. reserve-request-service : 예약 신청 서비스 (non-blocking)
+1. config
+2. discovery
+3. apigateway
+4. user-service
+5. portal-service
+6. board-service
+7. reserve-check-service
+8. reserve-item-service
+9. reserve-request-service
 
 - 모든 프로젝트를 import 하고 Project Explorer 를 확인하면 board-service, portal-service, user-service 프로젝트에 오류 표시가 출력된다. querydsl 로 generate 되는 클래스들을 build path 에 추가해야 한다.
 - Window>Show View>Other 을 클릭해서 열린 창에서 Gradle>Gradle Tasks 를 선택하고 Open 버튼을 클릭하면 Gradle Tasks 탭이 열린다.
@@ -182,8 +211,8 @@ npm run dev
 ![Frontend](./images/frontend.png)
 ![Login](./images/login.png)
 ![Admin](./images/admin.png)
-[01.MSA템플릿_개요및개발환경_실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/11084628/01.MSA._._.pdf)
-[01.MSA템플릿_개요및개발환경_이론.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/11084629/01.MSA._._.pdf)
-[02.MSA템플릿_백엔드구성및실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/11084631/02.MSA._.pdf)
-[03.MSA템플릿_프론트엔드구성및실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/11084632/03.MSA._.pdf)
-[04.MSA템플릿_이벤트스트림구성및 실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/11084633/04.MSA._.pdf)
+[01.MSA템플릿*개요및개발환경*실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/11084628/01.MSA._._.pdf)
+[01.MSA템플릿*개요및개발환경*이론.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/11084629/01.MSA._._.pdf)
+[02.MSA템플릿\_백엔드구성및실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/11084631/02.MSA._.pdf)
+[03.MSA템플릿\_프론트엔드구성및실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/11084632/03.MSA._.pdf)
+[04.MSA템플릿\_이벤트스트림구성및 실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/11084633/04.MSA._.pdf)
