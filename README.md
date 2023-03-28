@@ -124,17 +124,17 @@
 - Import 창이 열리면 Gradle>Existing Gradle Project 를 선택하고 Next 버튼을 클릭한다.
 - Import Gradle Project 창이 열리면 Next 버튼을 클릭한다.
 - Project root directory 에서 ${home}/workspace.edu/egovframe-msa-edu/backend/config를 선택하고 Finish 버튼을 클릭한다.
-- 위의 과정을 반복하여 아래의 프로젝트를 import 한다. (소규모는 1~6, 대규모는 1~9)
+- 위의 과정을 반복하여 아래의 프로젝트를 import 한다. (소규모는 1-6, 대규모는 1-9)
 
-1. config
-2. discovery
-3. apigateway
-4. user-service
-5. portal-service
-6. board-service
-7. reserve-check-service
-8. reserve-item-service
-9. reserve-request-service
+1. config : 별도의 통합된 설정 관리 서비스 제공을 통해 환경 독립적 서비스 제공 (service mesh)
+2. discovery : 서비스에 대한 물리적 위치 정보 대신 논리적 서비스 위치 정보 제공 (service mesh)
+3. apigateway : Microservice에 대한 API 관리 및 모니터링 서비스 (service mesh)
+4. user-service : 사용자 서비스 (로그인, 회원가입, 비밀번호 찾기, 관리자)
+5. portal-service : 포털 공통 서비스 (메뉴, 코드, 컨텐츠, 권한, 인가, 배너, 첨부파일 관리)
+6. board-service : 게시판 서비스 (게시판, 게시물, 첨부파일 관리)
+7. reserve-check-service : 예약 확인 서비스 (non-blocking)
+8. reserve-item-service : 예약 물품 서비스 (non-blocking)
+9. reserve-request-service : 예약 신청 서비스 (non-blocking)
 
 - 모든 프로젝트를 import 하고 Project Explorer 를 확인하면 board-service, portal-service, user-service 프로젝트에 오류 표시가 출력된다. querydsl 로 generate 되는 클래스들을 build path 에 추가해야 한다.
 - Window>Show View>Other 을 클릭해서 열린 창에서 Gradle>Gradle Tasks 를 선택하고 Open 버튼을 클릭하면 Gradle Tasks 탭이 열린다.
@@ -150,4 +150,35 @@
 
 ## 프론트앤드 구동 방법
 
-03.MSA템플릿\_프론트엔드구성및실습.pdf 파일을 참조한다.
+```
+node : 14.8.0
+npm : 6.14.7
+Visual Studio Code : latest
+```
+
+- https://nodejs.org/en/download 에서 다운로드 후 설치하고 버전을 확인한다.
+
+```
+node -v
+npm -v
+```
+
+- Visual Studio Code 에서 frontend/admin 폴더를 연다.
+- Terminal 에서 다음을 실행한다.
+
+```
+npm install
+npm run dev
+```
+
+- 로그인 화면에서 email 란에 '1@gmail.com', password 란에 'test1234!' 입력 후 로그인한다.
+
+(기타 상세한 내용은 03.MSA템플릿\_프론트엔드구성및실습.pdf 파일을 참조한다.)
+
+## 참조 화면
+
+![Microservices Architecture](images\msa.png)
+![Authentication/Authorization-JWT](images\jwt.png)
+![Frontend](images\frontend.png)
+![Login](images\login.png)
+![Admin](images\admin.png)
