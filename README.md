@@ -118,7 +118,7 @@ This is the training source code for the Microservices Architecture (MSA) templa
             └─ingress
 ```
 
-### 디렉토리 설명
+### 디렉토리 설명 Contents
 
 - `/backend`: Spring Boot를 기반으로 백앤드에 올려지는 서비스들 Services on the backend based on Spring Boot
 - `/backend/apigateway`: Microservice에 대한 API 관리 및 모니터링 서비스 API management and monitoring service for microservices (service mesh)
@@ -147,7 +147,7 @@ This is the training source code for the Microservices Architecture (MSA) templa
 - `/k8s/environments/vagrant`: 가상화 소프트웨어 개발환경의 생성을 쉽게 구성하도록 하는 Vagrant 관련 정의 Vagrant-specific definitions that make it easy to configure the creation of a virtualized software development environment
 - `/k8s/environments/zipkin`: 분산 트랜잭션 추적을 위한 Zipkin 관련 정의 Zipkin-specific definitions for distributed transaction tracing
 
-## 백앤드 구동 방법 How to run the backend
+## 백앤드 구동 방법 How to run backend
 
 - 개발환경 Eclipse IDE 를 실행한다. Run the Eclipse IDE for your development environment.
 - Eclipse IDE 메뉴에서 File>Import… 를 클릭한다. From the Eclipse IDE menu, click File>Import....
@@ -178,7 +178,7 @@ This is the training source code for the Microservices Architecture (MSA) templa
 
 (ELK 설정, Config 설정, OAuth 2.0 설정, API 호출 및 JUnit 테스트 관련해서는 02.MSA템플릿\_백엔드구성및실습.pdf 파일을 참조한다.)
 
-## 프론트앤드 구동 방법 How to run the frontend
+## 프론트앤드 구동 방법 How to run frontend
 
 ```
 node : 14.8.0
