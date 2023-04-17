@@ -1,0 +1,75 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- config/service.yaml
+- discovery/service.yaml
+- portal-service/service.yaml
+- reserve-item-service/service.yaml
+- user-service/service.yaml
+- board-service/service.yaml
+- reserve-request-service/service.yaml
+- reserve-check-service/service.yaml
+- discovery/ingress/ingress.yaml
+- apigateway/ingress/ingress.yaml
+- config/deployment.yaml
+- discovery/deployment.yaml
+- portal-service/deployment.yaml
+- reserve-item-service/deployment.yaml
+- user-service/deployment.yaml
+- board-service/deployment.yaml
+- apigateway/deployment.yaml
+- apigateway/service.yaml
+- reserve-request-service/deployment.yaml
+- reserve-check-service/deployment.yaml
+- portal-service/autoscaler.yaml
+- reserve-item-service/autoscaler.yaml
+- user-service/autoscaler.yaml
+- board-service/autoscaler.yaml
+- apigateway/autoscaler.yaml
+- reserve-request-service/autoscaler.yaml
+- reserve-check-service/autoscaler.yaml
+
+
+images:
+- name: egovframe/egovframe-msa-edu-backend-apigateway:latest
+  # newName: foobar/egovframe-msa-edu-backend-apigateway
+  newTag: latest
+- name: egovframe/egovframe-msa-edu-backend-board-service:latest
+  # newName: foobar/egovframe-msa-edu-backend-board-service
+  newTag: latest
+- name: egovframe/egovframe-msa-edu-backend-config:latest
+  # newName: foobar/egovframe-msa-edu-backend-config
+  newTag: latest
+- name: egovframe/egovframe-msa-edu-backend-discovery:latest
+  # newName: foobar/egovframe-msa-edu-backend-discovery
+  newTag: latest
+- name: egovframe/egovframe-msa-edu-backend-portal-service:latest
+  # newName: foobar/egovframe-msa-edu-backend-portal-service
+  newTag: latest
+- name: egovframe/egovframe-msa-edu-backend-reserve-check-service:latest
+  # newName: foobar/egovframe-msa-edu-backend-reserve-check-service
+  newTag: latest
+- name: egovframe/egovframe-msa-edu-backend-reserve-item-service:latest
+  # newName: foobar/egovframe-msa-edu-backend-reserve-item-service
+  newTag: latest
+- name: egovframe/egovframe-msa-edu-backend-reserve-request-service:latest
+  # newName: foobar/egovframe-msa-edu-backend-reserve-request-service
+  newTag: latest
+- name: egovframe/egovframe-msa-edu-backend-user-service:latest
+  # newName: foobar/egovframe-msa-edu-backend-user-service
+  newTag: latest
+
+
+patches:
+- target:
+    name: apigateway-ingress
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: "<TODO: 백엔드 API 게이트웨이 도메인>"
+- target:
+    name: discovery-ingress
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: "<TODO: 백엔드 유레카 서버 도메인>"
