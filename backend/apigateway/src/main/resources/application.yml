@@ -69,7 +69,7 @@ management:
 info:
   app:
     name: Spring Cloud Gateway
-    description: API ¶ó¿ìÆÃ ¹× º¸¾È, ¸ğ´ÏÅÍ¸µ/¸ŞÆ®¸¯ µîÀÇ ±â´ÉÀ» °£´ÜÇÏ°í È¿°úÀûÀÎ ¹æ¹ıÀ¸·Î Á¦°ø
+    description: API ë¼ìš°íŒ… ë° ë³´ì•ˆ, ëª¨ë‹ˆí„°ë§/ë©”íŠ¸ë¦­ ë“±ì˜ ê¸°ëŠ¥ì„ ê°„ë‹¨í•˜ê³  íš¨ê³¼ì ì¸ ë°©ë²•ìœ¼ë¡œ ì œê³µ
   swagger-ui: http://localhost:8000/webjars/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
 
 messages:
