@@ -15,4 +15,4 @@ management:
 info:
   app:
     name: Reserve Check Service
-    description: ¿¹¾à½Ã½ºÅÛ ±â´É Áß ¿¹¾àÈ®ÀÎ, ¿¹¾à½ÂÀÎ/Ãë¼Ò ±â´ÉÀ» Á¦°ø
+    description: ì˜ˆì•½ì‹œìŠ¤í…œ ê¸°ëŠ¥ ì¤‘ ì˜ˆì•½í™•ì¸, ì˜ˆì•½ìŠ¹ì¸/ì·¨ì†Œ ê¸°ëŠ¥ì„ ì œê³µ
