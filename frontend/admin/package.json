@@ -9,7 +9,10 @@
   "scripts": {
     "start:dev": "next",
     "dev": "ts-node --project tsconfig.server.json server/index.ts",
-    "dev:sm": "SITE_ID=4 ts-node --project tsconfig.server.json server/index.ts",
+    "dev:sm": "SITE_ID=4 npm run dev",
+    "dev:lg": "SITE_ID=1 npm run dev",
+    "dev:smWin": "set SITE_ID=4&&npm run dev",
+    "dev:lgWin": "set SITE_ID=1&&npm run dev",
     "clean:dev": "rimraf .next",
     "build:server": "tsc --project tsconfig.server.json",
     "build:next": "next build",
