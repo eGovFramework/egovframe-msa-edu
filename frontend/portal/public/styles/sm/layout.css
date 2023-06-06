@@ -1140,7 +1140,8 @@ footer div > span a {
   overflow: hidden;
 }
 #main .slide div.slide-title p {
-  height: 12vw;
+  /* height: 12vw; */
+  background: rgba(0, 0, 0, 0.3);
   color: #fff;
   font-size: 2.7vw;
   font-weight: 600;
@@ -1171,6 +1172,7 @@ footer div > span a {
   left: 6vw;
   color: rgba(255, 255, 255, 0.7);
   font-size: 1.7vw;
+  background: rgba(0, 0, 0, 0.3);
 }
 #main .slide a:before {
   content: '╋';
