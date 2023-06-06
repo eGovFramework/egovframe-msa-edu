@@ -191,8 +191,9 @@ public class FileStorageUtils implements StorageUtils {
 
             Path path = getStorePath(basePath);
             Path target = path.resolve(filename);
-            Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
-
+            InputStream inputStream = file.getInputStream();
+            Files.copy(inputStream, target, StandardCopyOption.REPLACE_EXISTING);
+            inputStream.close(); //윈도우 시스템에서도 업로드 시 Temp폴더의 delete file 에러방지코드 추가
             return filename;
         } catch (IOException ex) {
             log.error("Could not stored file", ex);
