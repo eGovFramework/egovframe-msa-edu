@@ -26,8 +26,8 @@ ext {
 
 
 dependencies {
-//    implementation files('../../module-common/build/libs/module-common-0.1.jar') // @ComponentScan(basePackages={"org.egovframe.cloud"}) 추가해야 적용된다
-    implementation 'org.egovframe.cloud:module-common:0.1'
+    implementation files('../module-common/build/libs/module-common-4.1.0-plain.jar') // 공통 모듈, @ComponentScan(basePackages={"org.egovframe.cloud"}) 추가해야 적용된다
+//    implementation 'org.egovframe.cloud:module-common:0.1'
     implementation('org.egovframe.rte:org.egovframe.rte.fdl.cmmn:4.1.0') {
         exclude group: 'org.egovframe.rte', module: 'org.egovframe.rte.fdl.logging'
     }
