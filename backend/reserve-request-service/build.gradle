@@ -1,11 +1,11 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.0'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version '2.7.12'
+    id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
 }
 
 group = 'org.egovframe.cloud'
-version = '0.1'
+version = '1.0.0'
 sourceCompatibility = '1.8'
 
 configurations {
@@ -20,15 +20,14 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "2021.0.3")
-    set('log4j2.version', "2.17.2") // log4j 보안 패치
+    set('springCloudVersion', '2021.0.7')
+    set('log4j2.version', '2.20.0') // log4j 보안 패치
 }
 
-
 dependencies {
-    implementation files('../module-common/build/libs/module-common-4.1.0-plain.jar') // 공통 모듈, @ComponentScan(basePackages={"org.egovframe.cloud"}) 추가해야 적용된다
-//    implementation 'org.egovframe.cloud:module-common:0.1'
-    implementation('org.egovframe.rte:org.egovframe.rte.fdl.cmmn:4.1.0') {
+//    implementation files('../module-common/build/libs/module-common-4.2.0-plain.jar') // @ComponentScan(basePackages={"org.egovframe.cloud"}) 추가해야 적용된다
+    implementation 'org.egovframe.cloud:module-common:4.2.0'
+    implementation('org.egovframe.rte:org.egovframe.rte.fdl.cmmn:4.2.0') {
         exclude group: 'org.egovframe.rte', module: 'org.egovframe.rte.fdl.logging'
     }
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
@@ -42,11 +41,11 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'  // bus
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j'
     implementation 'org.apache.tomcat.embed:tomcat-embed-el:9.0.73'
-    implementation 'com.playtika.reactivefeign:feign-reactor-spring-cloud-starter:3.2.1'
+    implementation 'com.playtika.reactivefeign:feign-reactor-spring-cloud-starter:3.2.11'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'        // logstash logback
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'        // logstash logback
 
     //messaging
     implementation 'org.springframework.cloud:spring-cloud-stream'
@@ -57,10 +56,10 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
     implementation 'dev.miku:r2dbc-mysql:0.8.2.RELEASE'
-    implementation 'mysql:mysql-connector-java'
+    implementation 'mysql:mysql-connector-java:8.0.33'
 
     // openapi docs
-    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.9'
+    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.7.0'
 
     //lombok
     implementation 'org.projectlombok:lombok'
@@ -75,6 +74,8 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
+
+    implementation 'org.webjars:webjars-locator-core:0.53'
 }
 
 test {
