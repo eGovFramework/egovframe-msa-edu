@@ -1,11 +1,11 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.0'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version '2.7.12'
+    id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
 }
 
 group = 'org.egovframe.cloud'
-version = '0.1'
+version = '1.0.0'
 sourceCompatibility = '1.8'
 
 repositories {
@@ -13,8 +13,8 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "2021.0.3")
-    set('log4j2.version', "2.17.2") // log4j 보안 패치
+    set('springCloudVersion', '2021.0.7')
+    set('log4j2.version', '2.20.0') // log4j 보안 패치
 }
 
 dependencies {
@@ -23,11 +23,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'  // bus
     implementation 'org.springframework.boot:spring-boot-starter-actuator'    // bus
-    implementation 'org.apache.tomcat:tomcat-annotations-api:9.0.73'
-    implementation 'org.apache.tomcat.embed:tomcat-embed-core:9.0.73'
-    implementation 'org.apache.tomcat.embed:tomcat-embed-el:9.0.73'
-    implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:9.0.73'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'        // logstash logback
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'        // logstash logback
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

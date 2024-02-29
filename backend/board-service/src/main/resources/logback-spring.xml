@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<!DOCTYPE xml>
+<Configuration>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -45,4 +46,4 @@
         </root>
     </springProfile>
 
-</configuration>
+</Configuration>

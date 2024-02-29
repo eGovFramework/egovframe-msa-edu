@@ -6,8 +6,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
 
 import reactivefeign.spring.config.EnableReactiveFeignClients;
-//import reactor.blockhound.BlockHound;
-
 import java.security.Security;
 
 @ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.reactive", "org.egovframe.cloud.reservechecksevice"}) // org.egovframe.cloud.common package 포함하기 위해
