@@ -54,7 +54,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
     implementation 'dev.miku:r2dbc-mysql:0.8.2.RELEASE'
-    implementation 'mysql:mysql-connector-java:8.0.33''
+    implementation 'mysql:mysql-connector-java:8.0.33'
 
     // openapi docs
     implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.7.0'
