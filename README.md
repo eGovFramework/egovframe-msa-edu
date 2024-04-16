@@ -214,8 +214,8 @@ npm run dev
 
 ## 교육 교재
 
-- [01.MSA템플릿 개요 및 개발환경 실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/11084628/01.MSA._._.pdf)
-- [01.MSA템플릿 개요 및 개발환경 이론.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/11084629/01.MSA._._.pdf)
-- [02.MSA템플릿 백엔드구성 및 실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/11084631/02.MSA._.pdf)
-- [03.MSA템플릿 프론트엔드구성 및 실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/11084632/03.MSA._.pdf)
-- [04.MSA템플릿 이벤트스트림구성 및 실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/11084633/04.MSA._.pdf)
+- [01.MSA템플릿_개요및개발환경_실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/14988282/01.MSA._._.pdf)
+- [01.MSA템플릿_개요및개발환경_이론.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/14988284/01.MSA._._.pdf)
+- [02.MSA템플릿_백엔드구성및실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/14988288/02.MSA._.pdf)
+- [03.MSA템플릿_프론트엔드구성및실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/14988291/03.MSA._.pdf)
+- [04.MSA템플릿_이벤트스트림구성및 실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/14988292/04.MSA._.pdf)
