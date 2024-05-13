@@ -175,7 +175,7 @@
 - Source Folder Selection 창이 열리면 build>generated>querydsl 을 체크하고 OK 버튼을 클릭한다.
 - Properties 창에서 Apply and Close 버튼을 클릭하면 창이 닫히면서 프로젝트를 다시 빌드하고 오류 표시는 사라진다.
 
-(ELK 설정, Config 설정, OAuth 2.0 설정, API 호출 및 JUnit 테스트 관련해서는 [02.MSA템플릿 백엔드구성 및 실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/11084631/02.MSA._.pdf) 파일을 참조한다.)
+(ELK 설정, Config 설정, OAuth 2.0 설정, API 호출 및 JUnit 테스트 관련해서는 [02.MSA템플릿 백엔드구성 및 실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/15290484/02.MSA._.pdf) 파일을 참조한다.)
 
 ## 프론트앤드 구동 방법
 
@@ -202,7 +202,7 @@ npm run dev
 
 - 로그인 화면에서 email 란에 '1@gmail.com', password 란에 'test1234!' 입력 후 로그인한다.
 
-(기타 상세한 내용은 [03.MSA템플릿 프론트엔드구성 및 실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/11084632/03.MSA._.pdf) 파일을 참조한다.)
+(기타 상세한 내용은 [03.MSA템플릿 프론트엔드구성 및 실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/14988291/03.MSA._.pdf) 파일을 참조한다.)
 
 ## 참조 화면
 
@@ -214,8 +214,8 @@ npm run dev
 
 ## 교육 교재
 
-- [01.MSA템플릿_개요및개발환경_실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/14988282/01.MSA._._.pdf)
-- [01.MSA템플릿_개요및개발환경_이론.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/14988284/01.MSA._._.pdf)
-- [02.MSA템플릿_백엔드구성및실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/14988288/02.MSA._.pdf)
-- [03.MSA템플릿_프론트엔드구성및실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/14988291/03.MSA._.pdf)
-- [04.MSA템플릿_이벤트스트림구성및 실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/14988292/04.MSA._.pdf)
+- [01.MSA템플릿 개요 및 개발환경_실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/14988282/01.MSA._._.pdf)
+- [01.MSA템플릿 개요 및 개발환경_이론.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/14988284/01.MSA._._.pdf)
+- [02.MSA템플릿 백엔드구성 및 실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/15290484/02.MSA._.pdf)
+- [03.MSA템플릿 프론트엔드구성 및 실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/14988291/03.MSA._.pdf)
+- [04.MSA템플릿 이벤트스트림구성 및 실습.pdf](https://github.com/eGovFramework/egovframe-msa-edu/files/14988292/04.MSA._.pdf)
