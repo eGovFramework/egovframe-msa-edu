@@ -15,4 +15,4 @@ management:
 info:
   app:
     name: Reserve Item Service
-    description: ¿¹¾à½Ã½ºÅÛ ±â´É Áß ¿¹¾àÁö¿ª, ¿¹¾à¹°Ç° °ü¸® ±â´ÉÀ» Á¦°ø
+    description: ì˜ˆì•½ì‹œìŠ¤í…œ ê¸°ëŠ¥ ì¤‘ ì˜ˆì•½ì§€ì—­, ì˜ˆì•½ë¬¼í’ˆ ê´€ë¦¬ ê¸°ëŠ¥ì„ ì œê³µ

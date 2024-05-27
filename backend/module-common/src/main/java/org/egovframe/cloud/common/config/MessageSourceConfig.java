@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.util.StringUtils;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,6 +42,7 @@ public class MessageSourceConfig {
     @Value("${spring.profiles.active:default}")
     private String profile;
 
+    private static final String FILE_SEPARATOR = File.separator;
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
@@ -48,6 +50,9 @@ public class MessageSourceConfig {
         if ("default".equals(profile)) {
             Path fileStorageLocation = Paths.get(messagesDirectory).toAbsolutePath().normalize();
             String dbMessages = StringUtils.cleanPath("file://" + fileStorageLocation + MESSAGES);
+            if(FILE_SEPARATOR.equals("\\")) {//윈도우기반 자바시스템일 때 Could not parse properties file 에러방지
+            	dbMessages = StringUtils.cleanPath("file:///" + fileStorageLocation + MESSAGES);
+            }
             messageSource.setBasenames(dbMessages);
         } else {
             messageSource.setBasenames(messagesDirectory + MESSAGES);

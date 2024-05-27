@@ -56,8 +56,10 @@ HELP.md
 **/out/
 
 # production
-**/build
+!**/build/
+**/build/*
 **/dist
+!backend/module-common/build/libs/
 
 # misc
 **.DS_Store

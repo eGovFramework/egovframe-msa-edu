@@ -30,4 +30,4 @@ management:
 info:
   app:
     name: Board Service
-    description: °Ô½ÃÆÇ°ü¸®, °Ô½Ã¹°°ü¸®, Ã·ºÎÆÄÀÏ°ü¸® ±â´ÉÀ» Á¦°ø
+    description: ê²Œì‹œíŒê´€ë¦¬, ê²Œì‹œë¬¼ê´€ë¦¬, ì²¨ë¶€íŒŒì¼ê´€ë¦¬ ê¸°ëŠ¥ì„ ì œê³µ
