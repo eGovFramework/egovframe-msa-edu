@@ -1,0 +1,35 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- portal/service.yaml
+- admin/service.yaml
+- portal/ingress/ingress.yaml
+- admin/ingress/ingress.yaml
+- portal/deployment.yaml
+- admin/deployment.yaml
+- portal/autoscaler.yaml
+- admin/autoscaler.yaml
+
+
+images:
+- name: egovframe/egovframe-msa-edu-frontend-admin:latest
+  # newName: foobar/egovframe-msa-edu-frontend-admin
+  newTag: latest
+- name: egovframe/egovframe-msa-edu-frontend-portal:latest
+  # newName: foobar/egovframe-msa-edu-frontend-portal
+  newTag: latest
+
+
+patches:
+- target:
+    name: frontend-portal-ingress
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: "<TODO: 프론트엔드 포털 도메인>"
+- target:
+    name: frontend-admin-ingress
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: "<TODO: 프론트엔드 관리자 도메인>"
