@@ -146,14 +146,17 @@ const BoardEdit = (props: BoardEditProps) => {
                       data = produce(data, draft => {
                         draft.attachmentCode = result
                       })
+                      save(data)
                     }
                   }
                 })
+            }else{
+              save(data)
             }
           })
+      }else{
+        save(data)
       }
-
-      save(data)
     }
   }, [postData, attachList])
 

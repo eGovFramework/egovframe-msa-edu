@@ -46,14 +46,16 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'  // bus
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'        // logstash logback
+    implementation 'org.apache.tomcat:tomcat-annotations-api:9.0.73'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-core:9.0.73'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-el:9.0.73'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:9.0.73'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'        // logstash logback
     implementation 'mysql:mysql-connector-java:8.0.33'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
-
     // querydsl
     implementation 'com.querydsl:querydsl-jpa:5.0.0'
     annotationProcessor 'com.querydsl:querydsl-apt:5.0.0'
-
     // cache
     implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'org.ehcache:ehcache'
@@ -63,7 +65,7 @@ dependencies {
 
     // openapi docs
     implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.7.0'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     // lombok
     implementation 'org.projectlombok:lombok'

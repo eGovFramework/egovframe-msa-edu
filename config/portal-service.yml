@@ -3,7 +3,7 @@ database:
 
 spring:
   datasource:
-    url: ${database.url}?serverTimezone=Asia/Seoul
+    url: ${database.url}?serverTimezone=Asia/Seoul&autoReconnect=true&validationQuery=select 1
     username: msaportal
     password: msaportal
     driver-class-name: com.mysql.cj.jdbc.Driver

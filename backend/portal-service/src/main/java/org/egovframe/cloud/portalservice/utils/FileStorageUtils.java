@@ -51,10 +51,16 @@ public class FileStorageUtils implements StorageUtils {
     private final Path fileStorageLocation;
     private final Environment environment;
     private final MessageUtil messageUtil;
-
+    private static final String FILE_SEPARATOR = File.separator;
+    
     public FileStorageUtils(Environment environment, MessageUtil messageUtil) {
         this.environment = environment;
-        this.fileStorageLocation = Paths.get(environment.getProperty("file.directory")).toAbsolutePath().normalize();
+        String envFileDir = "";
+        envFileDir = environment.getProperty("file.directory");
+        if(FILE_SEPARATOR.equals("\\")) {//윈도우기반 자바시스템일 때 경로 에러방지
+        	envFileDir = envFileDir.replaceAll("/", "\\\\");
+        }
+        this.fileStorageLocation = Paths.get(envFileDir).toAbsolutePath().normalize();
         this.messageUtil = messageUtil;
     }
 
@@ -185,8 +191,9 @@ public class FileStorageUtils implements StorageUtils {
 
             Path path = getStorePath(basePath);
             Path target = path.resolve(filename);
-            Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
-
+            InputStream inputStream = file.getInputStream();
+            Files.copy(inputStream, target, StandardCopyOption.REPLACE_EXISTING);
+            inputStream.close(); //윈도우 시스템에서도 업로드 시 Temp폴더의 delete file 에러방지코드 추가
             return filename;
         } catch (IOException ex) {
             log.error("Could not stored file", ex);

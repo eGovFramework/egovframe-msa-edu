@@ -23,6 +23,10 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'  // bus
     implementation 'org.springframework.boot:spring-boot-starter-actuator'    // bus
+    implementation 'org.apache.tomcat:tomcat-annotations-api:9.0.73'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-core:9.0.73'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-el:9.0.73'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:9.0.73'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'        // logstash logback
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

@@ -1137,6 +1137,7 @@ footer div > span a {
   font-size: 32px;
   line-height: 32px;
   text-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.3);
   /* overflow: hidden;
   white-space: break-spaces;
   word-break: keep-all; */
@@ -1147,6 +1148,7 @@ footer div > span a {
   left: 6vw;
   color: rgba(255, 255, 255, 0.7);
   font-size: 1.7vw;
+  background: rgba(0, 0, 0, 0.3);
 }
 #main .slideBox a:before {
   content: '╋';
@@ -1185,7 +1187,7 @@ footer div > span a {
 
 #main .slide .reservBox {
   position: absolute;
-  top: 600px;
+  top: 650px;
   left: 0;
   z-index: 10;
   width: 100%;
