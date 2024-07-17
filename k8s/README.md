@@ -19,7 +19,7 @@ Even so, if you want to use kustomize, refer to [official kustomize doc](https:/
 
 You must follow deployment order.
 
-## Deployenvironments
+## Deploy environments
 
 ```sh
 $ kustomize build k8s/environments | kubectl apply -f -
