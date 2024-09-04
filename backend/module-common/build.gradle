@@ -76,6 +76,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.springframework.security:spring-security-test'
+
+    // https://mvnrepository.com/artifact/org.webjars/webjars-locator-core
+    implementation group: 'org.webjars', name: 'webjars-locator-core', version: '0.59'
 }
 
 dependencyManagement {
