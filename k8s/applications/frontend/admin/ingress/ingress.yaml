@@ -3,13 +3,15 @@ kind: Ingress
 metadata:
   name: frontend-admin-ingress
   labels:
-    env: production
+    # 환경을 나타내는 레이블
+    env: ${ENVIRONMENT}
+    # 애플리케이션 계층을 나타내는 레이블
     tier: frontend
+    # 애플리케이션 유형을 나타내는 레이블
     app: admin
-    name: frontend-admin-ingress
 spec:
   rules:
-    - host: <프론트엔드 관리자 도메인> # TODO
+    - host: ${FRONTEND_ADMIN_DOMAIN}  # 환경 변수로 도메인 설정
       http:
         paths:
           - path: /
