@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: jenkins-ingress
@@ -7,12 +7,22 @@ metadata:
     tier: cicd
     app: jenkins
     name: jenkins-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
+  tls:
+  - hosts:
+    - jenkins.example.com
+    secretName: jenkins-tls
   rules:
-    - host: <젠킨스 도메인> # TODO
+    - host: jenkins.example.com
       http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: jenkins
-              servicePort: 8080
+              service:
+                name: jenkins
+                port: 
+                  number: 8080
