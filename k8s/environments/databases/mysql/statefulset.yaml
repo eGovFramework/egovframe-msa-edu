@@ -32,7 +32,7 @@ spec:
             - "-c"
             - |
               set -ex
-              [[ `hostname` =~ -([0-9]+)$ ]] || exit 1
+              [[ $HOSTNAME =~ -([0-9]+)$ ]] || exit 1
               ordinal=${BASH_REMATCH[1]}
               echo [mysqld] > /mnt/conf.d/server-id.cnf
               echo server-id=$((100 + $ordinal)) >> /mnt/conf.d/server-id.cnf
