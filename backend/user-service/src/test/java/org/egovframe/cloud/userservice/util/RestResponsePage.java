@@ -30,6 +30,11 @@ import java.util.List;
 public class RestResponsePage<T> extends PageImpl<T> {
 
     /**
+     * 
+     */
+    private static final long serialVersionUID = -5737360124251098346L;
+
+	/**
      * Rest 응답 페이지 생성자
      *
      * @param content          목록

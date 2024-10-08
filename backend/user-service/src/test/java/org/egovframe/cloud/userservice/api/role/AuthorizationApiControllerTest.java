@@ -1,6 +1,5 @@
 package org.egovframe.cloud.userservice.api.role;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.egovframe.cloud.userservice.api.role.dto.AuthorizationUpdateRequestDto;
 import org.egovframe.cloud.userservice.domain.role.Authorization;

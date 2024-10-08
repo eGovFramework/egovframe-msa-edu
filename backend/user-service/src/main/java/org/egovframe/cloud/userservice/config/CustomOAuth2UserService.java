@@ -30,6 +30,7 @@ import java.util.Collections;
  *     수정일        수정자           수정내용
  *  ----------    --------    ---------------------------
  *  2021/06/30    jaeyeolkim  최초 생성
+ *  2024/09/25    이백행        컨트리뷰션 이클립스 문제(Problems) 해결
  * </pre>
  */
 @RequiredArgsConstructor
@@ -47,7 +48,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
      */
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2UserService delegate = new DefaultOAuth2UserService();
+//        OAuth2UserService delegate = new DefaultOAuth2UserService();
+        OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
         // 현재 로그인 진행 중인 서비스를 구분하는 코드(구글 or 네이버..)
