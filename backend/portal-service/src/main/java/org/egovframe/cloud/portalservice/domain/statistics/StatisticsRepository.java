@@ -22,6 +22,6 @@ import java.util.List;
  *  2021/09/07    shinmj      최초 생성
  * </pre>
  */
-public interface StatisticsRepository extends JpaRepository<Statistics, String>, StatisticsRepositoryCustom {
+public interface StatisticsRepository extends JpaRepository<Statistics, Long>, StatisticsRepositoryCustom {
 
 }
