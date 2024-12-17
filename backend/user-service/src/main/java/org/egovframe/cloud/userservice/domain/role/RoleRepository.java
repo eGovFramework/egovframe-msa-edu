@@ -19,5 +19,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *  2021/07/07    jooho       최초 생성
  * </pre>
  */
-public interface RoleRepository extends JpaRepository<Role, Long>, RoleRepositoryCustom {
+public interface RoleRepository extends JpaRepository<Role, String>, RoleRepositoryCustom {
 }
