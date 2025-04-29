@@ -6,6 +6,8 @@ import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
@@ -29,7 +31,6 @@ import java.util.Map;
  *     수정일        수정자           수정내용
  *  ----------    --------    ---------------------------
  *  2021/07/16    jaeyeolkim  최초 생성
- *  2024/09/24    이백행        컨트리뷰션 이클립스 문제(Problems) 해결
  * </pre>
  */
 @Slf4j

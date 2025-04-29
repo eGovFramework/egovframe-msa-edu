@@ -807,51 +807,51 @@ public class UserService extends AbstractService implements UserDetailsService {
         return user.orElse(null);
     }
 
-//    /**
-//     * 소셜 사용자 엔티티 조회
-//     * 등록되어 있지 않은 경우 사용자 등록
-//     *
-//     * @param providerCode 공급자 코드
-//     * @param providerId   공급자 id
-//     * @param email        이메일
-//     * @param userName     사용자 명
-//     * @return UserLoginRequestDto 사용자 로그인 요청 DTO
-//     */
-//    private UserResponseDto getAndSaveSocialUser(String providerCode, String providerId, String email, String userName) {
-//        User user = findSocialUser(providerCode, providerId);
-//
-//        // 이메일로 조회
-//        // 공급자에서 동일한 이메일을 사용할 수 있고
-//        // 현재 시스템 구조 상 이메일을 사용자 식별키로 사용하고 있어서 이메일로 사용자를 한번 더 검색한다.
-//        if (user == null) {
-//            user = userRepository.findByEmail(email).orElse(null);
-//
-//            // 공급자 id로 조회되지 않지만 이메일로 조회되는 경우 공급자 id 등록
-//            if (user != null) {
-//                user.setSocial(providerCode, providerId);
-//            }
-//        }
-//
-//        if (user == null) {
-//            // 사용자 등록
-//            final String userId = UUID.randomUUID().toString();
-//            //final String password = makeRandomPassword(); // 임의 비밀번호 생성 시 복호화 불가능
-//
-//            user = User.builder()
-//                    .email(email) // 100byte
-//                    //.encryptedPassword(passwordEncoder.encode(password)) // 100 byte
-//                    .userName(userName)
-//                    .userId(userId)
-//                    .role(Role.USER)
-//                    .userStateCode(UserStateCode.NORMAL.getKey())
-//                    .build();
-//            user.setSocial(providerCode, providerId);
-//
-//            user = userRepository.save(user);
-//
-//        }
-//
-//        return new UserResponseDto(user);
-//    }
+    /**
+     * 소셜 사용자 엔티티 조회
+     * 등록되어 있지 않은 경우 사용자 등록
+     *
+     * @param providerCode 공급자 코드
+     * @param providerId   공급자 id
+     * @param email        이메일
+     * @param userName     사용자 명
+     * @return UserLoginRequestDto 사용자 로그인 요청 DTO
+     */
+    private UserResponseDto getAndSaveSocialUser(String providerCode, String providerId, String email, String userName) {
+        User user = findSocialUser(providerCode, providerId);
+
+        // 이메일로 조회
+        // 공급자에서 동일한 이메일을 사용할 수 있고
+        // 현재 시스템 구조 상 이메일을 사용자 식별키로 사용하고 있어서 이메일로 사용자를 한번 더 검색한다.
+        if (user == null) {
+            user = userRepository.findByEmail(email).orElse(null);
+
+            // 공급자 id로 조회되지 않지만 이메일로 조회되는 경우 공급자 id 등록
+            if (user != null) {
+                user.setSocial(providerCode, providerId);
+            }
+        }
+
+        if (user == null) {
+            // 사용자 등록
+            final String userId = UUID.randomUUID().toString();
+            //final String password = makeRandomPassword(); // 임의 비밀번호 생성 시 복호화 불가능
+
+            user = User.builder()
+                    .email(email) // 100byte
+                    //.encryptedPassword(passwordEncoder.encode(password)) // 100 byte
+                    .userName(userName)
+                    .userId(userId)
+                    .role(Role.USER)
+                    .userStateCode(UserStateCode.NORMAL.getKey())
+                    .build();
+            user.setSocial(providerCode, providerId);
+
+            user = userRepository.save(user);
+
+        }
+
+        return new UserResponseDto(user);
+    }
 
 }

@@ -1,5 +1,4 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.12'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
 }
@@ -20,14 +19,15 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', '2021.0.7')
-    set('log4j2.version', '2.20.0') // log4j 보안 패치
+    set('egovframeBootVersion', '4.3.0')
+    set('springCloudVersion', '2021.0.9')
+    set('log4j2.version', '2.23.1') // log4j 보안 패치
 }
 
 dependencies {
-//    implementation files('../module-common/build/libs/module-common-4.2.0-plain.jar') // @ComponentScan(basePackages={"org.egovframe.cloud"}) 추가해야 적용된다
-    implementation 'org.egovframe.cloud:module-common:4.2.0'
-    implementation('org.egovframe.rte:org.egovframe.rte.fdl.cmmn:4.2.0') {
+//    implementation files('../module-common/build/libs/module-common-4.3.0-plain.jar') // @ComponentScan(basePackages={"org.egovframe.cloud"}) 추가해야 적용된다
+    implementation 'org.egovframe.cloud:module-common:4.3.0'
+    implementation('org.egovframe.rte:org.egovframe.rte.fdl.cmmn:4.3.0') {
         exclude group: 'org.egovframe.rte', module: 'org.egovframe.rte.fdl.logging'
     }
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
@@ -40,7 +40,6 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // config
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'  // bus
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j'
-    implementation 'org.apache.tomcat.embed:tomcat-embed-el:9.0.73'
     implementation 'com.playtika.reactivefeign:feign-reactor-spring-cloud-starter:3.2.11'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
@@ -81,6 +80,7 @@ test {
 
 dependencyManagement {
     imports {
+        mavenBom "org.egovframe.boot:org.egovframe.boot.starter.parent:${egovframeBootVersion}" // egovframe Boot Parent 설정
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }

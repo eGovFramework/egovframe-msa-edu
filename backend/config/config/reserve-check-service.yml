@@ -1,0 +1,11 @@
+spring:
+  r2dbc:
+    url: r2dbc:mysql://${mysql.hostname:localhost}:3306/reservation?serverTimezone=Asia/Seoul
+    username: msaportal
+    password: msaportal
+  cloud:
+    stream:
+      bindings:
+        attachmentEntity-out-0: # 첨부파일 entity 정보 업데이트 하기 위한 이벤트
+          destination: attachment-entity.topic # queue name
+          group: attachment

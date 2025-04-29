@@ -1,0 +1,33 @@
+database:
+  url: jdbc:mysql://${mysql.hostname:localhost}:3306/msaportal
+
+spring:
+  datasource:
+    url: ${database.url}?serverTimezone=Asia/Seoul
+    username: msaportal
+    password: msaportal
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  cloud:
+    bus:
+      destination: springCloudBus
+    stream:
+      function:
+        definition: attachmentEntity;busConsumer # 첨부파일 entity 정보 업데이트 하기 위한 이벤트에 대한 consumer function & springcloudbus consumer function
+      bindings:
+        busConsumer-in-0:
+          destination: ${spring.cloud.bus.destination}
+        attachmentEntity-in-0: # 첨부파일 entity 정보 업데이트 하기 위한 이벤트
+          destination: attachment-entity.topic # queue name
+          group: attachment
+        attachmentEntity-out-0: # 첨부파일 entity 정보 업데이트 하기 위한 이벤트
+          destination: attachment-entity.topic # queue name
+          group: attachment
+
+# ftp server
+ftp:
+  hostname: 'ftp_server_hostname'
+  username: 'ftp_server_username'
+  password: 'ftp_server_password'
+  port: 21
+  directory: /mnt
+  enabled: false # ftp 사용 여부, FTP 서버에 최상위 디렉토리 자동 생성 및 구현체를 결정하게 된다.

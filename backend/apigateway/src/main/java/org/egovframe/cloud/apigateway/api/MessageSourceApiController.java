@@ -3,6 +3,7 @@ package org.egovframe.cloud.apigateway.api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,6 @@ import java.util.Locale;
  *     수정일        수정자           수정내용
  *  ----------    --------    ---------------------------
  *  2021/08/10    jaeyeolkim  최초 생성
- *  2024/09/24    이백행        컨트리뷰션 이클립스 문제(Problems) 해결
  * </pre>
  */
 @Slf4j

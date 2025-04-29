@@ -26,10 +26,6 @@ import java.io.Serializable;
  */
 @Getter
 public class SessionUser implements Serializable {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -6319235143325686744L;
     private String userName;
     private String email;
 

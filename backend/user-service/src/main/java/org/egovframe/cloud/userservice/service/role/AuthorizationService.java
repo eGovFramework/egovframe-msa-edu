@@ -70,9 +70,6 @@ public class AuthorizationService extends AbstractService {
      * @return Page<AuthorizationListResponseDto> 페이지 인가 목록 응답 DTO
      */
     public Page<AuthorizationListResponseDto> findPage(RequestDto requestDto, Pageable pageable) {
-        if (log.isDebugEnabled()) {
-            log.debug("requestDto={}", requestDto);
-        }
         return authorizationRepository.findPage(requestDto, pageable);
     }
 

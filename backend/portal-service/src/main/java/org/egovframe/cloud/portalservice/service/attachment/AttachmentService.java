@@ -150,12 +150,7 @@ public class AttachmentService extends AbstractService {
      */
     @Transactional(readOnly = true)
     public AttachmentImageResponseDto loadImage(String imagename) {
-    	if(FILE_SEPARATOR.equals("\\")) {//윈도우기반 자바시스템일 때 하이픈 character to be escaped is missing 에러방지
-    		imagename = imagename.replaceAll(EDITOR_FILE_SEPARATOR, "\\\\"); //getFileSystem().getPath에서 디스크의 경로를 사용할 때 
-    	} else { //리눅스 또는 맥 기반 자바시스템 경로일 때(아래)
-    		imagename = imagename.replaceAll(EDITOR_FILE_SEPARATOR, FILE_SEPARATOR);
-    	}
-        return storageUtils.loadImage(imagename);
+        return storageUtils.loadImage(imagename.replaceAll(EDITOR_FILE_SEPARATOR, FILE_SEPARATOR));
     }
 
     /**
