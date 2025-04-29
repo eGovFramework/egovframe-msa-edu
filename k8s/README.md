@@ -1,77 +1,77 @@
-# Deploy services on Kubernetes
+# Kubernetes에서 서비스 배포
 
-In Kubernetes, the service consists of two components,
+Kubernetes에서 서비스는 두 가지 구성 요소로 이루어져 있습니다.
 
-1. Environments
-2. Applications
+1. 환경 (Environments)
+2. 애플리케이션 (Applications)
 
-And you can choose the storage in the application either NFS or Cinder provided by Openstack(used by [Pasta](http://paas-ta.kr))
+그리고 애플리케이션에서 사용할 스토리지를 선택할 수 있으며, NFS 또는 Openstack이 제공하는 Cinder를 사용할 수 있습니다(이 경우 [PaaS-TA](http://paas-ta.kr)를 사용).
 
-# Prerequisites
+# 사전 준비 {#prerequisites}
 
-## Install kustomize
+## kustomize 설치 {#install-kustomize}
 
-If you are using kubectl 1.14 or later, it embeded kustomize. So please ignore this section.
-I recommend that you install the latest version of [kubectl](https://kubectl.docs.kubernetes.io/installation/kubectl/) for your cluster instead of installing kustomize.
-Even so, if you want to use kustomize, refer to [official kustomize doc](https://kustomize.io/). 
+kubectl 1.14 이상을 사용하고 있다면, kustomize가 내장되어 있으므로 이 섹션을 무시해도 됩니다.
+대신 클러스터에서 최신 버전의 [kubectl](https://kubectl.docs.kubernetes.io/installation/kubectl/)을 설치하는 것을 권장합니다.
+그럼에도 불구하고 kustomize를 사용하고 싶다면, [공식 kustomize 문서](https://kustomize.io/)를 참고하세요.
 
-# Deploy service
+# 서비스 배포 {#deploy-service}
 
-You must follow deployment order.
+배포 순서를 따라야 합니다.
 
-## Deployenvironments
+## 환경 배포 {#deploy-environments}
 
 ```sh
 $ kustomize build k8s/environments | kubectl apply -f -
 ```
-or if you are using the kubectl only,
+혹은 kubectl만 사용하는 경우,
 
 ```sh
 $ kubectl apply -k k8s/environments
 ```
 
-## Deploy applications
+## 애플리케이션 배포 {#deploy-applications}
 
-If you want to use NFS as a main storage,
+NFS를 메인 스토리지로 사용하려면,
 
 ```sh
 $ kustomize build k8s/stoage/nfs | kubectl apply -f -
 ```
 
-or
+혹은
 
 ```sh
 $ kubectl apply -k k8s/stoage/nfs
 ```
 
-In case of using Openstack storage(CINDER) as a main storage,
+Openstack의 스토리지(CINDER)를 메인 스토리지로 사용하는 경우,
 
 ```sh
 $ kustomize build k8s/stoage/openstack | kubectl apply -f -
 ```
 
-or
+혹은
 
 ```sh
 $ kubectl apply -k k8s/stoage/openstack
 ```
 
-# Shutdown service
+## 서비스 종료 {#shutdown-service}
 
-Simply apply deployment in reverse order.
+단순히 배포 순서를 반대로 적용하면 됩니다.
 
-If you are using nfs, 
+NFS를 사용하는 경우,
 
 ```sh
 $ kustomize build k8s/environments | kubectl delete -f -
 $ kustomize build k8s/stoage/nfs | kubectl delete -f -  --wait
 ```
 
-or
+혹은
 
 ```sh
 $ kubectl delete -k k8s/environments
 $ kubectl delete -k k8s/stoage/nfs --wait
 ```
 
-The case of openstack is similar, so it is omitted.
+Openstack의 경우도 비슷하므로 생략합니다.

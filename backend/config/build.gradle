@@ -1,5 +1,4 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.12'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
 }
@@ -10,11 +9,13 @@ sourceCompatibility = '1.8'
 
 repositories {
     mavenCentral()
+    maven { url "https://maven.egovframe.go.kr/maven/" } // egovframe maven 원격 저장소
 }
 
 ext {
-    set('springCloudVersion', '2021.0.7')
-    set('log4j2.version', '2.20.0') // log4j 보안 패치
+    set('egovframeBootVersion', '4.3.0')
+    set('springCloudVersion', '2021.0.9')
+    set('log4j2.version', '2.23.1') // log4j 보안 패치
 }
 
 dependencies {
@@ -23,16 +24,13 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'  // bus
     implementation 'org.springframework.boot:spring-boot-starter-actuator'    // bus
-    implementation 'org.apache.tomcat:tomcat-annotations-api:9.0.73'
-    implementation 'org.apache.tomcat.embed:tomcat-embed-core:9.0.73'
-    implementation 'org.apache.tomcat.embed:tomcat-embed-el:9.0.73'
-    implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:9.0.73'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'        // logstash logback
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 dependencyManagement {
     imports {
+        mavenBom "org.egovframe.boot:org.egovframe.boot.starter.parent:${egovframeBootVersion}" // egovframe Boot Parent 설정
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }

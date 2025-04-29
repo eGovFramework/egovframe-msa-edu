@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: board-service
+
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MYSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+  jpa:
+#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      generate-ddl: true
+      ddl-auto: create-drop
+#      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 1000 # 1:N 관계를 해결하기 위해 필요
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2
+
+  logging.level:
+    org.hibernate.SQL: debug
+
+file:
+  directory: ${user.home}/msa-attach-volume
+messages:
+  directory: ${file.directory}/messages
+
+# jwt token
+token:
+  secret: egovframe_user_token
+
+# ftp server
+ftp:
+  enabled: false # ftp 사용 여부, FTP 서버에 최상위 디렉토리 자동 생성 및 구현체를 결정하게 된다.
+
+# eureka 가 포함되면 eureka server 도 등록되므로 해제한다.
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false

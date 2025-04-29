@@ -1,0 +1,21 @@
+database:
+  url: jdbc:mysql://${mysql.hostname:localhost}:3306/msaportal
+
+spring:
+  datasource:
+    url: ${database.url}?serverTimezone=Asia/Seoul
+    username: msaportal
+    password: msaportal
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  mail: # 비밀번호 변경 이메일 발송
+    host: smtp.gmail.com # smtp host
+    port: 587 # smtp port
+    username: email_username # 계정
+    password: 'email_password' # 비밀번호 - 구글 보안 2단계 인증 해제, 보안 수준이 낮은 앱의 액세스 허용(https://myaccount.google.com/lesssecureapps)
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
