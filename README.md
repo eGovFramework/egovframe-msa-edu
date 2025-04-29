@@ -96,25 +96,25 @@
     │      │  └─ingress
     │      └─portal
     │          └─ingress
-    └─environments
-        ├─configmaps
-        ├─databases
-        │  └─mysql
-        │      └─init
-        ├─jenkins
-        ├─logging
-        │  └─elk
-        │      ├─elasticsearch
-        │      ├─kibana
-        │      │  └─ingress
-        │      └─logstash
-        ├─nfs
-        ├─rabbitmq
-        │  └─ingress
-        ├─storage
-        ├─vagrant
-        └─zipkin
-            └─ingress
+    ├─environments
+    │  ├─configmaps
+    │  ├─databases
+    │  │  └─mysql
+    │  │      └─init
+    │  ├─jenkins
+    │  ├─logging
+    │  │  └─elk
+    │  │      ├─elasticsearch
+    │  │      ├─kibana
+    │  │      │  └─ingress
+    │  │      └─logstash
+    │  ├─nfs
+    │  ├─rabbitmq
+    │  │  └─ingress
+    │  ├─vagrant
+    │  └─zipkin
+    │      └─ingress
+    └─storage
 ```
 
 ### 디렉토리 설명

@@ -96,25 +96,25 @@ This is the training source code for the Microservices Architecture (MSA) templa
     │      │  └─ingress
     │      └─portal
     │          └─ingress
-    └─environments
-        ├─configmaps
-        ├─databases
-        │  └─mysql
-        │      └─init
-        ├─jenkins
-        ├─logging
-        │  └─elk
-        │      ├─elasticsearch
-        │      ├─kibana
-        │      │  └─ingress
-        │      └─logstash
-        ├─nfs
-        ├─rabbitmq
-        │  └─ingress
-        ├─storage
-        ├─vagrant
-        └─zipkin
-            └─ingress
+    ├─environments
+    │  ├─configmaps
+    │  ├─databases
+    │  │  └─mysql
+    │  │      └─init
+    │  ├─jenkins
+    │  ├─logging
+    │  │  └─elk
+    │  │      ├─elasticsearch
+    │  │      ├─kibana
+    │  │      │  └─ingress
+    │  │      └─logstash
+    │  ├─nfs
+    │  ├─rabbitmq
+    │  │  └─ingress
+    │  ├─vagrant
+    │  └─zipkin
+    │      └─ingress
+    └─storage
 ```
 
 ### Contents
