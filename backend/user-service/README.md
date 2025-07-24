@@ -1,5 +1,12 @@
 # Getting Started
 
+### Docker로 실행하기
+```bash
+docker build -t user-service .
+docker run -d -p 8086:8080 --name user-service user-service
+```
+설정에 따라 포트와 환경변수는 변경될 수 있습니다.
+
 ### OAUTH2 설정
 > 각 사이트에서 애플리케이션 API 이용을 신청하여 Client ID를 발급 받아야 한다.<br/>
 > 현재 구글과 네이버를 지원한다.
