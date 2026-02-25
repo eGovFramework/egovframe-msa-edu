@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: frontend-admin-ingress
@@ -13,6 +13,9 @@ spec:
       http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: frontend-admin
-              servicePort: 3000
+              service:
+                name: frontend-admin
+                port:
+                  number: 3000

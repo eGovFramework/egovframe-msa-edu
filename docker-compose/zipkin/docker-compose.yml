@@ -1,0 +1,14 @@
+services:
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin:3.4
+    ports:
+      - "9411:9411"
+    restart: always
+    environment:
+      TZ: Asia/Seoul
+
+networks:
+  default:
+    name: egov-network
+    external: true

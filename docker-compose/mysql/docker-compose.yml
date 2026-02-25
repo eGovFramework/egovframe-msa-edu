@@ -6,8 +6,7 @@ services:
       MYSQL_USER: msaportal
       MYSQL_DATABASE: msaportal
       MYSQL_PASSWORD: msaportal
-      MYSQL_ALLOW_EMPTY_PASSWORD: true
-      MYSQL_RANDOM_ROOT_PASSWORD: true
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_ROOT_HOST: "%"
       TZ: Asia/Seoul
     command: # 명령어 실행 - characterset 지정

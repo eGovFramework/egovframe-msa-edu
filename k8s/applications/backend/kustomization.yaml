@@ -66,10 +66,12 @@ patches:
   patch: |-
     - op: replace
       path: /spec/rules/0/host
-      value: "<TODO: 백엔드 API 게이트웨이 도메인>"
+      #value: "<TODO: 백엔드 API 게이트웨이 도메인>"
+      value: "api.192.168.100.64.nip.io"
 - target:
     name: discovery-ingress
   patch: |-
     - op: replace
       path: /spec/rules/0/host
-      value: "<TODO: 백엔드 유레카 서버 도메인>"
+      #value: "<TODO: 백엔드 유레카 서버 도메인>"
+      value: "discovery.192.168.100.64.nip.io"

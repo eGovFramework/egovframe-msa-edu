@@ -1,24 +1,4 @@
-version: '3.2'
 services:
-  rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:management
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    restart: always
-    environment:
-      TZ: Asia/Seoul
-
-  zipkin:
-    container_name: zipkin
-    image: openzipkin/zipkin
-    ports:
-      - "9411:9411"
-    restart: always
-    environment:
-      TZ: Asia/Seoul
-
   config:
     container_name: config
     image: egovframe/msa-edu-config:latest
@@ -142,5 +122,5 @@ services:
 
 networks:
   default:
-    external:
-      name: egov-network
+    name: egov-network
+    external: true

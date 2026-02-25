@@ -1,0 +1,15 @@
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.13-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
+    environment:
+      TZ: Asia/Seoul
+
+networks:
+  default:
+    name: egov-network
+    external: true

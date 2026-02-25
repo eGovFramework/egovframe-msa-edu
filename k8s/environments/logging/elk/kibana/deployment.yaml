@@ -26,6 +26,7 @@ spec:
       containers:
       - name: kibana
         image: docker.elastic.co/kibana/kibana:7.10.1
+        imagePullPolicy: Always
         env:
           - name: ELASTICSEARCH_URL
             value: http://elasticsearch.default.svc.cluster.local:9200

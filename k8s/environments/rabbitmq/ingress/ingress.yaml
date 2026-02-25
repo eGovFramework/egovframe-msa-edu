@@ -9,6 +9,7 @@ metadata:
 spec:
   rules:
     - host: <RabbitMQ 도메인> # TODO
+    #- host: rabbitmq.192.168.100.64.nip.io
       http:
         paths:
           - path: /

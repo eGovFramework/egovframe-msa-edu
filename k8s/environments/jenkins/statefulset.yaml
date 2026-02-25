@@ -27,7 +27,7 @@ spec:
       serviceAccountName: jenkins
       containers:
         - name: jenkins
-          image: jenkins/jenkins:lts
+          image: jenkins/jenkins:2.426.3-lts-jdk11
           imagePullPolicy: Always
           ports:
             - name: http-port

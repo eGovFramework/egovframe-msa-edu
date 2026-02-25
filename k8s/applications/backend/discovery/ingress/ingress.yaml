@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: discovery-ingress
@@ -13,6 +13,9 @@ spec:
       http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: discovery
-              servicePort: 8761
+              service:
+                name: discovery
+                port:
+                  number: 8761

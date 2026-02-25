@@ -1,36 +1,58 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+# ConfigMaps
 - configmaps/backend-configmap.yaml
 - configmaps/common-configmap.yaml
+
+# NFS Provisioner
 - nfs/sa.yaml
 - nfs/sc.yaml
 - nfs/deployment.yaml
+
+# MySQL Database
 - databases/mysql/secret.yaml
 - databases/mysql/configmap.yaml
-- databases/mysql/service.yaml
+- databases/mysql/pv.yaml
 - databases/mysql/pvc.yaml
+- databases/mysql/service.yaml
 - databases/mysql/statefulset.yaml
+
+# RabbitMQ
 - rabbitmq/service.yaml
-- rabbitmq/ingress/ingress.yaml
 - rabbitmq/deployment.yaml
+- rabbitmq/ingress/ingress.yaml
+
+# Zipkin
 - zipkin/service.yaml
-- zipkin/ingress/ingress.yaml
 - zipkin/deployment.yaml
+- zipkin/ingress/ingress.yaml
+
+# Jenkins
+- jenkins/namespace.yaml
 - jenkins/sa.yaml
-- jenkins/service.yaml
-- jenkins/ingress.yaml
+- jenkins/role.yaml
+- jenkins/rolebinding.yaml
+- jenkins/pv.yaml
 - jenkins/pvc.yaml
+- jenkins/service.yaml
 - jenkins/statefulset.yaml
-- logging/elk/kibana/configmap.yaml
-- logging/elk/kibana/service.yaml
-- logging/elk/kibana/ingress/ingress.yaml
-- logging/elk/kibana/deployment.yaml
-- logging/elk/logstash/service.yaml
-- logging/elk/logstash/configmap.yaml
-- logging/elk/logstash/deplyment.yaml
+- jenkins/ingress/ingress.yaml
+
+# ELK Stack - Elasticsearch
 - logging/elk/elasticsearch/service.yaml
 - logging/elk/elasticsearch/deployment.yaml
+
+# ELK Stack - Logstash
+- logging/elk/logstash/configmap.yaml
+- logging/elk/logstash/service.yaml
+- logging/elk/logstash/deplyment.yaml
+
+# ELK Stack - Kibana
+- logging/elk/kibana/configmap.yaml
+- logging/elk/kibana/service.yaml
+- logging/elk/kibana/deployment.yaml
+- logging/elk/kibana/ingress/ingress.yaml
 
 
 patches:
@@ -39,22 +61,26 @@ patches:
   patch: |-
     - op: replace
       path: /spec/rules/0/host
-      value: "<TODO: RabbitMQ 도메인>"
+      #value: "<TODO: RabbitMQ 도메인>"
+      value: "rabbitmq.192.168.100.64.nip.io"
 - target:
     name: zipkin-ingress
   patch: |-
     - op: replace
       path: /spec/rules/0/host
-      value: "<TODO: Zipkin 도메인>"
+      #value: "<TODO: Zipkin 도메인>"
+      value: "zipkin.192.168.100.64.nip.io"
 - target:
     name: jenkins-ingress
   patch: |-
     - op: replace
       path: /spec/rules/0/host
-      value: "<TODO: 젠킨스 도메인>"
+      #value: "<TODO: 젠킨스 도메인>"
+      value: "jenkins.192.168.100.64.nip.io"
 - target:
     name: kibana-ingress
   patch: |-
     - op: replace
       path: /spec/rules/0/host
-      value: "<TODO: ELK Kibana 도메인>"
+      #value: "<TODO: ELK Kibana 도메인>"
+      value: "kibana.192.168.100.64.nip.io"
