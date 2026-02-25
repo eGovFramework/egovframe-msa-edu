@@ -3,6 +3,8 @@ spring:
     config:
       uri: http://localhost:8888
       name: portal-service # portal-service.yml이 있으면 불러오게 된다
+      fail-fast: false # Config Server 연결 실패 시에도 애플리케이션 시작
+      enabled: true # Config Server 사용 여부
 #      name: config-service # config-service의 application.yml 을 불러오게 된다
 #  profiles:
 #    active: prod # application-prod.yml

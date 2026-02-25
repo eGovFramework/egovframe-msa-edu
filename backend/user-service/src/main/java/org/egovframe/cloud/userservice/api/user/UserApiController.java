@@ -1,10 +1,22 @@
 package org.egovframe.cloud.userservice.api.user;
 
-import lombok.RequiredArgsConstructor;
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.common.exception.BusinessMessageException;
 import org.egovframe.cloud.common.util.MessageUtil;
-import org.egovframe.cloud.userservice.api.user.dto.*;
+import org.egovframe.cloud.userservice.api.user.dto.SocialUserRequestDto;
+import org.egovframe.cloud.userservice.api.user.dto.SocialUserResponseDto;
+import org.egovframe.cloud.userservice.api.user.dto.UserEmailRequestDto;
+import org.egovframe.cloud.userservice.api.user.dto.UserFindPasswordSaveRequestDto;
+import org.egovframe.cloud.userservice.api.user.dto.UserFindPasswordUpdateRequestDto;
+import org.egovframe.cloud.userservice.api.user.dto.UserJoinRequestDto;
+import org.egovframe.cloud.userservice.api.user.dto.UserListResponseDto;
+import org.egovframe.cloud.userservice.api.user.dto.UserPasswordMatchRequestDto;
+import org.egovframe.cloud.userservice.api.user.dto.UserPasswordUpdateRequestDto;
+import org.egovframe.cloud.userservice.api.user.dto.UserResponseDto;
+import org.egovframe.cloud.userservice.api.user.dto.UserSaveRequestDto;
+import org.egovframe.cloud.userservice.api.user.dto.UserUpdateInfoRequestDto;
+import org.egovframe.cloud.userservice.api.user.dto.UserUpdateRequestDto;
+import org.egovframe.cloud.userservice.api.user.dto.UserVerifyRequestDto;
 import org.egovframe.cloud.userservice.config.TokenProvider;
 import org.egovframe.cloud.userservice.service.user.UserService;
 import org.springframework.core.env.Environment;
@@ -13,11 +25,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.userservice.api.user.UserApiController
@@ -36,6 +57,7 @@ import javax.validation.Valid;
  *  2021/06/30    jaeyeolkim  최초 생성
  * </pre>
  */
+@Tag(name = "User API", description = "사용자 관리 API")
 @RequiredArgsConstructor // final이 선언된 모든 필드를 인자값으로 하는 생성자를 대신 생성하여, 빈을 생성자로 주입받게 한다.
 @RestController
 public class UserApiController {
@@ -86,7 +108,7 @@ public class UserApiController {
      * @return
      */
     @PutMapping("/api/v1/users/{userId}")
-    public String update(@PathVariable String userId, @RequestBody @Valid UserUpdateRequestDto requestDto) {
+    public String update(@PathVariable("userId") String userId, @RequestBody @Valid UserUpdateRequestDto requestDto) {
         return userService.update(userId, requestDto);
     }
 
@@ -109,7 +131,7 @@ public class UserApiController {
      * @return
      */
     @GetMapping("/api/v1/users/{userId}")
-    public UserResponseDto findByUserId(@PathVariable String userId) {
+    public UserResponseDto findByUserId(@PathVariable("userId") String userId) {
         return userService.findByUserId(userId);
     }
 
@@ -178,7 +200,7 @@ public class UserApiController {
      * @return Boolean 유효 여부
      */
     @GetMapping("/api/v1/users/password/valid/{token}")
-    public Boolean validPassword(@PathVariable String token) {
+    public Boolean validPassword(@PathVariable("token") String token) {
         return userService.validPassword(token);
     }
 
@@ -228,7 +250,7 @@ public class UserApiController {
      * @return String 사용자 id
      */
     @PutMapping("/api/v1/users/info/{userId}")
-    public String updateInfo(@PathVariable String userId, @RequestBody @Valid UserUpdateInfoRequestDto requestDto) throws BusinessMessageException {
+    public String updateInfo(@PathVariable("userId") String userId, @RequestBody @Valid UserUpdateInfoRequestDto requestDto) throws BusinessMessageException {
         final String authUserId = SecurityContextHolder.getContext().getAuthentication().getName();
         if (!authUserId.equals(userId)) {
             throw new BusinessMessageException(messageUtil.getMessage("err.access.denied"));
@@ -257,7 +279,7 @@ public class UserApiController {
      * @return Boolean 처리 여부
      */
     @DeleteMapping("/api/v1/users/delete/{userId}")
-    public Boolean delete(@PathVariable String userId) {
+    public Boolean delete(@PathVariable("userId") String userId) {
         return userService.delete(userId);
     }
 

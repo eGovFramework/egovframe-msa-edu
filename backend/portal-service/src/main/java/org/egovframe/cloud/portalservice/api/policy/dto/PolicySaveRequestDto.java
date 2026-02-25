@@ -1,12 +1,13 @@
 package org.egovframe.cloud.portalservice.api.policy.dto;
 
+import java.time.ZonedDateTime;
+
+import org.egovframe.cloud.portalservice.domain.policy.Policy;
+
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.egovframe.cloud.portalservice.domain.policy.Policy;
-
-import javax.validation.constraints.NotBlank;
-import java.time.ZonedDateTime;
 
 /**
  * org.egovframe.cloud.portalservice.api.policy.dto.PolicySaveRequestDto

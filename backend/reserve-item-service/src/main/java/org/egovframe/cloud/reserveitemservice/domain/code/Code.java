@@ -1,13 +1,14 @@
 package org.egovframe.cloud.reserveitemservice.domain.code;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.egovframe.cloud.reactive.domain.BaseEntity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * org.egovframe.cloud.boardservice.domain.org.egovframe.cloud.reserveitemservice.domain.org.egovframe.cloud.reserveitemservice.domain.code.Code

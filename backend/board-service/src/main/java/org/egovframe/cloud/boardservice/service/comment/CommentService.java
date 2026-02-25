@@ -1,6 +1,9 @@
 package org.egovframe.cloud.boardservice.service.comment;
 
-import lombok.RequiredArgsConstructor;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.egovframe.cloud.boardservice.api.comment.dto.CommentListResponseDto;
 import org.egovframe.cloud.boardservice.api.comment.dto.CommentResponseDto;
 import org.egovframe.cloud.boardservice.api.comment.dto.CommentSaveRequestDto;
@@ -20,9 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.boardservice.service.comment.CommentService

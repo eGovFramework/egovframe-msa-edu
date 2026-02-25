@@ -1,7 +1,5 @@
 package org.egovframe.cloud.reserverequestservice.domain;
 
-import org.egovframe.cloud.reserverequestservice.domain.Reserve;
-import org.egovframe.cloud.reserverequestservice.domain.ReserveRepositoryCustom;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 
 /**

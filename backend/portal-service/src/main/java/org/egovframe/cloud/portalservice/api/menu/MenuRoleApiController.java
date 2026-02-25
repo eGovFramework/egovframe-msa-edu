@@ -1,16 +1,23 @@
 package org.egovframe.cloud.portalservice.api.menu;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+
 import org.egovframe.cloud.portalservice.api.menu.dto.MenuRoleRequestDto;
 import org.egovframe.cloud.portalservice.api.menu.dto.MenuRoleResponseDto;
 import org.egovframe.cloud.portalservice.api.menu.dto.MenuSideResponseDto;
 import org.egovframe.cloud.portalservice.domain.user.User;
 import org.egovframe.cloud.portalservice.service.menu.MenuRoleService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * org.egovframe.cloud.portalservice.api.menu.MenuRoleApiController
@@ -29,6 +36,7 @@ import java.util.List;
  *  2021/08/17    shinmj  최초 생성
  * </pre>
  */
+@Tag(name = "Menu Role API", description = "권한별 메뉴 관리 API")
 @Slf4j
 @RequiredArgsConstructor // final이 선언된 모든 필드를 인자값으로 하는 생성자를 대신 생성하여, 빈을 생성자로 주입받게 한다.
 @RestController
@@ -44,7 +52,7 @@ public class MenuRoleApiController {
      * @return
      */
     @GetMapping("/api/v1/menu-roles/{roleId}/{siteId}")
-    public List<MenuRoleResponseDto> findTree(@PathVariable String roleId, @PathVariable Long siteId, User user) {
+    public List<MenuRoleResponseDto> findTree(@PathVariable("roleId") String roleId, @PathVariable("siteId") Long siteId, User user) {
         return menuRoleService.fineTree(roleId.toUpperCase(), siteId);
     }
 
@@ -67,7 +75,7 @@ public class MenuRoleApiController {
      * @return
      */
     @GetMapping("/api/v1/menu-roles/{siteId}")
-    public List<MenuSideResponseDto> findMenus(@PathVariable Long siteId) {
+    public List<MenuSideResponseDto> findMenus(@PathVariable("siteId") Long siteId) {
         return menuRoleService.findMenus(siteId);
 
     }

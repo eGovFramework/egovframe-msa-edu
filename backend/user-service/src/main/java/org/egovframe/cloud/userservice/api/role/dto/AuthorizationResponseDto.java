@@ -1,11 +1,12 @@
 package org.egovframe.cloud.userservice.api.role.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.egovframe.cloud.userservice.domain.role.Authorization;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.egovframe.cloud.userservice.domain.role.Authorization;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * org.egovframe.cloud.userservice.api.role.dto.AuthorizationResponseDto

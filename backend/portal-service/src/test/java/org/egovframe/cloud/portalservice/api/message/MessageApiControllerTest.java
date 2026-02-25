@@ -1,10 +1,8 @@
 package org.egovframe.cloud.portalservice.api.message;
 
-import java.util.List;
-
 import java.util.Map;
+
 import org.assertj.core.api.Assertions;
-import org.egovframe.cloud.portalservice.api.message.dto.MessageListResponseDto;
 import org.egovframe.cloud.portalservice.domain.message.Message;
 import org.egovframe.cloud.portalservice.domain.message.MessageRepository;
 import org.junit.jupiter.api.AfterEach;

@@ -1,9 +1,9 @@
 package org.egovframe.cloud.portalservice.client.dto;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
 
 /**
  * org.egovframe.cloud.boardservice.api.board.dto.BoardResponseDto

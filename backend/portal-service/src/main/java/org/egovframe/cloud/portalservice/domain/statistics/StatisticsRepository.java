@@ -1,9 +1,6 @@
 package org.egovframe.cloud.portalservice.domain.statistics;
 
-import org.egovframe.cloud.portalservice.api.statistics.dto.StatisticsResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 
 /**
  * org.egovframe.cloud.portalservice.domain.statistics.StatisticsRepository

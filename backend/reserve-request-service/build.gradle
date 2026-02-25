@@ -1,11 +1,13 @@
 plugins {
+    id 'org.springframework.boot' version '3.5.6'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
 }
 
 group = 'org.egovframe.cloud'
-version = '1.0.0'
-sourceCompatibility = '1.8'
+version = '5.0.0'
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 configurations {
     compileOnly {
@@ -14,21 +16,24 @@ configurations {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven { url "https://maven.egovframe.go.kr/maven/" } // egovframe maven 원격 저장소
 }
 
 ext {
-    set('egovframeBootVersion', '4.3.0')
-    set('springCloudVersion', '2021.0.9')
-    set('log4j2.version', '2.23.1') // log4j 보안 패치
+    set('egovframeBootParentVersion', '5.0.0')
+    set('springCloudVersion', '2025.0.0')
 }
 
 dependencies {
-//    implementation files('../module-common/build/libs/module-common-4.3.0-plain.jar') // @ComponentScan(basePackages={"org.egovframe.cloud"}) 추가해야 적용된다
-    implementation 'org.egovframe.cloud:module-common:4.3.0'
-    implementation('org.egovframe.rte:org.egovframe.rte.fdl.cmmn:4.3.0') {
-        exclude group: 'org.egovframe.rte', module: 'org.egovframe.rte.fdl.logging'
+//    implementation files('../module-common/build/libs/egovframe-cloud-module-common.jar') // @ComponentScan(basePackages={"org.egovframe.cloud"}) 추가해야 적용된다
+    implementation("org.egovframe.cloud:egovframe-cloud-module-common:${egovframeBootParentVersion}") {
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
+    implementation("org.egovframe.rte:egovframe-rte-fdl-cmmn:${egovframeBootParentVersion}") {
+        exclude group: 'org.egovframe.rte', module: 'egovframe-rte-fdl-logging'
+        exclude group: 'commons-logging', module: 'commons-logging'
     }
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -40,10 +45,14 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // config
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'  // bus
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j'
-    implementation 'com.playtika.reactivefeign:feign-reactor-spring-cloud-starter:3.2.11'
+    implementation 'com.playtika.reactivefeign:feign-reactor-spring-cloud-starter:4.2.1'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
-    implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
+    // Micrometer Tracing (Spring Cloud 2025.0.0에서 Sleuth 대체)
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+    implementation 'io.zipkin.reporter2:zipkin-reporter'
+    implementation 'io.zipkin.zipkin2:zipkin'
+
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'        // logstash logback
 
     //messaging
@@ -53,13 +62,13 @@ dependencies {
 
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
-    implementation 'dev.miku:r2dbc-mysql:0.8.2.RELEASE'
-    implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation 'io.asyncer:r2dbc-mysql:1.2.0'
+    implementation 'com.mysql:mysql-connector-j:8.4.0'
 
     // openapi docs
-    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.7.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.8.13'
 
-    //lombok
+    // lombok
     implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.projectlombok:lombok'
@@ -73,16 +82,21 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
 
-	implementation 'org.webjars:webjars-locator-core:0.53'
+    implementation 'org.webjars:webjars-locator-core:0.53'
 }
 
 test {
     useJUnitPlatform()
 }
 
+// Spring Cache의 SpEL 표현식에서 파라미터 이름을 사용하기 위해 필요
+tasks.withType(JavaCompile) {
+    options.compilerArgs.add('-parameters')
+}
+
 dependencyManagement {
     imports {
-        mavenBom "org.egovframe.boot:org.egovframe.boot.starter.parent:${egovframeBootVersion}" // egovframe Boot Parent 설정
+        mavenBom "org.egovframe.boot:egovframe-boot-starter-parent:${egovframeBootParentVersion}" // egovframe Boot Parent 설정
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }

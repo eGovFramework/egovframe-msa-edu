@@ -1,15 +1,17 @@
 package org.egovframe.cloud.userservice.domain.user;
 
-import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.userservice.api.user.dto.UserListResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.userservice.domain.user.UserRepositoryImpl

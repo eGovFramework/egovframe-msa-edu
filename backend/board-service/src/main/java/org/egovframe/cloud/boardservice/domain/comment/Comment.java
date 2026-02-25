@@ -1,15 +1,22 @@
 package org.egovframe.cloud.boardservice.domain.comment;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.egovframe.cloud.boardservice.domain.posts.Posts;
 import org.egovframe.cloud.boardservice.domain.user.User;
 import org.egovframe.cloud.servlet.domain.BaseEntity;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * org.egovframe.cloud.boardservice.domain.comment.Comment

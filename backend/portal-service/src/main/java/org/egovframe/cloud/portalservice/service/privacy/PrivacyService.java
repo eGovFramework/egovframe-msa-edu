@@ -1,6 +1,7 @@
 package org.egovframe.cloud.portalservice.service.privacy;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.common.exception.EntityNotFoundException;
 import org.egovframe.cloud.common.service.AbstractService;
@@ -15,7 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.portalservice.service.privacy.PrivacyService

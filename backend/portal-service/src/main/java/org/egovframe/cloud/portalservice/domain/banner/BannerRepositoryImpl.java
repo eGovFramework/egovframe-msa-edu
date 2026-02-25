@@ -1,6 +1,7 @@
 package org.egovframe.cloud.portalservice.domain.banner;
 
-import static com.querydsl.core.types.Projections.*;
+import static com.querydsl.core.types.Projections.constructor;
+import static com.querydsl.core.types.Projections.fields;
 
 import java.util.List;
 import java.util.Optional;

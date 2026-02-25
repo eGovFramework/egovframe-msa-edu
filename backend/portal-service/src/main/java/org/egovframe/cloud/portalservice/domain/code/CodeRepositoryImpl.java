@@ -1,21 +1,26 @@
 package org.egovframe.cloud.portalservice.domain.code;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
+import static com.querydsl.core.types.Projections.fields;
+import static org.egovframe.cloud.portalservice.domain.code.QCode.code;
+import static org.springframework.util.StringUtils.hasLength;
+
+import java.util.List;
+
 import org.egovframe.cloud.common.dto.RequestDto;
-import org.egovframe.cloud.portalservice.api.code.dto.*;
+import org.egovframe.cloud.portalservice.api.code.dto.CodeDetailListResponseDto;
+import org.egovframe.cloud.portalservice.api.code.dto.CodeDetailRequestDto;
+import org.egovframe.cloud.portalservice.api.code.dto.CodeDetailResponseDto;
+import org.egovframe.cloud.portalservice.api.code.dto.CodeListResponseDto;
+import org.egovframe.cloud.portalservice.api.code.dto.CodeResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
-import javax.persistence.EntityManager;
-import java.util.List;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import static com.querydsl.core.types.Projections.fields;
-import static org.egovframe.cloud.portalservice.domain.code.QCode.code;
-import static org.springframework.util.StringUtils.hasLength;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.portalservice.domain.code.CodeRepositoryImpl

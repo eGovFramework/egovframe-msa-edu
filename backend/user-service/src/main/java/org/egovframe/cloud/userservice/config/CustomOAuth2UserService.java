@@ -1,6 +1,7 @@
 package org.egovframe.cloud.userservice.config;
 
-import lombok.RequiredArgsConstructor;
+import java.util.Collections;
+
 import org.egovframe.cloud.userservice.config.dto.OAuthAttributes;
 import org.egovframe.cloud.userservice.domain.user.User;
 import org.egovframe.cloud.userservice.domain.user.UserRepository;
@@ -13,7 +14,7 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.userservice.config.CustomOAuth2UserService

@@ -1,7 +1,8 @@
 package org.egovframe.cloud.userservice.api.user.dto;
 
-import lombok.Getter;
 import org.egovframe.cloud.userservice.domain.user.User;
+
+import lombok.Getter;
 
 /**
  * org.egovframe.cloud.userservice.api.user.dto.UserResponseDto

@@ -1,6 +1,8 @@
 package org.egovframe.cloud.userservice.service.role;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.common.service.AbstractService;
 import org.egovframe.cloud.userservice.api.role.dto.RoleListResponseDto;
@@ -11,8 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.userservice.service.role.RoleService

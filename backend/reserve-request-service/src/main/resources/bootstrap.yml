@@ -3,3 +3,5 @@ spring:
     config:
       uri: http://localhost:8888
       name: reserve-request-service
+      fail-fast: false # Config Server 연결 실패 시에도 애플리케이션 시작
+      enabled: true # Config Server 사용 여부

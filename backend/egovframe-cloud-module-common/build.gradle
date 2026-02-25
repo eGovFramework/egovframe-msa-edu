@@ -1,0 +1,120 @@
+plugins {
+    id 'java-library' // 라이브러리 모듈(api:외부노출, implementation:내부전용)
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'maven-publish'
+    id 'base'
+}
+
+group = 'org.egovframe.cloud'
+version = '5.0.0'
+
+base {
+    archivesName = 'egovframe-cloud-module-common' // Gradle 8 권장 방식
+}
+
+java {
+    toolchain { languageVersion = JavaLanguageVersion.of(17) }
+    withSourcesJar()
+    withJavadocJar()
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url = uri("https://maven.egovframe.go.kr/maven/") }
+}
+
+ext {
+    egovframeBootParentVersion = '5.0.0'
+    jakartaServletApiVersion = '6.0.0'
+    jakartaAnnotationApiVersion = '3.0.0'
+    jakartaPersistenceApiVersion = '3.2.0'
+    querydslVersion = '5.0.0'
+    jwtVersion = '0.12.6'
+    javassistVersion = '3.29.2-GA'
+    webjarLocatorCoreVersion = '0.59'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.egovframe.boot:egovframe-boot-starter-parent:${egovframeBootParentVersion}"
+    }
+}
+
+dependencies {
+
+    // eGovFramework
+    implementation 'org.egovframe.rte:egovframe-rte-fdl-cmmn'
+
+    // Spring Boot
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    // Spring Cloud
+    implementation 'org.springframework.cloud:spring-cloud-stream'
+    implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
+
+    // Jakarta EE APIs
+    implementation "jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}"
+    implementation "jakarta.annotation:jakarta.annotation-api:${jakartaAnnotationApiVersion}"
+    implementation "jakarta.persistence:jakarta.persistence-api:${jakartaPersistenceApiVersion}"
+
+    // Querydsl
+    implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
+    annotationProcessor "com.querydsl:querydsl-apt:${querydslVersion}:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api:${jakartaAnnotationApiVersion}"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api:${jakartaPersistenceApiVersion}"
+
+    implementation "io.jsonwebtoken:jjwt:${jwtVersion}"
+    implementation "org.javassist:javassist:${javassistVersion}"
+    implementation "org.webjars:webjars-locator-core:${webjarLocatorCoreVersion}"
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // 테스트
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'io.projectreactor:reactor-test'
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
+/* Maven Local(.m2) 퍼블리시, gradlew publishToMavenLocal 실행 */
+publishing {
+    publications {
+        create('mavenJava', MavenPublication) {
+            from components.java // feature variants 포함하여 변형들이 함께 퍼블리시됨
+            groupId = project.group
+            artifactId = base.archivesName.get()
+            version = project.version
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}
+
+/* QueryDSL 추가 */
+def querydslDir = "$buildDir/generated/querydsl"
+
+/* Java Source 위치에 QueryDSL QClass 위치 추가 */
+sourceSets { main.java.srcDirs += [querydslDir] }
+
+/* 생성 소스 디렉터리를 javac가 인식하도록 설정 */
+tasks.named('compileJava') {
+    options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
+}
+
+tasks.register('cleanQuerydsl') {
+    doLast {
+        delete file(querydslDir)
+    }
+}
+/* QueryDSL 추가 끝 */

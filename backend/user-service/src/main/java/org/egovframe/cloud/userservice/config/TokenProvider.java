@@ -1,8 +1,8 @@
 package org.egovframe.cloud.userservice.config;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import java.util.Date;
+import java.util.stream.Collectors;
+
 import org.egovframe.cloud.userservice.api.user.dto.UserResponseDto;
 import org.egovframe.cloud.userservice.service.user.UserService;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,11 +10,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.stream.Collectors;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * org.egovframe.cloud.userservice.config.TokenProvider

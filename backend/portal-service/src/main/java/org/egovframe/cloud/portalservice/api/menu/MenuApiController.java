@@ -1,15 +1,29 @@
 package org.egovframe.cloud.portalservice.api.menu;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.egovframe.cloud.portalservice.api.menu.dto.*;
+import java.util.List;
+
+import org.egovframe.cloud.portalservice.api.menu.dto.MenuDnDRequestDto;
+import org.egovframe.cloud.portalservice.api.menu.dto.MenuResponseDto;
+import org.egovframe.cloud.portalservice.api.menu.dto.MenuTreeRequestDto;
+import org.egovframe.cloud.portalservice.api.menu.dto.MenuTreeResponseDto;
+import org.egovframe.cloud.portalservice.api.menu.dto.MenuUpdateRequestDto;
+import org.egovframe.cloud.portalservice.api.menu.dto.SiteResponseDto;
 import org.egovframe.cloud.portalservice.domain.menu.SiteRepository;
 import org.egovframe.cloud.portalservice.service.menu.MenuService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * org.egovframe.cloud.portalservice.api.menu.MenuApiController
@@ -28,6 +42,7 @@ import java.util.List;
  *  2021/07/21    shinmj  최초 생성
  * </pre>
  */
+@Tag(name = "Menu API", description = "메뉴 관리 API")
 @Slf4j
 @RequiredArgsConstructor // final이 선언된 모든 필드를 인자값으로 하는 생성자를 대신 생성하여, 빈을 생성자로 주입받게 한다.
 @RestController
@@ -54,7 +69,7 @@ public class MenuApiController {
      * @return
      */
     @GetMapping("/api/v1/menus/{siteId}/tree")
-    public List<MenuTreeResponseDto> findTreeBySiteId(@PathVariable Long siteId) {
+    public List<MenuTreeResponseDto> findTreeBySiteId(@PathVariable("siteId") Long siteId) {
         return menuService.findTreeBySiteId(siteId);
     }
 
@@ -65,7 +80,7 @@ public class MenuApiController {
      * @return
      */
     @GetMapping("/api/v1/menus/{menuId}")
-    public MenuResponseDto findById(@PathVariable Long menuId) {
+    public MenuResponseDto findById(@PathVariable("menuId") Long menuId) {
         return menuService.findMenuResponseDtoById(menuId);
     }
 
@@ -89,7 +104,7 @@ public class MenuApiController {
      * @return
      */
     @PutMapping(value = "/api/v1/menus/{siteId}/tree")
-    public Long saveDnD(@PathVariable Long siteId,  @RequestBody List<MenuDnDRequestDto> menuDnDRequestDtoList) {
+    public Long saveDnD(@PathVariable("siteId") Long siteId,  @RequestBody List<MenuDnDRequestDto> menuDnDRequestDtoList) {
         return menuService.updateDnD(siteId, menuDnDRequestDtoList);
     }
 
@@ -101,7 +116,7 @@ public class MenuApiController {
      * @return
      */
     @PutMapping(value = "/api/v1/menus/{menuId}/{name}")
-    public MenuTreeResponseDto updateName(@PathVariable Long menuId, @PathVariable String name) {
+    public MenuTreeResponseDto updateName(@PathVariable("menuId") Long menuId, @PathVariable String name) {
         return menuService.updateName(menuId, name);
     }
 
@@ -113,7 +128,7 @@ public class MenuApiController {
      * @return
      */
     @PutMapping(value = "/api/v1/menus/{menuId}")
-    public MenuResponseDto update(@PathVariable Long menuId, @RequestBody MenuUpdateRequestDto updateRequestDto) {
+    public MenuResponseDto update(@PathVariable("menuId") Long menuId, @RequestBody MenuUpdateRequestDto updateRequestDto) {
         return menuService.update(menuId, updateRequestDto);
     }
 
@@ -124,7 +139,7 @@ public class MenuApiController {
      */
     @DeleteMapping(value = "/api/v1/menus/{menuId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long menuId) {
+    public void delete(@PathVariable("menuId") Long menuId) {
         menuService.delete(menuId);
     }
 

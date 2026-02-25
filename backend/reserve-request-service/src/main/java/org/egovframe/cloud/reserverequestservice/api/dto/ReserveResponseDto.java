@@ -1,12 +1,13 @@
 package org.egovframe.cloud.reserverequestservice.api.dto;
 
+import java.time.LocalDateTime;
+
+import org.egovframe.cloud.reserverequestservice.domain.Reserve;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.egovframe.cloud.reserverequestservice.domain.Reserve;
-
-import java.time.LocalDateTime;
 
 /**
  * org.egovframe.cloud.reserverequestservice.api.dto.ReserveResponseDto

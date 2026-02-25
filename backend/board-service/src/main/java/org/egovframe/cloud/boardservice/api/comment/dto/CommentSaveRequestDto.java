@@ -1,15 +1,15 @@
 package org.egovframe.cloud.boardservice.api.comment.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.egovframe.cloud.boardservice.domain.comment.Comment;
 import org.egovframe.cloud.boardservice.domain.comment.CommentId;
 import org.egovframe.cloud.boardservice.domain.posts.Posts;
 import org.egovframe.cloud.boardservice.domain.posts.PostsId;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * org.egovframe.cloud.boardservice.api.comment.dto.CommentSaveRequestDto

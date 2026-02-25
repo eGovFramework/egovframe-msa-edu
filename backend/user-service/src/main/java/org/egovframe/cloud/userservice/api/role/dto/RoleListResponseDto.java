@@ -1,11 +1,12 @@
 package org.egovframe.cloud.userservice.api.role.dto;
 
+import java.time.LocalDateTime;
+
 import com.querydsl.core.annotations.QueryProjection;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 /**
  * org.egovframe.cloud.userservice.api.role.dto.RoleListResponseDto

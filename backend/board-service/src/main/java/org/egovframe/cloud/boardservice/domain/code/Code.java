@@ -1,11 +1,11 @@
 package org.egovframe.cloud.boardservice.domain.code;
 
-import lombok.NoArgsConstructor;
 import org.egovframe.cloud.servlet.domain.BaseEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.NoArgsConstructor;
 
 /**
  * org.egovframe.cloud.boardservice.domain.code.Code

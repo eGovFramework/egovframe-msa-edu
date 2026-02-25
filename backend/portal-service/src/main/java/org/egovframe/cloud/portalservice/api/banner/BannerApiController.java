@@ -1,18 +1,32 @@
 package org.egovframe.cloud.portalservice.api.banner;
 
-import lombok.RequiredArgsConstructor;
-import org.egovframe.cloud.portalservice.api.banner.dto.*;
+import java.util.List;
+import java.util.Map;
+
+import org.egovframe.cloud.portalservice.api.banner.dto.BannerImageResponseDto;
+import org.egovframe.cloud.portalservice.api.banner.dto.BannerListResponseDto;
+import org.egovframe.cloud.portalservice.api.banner.dto.BannerRequestDto;
+import org.egovframe.cloud.portalservice.api.banner.dto.BannerResponseDto;
+import org.egovframe.cloud.portalservice.api.banner.dto.BannerSaveRequestDto;
+import org.egovframe.cloud.portalservice.api.banner.dto.BannerUpdateRequestDto;
 import org.egovframe.cloud.portalservice.service.banner.BannerService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Map;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.portalservice.api.banner.BannerApiController
@@ -31,6 +45,7 @@ import java.util.Map;
  *  2021/08/18    jooho       최초 생성
  * </pre>
  */
+@Tag(name = "Banner API", description = "배너 관리 API")
 @RequiredArgsConstructor
 @RestController
 public class BannerApiController {
@@ -62,7 +77,7 @@ public class BannerApiController {
      * @return Map<String, List<BannerImageResponseDto>> 배너 유형 코드별 배너 이미지 응답 DTO Map
      */
     @GetMapping("/api/v1/{siteId}/banners/{bannerTypeCodes}/{bannerCount}")
-    public Map<String, List<BannerImageResponseDto>> findUseList(@PathVariable Long siteId, @PathVariable List<String> bannerTypeCodes, @PathVariable Integer bannerCount) {
+    public Map<String, List<BannerImageResponseDto>> findUseList(@PathVariable("bannerTypeCodes") Long siteId, @PathVariable("bannerCount") List<String> bannerTypeCodes, @PathVariable("bannerCount") Integer bannerCount) {
         return bannerService.findList(bannerTypeCodes, bannerCount, true, siteId);
     }
 
@@ -73,7 +88,7 @@ public class BannerApiController {
      * @return BannerResponseDto 배너 상세 응답 DTO
      */
     @GetMapping("/api/v1/banners/{bannerNo}")
-    public BannerResponseDto findById(@PathVariable Integer bannerNo) {
+    public BannerResponseDto findById(@PathVariable("bannerNo") Integer bannerNo) {
         return bannerService.findById(bannerNo);
     }
 
@@ -84,7 +99,7 @@ public class BannerApiController {
      * @return Integer 다음 정렬 순서
      */
     @GetMapping("/api/v1/banners/{siteId}/sort-seq/next")
-    public Integer findNextSortSeq(@PathVariable Long siteId) {
+    public Integer findNextSortSeq(@PathVariable("siteId") Long siteId) {
         return bannerService.findNextSortSeq(siteId);
     }
 
@@ -108,7 +123,7 @@ public class BannerApiController {
      * @return BannerResponseDto 배너 상세 응답 DTO
      */
     @PutMapping("/api/v1/banners/{bannerNo}")
-    public BannerResponseDto update(@PathVariable Integer bannerNo, @RequestBody @Valid BannerUpdateRequestDto requestDto) {
+    public BannerResponseDto update(@PathVariable("bannerNo") Integer bannerNo, @RequestBody @Valid BannerUpdateRequestDto requestDto) {
         return bannerService.update(bannerNo, requestDto);
     }
 
@@ -120,7 +135,7 @@ public class BannerApiController {
      * @return BannerResponseDto 배너 상세 응답 DTO
      */
     @PutMapping("/api/v1/banners/{bannerNo}/{useAt}")
-    public BannerResponseDto updateUseAt(@PathVariable Integer bannerNo, @PathVariable Boolean useAt) {
+    public BannerResponseDto updateUseAt(@PathVariable("bannerNo") Integer bannerNo, @PathVariable("useAt") Boolean useAt) {
         return bannerService.updateUseAt(bannerNo, useAt);
     }
 
@@ -131,7 +146,7 @@ public class BannerApiController {
      */
     @DeleteMapping("/api/v1/banners/{bannerNo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer bannerNo) {
+    public void delete(@PathVariable("bannerNo") Integer bannerNo) {
         bannerService.delete(bannerNo);
     }
 

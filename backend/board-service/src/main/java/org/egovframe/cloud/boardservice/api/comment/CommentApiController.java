@@ -1,6 +1,7 @@
 package org.egovframe.cloud.boardservice.api.comment;
 
-import lombok.RequiredArgsConstructor;
+import java.util.Map;
+
 import org.egovframe.cloud.boardservice.api.comment.dto.CommentResponseDto;
 import org.egovframe.cloud.boardservice.api.comment.dto.CommentSaveRequestDto;
 import org.egovframe.cloud.boardservice.api.comment.dto.CommentUpdateRequestDto;
@@ -8,10 +9,18 @@ import org.egovframe.cloud.boardservice.service.comment.CommentService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.Map;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.commentservice.api.comment.CommentApiController
@@ -30,6 +39,7 @@ import java.util.Map;
  *  2021/08/04    jooho       최초 생성
  * </pre>
  */
+@Tag(name = "Comment API", description = "댓글 관리 API")
 @RequiredArgsConstructor
 @RestController
 public class CommentApiController {
@@ -47,7 +57,7 @@ public class CommentApiController {
      * @return Map<String, Object> 페이지 댓글 목록 응답 DTO
      */
     @GetMapping("/api/v1/comments/total/{boardNo}/{postsNo}")
-    public Map<String, Object> findTotal(@PathVariable Integer boardNo, @PathVariable Integer postsNo) {
+    public Map<String, Object> findTotal(@PathVariable("boardNo") Integer boardNo, @PathVariable("postsNo") Integer postsNo) {
         return commentService.findAll(boardNo, postsNo, null);
     }
 
@@ -59,7 +69,7 @@ public class CommentApiController {
      * @return Map<String, Object> 페이지 댓글 목록 응답 DTO
      */
     @GetMapping("/api/v1/comments/all/{boardNo}/{postsNo}")
-    public Map<String, Object> findAll(@PathVariable Integer boardNo, @PathVariable Integer postsNo) {
+    public Map<String, Object> findAll(@PathVariable("boardNo") Integer boardNo, @PathVariable("postsNo") Integer postsNo) {
         return commentService.findAll(boardNo, postsNo, 0);
     }
 
@@ -72,7 +82,7 @@ public class CommentApiController {
      * @return Map<String, Object> 페이지 댓글 목록 응답 DTO
      */
     @GetMapping("/api/v1/comments/{boardNo}/{postsNo}")
-    public Map<String, Object> findPage(@PathVariable Integer boardNo, @PathVariable Integer postsNo, Pageable pageable) {
+    public Map<String, Object> findPage(@PathVariable("boardNo") Integer boardNo, @PathVariable("postsNo") Integer postsNo, Pageable pageable) {
         return commentService.findPage(boardNo, postsNo, null, pageable);
     }
 
@@ -85,7 +95,7 @@ public class CommentApiController {
      * @return Map<String, Object> 페이지 댓글 목록 응답 DTO
      */
     @GetMapping("/api/v1/comments/list/{boardNo}/{postsNo}")
-    public Map<String, Object> findListPage(@PathVariable Integer boardNo, @PathVariable Integer postsNo, Pageable pageable) {
+    public Map<String, Object> findListPage(@PathVariable("boardNo") Integer boardNo, @PathVariable("postsNo") Integer postsNo, Pageable pageable) {
         return commentService.findPage(boardNo, postsNo, 0, pageable);
     }
 
@@ -122,7 +132,7 @@ public class CommentApiController {
      */
     @DeleteMapping("/api/v1/comments/delete/{boardNo}/{postsNo}/{commentNo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteByCreator(@PathVariable Integer boardNo, @PathVariable Integer postsNo, @PathVariable Integer commentNo) {
+    public void deleteByCreator(@PathVariable("boardNo") Integer boardNo, @PathVariable("postsNo") Integer postsNo, @PathVariable("commentNo") Integer commentNo) {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         commentService.delete(boardNo, postsNo, commentNo, userId);
@@ -147,7 +157,7 @@ public class CommentApiController {
      */
     @DeleteMapping("/api/v1/comments/{boardNo}/{postsNo}/{commentNo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer boardNo, @PathVariable Integer postsNo, @PathVariable Integer commentNo) {
+    public void delete(@PathVariable("boardNo") Integer boardNo, @PathVariable("postsNo") Integer postsNo, @PathVariable("commentNo") Integer commentNo) {
         commentService.delete(boardNo, postsNo, commentNo);
     }
 

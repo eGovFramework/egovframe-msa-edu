@@ -3,12 +3,14 @@ package org.egovframe.cloud.reserverequestservice.domain;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.IntStream;
-import javax.annotation.Resource;
-import lombok.RequiredArgsConstructor;
+
 import org.egovframe.cloud.common.exception.BusinessMessageException;
 import org.egovframe.cloud.common.util.MessageUtil;
 import org.egovframe.cloud.reserverequestservice.api.dto.ReserveSaveRequestDto;
 import org.springframework.stereotype.Component;
+
+import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

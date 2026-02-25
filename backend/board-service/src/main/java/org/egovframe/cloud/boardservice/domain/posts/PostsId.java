@@ -1,13 +1,13 @@
 package org.egovframe.cloud.boardservice.domain.posts;
 
+import java.io.Serializable;
+import java.util.Objects;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * org.egovframe.cloud.boardservice.domain.posts.PostsId

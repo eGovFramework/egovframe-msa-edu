@@ -1,6 +1,7 @@
 package org.egovframe.cloud.portalservice.service.statistics;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.egovframe.cloud.common.service.AbstractService;
 import org.egovframe.cloud.common.util.LogUtil;
 import org.egovframe.cloud.portalservice.api.statistics.dto.StatisticsResponseDto;
@@ -10,10 +11,8 @@ import org.egovframe.cloud.portalservice.domain.statistics.StatisticsRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 /**
  * org.egovframe.cloud.portalservice.service.statistics.StatisticsApiController
  * <p>

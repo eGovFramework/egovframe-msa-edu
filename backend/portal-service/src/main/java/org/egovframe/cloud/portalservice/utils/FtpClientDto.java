@@ -1,14 +1,15 @@
 package org.egovframe.cloud.portalservice.utils;
 
+import java.io.File;
 import java.util.ArrayList;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.List;
+
 import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.core.env.Environment;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * org.egovframe.cloud.portalservice.utils.FtpClientDto

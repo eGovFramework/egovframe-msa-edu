@@ -45,4 +45,5 @@
             <appender-ref ref="STDOUT" />
         </root>
     </springProfile>
+
 </Configuration>

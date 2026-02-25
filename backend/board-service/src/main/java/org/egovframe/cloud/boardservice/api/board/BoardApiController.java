@@ -1,21 +1,29 @@
 package org.egovframe.cloud.boardservice.api.board;
 
-import lombok.RequiredArgsConstructor;
-import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.boardservice.api.board.dto.BoardListResponseDto;
 import org.egovframe.cloud.boardservice.api.board.dto.BoardResponseDto;
 import org.egovframe.cloud.boardservice.api.board.dto.BoardSaveRequestDto;
 import org.egovframe.cloud.boardservice.api.board.dto.BoardUpdateRequestDto;
 import org.egovframe.cloud.boardservice.service.board.BoardService;
+import org.egovframe.cloud.common.dto.RequestDto;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.boardservice.api.board.BoardApiController
@@ -34,6 +42,7 @@ import javax.validation.Valid;
  *  2021/07/26    jooho       최초 생성
  * </pre>
  */
+@Tag(name = "Board API", description = "게시판 관리 API")
 @RequiredArgsConstructor
 @RestController
 public class BoardApiController {
@@ -78,7 +87,7 @@ public class BoardApiController {
      * @return BoardResponseDto 게시판 상세 응답 DTO
      */
     @GetMapping("/api/v1/boards/{boardNo}")
-    public BoardResponseDto findById(@PathVariable Integer boardNo) {
+    public BoardResponseDto findById(@PathVariable("boardNo") Integer boardNo) {
         return boardService.findById(boardNo);
     }
 
@@ -102,7 +111,7 @@ public class BoardApiController {
      * @return BoardResponseDto 게시판 상세 응답 DTO
      */
     @PutMapping("/api/v1/boards/{boardNo}")
-    public BoardResponseDto update(@PathVariable Integer boardNo, @RequestBody @Valid BoardUpdateRequestDto requestDto) {
+    public BoardResponseDto update(@PathVariable("boardNo") Integer boardNo, @RequestBody @Valid BoardUpdateRequestDto requestDto) {
         return boardService.update(boardNo, requestDto);
     }
 
@@ -113,7 +122,7 @@ public class BoardApiController {
      */
     @DeleteMapping("/api/v1/boards/{boardNo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer boardNo) {
+    public void delete(@PathVariable("boardNo") Integer boardNo) {
         boardService.delete(boardNo);
     }
 

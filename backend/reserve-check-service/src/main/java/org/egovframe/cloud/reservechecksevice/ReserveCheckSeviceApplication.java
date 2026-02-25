@@ -1,14 +1,15 @@
 package org.egovframe.cloud.reservechecksevice;
 
+import java.security.Security;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
 
 import reactivefeign.spring.config.EnableReactiveFeignClients;
-import java.security.Security;
 
-@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.reactive", "org.egovframe.cloud.reservechecksevice"}) // org.egovframe.cloud.common package 포함하기 위해
+@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.reactive", "org.egovframe.cloud.reservechecksevice"})
 @EnableDiscoveryClient
 @EnableReactiveFeignClients
 @SpringBootApplication

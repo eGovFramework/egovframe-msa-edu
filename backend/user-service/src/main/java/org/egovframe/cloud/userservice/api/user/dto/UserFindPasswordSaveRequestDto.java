@@ -1,11 +1,11 @@
 package org.egovframe.cloud.userservice.api.user.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.egovframe.cloud.userservice.domain.user.UserFindPassword;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * org.egovframe.cloud.userservice.api.user.dto.UserFindPasswordSaveRequestDto

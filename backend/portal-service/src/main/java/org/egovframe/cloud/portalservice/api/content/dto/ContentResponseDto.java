@@ -1,8 +1,9 @@
 package org.egovframe.cloud.portalservice.api.content.dto;
 
+import org.egovframe.cloud.portalservice.domain.content.Content;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.egovframe.cloud.portalservice.domain.content.Content;
 
 /**
  * org.egovframe.cloud.portalservice.api.content.dto.ContentResponseDto

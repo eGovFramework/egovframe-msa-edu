@@ -2,6 +2,17 @@ package org.egovframe.cloud.boardservice.domain.board;
 
 import static com.querydsl.core.types.Projections.constructor;
 
+import java.util.List;
+
+import org.egovframe.cloud.boardservice.api.board.dto.BoardListResponseDto;
+import org.egovframe.cloud.boardservice.api.board.dto.BoardResponseDto;
+import org.egovframe.cloud.boardservice.api.board.dto.QBoardResponseDto;
+import org.egovframe.cloud.boardservice.domain.code.QCode;
+import org.egovframe.cloud.common.dto.RequestDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
 import com.google.common.base.CaseFormat;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Order;
@@ -12,18 +23,8 @@ import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
-import org.egovframe.cloud.boardservice.api.board.dto.BoardListResponseDto;
-import org.egovframe.cloud.boardservice.api.board.dto.BoardResponseDto;
-import org.egovframe.cloud.boardservice.api.board.dto.QBoardListResponseDto;
-import org.egovframe.cloud.boardservice.api.board.dto.QBoardResponseDto;
-import org.egovframe.cloud.boardservice.domain.code.QCode;
-import org.egovframe.cloud.common.dto.RequestDto;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.boardservice.domain.board.BoardRepositoryImpl

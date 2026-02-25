@@ -3,8 +3,6 @@ package org.egovframe.cloud.portalservice.api.message.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-
 /**
  * org.egovframe.cloud.portalservice.api.message.dto.MessageListResponseDto
  * <p>

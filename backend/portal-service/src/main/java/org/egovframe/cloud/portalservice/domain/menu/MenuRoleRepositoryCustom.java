@@ -1,10 +1,9 @@
 package org.egovframe.cloud.portalservice.domain.menu;
 
+import java.util.List;
+
 import org.egovframe.cloud.portalservice.api.menu.dto.MenuRoleResponseDto;
 import org.egovframe.cloud.portalservice.api.menu.dto.MenuSideResponseDto;
-import org.egovframe.cloud.portalservice.api.menu.dto.MenuTreeResponseDto;
-
-import java.util.List;
 
 /**
  * org.egovframe.cloud.portalservice.domain.menu.MenuRoleRepositoryCustom

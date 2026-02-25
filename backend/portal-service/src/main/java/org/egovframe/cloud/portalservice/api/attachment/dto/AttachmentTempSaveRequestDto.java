@@ -2,13 +2,15 @@ package org.egovframe.cloud.portalservice.api.attachment.dto;
 
 import java.util.Objects;
 import java.util.UUID;
+
+import org.egovframe.cloud.portalservice.domain.attachment.Attachment;
+import org.egovframe.cloud.portalservice.domain.attachment.AttachmentId;
+import org.springframework.util.StringUtils;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.egovframe.cloud.portalservice.domain.attachment.Attachment;
-import org.egovframe.cloud.portalservice.domain.attachment.AttachmentId;
-import org.springframework.util.StringUtils;
 
 /**
  * org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentSaveRequestDto

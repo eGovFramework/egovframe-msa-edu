@@ -1,10 +1,10 @@
 package org.egovframe.cloud.boardservice.domain.comment;
 
-import org.egovframe.cloud.boardservice.api.comment.dto.CommentListResponseDto;
-import org.springframework.data.domain.Pageable;
-
 import java.util.List;
 import java.util.Map;
+
+import org.egovframe.cloud.boardservice.api.comment.dto.CommentListResponseDto;
+import org.springframework.data.domain.Pageable;
 
 /**
  * org.egovframe.cloud.boardservice.domain.comment.CommentRepositoryCustom

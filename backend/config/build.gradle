@@ -1,11 +1,13 @@
 plugins {
+    id 'org.springframework.boot' version '3.5.6'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
 }
 
 group = 'org.egovframe.cloud'
-version = '1.0.0'
-sourceCompatibility = '1.8'
+version = '5.0.0'
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 repositories {
     mavenCentral()
@@ -13,9 +15,8 @@ repositories {
 }
 
 ext {
-    set('egovframeBootVersion', '4.3.0')
-    set('springCloudVersion', '2021.0.9')
-    set('log4j2.version', '2.23.1') // log4j 보안 패치
+    set('egovframeBootParentVersion', '5.0.0')
+    set('springCloudVersion', '2025.0.0')
 }
 
 dependencies {
@@ -30,11 +31,16 @@ dependencies {
 
 dependencyManagement {
     imports {
-        mavenBom "org.egovframe.boot:org.egovframe.boot.starter.parent:${egovframeBootVersion}" // egovframe Boot Parent 설정
+        mavenBom "org.egovframe.boot:egovframe-boot-starter-parent:${egovframeBootParentVersion}" // egovframe Boot Parent 설정
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
 
 test {
     useJUnitPlatform()
+}
+
+// Spring Cache의 SpEL 표현식에서 파라미터 이름을 사용하기 위해 필요
+tasks.withType(JavaCompile) {
+    options.compilerArgs.add('-parameters')
 }

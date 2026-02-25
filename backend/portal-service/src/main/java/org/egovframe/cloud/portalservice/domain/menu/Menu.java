@@ -1,17 +1,27 @@
 package org.egovframe.cloud.portalservice.domain.menu;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import org.egovframe.cloud.portalservice.api.menu.dto.MenuUpdateRequestDto;
+import org.egovframe.cloud.servlet.domain.BaseEntity;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.egovframe.cloud.portalservice.api.menu.dto.MenuUpdateRequestDto;
-import org.egovframe.cloud.servlet.domain.BaseEntity;
-
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * org.egovframe.cloud.portalservice.domain.menu.Menu

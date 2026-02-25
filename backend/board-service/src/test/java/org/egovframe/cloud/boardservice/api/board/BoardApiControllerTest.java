@@ -1,6 +1,14 @@
 package org.egovframe.cloud.boardservice.api.board;
 
-import lombok.extern.slf4j.Slf4j;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.assertj.core.api.Condition;
 import org.egovframe.cloud.boardservice.api.board.dto.BoardListResponseDto;
 import org.egovframe.cloud.boardservice.api.board.dto.BoardResponseDto;
@@ -22,10 +30,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
-import java.math.BigDecimal;
-import java.util.*;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * org.egovframe.cloud.boardservice.api.board.BoardApiControllerTest

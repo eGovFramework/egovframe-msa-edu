@@ -1,6 +1,7 @@
 package org.egovframe.cloud.apigateway.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authorization.ReactiveAuthorizationManager;
@@ -28,14 +29,15 @@ import org.springframework.security.web.server.authorization.AuthorizationContex
  *  2021/06/30    jaeyeolkim  최초 생성
  * </pre>
  */
-@EnableWebFluxSecurity // Spring Security 설정들을 활성화시켜 준다
+@Configuration
+@EnableWebFluxSecurity
 public class WebFluxSecurityConfig {
 
     private final static String[] PERMITALL_ANTPATTERNS = {
             ReactiveAuthorization.AUTHORIZATION_URI, "/", "/csrf",
             "/user-service/login", "/?*-service/api/v1/messages/**", "/api/v1/messages/**",
             "/?*-service/actuator/?*", "/actuator/?*",
-            "/v3/api-docs/**", "/?*-service/v3/api-docs", "/swagger*/**", "/webjars/**"
+            "/v3/api-docs/**", "/?*-service/v3/api-docs", "/?*-service/v3/api-docs/**", "/swagger*/**", "/webjars/**"
     };
     private final static String USER_JOIN_ANTPATTERNS = "/user-service/api/v1/users";
 
@@ -50,17 +52,16 @@ public class WebFluxSecurityConfig {
      */
     @Bean
     public SecurityWebFilterChain configure(ServerHttpSecurity http, ReactiveAuthorizationManager<AuthorizationContext> check) throws Exception {
-        http
-                .csrf().disable()
-                .headers().frameOptions().disable()
-            .and()
-                .formLogin().disable()
-                .httpBasic().authenticationEntryPoint(new HttpStatusServerEntryPoint(HttpStatus.UNAUTHORIZED)) // login dialog disabled & 401 HttpStatus return
-            .and()
-                .authorizeExchange()
-                .pathMatchers(PERMITALL_ANTPATTERNS).permitAll()
-                .pathMatchers(HttpMethod.POST, USER_JOIN_ANTPATTERNS).permitAll()
-                .anyExchange().access(check);
+    	http
+                .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
+                .formLogin(formLogin -> formLogin.disable())
+                .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(new HttpStatusServerEntryPoint(HttpStatus.UNAUTHORIZED))) // login dialog disabled & 401 HttpStatus return
+                .authorizeExchange(exchanges -> exchanges
+                        .pathMatchers(PERMITALL_ANTPATTERNS).permitAll()
+                        .pathMatchers(HttpMethod.POST, USER_JOIN_ANTPATTERNS).permitAll()
+                        .anyExchange().access(check));
+
         return http.build();
     }
 

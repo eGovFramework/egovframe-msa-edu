@@ -1,12 +1,12 @@
 package org.egovframe.cloud.portalservice.domain.privacy;
 
+import java.util.List;
+
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.portalservice.api.privacy.dto.PrivacyListResponseDto;
 import org.egovframe.cloud.portalservice.api.privacy.dto.PrivacyResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 /**
  * org.egovframe.cloud.portalservice.domain.privacy.PrivacyRepositoryCustom

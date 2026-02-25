@@ -2,13 +2,15 @@ package org.egovframe.cloud.reservechecksevice.client.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import org.egovframe.cloud.reservechecksevice.domain.ReserveItem;
+import org.egovframe.cloud.reservechecksevice.domain.location.Location;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.egovframe.cloud.reservechecksevice.domain.ReserveItem;
-import org.egovframe.cloud.reservechecksevice.domain.location.Location;
 
 /**
  * org.egovframe.cloud.reservechecksevice.client.dto.ReserveItemRelationResponseDto

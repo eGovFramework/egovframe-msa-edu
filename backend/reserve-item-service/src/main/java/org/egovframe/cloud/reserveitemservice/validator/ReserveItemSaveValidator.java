@@ -2,14 +2,16 @@ package org.egovframe.cloud.reserveitemservice.validator;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
-import javax.annotation.Resource;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+
 import org.egovframe.cloud.common.util.MessageUtil;
 import org.egovframe.cloud.reserveitemservice.validator.annotation.ReserveItemSaveValid;
 import org.springframework.util.StringUtils;
+
+import jakarta.annotation.Resource;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * org.egovframe.cloud.reserveitemservice.validator.ReserveItemSaveValidator

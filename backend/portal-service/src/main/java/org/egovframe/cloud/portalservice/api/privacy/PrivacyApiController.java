@@ -1,6 +1,7 @@
 package org.egovframe.cloud.portalservice.api.privacy;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.portalservice.api.privacy.dto.PrivacyListResponseDto;
 import org.egovframe.cloud.portalservice.api.privacy.dto.PrivacyResponseDto;
@@ -12,10 +13,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.portalservice.api.privacy.PrivacyApiController
@@ -34,6 +43,7 @@ import java.util.List;
  *  2021/07/22    jooho       최초 생성
  * </pre>
  */
+@Tag(name = "Privacy API", description = "개인정보처리방침 관리 API")
 @RequiredArgsConstructor
 @RestController
 public class PrivacyApiController {
@@ -73,7 +83,7 @@ public class PrivacyApiController {
      * @return PrivacyResponseDto 개인정보처리방침 상세 응답 DTO
      */
     @GetMapping("/api/v1/privacies/{privacyNo}")
-    public PrivacyResponseDto findById(@PathVariable Integer privacyNo) {
+    public PrivacyResponseDto findById(@PathVariable("privacyNo") Integer privacyNo) {
         return privacyService.findById(privacyNo);
     }
 
@@ -97,7 +107,7 @@ public class PrivacyApiController {
      * @return PrivacyResponseDto 개인정보처리방침 상세 응답 DTO
      */
     @PutMapping("/api/v1/privacies/{privacyNo}")
-    public PrivacyResponseDto update(@PathVariable Integer privacyNo, @RequestBody @Valid PrivacyUpdateRequestDto requestDto) {
+    public PrivacyResponseDto update(@PathVariable("privacyNo") Integer privacyNo, @RequestBody @Valid PrivacyUpdateRequestDto requestDto) {
         return privacyService.update(privacyNo, requestDto);
     }
 
@@ -109,7 +119,7 @@ public class PrivacyApiController {
      * @return PrivacyResponseDto 개인정보처리방침 상세 응답 DTO
      */
     @PutMapping("/api/v1/privacies/{privacyNo}/{useAt}")
-    public PrivacyResponseDto updateUseAt(@PathVariable Integer privacyNo, @PathVariable Boolean useAt) {
+    public PrivacyResponseDto updateUseAt(@PathVariable("privacyNo") Integer privacyNo, @PathVariable("useAt") Boolean useAt) {
         return privacyService.updateUseAt(privacyNo, useAt);
     }
 
@@ -120,7 +130,7 @@ public class PrivacyApiController {
      */
     @DeleteMapping("/api/v1/privacies/{privacyNo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer privacyNo) {
+    public void delete(@PathVariable("privacyNo") Integer privacyNo) {
         privacyService.delete(privacyNo);
     }
 

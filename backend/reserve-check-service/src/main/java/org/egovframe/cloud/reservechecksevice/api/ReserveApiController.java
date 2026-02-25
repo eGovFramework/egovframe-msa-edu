@@ -1,8 +1,7 @@
 package org.egovframe.cloud.reservechecksevice.api;
 
 import java.time.LocalDate;
-import javax.validation.Valid;
-import lombok.RequiredArgsConstructor;
+
 import org.egovframe.cloud.reservechecksevice.api.dto.ReserveCancelRequestDto;
 import org.egovframe.cloud.reservechecksevice.api.dto.ReserveListResponseDto;
 import org.egovframe.cloud.reservechecksevice.api.dto.ReserveRequestDto;
@@ -23,6 +22,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
 /**
@@ -42,6 +45,7 @@ import reactor.core.publisher.Mono;
  *  2021/09/17    shinmj      최초 생성
  * </pre>
  */
+@Tag(name = "Reserve API", description = "예약 확인 관리 API")
 @RequiredArgsConstructor
 @RestController
 public class ReserveApiController {
@@ -91,7 +95,7 @@ public class ReserveApiController {
      */
     @GetMapping("/api/v1/{userId}/reserves")
     @ResponseStatus(HttpStatus.OK)
-    public Mono<Page<ReserveListResponseDto>> searchForUser(@PathVariable String userId,
+    public Mono<Page<ReserveListResponseDto>> searchForUser(@PathVariable("userId") String userId,
                                                             ReserveRequestDto requestDto,
                                                             @RequestParam(name = "page") int page,
                                                             @RequestParam(name = "size") int size) {
@@ -106,7 +110,7 @@ public class ReserveApiController {
      */
     @GetMapping("/api/v1/reserves/{reserveId}")
     @ResponseStatus(HttpStatus.OK)
-    public Mono<ReserveResponseDto> findById(@PathVariable String reserveId) {
+    public Mono<ReserveResponseDto> findById(@PathVariable("reserveId") String reserveId) {
         return reserveService.findReserveById(reserveId);
     }
 
@@ -118,7 +122,7 @@ public class ReserveApiController {
      */
     @PutMapping("/api/v1/reserves/cancel/{reserveId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> cancel(@PathVariable String reserveId, @RequestBody ReserveCancelRequestDto cancelRequestDto) {
+    public Mono<Void> cancel(@PathVariable("reserveId") String reserveId, @RequestBody ReserveCancelRequestDto cancelRequestDto) {
         return reserveService.cancel(reserveId, cancelRequestDto);
     }
 
@@ -130,7 +134,7 @@ public class ReserveApiController {
      */
     @PutMapping("/api/v1/reserves/approve/{reserveId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> approve(@PathVariable String reserveId) {
+    public Mono<Void> approve(@PathVariable("reserveId") String reserveId) {
         return reserveService.approve(reserveId);
     }
 
@@ -143,7 +147,7 @@ public class ReserveApiController {
      */
     @PutMapping("/api/v1/reserves/{reserveId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> update(@PathVariable String reserveId, @Valid @RequestBody ReserveUpdateRequestDto updateRequestDto) {
+    public Mono<Void> update(@PathVariable("reserveId") String reserveId, @Valid @RequestBody ReserveUpdateRequestDto updateRequestDto) {
         return reserveService.update(reserveId, updateRequestDto).then();
     }
 
@@ -168,7 +172,7 @@ public class ReserveApiController {
      */
     @GetMapping("/api/v1/reserves/{reserveItemId}/inventories")
     @ResponseStatus(HttpStatus.OK)
-    public Mono<Integer> countInventory(@PathVariable Long reserveItemId,
+    public Mono<Integer> countInventory(@PathVariable("reserveItemId") Long reserveItemId,
                                         @RequestParam(name = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                         @RequestParam(name = "endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
         return reserveService.countInventory(reserveItemId,startDate.atTime(0,0), endDate.atTime(23, 59));

@@ -1,14 +1,20 @@
 package org.egovframe.cloud.portalservice.api.statistics;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.egovframe.cloud.portalservice.api.statistics.dto.StatisticsResponseDto;
 import org.egovframe.cloud.portalservice.api.statistics.dto.StatisticsYMRequestDto;
 import org.egovframe.cloud.portalservice.service.statistics.StatisticsService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 /**
  * org.egovframe.cloud.portalservice.api.statistics.StatisticsApiController
  * <p>
@@ -26,6 +32,7 @@ import java.util.List;
  *  2021/09/07    shinmj      최초 생성
  * </pre>
  */
+@Tag(name = "Statistics API", description = "통계 관리 API")
 @RequiredArgsConstructor
 @RestController
 public class StatisticsApiController {
@@ -38,7 +45,7 @@ public class StatisticsApiController {
      * @return
      */
     @GetMapping("/api/v1/statistics/monthly/{siteId}")
-    public List<StatisticsResponseDto> findMonthlyBySiteId(@PathVariable Long siteId) {
+    public List<StatisticsResponseDto> findMonthlyBySiteId(@PathVariable("siteId") Long siteId) {
         return statisticsService.findMonthlyBySiteId(siteId);
     }
 
@@ -49,7 +56,7 @@ public class StatisticsApiController {
      * @return
      */
     @GetMapping("/api/v1/statistics/daily/{siteId}")
-    public List<StatisticsResponseDto> findDailyBySiteId(@PathVariable Long siteId, StatisticsYMRequestDto requestDto) {
+    public List<StatisticsResponseDto> findDailyBySiteId(@PathVariable("siteId") Long siteId, StatisticsYMRequestDto requestDto) {
         return statisticsService.findDailyBySiteId(siteId, requestDto);
     }
 
@@ -61,7 +68,7 @@ public class StatisticsApiController {
      */
     @PostMapping("/api/v1/statistics/{statisticsId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void save(@PathVariable String statisticsId, HttpServletRequest request) {
+    public void save(@PathVariable("statisticsId") String statisticsId, HttpServletRequest request) {
         statisticsService.save(request, statisticsId);
     }
 }

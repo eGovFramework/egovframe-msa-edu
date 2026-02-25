@@ -1,8 +1,15 @@
 package org.egovframe.cloud.boardservice.api.posts;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.Map;
+
 import org.egovframe.cloud.boardservice.api.board.dto.BoardResponseDto;
-import org.egovframe.cloud.boardservice.api.posts.dto.*;
+import org.egovframe.cloud.boardservice.api.posts.dto.PostsDeleteRequestDto;
+import org.egovframe.cloud.boardservice.api.posts.dto.PostsListResponseDto;
+import org.egovframe.cloud.boardservice.api.posts.dto.PostsResponseDto;
+import org.egovframe.cloud.boardservice.api.posts.dto.PostsSaveRequestDto;
+import org.egovframe.cloud.boardservice.api.posts.dto.PostsSimpleSaveRequestDto;
+import org.egovframe.cloud.boardservice.api.posts.dto.PostsUpdateRequestDto;
 import org.egovframe.cloud.boardservice.service.posts.PostsService;
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.common.util.LogUtil;
@@ -12,11 +19,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Map;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.postservice.api.posts.PostsApiController
@@ -35,6 +49,7 @@ import java.util.Map;
  *  2021/07/28    jooho       최초 생성
  * </pre>
  */
+@Tag(name = "Posts API", description = "게시물 관리 API")
 @RequiredArgsConstructor
 @RestController
 public class PostsApiController {
@@ -53,7 +68,7 @@ public class PostsApiController {
      * @return Page<PostsListResponseDto> 페이지 게시물 목록 응답 DTO
      */
     @GetMapping("/api/v1/posts/{boardNo}")
-    public Page<PostsListResponseDto> findPage(@PathVariable Integer boardNo,
+    public Page<PostsListResponseDto> findPage(@PathVariable("boardNo") Integer boardNo,
                                                RequestDto requestDto,
                                                @SortDefault.SortDefaults({
                                                        @SortDefault(sort = "notice_at", direction = Sort.Direction.DESC),
@@ -72,7 +87,7 @@ public class PostsApiController {
      * @return Page<PostsListResponseDto> 페이지 게시물 목록 응답 DTO
      */
     @GetMapping("/api/v1/posts/list/{boardNo}")
-    public Page<PostsListResponseDto> findListPage(@PathVariable Integer boardNo,
+    public Page<PostsListResponseDto> findListPage(@PathVariable("boardNo") Integer boardNo,
                                                    RequestDto requestDto,
                                                    @SortDefault.SortDefaults({
                                                            @SortDefault(sort = "notice_at", direction = Sort.Direction.DESC),
@@ -90,7 +105,7 @@ public class PostsApiController {
      * @return Map<Integer, BoardResponseDto> 최근 게시물이 포함된 게시판 상세 응답 DTO Map
      */
     @GetMapping("/api/v1/posts/newest/{boardNos}/{postsCount}")
-    public Map<Integer, BoardResponseDto> findNewest(@PathVariable List<Integer> boardNos, @PathVariable Integer postsCount) {
+    public Map<Integer, BoardResponseDto> findNewest(@PathVariable("boardNos") List<Integer> boardNos, @PathVariable Integer postsCount) {
         return postsService.findNewest(boardNos, postsCount);
     }
 
@@ -102,7 +117,7 @@ public class PostsApiController {
      * @return PostsResponseDto 게시물 상세 응답 DTO
      */
     @GetMapping("/api/v1/posts/{boardNo}/{postsNo}")
-    public PostsResponseDto findById(@PathVariable Integer boardNo, @PathVariable Integer postsNo) {
+    public PostsResponseDto findById(@PathVariable("boardNo") Integer boardNo, @PathVariable("postsNo") Integer postsNo) {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
         userId = "anonymousUser".equals(userId) ? null : userId;
 
@@ -117,7 +132,7 @@ public class PostsApiController {
      * @return PostsResponseDto 게시물 상세 응답 DTO
      */
     @GetMapping("/api/v1/posts/view/{boardNo}/{postsNo}")
-    public PostsResponseDto findViewById(@PathVariable Integer boardNo, @PathVariable Integer postsNo, RequestDto requestDto) {
+    public PostsResponseDto findViewById(@PathVariable("boardNo") Integer boardNo, @PathVariable("postsNo") Integer postsNo, RequestDto requestDto) {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
         userId = "anonymousUser".equals(userId) ? null : userId;
         final Integer deleteAt = 0; // 미삭제 게시물만 조회
@@ -134,7 +149,7 @@ public class PostsApiController {
      */
     @PostMapping("/api/v1/posts/save/{boardNo}")
     @ResponseStatus(HttpStatus.CREATED)
-    public PostsResponseDto saveByCreator(@PathVariable Integer boardNo, @RequestBody @Valid PostsSimpleSaveRequestDto requestDto) {
+    public PostsResponseDto saveByCreator(@PathVariable("boardNo") Integer boardNo, @RequestBody @Valid PostsSimpleSaveRequestDto requestDto) {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
         return postsService.save(boardNo, requestDto, userId);
     }
@@ -148,7 +163,7 @@ public class PostsApiController {
      * @return PostsResponseDto 게시물 상세 응답 DTO
      */
     @PutMapping("/api/v1/posts/update/{boardNo}/{postsNo}")
-    public PostsResponseDto updateByCreator(@PathVariable Integer boardNo, @PathVariable Integer postsNo, @RequestBody @Valid PostsSimpleSaveRequestDto requestDto) {
+    public PostsResponseDto updateByCreator(@PathVariable("boardNo") Integer boardNo, @PathVariable("postsNo") Integer postsNo, @RequestBody @Valid PostsSimpleSaveRequestDto requestDto) {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         return postsService.update(boardNo, postsNo, requestDto, userId);
@@ -162,7 +177,7 @@ public class PostsApiController {
      */
     @DeleteMapping("/api/v1/posts/remove/{boardNo}/{postsNo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteByCreator(@PathVariable Integer boardNo, @PathVariable Integer postsNo) {
+    public void deleteByCreator(@PathVariable("boardNo") Integer boardNo, @PathVariable("postsNo") Integer postsNo) {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         postsService.remove(boardNo, postsNo, userId);
@@ -177,7 +192,7 @@ public class PostsApiController {
      */
     @PostMapping("/api/v1/posts/{boardNo}")
     @ResponseStatus(HttpStatus.CREATED)
-    public PostsResponseDto save(@PathVariable Integer boardNo, @RequestBody @Valid PostsSaveRequestDto requestDto) {
+    public PostsResponseDto save(@PathVariable("boardNo") Integer boardNo, @RequestBody @Valid PostsSaveRequestDto requestDto) {
         return postsService.save(boardNo, requestDto);
     }
 
@@ -190,7 +205,7 @@ public class PostsApiController {
      * @return PostsResponseDto 게시물 상세 응답 DTO
      */
     @PutMapping("/api/v1/posts/{boardNo}/{postsNo}")
-    public PostsResponseDto update(@PathVariable Integer boardNo, @PathVariable Integer postsNo, @RequestBody @Valid PostsUpdateRequestDto requestDto) {
+    public PostsResponseDto update(@PathVariable("boardNo") Integer boardNo, @PathVariable("postsNo") Integer postsNo, @RequestBody @Valid PostsUpdateRequestDto requestDto) {
         return postsService.update(boardNo, postsNo, requestDto);
     }
 

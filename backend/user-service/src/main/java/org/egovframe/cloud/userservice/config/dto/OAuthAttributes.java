@@ -1,12 +1,13 @@
 package org.egovframe.cloud.userservice.config.dto;
 
-import lombok.Builder;
-import lombok.Getter;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.egovframe.cloud.common.domain.Role;
 import org.egovframe.cloud.userservice.domain.user.User;
 
-import java.util.HashMap;
-import java.util.Map;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 public class OAuthAttributes {

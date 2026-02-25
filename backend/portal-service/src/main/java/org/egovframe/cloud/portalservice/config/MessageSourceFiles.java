@@ -1,27 +1,25 @@
 package org.egovframe.cloud.portalservice.config;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 import org.egovframe.cloud.portalservice.domain.message.Message;
 import org.egovframe.cloud.portalservice.domain.message.MessageRepository;
-import org.egovframe.cloud.portalservice.utils.FileStorageUtils;
-import org.egovframe.cloud.portalservice.utils.FtpClientDto;
 import org.egovframe.cloud.portalservice.utils.StorageUtils;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.PostConstruct;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * org.egovframe.cloud.portalservice.config.MessageSourceFileCreate

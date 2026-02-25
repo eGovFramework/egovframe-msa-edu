@@ -1,16 +1,16 @@
 package org.egovframe.cloud.portalservice.domain.statistics;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+
+import org.egovframe.cloud.servlet.domain.BaseTimeEntity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.egovframe.cloud.servlet.domain.BaseTimeEntity;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
-import static javax.persistence.GenerationType.IDENTITY;
 
 /**
  * org.egovframe.cloud.portalservice.domain.statistics.Statistics

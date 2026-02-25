@@ -1,8 +1,24 @@
 package org.egovframe.cloud.portalservice.utils;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
+import static org.egovframe.cloud.portalservice.utils.PortalUtils.getPhysicalFileName;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Base64;
+import java.util.List;
+
 import org.egovframe.cloud.common.exception.BusinessException;
 import org.egovframe.cloud.common.exception.BusinessMessageException;
 import org.egovframe.cloud.common.exception.dto.ErrorCode;
@@ -12,19 +28,12 @@ import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentImageRespo
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URLConnection;
-import java.nio.file.*;
-import java.util.Base64;
-import java.util.List;
-
-import static org.egovframe.cloud.portalservice.utils.PortalUtils.getPhysicalFileName;
+import jakarta.annotation.PostConstruct;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * org.egovframe.cloud.portalservice.utils.FileStorageUtils
@@ -45,22 +54,15 @@ import static org.egovframe.cloud.portalservice.utils.PortalUtils.getPhysicalFil
  */
 @Slf4j
 @Getter
-@Component
 public class FileStorageUtils implements StorageUtils {
 
     private final Path fileStorageLocation;
     private final Environment environment;
     private final MessageUtil messageUtil;
-    private static final String FILE_SEPARATOR = File.separator;
-    
+
     public FileStorageUtils(Environment environment, MessageUtil messageUtil) {
         this.environment = environment;
-        String envFileDir = "";
-        envFileDir = environment.getProperty("file.directory");
-        if(FILE_SEPARATOR.equals("\\")) {//윈도우기반 자바시스템일 때 경로 에러방지
-        	envFileDir = envFileDir.replaceAll("/", "\\\\");
-        }
-        this.fileStorageLocation = Paths.get(envFileDir).toAbsolutePath().normalize();
+        this.fileStorageLocation = Paths.get(environment.getProperty("file.directory")).toAbsolutePath().normalize();
         this.messageUtil = messageUtil;
     }
 
@@ -191,9 +193,8 @@ public class FileStorageUtils implements StorageUtils {
 
             Path path = getStorePath(basePath);
             Path target = path.resolve(filename);
-            InputStream inputStream = file.getInputStream();
-            Files.copy(inputStream, target, StandardCopyOption.REPLACE_EXISTING);
-            inputStream.close(); //윈도우 시스템에서도 업로드 시 Temp폴더의 delete file 에러방지코드 추가
+            Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
+
             return filename;
         } catch (IOException ex) {
             log.error("Could not stored file", ex);

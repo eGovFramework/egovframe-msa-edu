@@ -2,9 +2,7 @@ package org.egovframe.cloud.reserveitemservice.api.reserveItem;
 
 import java.util.Collection;
 import java.util.Map;
-import javax.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemListResponseDto;
 import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemMainResponseDto;
 import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemRelationResponseDto;
@@ -25,6 +23,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 /**
@@ -44,6 +47,7 @@ import reactor.core.publisher.Mono;
  *  2021/09/13    shinmj      최초 생성
  * </pre>
  */
+@Tag(name = "Reserve Item API", description = "예약 물품 관리 API")
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -92,7 +96,7 @@ public class ReserveItemApiController {
      */
     @GetMapping("/api/v1/{categoryId}/reserve-items")
     @ResponseStatus(HttpStatus.OK)
-    public Mono<Page<ReserveItemListResponseDto>> searchForUser(@PathVariable String categoryId,
+    public Mono<Page<ReserveItemListResponseDto>> searchForUser(@PathVariable("categoryId") String categoryId,
                                                                 ReserveItemRequestDto requestDto,
                                                          @RequestParam(name = "page") int page,
                                                          @RequestParam(name = "size") int size) {
@@ -107,7 +111,7 @@ public class ReserveItemApiController {
      */
     @GetMapping("/api/v1/reserve-items/{reserveItemId}")
     @ResponseStatus(HttpStatus.OK)
-    public Mono<ReserveItemResponseDto> findById(@PathVariable Long reserveItemId) {
+    public Mono<ReserveItemResponseDto> findById(@PathVariable("reserveItemId") Long reserveItemId) {
         return reserveItemService.findById(reserveItemId);
     }
 
@@ -132,7 +136,7 @@ public class ReserveItemApiController {
      */
     @PutMapping("/api/v1/reserve-items/{reserveItemId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> update(@PathVariable Long reserveItemId, @Valid @RequestBody ReserveItemUpdateRequestDto updateRequestDto) {
+    public Mono<Void> update(@PathVariable("reserveItemId") Long reserveItemId, @Valid @RequestBody ReserveItemUpdateRequestDto updateRequestDto) {
         return reserveItemService.update(reserveItemId, updateRequestDto);
     }
 
@@ -145,7 +149,7 @@ public class ReserveItemApiController {
      */
     @PutMapping("/api/v1/reserve-items/{reserveItemId}/{isUse}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> updateIsUse(@PathVariable Long reserveItemId, @PathVariable Boolean isUse) {
+    public Mono<Void> updateIsUse(@PathVariable("reserveItemId") Long reserveItemId, @PathVariable Boolean isUse) {
         return reserveItemService.updateIsUse(reserveItemId, isUse);
     }
 
@@ -157,7 +161,7 @@ public class ReserveItemApiController {
      */
     @GetMapping("/api/v1/reserve-items/relations/{reserveItemId}")
     @ResponseStatus(HttpStatus.OK)
-    public Mono<ReserveItemRelationResponseDto> findByIdWithRelations(@PathVariable Long reserveItemId) {
+    public Mono<ReserveItemRelationResponseDto> findByIdWithRelations(@PathVariable("reserveItemId") Long reserveItemId) {
         return reserveItemService.findByIdWithRelations(reserveItemId);
     }
 
@@ -170,7 +174,7 @@ public class ReserveItemApiController {
      */
     @PutMapping("/api/v1/reserve-items/{reserveItemId}/inventories")
     @ResponseStatus(HttpStatus.OK)
-    public Mono<Boolean> updateInventory(@PathVariable Long reserveItemId, @RequestBody Integer reserveQty) {
+    public Mono<Boolean> updateInventory(@PathVariable("reserveItemId") Long reserveItemId, @RequestBody Integer reserveQty) {
         return reserveItemService.updateInventory(reserveItemId, reserveQty);
     }
 
@@ -183,7 +187,7 @@ public class ReserveItemApiController {
      */
     @GetMapping("/api/v1/reserve-items/latest/{count}")
     @ResponseStatus(HttpStatus.OK)
-    public  Mono<Map<String, Collection<ReserveItemMainResponseDto>>> findLatest(@PathVariable Integer count) {
+    public  Mono<Map<String, Collection<ReserveItemMainResponseDto>>> findLatest(@PathVariable("count") Integer count) {
         return reserveItemService.findLatest(count);
     }
 }

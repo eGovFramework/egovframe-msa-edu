@@ -1,10 +1,22 @@
 package org.egovframe.cloud.portalservice.api.attachment;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.common.exception.BusinessMessageException;
-import org.egovframe.cloud.portalservice.api.attachment.dto.*;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentBase64RequestDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentDownloadResponseDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentEditorResponseDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentFileResponseDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentImageResponseDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentResponseDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentTempSaveRequestDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentUpdateRequestDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentUploadRequestDto;
 import org.egovframe.cloud.portalservice.service.attachment.AttachmentService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,14 +25,21 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * org.egovframe.cloud.portalservice.api.attachment.AttachmentApiController
@@ -39,6 +58,7 @@ import java.util.List;
  *  2021/07/14    shinmj  최초 생성
  * </pre>
  */
+@Tag(name = "Attachment API", description = "첨부파일 관리 API")
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -111,7 +131,7 @@ public class AttachmentApiController {
      * @return
      */
     @GetMapping(value = "/api/v1/images/{uniqueId}")
-    public ResponseEntity<byte[]> loadImagesByUniqueId(@PathVariable String uniqueId) {
+    public ResponseEntity<byte[]> loadImagesByUniqueId(@PathVariable("uniqueId") String uniqueId) {
         AttachmentImageResponseDto image = attachmentService.loadImageByUniqueId(uniqueId);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(image.getMimeType()))
@@ -127,7 +147,7 @@ public class AttachmentApiController {
      * @throws IOException
      */
     @GetMapping(value = "/api/v1/download/{uniqueId}")
-    public ResponseEntity<?> downloadFile(@PathVariable String uniqueId) {
+    public ResponseEntity<?> downloadFile(@PathVariable("uniqueId") String uniqueId) {
         AttachmentDownloadResponseDto downloadFile = attachmentService.downloadFile(uniqueId);
 
         String mimeType = null;
@@ -164,7 +184,7 @@ public class AttachmentApiController {
      * @return
      */
     @GetMapping(value = "/api/v1/attachments/{attachmentCode}")
-    public List<AttachmentResponseDto> findByCode(@PathVariable String attachmentCode) {
+    public List<AttachmentResponseDto> findByCode(@PathVariable("attachmentCode") String attachmentCode) {
         return attachmentService.findByCode(attachmentCode);
     }
 
@@ -176,7 +196,7 @@ public class AttachmentApiController {
      * @throws IOException
      */
     @GetMapping(value = "/api/v1/attachments/download/{uniqueId}")
-    public ResponseEntity<?> downloadAttachment(@PathVariable String uniqueId) {
+    public ResponseEntity<?> downloadAttachment(@PathVariable("uniqueId") String uniqueId) {
         AttachmentDownloadResponseDto downloadFile = attachmentService.downloadAttachment(uniqueId);
 
         String mimeType = null;
@@ -229,7 +249,7 @@ public class AttachmentApiController {
      * @return
      */
     @PutMapping(value = "/api/v1/attachments/file/{attachmentCode}")
-    public String saveByCode(@PathVariable String attachmentCode, @RequestBody List<AttachmentTempSaveRequestDto> saveRequestDtoList) {
+    public String saveByCode(@PathVariable("attachmentCode") String attachmentCode, @RequestBody List<AttachmentTempSaveRequestDto> saveRequestDtoList) {
         return attachmentService.saveByCode(attachmentCode, saveRequestDtoList);
     }
 
@@ -253,7 +273,7 @@ public class AttachmentApiController {
      * @return
      */
     @PutMapping(value = "/api/v1/attachments/{uniqueId}/{isDelete}")
-    public String toggleDelete(@PathVariable String uniqueId, @PathVariable boolean isDelete) {
+    public String toggleDelete(@PathVariable("uniqueId") String uniqueId, @PathVariable("isDelete") boolean isDelete) {
         return attachmentService.toggleDelete(uniqueId, isDelete);
     }
 
@@ -266,7 +286,7 @@ public class AttachmentApiController {
      */
     @DeleteMapping(value = "/api/v1/attachments/{uniqueId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable String uniqueId) {
+    public void delete(@PathVariable("uniqueId") String uniqueId) {
         attachmentService.delete(uniqueId);
     }
 
@@ -298,7 +318,7 @@ public class AttachmentApiController {
      * @return
      */
     @PutMapping(value = "/api/v1/attachments/upload/{attachmentCode}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public String uploadAndUpdate(@PathVariable String attachmentCode,
+    public String uploadAndUpdate(@PathVariable("attachmentCode") String attachmentCode,
                                   @RequestPart(value = "files", required = true) List<MultipartFile> files,
                                   @RequestPart(value = "info", required = true) AttachmentUploadRequestDto uploadRequestDto,
                                   @RequestPart(value = "list", required = false) List<AttachmentUpdateRequestDto> saveRequestDtoList) {
@@ -315,7 +335,7 @@ public class AttachmentApiController {
      * @return
      */
     @PutMapping(value = "/api/v1/attachments/{attachmentCode}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public String update(@PathVariable String attachmentCode,
+    public String update(@PathVariable("attachmentCode") String attachmentCode,
                          @RequestPart(value = "info") AttachmentUploadRequestDto uploadRequestDto,
                          @RequestPart(value = "list") List<AttachmentUpdateRequestDto> updateRequestDtoList){
 
@@ -333,7 +353,7 @@ public class AttachmentApiController {
      * @return
      */
     @PutMapping("/api/v1/attachments/{attachmentCode}/info")
-    public String updateEntity(@PathVariable String attachmentCode,
+    public String updateEntity(@PathVariable("attachmentCode") String attachmentCode,
                                @RequestBody AttachmentUploadRequestDto uploadRequestDto) {
         return attachmentService.updateEntity(attachmentCode, uploadRequestDto);
     }
@@ -347,7 +367,7 @@ public class AttachmentApiController {
      */
     @DeleteMapping("/api/v1/attachments/{attachmentCode}/children")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAllEmptyEntity(@PathVariable String attachmentCode) {
+    public void deleteAllEmptyEntity(@PathVariable("attachmentCode") String attachmentCode) {
         attachmentService.deleteAllEmptyEntity(attachmentCode);
     }
 }

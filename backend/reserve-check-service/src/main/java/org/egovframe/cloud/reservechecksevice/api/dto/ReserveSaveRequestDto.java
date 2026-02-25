@@ -2,14 +2,16 @@ package org.egovframe.cloud.reservechecksevice.api.dto;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-import javax.validation.constraints.NotNull;
+
+import org.egovframe.cloud.reservechecksevice.domain.Reserve;
+import org.egovframe.cloud.reservechecksevice.validator.annotation.ReserveSaveValid;
+
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.egovframe.cloud.reservechecksevice.domain.Reserve;
-import org.egovframe.cloud.reservechecksevice.validator.annotation.ReserveSaveValid;
 
 /**
  * org.egovframe.cloud.reservechecksevice.api.dto.ReserveSaveRequestDto

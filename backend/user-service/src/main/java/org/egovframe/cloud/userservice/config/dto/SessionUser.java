@@ -1,9 +1,10 @@
 package org.egovframe.cloud.userservice.config.dto;
 
-import lombok.Getter;
+import java.io.Serializable;
+
 import org.egovframe.cloud.userservice.domain.user.User;
 
-import java.io.Serializable;
+import lombok.Getter;
 
 /**
  * org.egovframe.cloud.userservice.config.dto.SessionUser

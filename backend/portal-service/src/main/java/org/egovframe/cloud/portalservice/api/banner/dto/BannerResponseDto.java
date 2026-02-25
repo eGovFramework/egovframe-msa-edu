@@ -1,8 +1,9 @@
 package org.egovframe.cloud.portalservice.api.banner.dto;
 
+import org.egovframe.cloud.portalservice.domain.banner.Banner;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.egovframe.cloud.portalservice.domain.banner.Banner;
 
 /**
  * org.egovframe.cloud.portalservice.api.content.dto.BannerResponseDto

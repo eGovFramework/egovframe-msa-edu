@@ -1,16 +1,31 @@
 package org.egovframe.cloud.portalservice.api.code;
 
-import lombok.RequiredArgsConstructor;
-import org.egovframe.cloud.portalservice.api.code.dto.*;
+import java.util.List;
+
+import org.egovframe.cloud.portalservice.api.code.dto.CodeDetailListResponseDto;
+import org.egovframe.cloud.portalservice.api.code.dto.CodeDetailRequestDto;
+import org.egovframe.cloud.portalservice.api.code.dto.CodeDetailResponseDto;
+import org.egovframe.cloud.portalservice.api.code.dto.CodeDetailSaveRequestDto;
+import org.egovframe.cloud.portalservice.api.code.dto.CodeDetailUpdateRequestDto;
+import org.egovframe.cloud.portalservice.api.code.dto.CodeResponseDto;
 import org.egovframe.cloud.portalservice.domain.code.CodeRepository;
 import org.egovframe.cloud.portalservice.service.code.CodeDetailService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.portalservice.api.code.CodeApiController
@@ -29,6 +44,7 @@ import java.util.List;
  *  2021/07/12    jaeyeolkim  최초 생성
  * </pre>
  */
+@Tag(name = "Code Detail API", description = "공통코드 상세 관리 API")
 @RequiredArgsConstructor // final이 선언된 모든 필드를 인자값으로 하는 생성자를 대신 생성하여, 빈을 생성자로 주입받게 한다.
 @RestController
 public class CodeDetailApiController {
@@ -56,7 +72,7 @@ public class CodeDetailApiController {
      * @return
      */
     @GetMapping("/api/v1/code-details/{parentCodeId}/codes")
-    public List<CodeDetailResponseDto> findDetailsByParentCodeIdUseAt(@PathVariable String parentCodeId) {
+    public List<CodeDetailResponseDto> findDetailsByParentCodeIdUseAt(@PathVariable("parentCodeId") String parentCodeId) {
         return codeRepository.findDetailsByParentCodeIdUseAt(parentCodeId);
     }
 
@@ -68,7 +84,7 @@ public class CodeDetailApiController {
      * @return
      */
     @GetMapping("/api/v1/code-details/{parentCodeId}/codes/{codeId}")
-    public List<CodeDetailResponseDto> findDetailsUnionCodeIdByParentCodeId(@PathVariable String parentCodeId, @PathVariable String codeId) {
+    public List<CodeDetailResponseDto> findDetailsUnionCodeIdByParentCodeId(@PathVariable("parentCodeId") String parentCodeId, @PathVariable("codeId") String codeId) {
         return codeRepository.findDetailsUnionCodeIdByParentCodeId(parentCodeId, codeId);
     }
 
@@ -79,7 +95,7 @@ public class CodeDetailApiController {
      * @return
      */
     @GetMapping("/api/v1/code-details/{codeId}")
-    public CodeDetailResponseDto findByCodeId(@PathVariable String codeId) {
+    public CodeDetailResponseDto findByCodeId(@PathVariable("codeId") String codeId) {
         return codeDetailService.findByCodeId(codeId);
     }
 
@@ -90,7 +106,7 @@ public class CodeDetailApiController {
      * @return
      */
     @GetMapping("/api/v1/code-details/{codeId}/parent")
-    public CodeResponseDto findParentByCodeId(@PathVariable String codeId) {
+    public CodeResponseDto findParentByCodeId(@PathVariable("codeId") String codeId) {
         return codeRepository.findParentByCodeId(codeId);
     }
 
@@ -114,7 +130,7 @@ public class CodeDetailApiController {
      * @return
      */
     @PutMapping("/api/v1/code-details/{codeId}")
-    public String update(@PathVariable String codeId, @RequestBody CodeDetailUpdateRequestDto requestDto) {
+    public String update(@PathVariable("codeId") String codeId, @RequestBody CodeDetailUpdateRequestDto requestDto) {
         return codeDetailService.update(codeId, requestDto);
     }
 
@@ -126,7 +142,7 @@ public class CodeDetailApiController {
      * @return
      */
     @PutMapping("/api/v1/code-details/{codeId}/toggle-use")
-    public String updateUseAt(@PathVariable String codeId, @RequestParam boolean useAt) {
+    public String updateUseAt(@PathVariable("codeId") String codeId, @RequestParam boolean useAt) {
         return codeDetailService.updateUseAt(codeId, useAt);
     }
 
@@ -137,7 +153,7 @@ public class CodeDetailApiController {
      */
     @DeleteMapping("/api/v1/code-details/{codeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable String codeId) {
+    public void delete(@PathVariable("codeId") String codeId) {
         codeDetailService.delete(codeId);
     }
 

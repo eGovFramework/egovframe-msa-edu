@@ -1,6 +1,7 @@
 package org.egovframe.cloud.userservice.domain.user;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import lombok.RequiredArgsConstructor;
 
 /**

@@ -1,13 +1,14 @@
 package org.egovframe.cloud.boardservice.api.board.dto;
 
+import java.math.BigDecimal;
+
+import org.egovframe.cloud.boardservice.domain.board.Board;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.egovframe.cloud.boardservice.domain.board.Board;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 
 /**
  * org.egovframe.cloud.boardservice.api.board.dto.BoardSaveRequestDto

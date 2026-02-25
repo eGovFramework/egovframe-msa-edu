@@ -1,9 +1,10 @@
 package org.egovframe.cloud.portalservice.api.code.dto;
 
+import org.egovframe.cloud.common.dto.RequestDto;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.egovframe.cloud.common.dto.RequestDto;
 
 /**
  * org.egovframe.cloud.portalservice.api.code.dto.CodeDetailRequestDto

@@ -1,19 +1,22 @@
 package org.egovframe.cloud.portalservice.domain.message;
 
+import static com.querydsl.core.types.Projections.fields;
+import static org.egovframe.cloud.portalservice.domain.message.QMessage.message;
+import static org.springframework.util.StringUtils.hasLength;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.egovframe.cloud.portalservice.api.message.dto.MessageListResponseDto;
+
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import lombok.RequiredArgsConstructor;
-import org.egovframe.cloud.portalservice.api.message.dto.MessageListResponseDto;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.querydsl.core.types.Projections.fields;
-import static org.egovframe.cloud.portalservice.domain.message.QMessage.message;
-import static org.springframework.util.StringUtils.hasLength;
 
 /**
  * org.egovframe.cloud.portalservice.domain.code.CodeRepositoryImpl

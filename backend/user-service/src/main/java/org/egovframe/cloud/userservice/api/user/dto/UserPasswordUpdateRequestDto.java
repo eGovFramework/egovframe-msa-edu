@@ -1,9 +1,8 @@
 package org.egovframe.cloud.userservice.api.user.dto;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.Pattern;
 
 /**
  * org.egovframe.cloud.userservice.api.user.dto.UserPasswordUpdateRequestDto

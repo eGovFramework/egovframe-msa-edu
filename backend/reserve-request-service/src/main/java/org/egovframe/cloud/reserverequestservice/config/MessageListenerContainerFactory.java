@@ -1,13 +1,13 @@
 package org.egovframe.cloud.reserverequestservice.config;
 
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import lombok.NoArgsConstructor;
 
 /**
  * org.egovframe.cloud.reserverequestservice.config.MessageListenerContainerFactory

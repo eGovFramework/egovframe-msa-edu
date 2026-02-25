@@ -1,14 +1,13 @@
 package org.egovframe.cloud.reserverequestservice;
 
+import java.security.Security;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
-//import reactor.blockhound.BlockHound;
 
-import java.security.Security;
-
-@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.reactive", "org.egovframe.cloud.reserverequestservice"}) // org.egovframe.cloud.common package 포함하기 위해
+@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.reactive", "org.egovframe.cloud.reserverequestservice"})
 @EnableDiscoveryClient
 @SpringBootApplication
 public class ReserveRequestServiceApplication {

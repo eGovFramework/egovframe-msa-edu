@@ -1,12 +1,7 @@
 package org.egovframe.cloud.reservechecksevice.domain;
 
 import java.time.LocalDateTime;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.With;
+
 import org.egovframe.cloud.common.exception.BusinessMessageException;
 import org.egovframe.cloud.reactive.domain.BaseEntity;
 import org.egovframe.cloud.reservechecksevice.api.dto.ReserveUpdateRequestDto;
@@ -15,6 +10,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.With;
 
 /**
  * org.egovframe.cloud.reservechecksevice.domain.Reserve

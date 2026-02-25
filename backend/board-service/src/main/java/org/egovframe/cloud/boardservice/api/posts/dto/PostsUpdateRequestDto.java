@@ -1,12 +1,12 @@
 package org.egovframe.cloud.boardservice.api.posts.dto;
 
+import org.egovframe.cloud.boardservice.domain.posts.Posts;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.egovframe.cloud.boardservice.domain.posts.Posts;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * org.egovframe.cloud.boardservice.api.board.dto.PostsUpdateRequestDto

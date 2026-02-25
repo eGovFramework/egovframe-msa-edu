@@ -1,12 +1,14 @@
 package org.egovframe.cloud.userservice.api.user.dto;
 
-import com.querydsl.core.annotations.QueryProjection;
-import lombok.Getter;
+import java.time.LocalDateTime;
+
 import org.egovframe.cloud.common.domain.Role;
 import org.egovframe.cloud.userservice.domain.user.User;
 import org.egovframe.cloud.userservice.domain.user.UserStateCode;
 
-import java.time.LocalDateTime;
+import com.querydsl.core.annotations.QueryProjection;
+
+import lombok.Getter;
 
 /**
  * org.egovframe.cloud.userservice.api.user.dto.UserListResponseDto

@@ -1,10 +1,11 @@
 package org.egovframe.cloud.portalservice.api.banner.dto;
 
+import java.io.Serializable;
+
 import com.querydsl.core.annotations.QueryProjection;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
 
 /**
  * org.egovframe.cloud.portalservice.api.banner.dto.BannerImageResponseDto

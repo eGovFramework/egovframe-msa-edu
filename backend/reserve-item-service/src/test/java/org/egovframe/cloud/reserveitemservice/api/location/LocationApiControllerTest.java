@@ -1,6 +1,7 @@
 package org.egovframe.cloud.reserveitemservice.api.location;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.egovframe.cloud.reserveitemservice.api.location.dto.LocationSaveRequestDto;
 import org.egovframe.cloud.reserveitemservice.api.location.dto.LocationUpdateRequestDto;

@@ -6,58 +6,76 @@ spring:
     name: apigateway
   cloud:
     gateway:
-      routes:
-        - id: user-service
-          uri: lb://USER-SERVICE
-          predicates:
-            - Path=/user-service/**
-          filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
-        - id: portal-service
-          uri: lb://PORTAL-SERVICE
-          predicates:
-            - Path=/portal-service/**
-          filters:
-            - RewritePath=/portal-service/(?<segment>.*), /$\{segment}
-        - id: board-service
-          uri: lb://BOARD-SERVICE
-          predicates:
-            - Path=/board-service/**
-          filters:
-            - RewritePath=/board-service/(?<segment>.*), /$\{segment}
-        - id: reserve-item-service
-          uri: lb://RESERVE-ITEM-SERVICE
-          predicates:
-            - Path=/reserve-item-service/**
-          filters:
-            - RewritePath=/reserve-item-service/(?<segment>.*), /$\{segment}
-        - id: reserve-check-service
-          uri: lb://RESERVE-CHECK-SERVICE
-          predicates:
-            - Path=/reserve-check-service/**
-          filters:
-            - RewritePath=/reserve-check-service/(?<segment>.*), /$\{segment}
-        - id: reserve-request-service
-          uri: lb://RESERVE-REQUEST-SERVICE
-          predicates:
-            - Path=/reserve-request-service/**
-          filters:
-            - RewritePath=/reserve-request-service/(?<segment>.*), /$\{segment}
-        - id: openapi
-          uri: http://localhost:${server.port}
-          predicates:
-            - Path=/v3/api-docs/**
-          filters:
-            - RewritePath=/v3/api-docs/(?<segment>.*), /$\{segment}/v3/api-docs
-      default-filters:
-        - name: GlobalFilter
-          args:
-            preLogger: true
-            postLogger: true
-      discovery:
-        locator:
-          enabled: true
+      server:
+        webflux:
+          routes:
+            - id: user-service
+              uri: lb://USER-SERVICE
+              predicates:
+                - Path=/user-service/**
+              filters:
+                - RemoveRequestHeader=Cookie
+                - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - id: portal-service
+              uri: lb://PORTAL-SERVICE
+              predicates:
+                - Path=/portal-service/**
+              filters:
+                - RewritePath=/portal-service/(?<segment>.*), /$\{segment}
+            - id: board-service
+              uri: lb://BOARD-SERVICE
+              predicates:
+                - Path=/board-service/**
+              filters:
+                - RewritePath=/board-service/(?<segment>.*), /$\{segment}
+            - id: reserve-item-service
+              uri: lb://RESERVE-ITEM-SERVICE
+              predicates:
+                - Path=/reserve-item-service/**
+              filters:
+                - RewritePath=/reserve-item-service/(?<segment>.*), /$\{segment}
+            - id: reserve-check-service
+              uri: lb://RESERVE-CHECK-SERVICE
+              predicates:
+                - Path=/reserve-check-service/**
+              filters:
+                - RewritePath=/reserve-check-service/(?<segment>.*), /$\{segment}
+            - id: reserve-request-service
+              uri: lb://RESERVE-REQUEST-SERVICE
+              predicates:
+                - Path=/reserve-request-service/**
+              filters:
+                - RewritePath=/reserve-request-service/(?<segment>.*), /$\{segment}
+          default-filters:
+            - name: GlobalFilter
+              args:
+                preLogger: true
+                postLogger: true
+          discovery:
+            locator:
+              enabled: true
+
+# springdoc-openapi 설정
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    urls:
+      - name: user-service
+        url: /user-service/v3/api-docs
+      - name: board-service
+        url: /board-service/v3/api-docs
+      - name: portal-service
+        url: /portal-service/v3/api-docs
+      - name: reserve-item-service
+        url: /reserve-item-service/v3/api-docs
+      - name: reserve-check-service
+        url: /reserve-check-service/v3/api-docs
+      - name: reserve-request-service
+        url: /reserve-request-service/v3/api-docs
 
 # config server actuator
 management:

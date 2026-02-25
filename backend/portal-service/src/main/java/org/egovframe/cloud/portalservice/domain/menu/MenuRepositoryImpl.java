@@ -1,25 +1,21 @@
 package org.egovframe.cloud.portalservice.domain.menu;
 
-import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.dsl.CaseBuilder;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
-import org.egovframe.cloud.portalservice.api.menu.dto.MenuResponseDto;
-import org.egovframe.cloud.portalservice.api.menu.dto.MenuTreeResponseDto;
-import org.egovframe.cloud.portalservice.domain.board.QBoard;
-import org.egovframe.cloud.portalservice.domain.content.QContent;
-import org.egovframe.cloud.portalservice.domain.user.QUser;
-
-import java.util.List;
-
 import static com.querydsl.core.types.Projections.constructor;
 import static com.querydsl.core.types.Projections.fields;
 import static org.egovframe.cloud.portalservice.domain.board.QBoard.board;
 import static org.egovframe.cloud.portalservice.domain.content.QContent.content;
 import static org.egovframe.cloud.portalservice.domain.menu.QMenu.menu;
-import static org.egovframe.cloud.portalservice.domain.message.QMessage.message;
+
+import java.util.List;
+
+import org.egovframe.cloud.portalservice.api.menu.dto.MenuResponseDto;
+import org.egovframe.cloud.portalservice.api.menu.dto.MenuTreeResponseDto;
+
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.portalservice.domain.menu.MenuRepositoryImpl

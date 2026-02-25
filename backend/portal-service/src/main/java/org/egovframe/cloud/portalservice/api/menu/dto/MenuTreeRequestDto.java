@@ -1,16 +1,14 @@
 package org.egovframe.cloud.portalservice.api.menu.dto;
 
-import java.util.Objects;
 import java.util.Optional;
+
+import org.egovframe.cloud.portalservice.domain.menu.Menu;
+import org.egovframe.cloud.portalservice.domain.menu.Site;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.egovframe.cloud.portalservice.domain.menu.Menu;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import org.egovframe.cloud.portalservice.domain.menu.Site;
 
 /**
  * org.egovframe.cloud.portalservice.api.menu.dto.MenuTreeRequestDto

@@ -1,8 +1,6 @@
 package org.egovframe.cloud.portalservice.service.code;
 
-import lombok.RequiredArgsConstructor;
 import org.egovframe.cloud.common.exception.EntityNotFoundException;
-import org.egovframe.cloud.portalservice.api.code.dto.CodeDetailListResponseDto;
 import org.egovframe.cloud.portalservice.api.code.dto.CodeDetailResponseDto;
 import org.egovframe.cloud.portalservice.api.code.dto.CodeDetailSaveRequestDto;
 import org.egovframe.cloud.portalservice.api.code.dto.CodeDetailUpdateRequestDto;
@@ -11,9 +9,7 @@ import org.egovframe.cloud.portalservice.domain.code.CodeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.portalservice.service.code.CodeDetailService

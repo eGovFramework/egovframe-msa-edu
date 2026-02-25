@@ -1,11 +1,12 @@
 package org.egovframe.cloud.boardservice.api.comment.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.egovframe.cloud.boardservice.domain.comment.Comment;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import org.egovframe.cloud.boardservice.domain.comment.Comment;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * org.egovframe.cloud.boardservice.api.comment.dto.CommentResponseDto

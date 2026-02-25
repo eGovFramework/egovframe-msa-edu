@@ -1,6 +1,14 @@
 package org.egovframe.cloud.userservice.api.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.egovframe.cloud.common.domain.Role;
 import org.egovframe.cloud.userservice.api.user.dto.UserResponseDto;
 import org.egovframe.cloud.userservice.api.user.dto.UserSaveRequestDto;
@@ -10,7 +18,12 @@ import org.egovframe.cloud.userservice.domain.user.UserRepository;
 import org.egovframe.cloud.userservice.domain.user.UserStateCode;
 import org.egovframe.cloud.userservice.service.user.UserService;
 import org.json.JSONObject;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,9 +48,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.util.*;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

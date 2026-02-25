@@ -1,6 +1,7 @@
 package org.egovframe.cloud.userservice.api.role;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.userservice.api.role.dto.RoleListResponseDto;
 import org.egovframe.cloud.userservice.service.role.RoleService;
@@ -11,7 +12,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.userservice.api.role.RoleApiController
@@ -30,6 +32,7 @@ import java.util.List;
  *  2021/07/07    jooho       최초 생성
  * </pre>
  */
+@Tag(name = "Role API", description = "권한 관리 API")
 @RequiredArgsConstructor
 @RestController
 public class RoleApiController {

@@ -1,9 +1,9 @@
 package org.egovframe.cloud.portalservice.api.content.dto;
 
-import lombok.Getter;
 import org.egovframe.cloud.portalservice.domain.content.Content;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
 
 /**
  * org.egovframe.cloud.portalservice.api.content.dto.ContentSaveRequestDto

@@ -1,6 +1,9 @@
 package org.egovframe.cloud.userservice.service.role;
 
-import lombok.RequiredArgsConstructor;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.egovframe.cloud.common.service.AbstractService;
 import org.egovframe.cloud.userservice.api.role.dto.RoleAuthorizationDeleteRequestDto;
 import org.egovframe.cloud.userservice.api.role.dto.RoleAuthorizationListRequestDto;
@@ -16,9 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.userservice.service.role.RoleAuthorizationService

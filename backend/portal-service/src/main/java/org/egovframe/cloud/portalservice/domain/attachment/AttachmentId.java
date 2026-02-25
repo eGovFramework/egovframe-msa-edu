@@ -1,12 +1,12 @@
 package org.egovframe.cloud.portalservice.domain.attachment;
 
-import lombok.Builder;
-import lombok.Data;
-
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.UUID;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import lombok.Builder;
+import lombok.Data;
 
 /**
  * org.egovframe.cloud.portalservice.domain.attachment.AttachmentId

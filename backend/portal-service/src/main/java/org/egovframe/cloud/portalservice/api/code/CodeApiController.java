@@ -1,6 +1,7 @@
 package org.egovframe.cloud.portalservice.api.code;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.portalservice.api.code.dto.CodeListResponseDto;
 import org.egovframe.cloud.portalservice.api.code.dto.CodeResponseDto;
@@ -11,10 +12,19 @@ import org.egovframe.cloud.portalservice.service.code.CodeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.portalservice.api.code.CodeApiController
@@ -33,6 +43,7 @@ import java.util.List;
  *  2021/07/12    jaeyeolkim  최초 생성
  * </pre>
  */
+@Tag(name = "Code API", description = "공통코드 관리 API")
 @RequiredArgsConstructor // final이 선언된 모든 필드를 인자값으로 하는 생성자를 대신 생성하여, 빈을 생성자로 주입받게 한다.
 @RestController
 public class CodeApiController {
@@ -69,7 +80,7 @@ public class CodeApiController {
      * @return
      */
     @GetMapping("/api/v1/codes/{codeId}")
-    public CodeResponseDto findByCodeId(@PathVariable String codeId) {
+    public CodeResponseDto findByCodeId(@PathVariable("codeId") String codeId) {
         return codeService.findByCodeId(codeId);
     }
 
@@ -93,7 +104,7 @@ public class CodeApiController {
      * @return
      */
     @PutMapping("/api/v1/codes/{codeId}")
-    public String update(@PathVariable String codeId, @RequestBody CodeUpdateRequestDto requestDto) {
+    public String update(@PathVariable("codeId") String codeId, @RequestBody CodeUpdateRequestDto requestDto) {
         return codeService.update(codeId, requestDto);
     }
 
@@ -105,7 +116,7 @@ public class CodeApiController {
      * @return
      */
     @PutMapping("/api/v1/codes/{codeId}/toggle-use")
-    public String updateUseAt(@PathVariable String codeId, @RequestParam boolean useAt) {
+    public String updateUseAt(@PathVariable("codeId") String codeId, @RequestParam boolean useAt) {
         return codeService.updateUseAt(codeId, useAt);
     }
 
@@ -116,7 +127,7 @@ public class CodeApiController {
      */
     @DeleteMapping("/api/v1/codes/{codeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable String codeId) {
+    public void delete(@PathVariable("codeId") String codeId) {
         codeService.delete(codeId);
     }
 

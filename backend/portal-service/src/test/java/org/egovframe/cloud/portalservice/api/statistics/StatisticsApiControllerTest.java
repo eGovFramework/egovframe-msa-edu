@@ -5,15 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.egovframe.cloud.portalservice.api.statistics.dto.StatisticsResponseDto;
 import org.egovframe.cloud.portalservice.domain.statistics.Statistics;
 import org.egovframe.cloud.portalservice.domain.statistics.StatisticsRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;

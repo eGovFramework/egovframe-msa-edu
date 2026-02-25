@@ -1,6 +1,5 @@
 package org.egovframe.cloud.portalservice.config;
 
-import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.common.util.MessageUtil;
 import org.egovframe.cloud.portalservice.utils.FileStorageUtils;
 import org.egovframe.cloud.portalservice.utils.FtpStorageUtils;
@@ -9,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * org.egovframe.cloud.portalservice.config.StorageConfig

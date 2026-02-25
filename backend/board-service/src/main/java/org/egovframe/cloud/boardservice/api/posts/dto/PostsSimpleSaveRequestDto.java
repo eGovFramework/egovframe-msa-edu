@@ -1,13 +1,13 @@
 package org.egovframe.cloud.boardservice.api.posts.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.egovframe.cloud.boardservice.domain.board.Board;
 import org.egovframe.cloud.boardservice.domain.posts.Posts;
 import org.egovframe.cloud.boardservice.domain.posts.PostsId;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * org.egovframe.cloud.boardservice.api.posts.dto.PostsSimpleSaveRequestDto

@@ -1,6 +1,7 @@
 package org.egovframe.cloud.boardservice.service.board;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.egovframe.cloud.boardservice.api.board.dto.BoardListResponseDto;
 import org.egovframe.cloud.boardservice.api.board.dto.BoardResponseDto;
 import org.egovframe.cloud.boardservice.api.board.dto.BoardSaveRequestDto;
@@ -15,7 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.boardservice.service.board.BoardService

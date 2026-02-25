@@ -1,8 +1,9 @@
 package org.egovframe.cloud.reservechecksevice.api.dto;
 
+import org.egovframe.cloud.common.dto.RequestDto;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.egovframe.cloud.common.dto.RequestDto;
 
 /**
  * org.egovframe.cloud.reservechecksevice.api.dto.ReserveRequestDto

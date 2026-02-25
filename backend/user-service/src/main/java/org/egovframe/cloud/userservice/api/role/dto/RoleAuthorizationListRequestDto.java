@@ -1,9 +1,9 @@
 package org.egovframe.cloud.userservice.api.role.dto;
 
-import lombok.Getter;
 import org.egovframe.cloud.common.dto.RequestDto;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
 
 /**
  * org.egovframe.cloud.userservice.api.role.dto.RoleAuthorizationListRequestDto

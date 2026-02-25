@@ -1,14 +1,14 @@
 plugins {
+    id 'org.springframework.boot' version '3.5.6'
     id 'org.sonarqube' version '3.5.0.2730'
     id 'io.spring.dependency-management' version '1.1.0'
-    // querydsl
-    id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
     id 'java'
 }
 
 group = 'org.egovframe.cloud'
-version = '1.0.0'
-sourceCompatibility = '1.8'
+version = '5.0.0'
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 configurations {
     compileOnly {
@@ -22,16 +22,18 @@ repositories {
 }
 
 ext {
-    set('egovframeBootVersion', '4.3.0')
-    set('springCloudVersion', '2021.0.9')
-    set('log4j2.version', '2.23.1') // log4j 보안 패치
+    set('egovframeBootParentVersion', '5.0.0')
+    set('springCloudVersion', '2025.0.0')
 }
 
 dependencies {
-//    implementation files('../module-common/build/libs/module-common-4.3.0-plain.jar') // @ComponentScan(basePackages={"org.egovframe.cloud"}) 추가해야 적용된다
-    implementation 'org.egovframe.cloud:module-common:4.3.0'
-    implementation('org.egovframe.rte:org.egovframe.rte.fdl.cmmn:4.3.0') {
-        exclude group: 'org.egovframe.rte', module: 'org.egovframe.rte.fdl.logging'
+//    implementation files('../module-common/build/libs/egovframe-cloud-module-common.jar') // @ComponentScan(basePackages={"org.egovframe.cloud"}) 추가해야 적용된다
+    implementation("org.egovframe.cloud:egovframe-cloud-module-common:${egovframeBootParentVersion}") {
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
+    implementation("org.egovframe.rte:egovframe-rte-fdl-cmmn:${egovframeBootParentVersion}") {
+        exclude group: 'org.egovframe.rte', module: 'egovframe-rte-fdl-logging'
+        exclude group: 'commons-logging', module: 'commons-logging'
     }
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -39,17 +41,22 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-    implementation 'org.springframework.cloud:spring-cloud-starter-config'    // config
+    implementation 'org.springframework.cloud:spring-cloud-starter-config' // config
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // config
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'  // bus
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
-    implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
+
+    // Micrometer Tracing (Spring Cloud 2025.0.0에서 Sleuth 대체)
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+    implementation 'io.zipkin.reporter2:zipkin-reporter'
+    implementation 'io.zipkin.zipkin2:zipkin'
+
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'        // logstash logback
-    implementation 'commons-io:commons-io:2.13.0'
-    implementation 'commons-net:commons-net:3.9.0' // FTPClient
-    implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation 'commons-io:commons-io:2.18.0'
+    implementation 'commons-net:commons-net:3.11.1' // FTPClient
+    implementation 'com.mysql:mysql-connector-j:8.4.0'
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
     //messaging
@@ -57,11 +64,13 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
 
     // querydsl
-    implementation 'com.querydsl:querydsl-jpa:5.0.0'
-    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0'
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 
     // openapi docs
-    implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.7.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     // lombok
@@ -71,16 +80,17 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'com.h2database:h2'
-    testImplementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1' // 테스트시에만 출력
+    testImplementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    
+
     implementation 'org.javassist:javassist:3.29.2-GA'
     implementation 'org.webjars:webjars-locator-core:0.53'
+    implementation 'com.google.guava:guava:32.1.3-jre'
 }
 
 dependencyManagement {
     imports {
-        mavenBom "org.egovframe.boot:org.egovframe.boot.starter.parent:${egovframeBootVersion}" // egovframe Boot Parent 설정
+        mavenBom "org.egovframe.boot:egovframe-boot-starter-parent:${egovframeBootParentVersion}" // egovframe Boot Parent 설정
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
@@ -91,18 +101,20 @@ test {
 
 // querydsl 추가 시작
 def querydslDir = "$buildDir/generated/querydsl"
-querydsl {
-    jpa = true
-    querydslSourcesDir = querydslDir
+
+// annotationProcessor가 querydslDir에 직접 생성하도록 설정
+tasks.withType(JavaCompile) {
+    options.generatedSourceOutputDirectory = file(querydslDir)
+    // Spring Cache의 SpEL 표현식에서 파라미터 이름을 사용하기 위해 필요
+    options.compilerArgs.add('-parameters')
 }
+
 sourceSets {
-    main.java.srcDir querydslDir
+    main.java.srcDirs += [querydslDir]
 }
-configurations {
-    querydsl.extendsFrom compileClasspath
-}
-compileQuerydsl {
-    options.annotationProcessorPath = configurations.querydsl
-    options.compilerArgs << '-Aquerydsl.generatedAnnotationClass=javax.annotation.Generated'
+
+// clean 시 querydsl 디렉토리도 삭제
+clean {
+    delete file(querydslDir)
 }
 // querydsl 추가 끝

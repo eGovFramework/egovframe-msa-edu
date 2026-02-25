@@ -1,11 +1,11 @@
 package org.egovframe.cloud.boardservice.api.posts.dto;
 
-import lombok.Getter;
 import org.egovframe.cloud.boardservice.domain.board.Board;
 import org.egovframe.cloud.boardservice.domain.posts.Posts;
 import org.egovframe.cloud.boardservice.domain.posts.PostsId;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
 
 /**
  * org.egovframe.cloud.boardservice.api.posts.dto.PostsDeleteRequestDto

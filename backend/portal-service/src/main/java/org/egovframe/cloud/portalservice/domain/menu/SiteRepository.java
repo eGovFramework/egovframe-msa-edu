@@ -1,9 +1,9 @@
 package org.egovframe.cloud.portalservice.domain.menu;
 
+import java.util.List;
+
 import org.egovframe.cloud.portalservice.api.menu.dto.SiteResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 
 /**
  * org.egovframe.cloud.portalservice.domain.menu.SiteRepository

@@ -1,9 +1,9 @@
 package org.egovframe.cloud.portalservice.domain.statistics;
 
+import java.util.List;
+
 import org.egovframe.cloud.portalservice.api.statistics.dto.StatisticsResponseDto;
 import org.egovframe.cloud.portalservice.api.statistics.dto.StatisticsYMRequestDto;
-
-import java.util.List;
 
 /**
  * org.egovframe.cloud.portalservice.domain.statistics.StatisticsRepositoryCustom

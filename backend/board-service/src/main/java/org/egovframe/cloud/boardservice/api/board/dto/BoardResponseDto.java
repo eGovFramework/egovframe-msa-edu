@@ -1,15 +1,17 @@
 package org.egovframe.cloud.boardservice.api.board.dto;
 
-import com.querydsl.core.annotations.QueryProjection;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.egovframe.cloud.boardservice.api.posts.dto.PostsSimpleResponseDto;
-import org.egovframe.cloud.boardservice.domain.board.Board;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.egovframe.cloud.boardservice.api.posts.dto.PostsSimpleResponseDto;
+import org.egovframe.cloud.boardservice.domain.board.Board;
+
+import com.querydsl.core.annotations.QueryProjection;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * org.egovframe.cloud.boardservice.api.board.dto.BoardResponseDto

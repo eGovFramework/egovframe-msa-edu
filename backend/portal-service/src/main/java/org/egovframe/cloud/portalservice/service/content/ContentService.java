@@ -1,6 +1,5 @@
 package org.egovframe.cloud.portalservice.service.content;
 
-import lombok.RequiredArgsConstructor;
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.common.exception.EntityNotFoundException;
 import org.egovframe.cloud.common.service.AbstractService;
@@ -14,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.portalservice.service.content.ContentService

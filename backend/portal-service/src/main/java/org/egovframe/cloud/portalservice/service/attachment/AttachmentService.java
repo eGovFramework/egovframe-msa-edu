@@ -1,15 +1,26 @@
 package org.egovframe.cloud.portalservice.service.attachment;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.RandomStringUtils;
+import java.util.stream.Collectors;
+
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.common.exception.BusinessMessageException;
 import org.egovframe.cloud.common.exception.EntityNotFoundException;
 import org.egovframe.cloud.common.service.AbstractService;
-import org.egovframe.cloud.portalservice.api.attachment.dto.*;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentBase64RequestDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentDownloadResponseDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentEditorResponseDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentFileResponseDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentImageResponseDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentResponseDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentTempSaveRequestDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentUpdateRequestDto;
+import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentUploadRequestDto;
 import org.egovframe.cloud.portalservice.domain.attachment.Attachment;
 import org.egovframe.cloud.portalservice.domain.attachment.AttachmentId;
 import org.egovframe.cloud.portalservice.domain.attachment.AttachmentRepository;
@@ -23,12 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * org.egovframe.cloud.portalservice.service.attachment.AttachmentService
@@ -150,12 +157,7 @@ public class AttachmentService extends AbstractService {
      */
     @Transactional(readOnly = true)
     public AttachmentImageResponseDto loadImage(String imagename) {
-    	if(FILE_SEPARATOR.equals("\\")) {//윈도우기반 자바시스템일 때 하이픈 character to be escaped is missing 에러방지
-    		imagename = imagename.replaceAll(EDITOR_FILE_SEPARATOR, "\\\\"); //getFileSystem().getPath에서 디스크의 경로를 사용할 때 
-    	} else { //리눅스 또는 맥 기반 자바시스템 경로일 때(아래)
-    		imagename = imagename.replaceAll(EDITOR_FILE_SEPARATOR, FILE_SEPARATOR);
-    	}
-        return storageUtils.loadImage(imagename);
+        return storageUtils.loadImage(imagename.replaceAll(EDITOR_FILE_SEPARATOR, FILE_SEPARATOR));
     }
 
     /**

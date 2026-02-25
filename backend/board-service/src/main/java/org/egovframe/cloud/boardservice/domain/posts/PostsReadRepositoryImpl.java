@@ -2,6 +2,7 @@ package org.egovframe.cloud.boardservice.domain.posts;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import lombok.RequiredArgsConstructor;
 
 /**

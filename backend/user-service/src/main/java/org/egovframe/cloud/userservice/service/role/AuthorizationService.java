@@ -1,7 +1,9 @@
 package org.egovframe.cloud.userservice.service.role;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.egovframe.cloud.common.config.GlobalConstant;
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.common.exception.EntityNotFoundException;
@@ -24,10 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.AntPathMatcher;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * org.egovframe.cloud.userservice.service.role.AuthorizationService
@@ -95,7 +96,7 @@ public class AuthorizationService extends AbstractService {
      * @param roles 권한 목록
      * @return List<AuthorizationListResponseDto> 인가 목록
      */
-    @Cacheable(value = "cache-user-authorization-by-roles", key = "#roles")
+    @Cacheable(value = "cache-user-authorization-by-roles", key = "#p0")
     public List<AuthorizationListResponseDto> findByRoles(List<String> roles) {
         return authorizationRepository.findByRoles(roles);
     }
@@ -126,7 +127,7 @@ public class AuthorizationService extends AbstractService {
      * @param userId 사용자 id
      * @return List<AuthorizationListResponseDto> 인가 목록
      */
-    @Cacheable(value = "cache-user-authorization-by-userid", key = "#roles")
+    @Cacheable(value = "cache-user-authorization-by-userid", key = "#p0")
     public List<AuthorizationListResponseDto> findByUserId(String userId) {
         return authorizationRepository.findByUserId(userId);
     }

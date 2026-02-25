@@ -1,9 +1,11 @@
 package org.egovframe.cloud.portalservice.api.privacy.dto;
 
+import org.egovframe.cloud.portalservice.domain.privacy.Privacy;
+
 import com.querydsl.core.annotations.QueryProjection;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.egovframe.cloud.portalservice.domain.privacy.Privacy;
 
 /**
  * org.egovframe.cloud.portalservice.api.privacy.dto.PrivacyResponseDto

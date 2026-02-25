@@ -1,12 +1,5 @@
 package org.egovframe.cloud.userservice.domain.role;
 
-import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.CaseBuilder;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.JPQLQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.userservice.api.role.dto.QRoleAuthorizationListResponseDto;
 import org.egovframe.cloud.userservice.api.role.dto.RoleAuthorizationListRequestDto;
@@ -14,6 +7,15 @@ import org.egovframe.cloud.userservice.api.role.dto.RoleAuthorizationListRespons
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.userservice.domain.role.RoleAuthorizationRepositoryImpl

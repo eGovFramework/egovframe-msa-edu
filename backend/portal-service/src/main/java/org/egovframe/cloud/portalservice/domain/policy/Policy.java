@@ -1,13 +1,18 @@
 package org.egovframe.cloud.portalservice.domain.policy;
 
+import java.time.ZonedDateTime;
+
+import org.egovframe.cloud.servlet.domain.BaseEntity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.egovframe.cloud.servlet.domain.BaseEntity;
-
-import javax.persistence.*;
-import java.time.ZonedDateTime;
 
 /**
  * org.egovframe.cloud.portalservice.domain.policy.Policy

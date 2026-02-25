@@ -1,9 +1,9 @@
 # docker run --name egov-config -d -p 8888:8888 -e profile=prod -e ENCRYPT_KEY=??? egovframework/egov-config
-# base image - openjdk8
-FROM openjdk:8-jre-alpine
+# base image - openjdk17
+FROM eclipse-temurin:17-jre-jammy
 
 # curl(healthcheck)
-RUN apk --no-cache add curl
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 # directory 생성
 RUN mkdir -p /usr/app/config
 # jar 파일이 복사되는 위치

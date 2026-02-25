@@ -1,7 +1,13 @@
 package org.egovframe.cloud.userservice.api.role;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.egovframe.cloud.userservice.api.role.dto.AuthorizationUpdateRequestDto;
 import org.egovframe.cloud.userservice.domain.role.Authorization;
 import org.egovframe.cloud.userservice.domain.role.AuthorizationRepository;
@@ -31,9 +37,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.util.*;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * org.egovframe.cloud.userservice.api.role.AuthorizationApiControllerTest

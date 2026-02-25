@@ -2,16 +2,18 @@ package org.egovframe.cloud.reserveitemservice.api.reserveItem.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
+
+import org.egovframe.cloud.reserveitemservice.domain.reserveItem.ReserveItem;
+import org.egovframe.cloud.reserveitemservice.validator.annotation.ReserveItemSaveValid;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.egovframe.cloud.reserveitemservice.domain.reserveItem.ReserveItem;
-import org.egovframe.cloud.reserveitemservice.validator.annotation.ReserveItemSaveValid;
 
 /**
  * org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemUpdateRequestDto

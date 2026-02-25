@@ -1,11 +1,23 @@
 package org.egovframe.cloud.portalservice.utils;
 
-import java.nio.file.Files;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
+import static org.egovframe.cloud.portalservice.utils.PortalUtils.getPhysicalFileName;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.SocketException;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.List;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -18,25 +30,12 @@ import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentImageRespo
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.SocketException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-
-import static org.egovframe.cloud.portalservice.utils.PortalUtils.getPhysicalFileName;
+import jakarta.annotation.PostConstruct;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * org.egovframe.cloud.portalservice.utils.FtpStorageUtils
@@ -57,7 +56,6 @@ import static org.egovframe.cloud.portalservice.utils.PortalUtils.getPhysicalFil
  */
 @Slf4j
 @Getter
-@Component
 public class FtpStorageUtils implements StorageUtils {
 
     private final Environment environment;

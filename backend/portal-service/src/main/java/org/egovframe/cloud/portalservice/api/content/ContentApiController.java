@@ -1,6 +1,5 @@
 package org.egovframe.cloud.portalservice.api.content;
 
-import lombok.RequiredArgsConstructor;
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.portalservice.api.content.dto.ContentListResponseDto;
 import org.egovframe.cloud.portalservice.api.content.dto.ContentResponseDto;
@@ -12,9 +11,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.portalservice.api.content.ContentApiController
@@ -33,6 +41,7 @@ import javax.validation.Valid;
  *  2021/07/22    jooho       최초 생성
  * </pre>
  */
+@Tag(name = "Content API", description = "컨텐츠 관리 API")
 @RequiredArgsConstructor
 @RestController
 public class ContentApiController {
@@ -62,7 +71,7 @@ public class ContentApiController {
      * @return ContentResponseDto 컨텐츠 상세 응답 DTO
      */
     @GetMapping("/api/v1/contents/{contentNo}")
-    public ContentResponseDto findById(@PathVariable Integer contentNo) {
+    public ContentResponseDto findById(@PathVariable("contentNo") Integer contentNo) {
         return contentService.findById(contentNo);
     }
 
@@ -86,7 +95,7 @@ public class ContentApiController {
      * @return ContentResponseDto 컨텐츠 상세 응답 DTO
      */
     @PutMapping("/api/v1/contents/{contentNo}")
-    public ContentResponseDto update(@PathVariable Integer contentNo, @RequestBody @Valid ContentUpdateRequestDto requestDto) {
+    public ContentResponseDto update(@PathVariable("contentNo") Integer contentNo, @RequestBody @Valid ContentUpdateRequestDto requestDto) {
         return contentService.update(contentNo, requestDto);
     }
 
@@ -97,7 +106,7 @@ public class ContentApiController {
      */
     @DeleteMapping("/api/v1/contents/{contentNo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer contentNo) {
+    public void delete(@PathVariable("contentNo") Integer contentNo) {
         contentService.delete(contentNo);
     }
 

@@ -1,12 +1,12 @@
 package org.egovframe.cloud.userservice.api.role.dto;
 
+import org.egovframe.cloud.userservice.domain.role.RoleAuthorization;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.egovframe.cloud.userservice.domain.role.RoleAuthorization;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * org.egovframe.cloud.userservice.api.role.dto.RoleAuthorizationDeleteRequestDto

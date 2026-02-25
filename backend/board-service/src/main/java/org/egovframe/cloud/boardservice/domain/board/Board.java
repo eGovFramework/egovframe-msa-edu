@@ -1,17 +1,24 @@
 package org.egovframe.cloud.boardservice.domain.board;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.egovframe.cloud.boardservice.domain.posts.Posts;
+import org.egovframe.cloud.servlet.domain.BaseEntity;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.egovframe.cloud.boardservice.domain.posts.Posts;
-import org.egovframe.cloud.servlet.domain.BaseEntity;
-
-import javax.persistence.*;
-import java.math.BigDecimal;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * org.egovframe.cloud.boardservice.domain.board.Board

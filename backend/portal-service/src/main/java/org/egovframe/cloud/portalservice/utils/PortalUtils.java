@@ -2,9 +2,8 @@ package org.egovframe.cloud.portalservice.utils;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.UUID;
-import org.apache.commons.io.FilenameUtils;
+
 import org.springframework.util.StringUtils;
 
 

@@ -1,12 +1,17 @@
 package org.egovframe.cloud.reserverequestservice.api.dto;
 
-import java.util.UUID;
-import lombok.*;
-import org.egovframe.cloud.reserverequestservice.domain.Reserve;
-
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.egovframe.cloud.reserverequestservice.domain.Reserve;
 import org.egovframe.cloud.reserverequestservice.domain.ReserveStatus;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * org.egovframe.cloud.reserverequestservice.api.dto.ReserveSaveRequestDto

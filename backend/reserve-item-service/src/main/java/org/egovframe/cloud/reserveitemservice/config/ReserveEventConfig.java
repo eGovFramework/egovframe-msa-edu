@@ -2,12 +2,14 @@ package org.egovframe.cloud.reserveitemservice.config;
 
 
 import java.util.function.Consumer;
-import lombok.extern.slf4j.Slf4j;
+
 import org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveSaveRequestDto;
 import org.egovframe.cloud.reserveitemservice.service.reserveItem.ReserveItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * org.egovframe.cloud.reserverequestservice.config.ReserveEventConfig

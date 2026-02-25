@@ -2,7 +2,6 @@ package org.egovframe.cloud.portalservice.api.code.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.egovframe.cloud.portalservice.domain.code.Code;
 
 /**
  * org.egovframe.cloud.portalservice.api.code.dto.CodeListResponseDto

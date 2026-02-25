@@ -1,5 +1,5 @@
-# openjdk8 base image
-FROM openjdk:8-jre-alpine
+# openjdk17 base image
+FROM eclipse-temurin:17-jre-jammy
 
 # jar 파일이 복사되는 위치
 ENV APP_HOME=/usr/app/
@@ -10,4 +10,4 @@ COPY build/libs/*.jar app.jar
 # application port
 #EXPOSE 8000
 # 실행 (application-cf.yml 프로필이 기본값)
-CMD ["java", "-Dspring.profiles.active=${profile:cf}", "-jar", "app.jar"]
+CMD ["java", "-Dspring.profiles.active=${profile:default}", "-jar", "app.jar"]

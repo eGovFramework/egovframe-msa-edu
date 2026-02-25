@@ -1,18 +1,24 @@
 package org.egovframe.cloud.userservice.domain.user;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import static jakarta.persistence.GenerationType.IDENTITY;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+
 import org.egovframe.cloud.common.domain.Role;
 import org.egovframe.cloud.servlet.domain.BaseEntity;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-
-import static javax.persistence.GenerationType.IDENTITY;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * org.egovframe.cloud.userservice.domain.user.User

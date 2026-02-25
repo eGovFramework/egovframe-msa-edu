@@ -1,10 +1,9 @@
 package org.egovframe.cloud.portalservice.domain.message;
 
-import com.querydsl.core.Tuple;
-import org.egovframe.cloud.portalservice.api.message.dto.MessageListResponseDto;
-
 import java.util.List;
 import java.util.Map;
+
+import org.egovframe.cloud.portalservice.api.message.dto.MessageListResponseDto;
 
 /**
  * org.egovframe.cloud.portalservice.domain.message.CodeRepositoryCustom

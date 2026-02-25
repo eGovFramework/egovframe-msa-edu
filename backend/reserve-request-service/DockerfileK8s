@@ -1,4 +1,4 @@
-FROM openjdk:8-jre-alpine
+FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app/
 COPY build/libs/*.jar app.jar
 CMD ["java", "-Dlogstash.url=logstash.default.svc.cluster.local:8088", "-jar", "app.jar"]

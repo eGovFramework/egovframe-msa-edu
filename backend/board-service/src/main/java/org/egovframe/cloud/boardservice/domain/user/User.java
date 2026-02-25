@@ -1,13 +1,14 @@
 package org.egovframe.cloud.boardservice.domain.user;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.io.Serializable;
+
 import org.egovframe.cloud.servlet.domain.BaseEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.io.Serializable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * org.egovframe.cloud.boardservice.domain.user.User

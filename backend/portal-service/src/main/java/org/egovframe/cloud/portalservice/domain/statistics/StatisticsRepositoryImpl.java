@@ -1,12 +1,6 @@
 package org.egovframe.cloud.portalservice.domain.statistics;
 
-import com.querydsl.core.Tuple;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
-import org.egovframe.cloud.portalservice.api.statistics.dto.StatisticsResponseDto;
-import org.egovframe.cloud.portalservice.api.statistics.dto.StatisticsYMRequestDto;
-import org.springframework.stereotype.Repository;
+import static org.egovframe.cloud.portalservice.domain.statistics.QStatistics.statistics;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -14,7 +8,15 @@ import java.time.YearMonth;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.egovframe.cloud.portalservice.domain.statistics.QStatistics.statistics;
+import org.egovframe.cloud.portalservice.api.statistics.dto.StatisticsResponseDto;
+import org.egovframe.cloud.portalservice.api.statistics.dto.StatisticsYMRequestDto;
+import org.springframework.stereotype.Repository;
+
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.portalservice.domain.statistics.StatisticsRepositoryImpl

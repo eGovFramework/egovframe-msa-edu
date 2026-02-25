@@ -1,11 +1,13 @@
 package org.egovframe.cloud.reserveitemservice.api.reserveItem.dto;
 
 import java.util.Objects;
+
+import org.egovframe.cloud.common.dto.RequestDto;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.egovframe.cloud.common.dto.RequestDto;
 
 /**
  * org.egovframe.cloud.reserveitemservice.api.reserveItem.dto.ReserveItemRequestDto

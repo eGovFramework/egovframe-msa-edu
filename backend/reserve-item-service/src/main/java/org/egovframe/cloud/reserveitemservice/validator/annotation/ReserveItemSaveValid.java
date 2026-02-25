@@ -4,9 +4,11 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import javax.validation.Constraint;
-import javax.validation.Payload;
+
 import org.egovframe.cloud.reserveitemservice.validator.ReserveItemSaveValidator;
+
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
 /**
  * org.egovframe.cloud.reserveitemservice.validator.annotation.ReserveItemSaveValid

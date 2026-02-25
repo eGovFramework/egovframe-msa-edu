@@ -1,8 +1,9 @@
 package org.egovframe.cloud.userservice.api.role.dto;
 
+import org.egovframe.cloud.userservice.domain.role.RoleAuthorization;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.egovframe.cloud.userservice.domain.role.RoleAuthorization;
 
 /**
  * org.egovframe.cloud.userservice.api.role.dto.RoleAuthorizationResponseDto

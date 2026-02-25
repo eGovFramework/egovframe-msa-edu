@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 
 /**
  * org.egovframe.cloud.boardservice.BoardServiceApplication
@@ -22,7 +23,10 @@ import org.springframework.context.annotation.ComponentScan;
  *  2021/07/28    jooho       최초 생성
  * </pre>
  */
-@ComponentScan(basePackages={"org.egovframe.cloud.common", "org.egovframe.cloud.servlet", "org.egovframe.cloud.boardservice"}) // org.egovframe.cloud.common package 포함하기 위해
+@ComponentScan(
+	basePackages = {"org.egovframe.cloud.common", "org.egovframe.cloud.servlet", "org.egovframe.cloud.boardservice"},
+	excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = org.egovframe.cloud.servlet.config.JpaConfig.class)
+) // org.egovframe.cloud.common package 포함하기 위해
 @EntityScan({"org.egovframe.cloud.servlet.domain", "org.egovframe.cloud.boardservice.domain"})
 @SpringBootApplication
 public class BoardServiceApplication {

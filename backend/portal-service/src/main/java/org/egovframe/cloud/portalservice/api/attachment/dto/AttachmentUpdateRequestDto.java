@@ -1,6 +1,9 @@
 package org.egovframe.cloud.portalservice.api.attachment.dto;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentUpdateRequestDto

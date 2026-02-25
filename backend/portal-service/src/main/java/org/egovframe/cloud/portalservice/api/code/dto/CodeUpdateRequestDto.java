@@ -1,11 +1,11 @@
 package org.egovframe.cloud.portalservice.api.code.dto;
 
+import org.egovframe.cloud.portalservice.domain.code.Code;
+
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.egovframe.cloud.portalservice.domain.code.Code;
-
-import javax.validation.constraints.NotBlank;
 
 /**
  * org.egovframe.cloud.portalservice.api.code.dto.CodeUpdateRequestDto

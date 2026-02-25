@@ -1,16 +1,17 @@
 package org.egovframe.cloud.portalservice.domain.attachment;
 
 import java.util.Objects;
+
+import org.egovframe.cloud.servlet.domain.BaseEntity;
+import org.springframework.util.StringUtils;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.egovframe.cloud.servlet.domain.BaseEntity;
-
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import org.springframework.util.StringUtils;
 
 /**
  * org.egovframe.cloud.portalservice.domain.attachment.Attachment

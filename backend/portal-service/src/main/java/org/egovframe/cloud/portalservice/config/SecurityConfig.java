@@ -1,12 +1,16 @@
 package org.egovframe.cloud.portalservice.config;
 
-import lombok.RequiredArgsConstructor;
 import org.egovframe.cloud.servlet.config.AuthenticationFilter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.portalservice.config.SecurityConfig
@@ -27,28 +31,30 @@ import org.springframework.security.config.http.SessionCreationPolicy;
  * </pre>
  */
 @RequiredArgsConstructor
+@Configuration
 @EnableWebSecurity // Spring Security 설정들을 활성화시켜 준다
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
     @Value("${token.secret}")
     private String TOKEN_SECRET;
+    private final AuthenticationConfiguration authConfig;
 
     /**
      * 스프링 시큐리티 설정
      *
      * @param http
+     * @return SecurityFilterChain
      * @throws Exception
      */
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .headers().frameOptions().disable()
-            .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 사용하기 때문에 세션은 비활성화
-            .and()
+                .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilter(getAuthenticationFilter());
+
+        return http.build();
     }
 
     /**
@@ -59,7 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * @throws Exception
      */
     private AuthenticationFilter getAuthenticationFilter() throws Exception {
-        return new AuthenticationFilter(authenticationManager(), TOKEN_SECRET);
+        return new AuthenticationFilter(authConfig.getAuthenticationManager(), TOKEN_SECRET);
     }
 
 }

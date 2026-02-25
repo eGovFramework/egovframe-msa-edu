@@ -1,10 +1,10 @@
 package org.egovframe.cloud.portalservice.api.privacy.dto;
 
-import lombok.Getter;
 import org.egovframe.cloud.portalservice.domain.privacy.Privacy;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 
 /**
  * org.egovframe.cloud.portalservice.api.privacy.dto.PrivacySaveRequestDto

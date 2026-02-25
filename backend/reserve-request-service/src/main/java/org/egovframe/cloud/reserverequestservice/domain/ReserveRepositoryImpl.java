@@ -1,13 +1,13 @@
 package org.egovframe.cloud.reserverequestservice.domain;
 
-import static org.springframework.data.relational.core.query.Criteria.*;
+import static org.springframework.data.relational.core.query.Criteria.where;
 
 import java.time.LocalDateTime;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.relational.core.query.Query;
 
+import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 /**

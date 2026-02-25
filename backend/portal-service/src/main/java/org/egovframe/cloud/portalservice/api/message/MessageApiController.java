@@ -1,6 +1,9 @@
 package org.egovframe.cloud.portalservice.api.message;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.egovframe.cloud.portalservice.api.message.dto.MessageListResponseDto;
 import org.egovframe.cloud.portalservice.config.MessageSourceFiles;
 import org.egovframe.cloud.portalservice.domain.message.MessageRepository;
@@ -9,9 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.portalservice.api.message.MessageApiController
@@ -30,6 +32,7 @@ import java.util.Map;
  *  2021/07/22    jaeyeolkim  최초 생성
  * </pre>
  */
+@Tag(name = "Message API", description = "메시지 관리 API")
 @RequiredArgsConstructor // final이 선언된 모든 필드를 인자값으로 하는 생성자를 대신 생성하여, 빈을 생성자로 주입받게 한다.
 @RestController
 public class MessageApiController {
@@ -46,7 +49,7 @@ public class MessageApiController {
      * @deprecated Map 형태 반환을 기본으로 한다. 이 API는 사용하지 않는다.
      */
     @GetMapping("/api/v1/messages/{lang}/list-type")
-    public List<MessageListResponseDto> findAllMessages(@PathVariable String lang) {
+    public List<MessageListResponseDto> findAllMessages(@PathVariable("lang") String lang) {
         return messageRepository.findAllMessages(lang);
     }
 
@@ -57,12 +60,12 @@ public class MessageApiController {
      * @return
      */
     @GetMapping("/api/v1/messages/{lang}")
-    public Map<String, String> findAllMessagesMap(@PathVariable String lang) {
+    public Map<String, String> findAllMessagesMap(@PathVariable("lang") String lang) {
         return messageRepository.findAllMessagesMap(lang);
     }
 
     @GetMapping("/api/v1/messages/{code}/{lang}")
-    public String getMessage(@PathVariable String code, @PathVariable String lang) {
+    public String getMessage(@PathVariable("code") String code, @PathVariable("lang") String lang) {
         Locale locale = "en".equals(lang)? Locale.ENGLISH : Locale.KOREAN;
         return messageSource.getMessage(code, null, locale);
     }

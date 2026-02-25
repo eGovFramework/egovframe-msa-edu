@@ -1,6 +1,7 @@
 package org.egovframe.cloud.userservice.api.role.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,14 +1,14 @@
 package org.egovframe.cloud.boardservice.domain.posts;
 
+import java.util.List;
+import java.util.Map;
+
 import org.egovframe.cloud.boardservice.api.posts.dto.PostsListResponseDto;
 import org.egovframe.cloud.boardservice.api.posts.dto.PostsResponseDto;
 import org.egovframe.cloud.boardservice.api.posts.dto.PostsSimpleResponseDto;
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * org.egovframe.cloud.boardservice.domain.posts.PostsRepositoryCustom

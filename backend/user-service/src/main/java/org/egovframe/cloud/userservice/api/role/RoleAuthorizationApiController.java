@@ -1,6 +1,7 @@
 package org.egovframe.cloud.userservice.api.role;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.egovframe.cloud.userservice.api.role.dto.RoleAuthorizationDeleteRequestDto;
 import org.egovframe.cloud.userservice.api.role.dto.RoleAuthorizationListRequestDto;
 import org.egovframe.cloud.userservice.api.role.dto.RoleAuthorizationListResponseDto;
@@ -9,10 +10,16 @@ import org.egovframe.cloud.userservice.service.role.RoleAuthorizationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.userservice.api.role.RoleAuthorizationApiController
@@ -31,6 +38,7 @@ import java.util.List;
  *  2021/07/12    jooho       최초 생성
  * </pre>
  */
+@Tag(name = "Role-Authorization API", description = "권한인가 관리 API")
 @RequiredArgsConstructor
 @RestController
 public class RoleAuthorizationApiController {

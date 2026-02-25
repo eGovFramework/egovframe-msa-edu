@@ -1,12 +1,13 @@
 package org.egovframe.cloud.portalservice.api.attachment.dto;
 
+import java.time.LocalDateTime;
+
+import org.egovframe.cloud.portalservice.domain.attachment.Attachment;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.egovframe.cloud.portalservice.domain.attachment.Attachment;
-
-import java.time.LocalDateTime;
 
 /**
  * org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentResponseDto

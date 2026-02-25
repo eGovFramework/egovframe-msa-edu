@@ -1,9 +1,5 @@
 package org.egovframe.cloud.reserveitemservice.api.location;
 
-import io.swagger.v3.oas.annotations.Operation;
-import javax.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.reserveitemservice.api.location.dto.LocationResponseDto;
 import org.egovframe.cloud.reserveitemservice.api.location.dto.LocationSaveRequestDto;
@@ -21,6 +17,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -42,6 +44,7 @@ import reactor.core.publisher.Mono;
  *  2021/09/06    shinmj      최초 생성
  * </pre>
  */
+@Tag(name = "Location API", description = "예약 지역 관리 API")
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -74,7 +77,7 @@ public class LocationApiController {
      */
     @GetMapping("/api/v1/locations/{locationId}")
     @ResponseStatus(HttpStatus.OK)
-    public Mono<LocationResponseDto> findById(@PathVariable Long locationId) {
+    public Mono<LocationResponseDto> findById(@PathVariable("locationId") Long locationId) {
         return locationService.findById(locationId);
     }
 
@@ -111,7 +114,7 @@ public class LocationApiController {
      */
     @PutMapping("/api/v1/locations/{locationId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> update(@PathVariable Long locationId, @Valid @RequestBody LocationUpdateRequestDto updateRequestDto) {
+    public Mono<Void> update(@PathVariable("locationId") Long locationId, @Valid @RequestBody LocationUpdateRequestDto updateRequestDto) {
         return locationService.update(locationId, updateRequestDto);
     }
 
@@ -123,7 +126,7 @@ public class LocationApiController {
      */
     @DeleteMapping("/api/v1/locations/{locationId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> delete(@PathVariable Long locationId) {
+    public Mono<Void> delete(@PathVariable("locationId") Long locationId) {
         return locationService.delete(locationId);
     }
 
@@ -136,7 +139,7 @@ public class LocationApiController {
      */
     @PutMapping("/api/v1/locations/{locationId}/{isUse}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> updateIsUse(@PathVariable Long locationId, @PathVariable Boolean isUse) {
+    public Mono<Void> updateIsUse(@PathVariable("locationId") Long locationId, @PathVariable("isUse") Boolean isUse) {
         return locationService.updateIsUse(locationId, isUse);
     }
 }

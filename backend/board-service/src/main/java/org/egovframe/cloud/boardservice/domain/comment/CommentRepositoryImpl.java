@@ -1,13 +1,13 @@
 package org.egovframe.cloud.boardservice.domain.comment;
 
-import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Path;
-import com.querydsl.core.types.SubQueryExpression;
-import com.querydsl.core.types.dsl.*;
-import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.querydsl.sql.SQLQueryFactory;
-import lombok.RequiredArgsConstructor;
+import static org.egovframe.cloud.boardservice.domain.comment.QComment.comment;
+import static org.egovframe.cloud.boardservice.domain.user.QUser.user;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.egovframe.cloud.boardservice.api.comment.dto.CommentListResponseDto;
 import org.egovframe.cloud.boardservice.api.comment.dto.QCommentListResponseDto;
 import org.egovframe.cloud.boardservice.domain.user.QUser;
@@ -15,13 +15,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Path;
+import com.querydsl.core.types.SubQueryExpression;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberPath;
+import com.querydsl.core.types.dsl.StringPath;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.sql.SQLQueryFactory;
 
-import static org.egovframe.cloud.boardservice.domain.comment.QComment.comment;
-import static org.egovframe.cloud.boardservice.domain.user.QUser.user;
+import lombok.RequiredArgsConstructor;
 
 /**
  * org.egovframe.cloud.boardservice.domain.comment.CommentRepositoryImpl
@@ -182,7 +188,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .orderBy(boardNoPath.asc(), postsNoPath.asc(), groupNoPath.asc(), sortSeqPath.asc())
                 .fetch();
 
-        Page<CommentListResponseDto> page = new PageImpl<>(comments, pageable, groupElements == null ? 0 : groupElements);
+        Page<CommentListResponseDto> page = new PageImpl<CommentListResponseDto>(comments, pageable, groupElements == null ? 0 : groupElements);
 
         // 페이지 인터페이스와 동일한 속성의 맵 리턴
         Map<String, Object> result = new HashMap<>();

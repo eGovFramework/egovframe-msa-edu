@@ -1,11 +1,11 @@
 package org.egovframe.cloud.userservice.domain.role;
 
+import java.util.List;
+
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.userservice.api.role.dto.AuthorizationListResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 /**
  * org.egovframe.cloud.userservice.domain.role.AuthorizationRepositoryCustom

@@ -1,21 +1,21 @@
 package org.egovframe.cloud.portalservice.domain.policy;
 
-import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.extern.slf4j.Slf4j;
+import static com.querydsl.core.types.Projections.constructor;
+import static org.egovframe.cloud.portalservice.domain.policy.QPolicy.policy;
+import static org.springframework.util.StringUtils.hasLength;
+
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.portalservice.api.policy.dto.PolicyResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import javax.persistence.EntityManager;
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import static com.querydsl.core.types.Projections.*;
-import static com.querydsl.core.types.Projections.fields;
-import static org.egovframe.cloud.portalservice.domain.policy.QPolicy.policy;
-import static org.springframework.util.StringUtils.hasLength;
+import jakarta.persistence.EntityManager;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * org.egovframe.cloud.portalservice.domain.policy.PolicyRepositoryImpl

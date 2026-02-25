@@ -1,10 +1,11 @@
 package org.egovframe.cloud.portalservice.api.menu.dto;
 
+import org.egovframe.cloud.portalservice.domain.menu.Menu;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.egovframe.cloud.portalservice.domain.menu.Menu;
 
 /**
  * org.egovframe.cloud.portalservice.api.menu.dto.MenuResponseDto

@@ -1,13 +1,15 @@
 package org.egovframe.cloud.userservice.api;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Locale;
+
 import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Locale;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * org.egovframe.cloud.userservice.api.MessageSourceApiController
@@ -29,11 +31,12 @@ import java.util.Locale;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
+@Tag(name = "MessageSource API", description = "MessageSource 관리 API")
 public class MessageSourceApiController {
     private final MessageSource messageSource;
 
     @GetMapping("/api/v1/messages/{code}/{lang}")
-    public String getMessage(@PathVariable String code, @PathVariable String lang) {
+    public String getMessage(@PathVariable("code") String code, @PathVariable("lang") String lang) {
         Locale locale = "en".equals(lang)? Locale.ENGLISH : Locale.KOREAN;
         String message = messageSource.getMessage(code, null, locale);
         log.info("code={}, lang={}, message={}", code, lang, message);

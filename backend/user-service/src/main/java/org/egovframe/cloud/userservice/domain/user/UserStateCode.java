@@ -1,9 +1,9 @@
 package org.egovframe.cloud.userservice.domain.user;
 
+import java.util.Arrays;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.util.Arrays;
 
 /**
  * org.egovframe.cloud.userservice.domain.user.UserStateCode

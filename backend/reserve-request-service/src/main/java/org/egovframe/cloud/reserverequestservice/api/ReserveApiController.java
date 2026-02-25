@@ -1,7 +1,7 @@
 package org.egovframe.cloud.reserverequestservice.api;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.time.Duration;
+
 import org.egovframe.cloud.reserverequestservice.api.dto.ReserveResponseDto;
 import org.egovframe.cloud.reserverequestservice.api.dto.ReserveSaveRequestDto;
 import org.egovframe.cloud.reserverequestservice.config.MessageListenerContainerFactory;
@@ -13,14 +13,19 @@ import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.codec.ServerSentEvent;
-import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.FluxSink;
-import reactor.core.publisher.Mono;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * org.egovframe.cloud.reserverequestservice.api.ReserveApiController
@@ -39,6 +44,7 @@ import java.time.LocalDateTime;
  *  2021/09/16    shinmj       최초 생성
  * </pre>
  */
+@Tag(name = "Reserve Request API", description = "예약 신청 관리 API")
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -101,7 +107,7 @@ public class ReserveApiController {
      */
     @CrossOrigin()
     @GetMapping(value = "/api/v1/requests/direct/{reserveId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> receiveReservationResult(@PathVariable String reserveId) {
+    public Flux<String> receiveReservationResult(@PathVariable("reserveId") String reserveId) {
         MessageListenerContainer mlc = messageListenerContainerFactory.createMessageListenerContainer(reserveId);
         Flux<String> f = Flux.create(emitter -> {
 

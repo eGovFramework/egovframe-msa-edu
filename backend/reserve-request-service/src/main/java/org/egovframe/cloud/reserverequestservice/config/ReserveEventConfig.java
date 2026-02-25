@@ -1,6 +1,7 @@
 package org.egovframe.cloud.reserverequestservice.config;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.function.Consumer;
+
 import org.egovframe.cloud.common.config.GlobalConstant;
 import org.egovframe.cloud.reserverequestservice.domain.ReserveStatus;
 import org.egovframe.cloud.reserverequestservice.service.ReserveService;
@@ -12,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 
-import java.util.function.Consumer;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * org.egovframe.cloud.reserverequestservice.config.ReserveEventConfig

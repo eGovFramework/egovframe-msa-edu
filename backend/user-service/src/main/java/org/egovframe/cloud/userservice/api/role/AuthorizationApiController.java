@@ -1,7 +1,8 @@
 package org.egovframe.cloud.userservice.api.role;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.userservice.api.role.dto.AuthorizationListResponseDto;
 import org.egovframe.cloud.userservice.api.role.dto.AuthorizationResponseDto;
@@ -16,11 +17,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.List;
-import java.util.stream.Collectors;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * org.egovframe.cloud.userservice.api.role.AuthorizationApiController
@@ -40,6 +50,7 @@ import java.util.stream.Collectors;
  *  2021/07/19    jaeyeolkim  최초 생성
  * </pre>
  */
+@Tag(name = "Authorization API", description = "인가 관리 API")
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -95,7 +106,7 @@ public class AuthorizationApiController {
      * @return AuthorizationResponseDto 인가 상세 응답 DTO
      */
     @GetMapping("/api/v1/authorizations/{authorizationNo}")
-    public AuthorizationResponseDto findById(@PathVariable Integer authorizationNo) {
+    public AuthorizationResponseDto findById(@PathVariable("authorizationNo") Integer authorizationNo) {
         return authorizationService.findById(authorizationNo);
     }
 
@@ -129,7 +140,7 @@ public class AuthorizationApiController {
      * @return AuthorizationResponseDto 인가 상세 응답 DTO
      */
     @PutMapping("/api/v1/authorizations/{authorizationNo}")
-    public AuthorizationResponseDto update(@PathVariable Integer authorizationNo, @RequestBody @Valid AuthorizationUpdateRequestDto requestDto) {
+    public AuthorizationResponseDto update(@PathVariable("authorizationNo") Integer authorizationNo, @RequestBody @Valid AuthorizationUpdateRequestDto requestDto) {
         return authorizationService.update(authorizationNo, requestDto);
     }
 
@@ -140,7 +151,7 @@ public class AuthorizationApiController {
      */
     @DeleteMapping("/api/v1/authorizations/{authorizationNo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer authorizationNo) {
+    public void delete(@PathVariable("authorizationNo") Integer authorizationNo) {
         authorizationService.delete(authorizationNo);
     }
 

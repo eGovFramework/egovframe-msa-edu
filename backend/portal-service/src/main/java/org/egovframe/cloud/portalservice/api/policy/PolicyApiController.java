@@ -1,7 +1,5 @@
 package org.egovframe.cloud.portalservice.api.policy;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.egovframe.cloud.common.dto.RequestDto;
 import org.egovframe.cloud.portalservice.api.policy.dto.PolicyResponseDto;
 import org.egovframe.cloud.portalservice.api.policy.dto.PolicySaveRequestDto;
@@ -10,7 +8,18 @@ import org.egovframe.cloud.portalservice.service.policy.PolicyService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * org.egovframe.cloud.portalservice.api.policy.PolicyApiController
@@ -29,6 +38,7 @@ import org.springframework.web.bind.annotation.*;
  *  2021/07/06    shinmj  최초 생성
  * </pre>
  */
+@Tag(name = "Policy API", description = "이용약관/개인정보수집동의 관리 API")
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -55,7 +65,7 @@ public class PolicyApiController {
      * @return
      */
     @GetMapping("/api/v1/policies/{id}")
-    public PolicyResponseDto findById(@PathVariable Long id) {
+    public PolicyResponseDto findById(@PathVariable("id") Long id) {
         return policyService.findById(id);
     }
 
@@ -66,7 +76,7 @@ public class PolicyApiController {
      * @return
      */
     @GetMapping("/api/v1/policies/latest/{type}")
-    public PolicyResponseDto searchOne(@PathVariable String type) {
+    public PolicyResponseDto searchOne(@PathVariable("type") String type) {
         return policyService.searchOne(type);
     }
 
@@ -90,7 +100,7 @@ public class PolicyApiController {
      * @return
      */
     @PutMapping("/api/v1/policies/{id}")
-    public Long update(@PathVariable Long id, @RequestBody PolicyUpdateRequestDto updateRequestDto) {
+    public Long update(@PathVariable("id") Long id, @RequestBody PolicyUpdateRequestDto updateRequestDto) {
         return policyService.update(id, updateRequestDto);
     }
 
@@ -102,7 +112,7 @@ public class PolicyApiController {
      * @return
      */
     @PutMapping("/api/v1/policies/{id}/{isUse}")
-    public Long updateIsUse(@PathVariable Long id, @PathVariable boolean isUse) {
+    public Long updateIsUse(@PathVariable("id") Long id, @PathVariable("isUse") boolean isUse) {
         return policyService.updateIsUse(id, isUse);
     }
 
@@ -113,7 +123,7 @@ public class PolicyApiController {
      */
     @DeleteMapping("/api/v1/policies/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable("id") Long id) {
         policyService.delete(id);
     }
 
