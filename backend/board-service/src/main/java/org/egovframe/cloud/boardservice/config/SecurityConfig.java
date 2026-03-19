@@ -1,5 +1,7 @@
 package org.egovframe.cloud.boardservice.config;
 
+import static org.egovframe.cloud.common.config.GlobalConstant.SECURITY_PERMITALL_ANTPATTERNS;
+
 import org.egovframe.cloud.servlet.config.AuthenticationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -52,6 +54,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth.requestMatchers(SECURITY_PERMITALL_ANTPATTERNS).permitAll())
                 .addFilter(getAuthenticationFilter());
 
         return http.build();

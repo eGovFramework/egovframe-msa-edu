@@ -16,7 +16,6 @@ configurations {
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven { url "https://maven.egovframe.go.kr/maven/" } // egovframe maven 원격 저장소
 }
@@ -78,6 +77,7 @@ dependencies {
     testImplementation 'io.r2dbc:r2dbc-h2'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.amqp:spring-rabbit-test'

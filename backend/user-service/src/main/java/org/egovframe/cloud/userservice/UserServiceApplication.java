@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
@@ -27,10 +26,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  *  2021/06/30    jaeyeolkim  최초 생성
  * </pre>
  */
-@ComponentScan(
-    basePackages = {"org.egovframe.cloud.common", "org.egovframe.cloud.servlet", "org.egovframe.cloud.userservice"},
-    excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = org.egovframe.cloud.servlet.config.JpaConfig.class)
-) // org.egovframe.cloud.common package 포함, module-common의 JPA package 제외
+@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.servlet", "org.egovframe.cloud.userservice"})
 @EntityScan({"org.egovframe.cloud.servlet.domain", "org.egovframe.cloud.userservice.domain"})
 @EnableDiscoveryClient
 @SpringBootApplication

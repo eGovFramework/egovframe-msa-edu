@@ -27,6 +27,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'    // bus
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'        // logstash logback
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 dependencyManagement {

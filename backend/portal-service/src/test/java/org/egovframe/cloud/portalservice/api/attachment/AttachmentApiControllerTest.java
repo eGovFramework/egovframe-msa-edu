@@ -2,6 +2,7 @@ package org.egovframe.cloud.portalservice.api.attachment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -12,7 +13,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.util.encoders.Base64;
 import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentBase64RequestDto;
 import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentEditorResponseDto;
@@ -48,10 +49,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

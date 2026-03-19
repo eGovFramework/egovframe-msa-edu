@@ -1,9 +1,6 @@
 package org.egovframe.cloud.portalservice.domain.code;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
-import org.egovframe.cloud.portalservice.api.code.dto.CodeDetailListResponseDto;
-import org.egovframe.cloud.portalservice.api.code.dto.CodeDetailRequestDto;
+import org.egovframe.cloud.portalservice.api.code.dto.*;
 import org.egovframe.cloud.portalservice.service.code.CodeDetailService;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -19,6 +16,9 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
  * org.egovframe.cloud.portalservice.api.code.CodeRepositoryTest

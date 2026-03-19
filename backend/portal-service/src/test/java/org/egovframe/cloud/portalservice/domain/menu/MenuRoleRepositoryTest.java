@@ -1,8 +1,6 @@
 package org.egovframe.cloud.portalservice.domain.menu;
 
-import java.util.List;
 import java.util.Optional;
-
 import org.assertj.core.api.Assertions;
 import org.egovframe.cloud.portalservice.api.menu.dto.MenuRoleResponseDto;
 import org.junit.jupiter.api.AfterEach;
@@ -16,6 +14,11 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableConfigurationProperties

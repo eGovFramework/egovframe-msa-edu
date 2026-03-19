@@ -33,7 +33,7 @@ import jakarta.persistence.EntityManagerFactory;
 public class BoardServiceJpaConfig {
 
     @Primary
-    @Bean(name = {"entityManagerFactory", "jpaSharedEM_entityManagerFactory"})
+    @Bean(name = "entityManagerFactory")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
             EntityManagerFactoryBuilder builder,
             DataSource dataSource) {
@@ -60,4 +60,3 @@ public class BoardServiceJpaConfig {
     }
 
 }
-

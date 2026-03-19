@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 
 /**
  * org.egovframe.cloud.userservice.UserApplication
@@ -26,10 +25,7 @@ import org.springframework.context.annotation.FilterType;
  *  2021/06/30    jaeyeolkim  최초 생성
  * </pre>
  */
-@ComponentScan(
-	basePackages = {"org.egovframe.cloud.common", "org.egovframe.cloud.servlet", "org.egovframe.cloud.portalservice"},
-	excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = org.egovframe.cloud.servlet.config.JpaConfig.class)
-) // org.egovframe.cloud.common package 포함하기 위해
+@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.servlet", "org.egovframe.cloud.portalservice"}) // org.egovframe.cloud.common package 포함하기 위해
 @EntityScan({"org.egovframe.cloud.servlet.domain", "org.egovframe.cloud.portalservice.domain"})
 @EnableFeignClients
 @EnableDiscoveryClient

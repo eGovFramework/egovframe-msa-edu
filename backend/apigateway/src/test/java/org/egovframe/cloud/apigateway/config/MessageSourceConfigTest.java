@@ -14,10 +14,10 @@ import org.springframework.test.context.ActiveProfiles;
 class MessageSourceConfigTest {
 
     @Autowired
-    TestRestTemplate restTemplate;
+    private TestRestTemplate restTemplate;
 
     @Test
-    public void 메세지를_외부위치에서_읽어온다() throws Exception {
+    void 메세지를_외부위치에서_읽어온다() {
         // when
         String message = restTemplate.getForObject("/api/v1/messages/common.login/ko", String.class);
 

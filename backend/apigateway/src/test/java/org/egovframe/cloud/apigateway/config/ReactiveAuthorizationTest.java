@@ -19,16 +19,17 @@ class ReactiveAuthorizationTest {
     private WebTestClient webTestClient;
 
     @Test
-    public void API요청시_토큰인증_만료된다() throws Exception {
-        // given
+    void API요청시_토큰인증_만료된다() {
+        // given - 만료된 JWT 토큰
         String notValidToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2NWEwMGY2NS04NDYwLTQ5YWYtOThlYy0wNDI5NzdlNTZmNGIiLCJhdXRob3JpdGllcyI6IlJPTEVfVVNFUiIsImV4cCI6MTYyNjc4MjQ0N30.qiScvtr1m88SHPLpHqcJiklXFyIQ7WBJdiFcdcb2B8YSWC59QcdRRgMtXDGSZnjBgF194W-GRBpHUta6VCkrfQ";
 
-        // when, then
+        // when & then
         webTestClient
                 .get()
                 .uri("/user-service/api/v1/users")
                 .header(HttpHeaders.AUTHORIZATION, notValidToken)
-                .exchange().expectStatus().isUnauthorized()
-        ;
+                .exchange()
+                .expectStatus()
+                .isUnauthorized();
     }
 }

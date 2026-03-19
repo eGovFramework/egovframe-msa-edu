@@ -24,7 +24,7 @@ eGovFrame Cloud 마이크로서비스 아키텍처에서 여러 서비스에서 
 - **예외 처리**: 비즈니스 예외 및 글로벌 예외 처리
 - **DTO**: 공통 요청/응답 DTO 및 메시지 객체
 - **유틸리티**: 로깅, 메시지 처리 유틸리티
-- **설정**: OpenAPI 문서화, 메시지 소스, 컨트롤러 어드바이스
+- **설정**: 메시지 소스, 컨트롤러 어드바이스, 전역 상수, LeaveaTrace
 
 ### Servlet 기반 (전통적인 Spring MVC)
 - **도메인 엔티티**: BaseEntity, BaseTimeEntity (JPA Auditing)
@@ -146,8 +146,9 @@ repositories {
 
 #### 설정
 - `ApiControllerAdvice`: 전역 컨트롤러 어드바이스
-- `OpenApiDocsConfig`: OpenAPI 문서 설정
 - `MessageSourceConfig`: 메시지 소스 설정
+- `LeaveaTraceConfig`: eGovFrame `LeaveaTrace` Bean 설정 (`EgovAbstractServiceImpl` 기반 서비스에서 사용)
+- `GlobalConstant`: 전역 상수/URI/보안 permitAll 패턴/Stream 바인딩 이름
 
 ### Servlet 모듈
 
@@ -172,9 +173,22 @@ repositories {
 
 #### 설정
 - `R2dbcConfig`: R2DBC 설정
-- `SecurityConfig`: Reactive Security 설정
 - `AuthenticationConverter`: 인증 정보 변환기
 - `UserAuditAware`: Reactive Auditing 사용자 정보 제공
+
+## ⚙️ 설정/연동 시 주의사항
+
+### 메시지 소스
+- `MessageSourceConfig`는 `messages.directory` 프로퍼티를 사용합니다.
+  - **default 프로필**: `messages.directory` 하위의 `/messages`를 파일 시스템(`file://.../messages`)로 로드
+  - **그 외 프로필**: `${messages.directory}/messages`를 그대로 basename으로 사용
+
+### JWT 토큰
+- **Reactive(WebFlux)**: `AuthenticationConverter`가 `token.secret` 프로퍼티를 사용합니다.
+- **Servlet(MVC)**: `AuthenticationFilter`는 생성자 인자로 토큰 시크릿을 받도록 되어 있어, 사용하는 서비스의 Security 설정에서 필터 등록 시 전달해야 합니다.
+
+### API 로그(사이트 구분)
+- `LogUtil.getSiteId()`는 요청 헤더 `X-Site-Id`(`GlobalConstant.HEADER_SITE_ID`) 값을 사용합니다.
 
 ## 🔨 빌드 및 배포
 

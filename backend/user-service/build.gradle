@@ -86,6 +86,7 @@ dependencies {
     testImplementation 'com.h2database:h2'
     testImplementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.springframework.security:spring-security-test'
 
     implementation 'org.javassist:javassist:3.29.2-GA'

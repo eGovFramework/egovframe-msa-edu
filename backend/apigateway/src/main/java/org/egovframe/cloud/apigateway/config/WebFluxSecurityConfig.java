@@ -37,7 +37,9 @@ public class WebFluxSecurityConfig {
             ReactiveAuthorization.AUTHORIZATION_URI, "/", "/csrf",
             "/user-service/login", "/?*-service/api/v1/messages/**", "/api/v1/messages/**",
             "/?*-service/actuator/?*", "/actuator/?*",
-            "/v3/api-docs/**", "/?*-service/v3/api-docs", "/?*-service/v3/api-docs/**", "/swagger*/**", "/webjars/**"
+            "/v3/api-docs/**", "/?*-service/v3/api-docs", "/?*-service/v3/api-docs/**",
+            "/swagger*/**", "/webjars/**",
+            "/?*-service/swagger-ui.html", "/?*-service/swagger-ui/**", "/?*-service/webjars/**"
     };
     private final static String USER_JOIN_ANTPATTERNS = "/user-service/api/v1/users";
 

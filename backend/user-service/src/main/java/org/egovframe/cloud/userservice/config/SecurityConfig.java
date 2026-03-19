@@ -2,8 +2,8 @@ package org.egovframe.cloud.userservice.config;
 
 import static org.egovframe.cloud.common.config.GlobalConstant.SECURITY_PERMITALL_ANTPATTERNS;
 
-import org.egovframe.cloud.userservice.service.role.AuthorizationService;
 import org.egovframe.cloud.userservice.service.user.UserService;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.expression.DefaultHttpSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class SecurityConfig {
     private final TokenProvider tokenProvider;
     private final UserService userService;
     private final AuthenticationConfiguration authConfig;
-    private final AuthorizationService authorizationService;
+    private final ApplicationContext applicationContext;
 
     /**
      * 스프링 시큐리티 설정
@@ -53,18 +54,33 @@ public class SecurityConfig {
      * @throws Exception
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, WebExpressionAuthorizationManager webExpressionAuthorizationManager) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 토큰 사용하기 때문에 세션은 비활성화
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(SECURITY_PERMITALL_ANTPATTERNS).permitAll()
-                        .anyRequest().access(new WebExpressionAuthorizationManager("@authorizationService.isAuthorization(request, authentication)"))) // 호출 시 권한 인가 데이터 확인
+                        .anyRequest().access(webExpressionAuthorizationManager)) // 호출 시 권한 인가 데이터 확인 (SpEL @authorizationService)
                 .addFilter(getAuthenticationFilter())
                 .logout(logout -> logout.logoutSuccessUrl("/"));
 
         return http.build();
+    }
+
+    /**
+     * WebExpressionAuthorizationManager 생성 시 ExpressionHandler에 ApplicationContext를 설정하여
+     * SpEL 표현식 내 @authorizationService 빈 참조가 동작하도록 한다.
+     * (Spring Security 6.x 기본 설정에서는 bean resolver가 등록되지 않아 EL1057E 발생)
+     */
+    @Bean
+    public WebExpressionAuthorizationManager webExpressionAuthorizationManager() {
+        DefaultHttpSecurityExpressionHandler expressionHandler = new DefaultHttpSecurityExpressionHandler();
+        expressionHandler.setApplicationContext(applicationContext);
+        WebExpressionAuthorizationManager authorization = new WebExpressionAuthorizationManager(
+                "@authorizationService.isAuthorization(request, authentication)");
+        authorization.setExpressionHandler(expressionHandler);
+        return authorization;
     }
 
     /**
