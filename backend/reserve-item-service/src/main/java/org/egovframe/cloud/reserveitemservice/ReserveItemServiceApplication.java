@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 import reactivefeign.spring.config.EnableReactiveFeignClients;
 
-@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.reactive", "org.egovframe.cloud.reserveitemservice"})
+@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.reserveitemservice"})
 @EnableDiscoveryClient
 @EnableReactiveFeignClients
 @SpringBootApplication

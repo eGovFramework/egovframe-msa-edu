@@ -7,11 +7,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.DefaultHttpSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
@@ -43,7 +44,6 @@ public class SecurityConfig {
 
     private final TokenProvider tokenProvider;
     private final UserService userService;
-    private final AuthenticationConfiguration authConfig;
     private final ApplicationContext applicationContext;
 
     /**
@@ -54,15 +54,22 @@ public class SecurityConfig {
      * @throws Exception
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, WebExpressionAuthorizationManager webExpressionAuthorizationManager) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+            WebExpressionAuthorizationManager webExpressionAuthorizationManager,
+            PasswordEncoder passwordEncoder) throws Exception {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userService);
+        authProvider.setPasswordEncoder(passwordEncoder);
+        AuthenticationManager authenticationManager = new ProviderManager(authProvider);
+
         http
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 토큰 사용하기 때문에 세션은 비활성화
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(SECURITY_PERMITALL_ANTPATTERNS).permitAll()
+                        .requestMatchers(AuthenticationFilter.LEGACY_LOGIN_PROCESSING_URL, AuthenticationFilter.LOGIN_PROCESSING_URL).permitAll()
                         .anyRequest().access(webExpressionAuthorizationManager)) // 호출 시 권한 인가 데이터 확인 (SpEL @authorizationService)
-                .addFilter(getAuthenticationFilter())
+                .addFilter(getAuthenticationFilter(authenticationManager))
                 .logout(logout -> logout.logoutSuccessUrl("/"));
 
         return http.build();
@@ -89,33 +96,8 @@ public class SecurityConfig {
      * @return AuthenticationFilter
      * @throws Exception
      */
-    private AuthenticationFilter getAuthenticationFilter() throws Exception {
-        return new AuthenticationFilter(authConfig.getAuthenticationManager(), tokenProvider, userService);
-    }
-
-    /**
-     * UserDetailsService 빈 등록
-     * 사용자 정보를 로드하는 서비스
-     *
-     * @return UserDetailsService
-     */
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return userService;
-    }
-
-    /**
-     * AuthenticationManager 빈 등록
-     * 인증 관련 - 로그인 처리
-     * DB 에서 조회하여 일치하는지 체크한다.
-     *
-     * @param authConfig
-     * @return AuthenticationManager
-     * @throws Exception
-     */
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
+    private AuthenticationFilter getAuthenticationFilter(AuthenticationManager authenticationManager) {
+        return new AuthenticationFilter(authenticationManager, tokenProvider, userService);
     }
 
 }

@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
 
-@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.reactive", "org.egovframe.cloud.reserverequestservice"})
+@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.reserverequestservice"})
 @EnableDiscoveryClient
 @SpringBootApplication
 public class ReserveRequestServiceApplication {

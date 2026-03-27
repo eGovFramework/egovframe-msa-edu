@@ -243,7 +243,7 @@ public class UserService extends AbstractService implements UserDetailsService {
     }
 
     /**
-     * SecurityConfig > configure > UserDetailsService 메소드에서 호출된다.
+     * Spring Security(DaoAuthenticationProvider) 에서 호출된다.
      * 스프링 시큐리티에 의해 로그인 대상 사용자의 패스워드와 권한 정보를 DB에서 조회하여 UserDetails 를 리턴한다.
      *
      * @param email

@@ -1,6 +1,11 @@
 package org.egovframe.cloud.apigateway.config;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+
+import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +23,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
@@ -55,6 +61,16 @@ public class ReactiveAuthorization implements ReactiveAuthorizationManager<Autho
     public static final String AUTHORIZATION_URI = "/user-service" + "/api/v1/authorizations/check";
     public static final String REFRESH_TOKEN_URI = "/user-service" + "/api/v1/users/token/refresh";
 
+    private SecretKey verificationKey() {
+        try {
+            byte[] digest = MessageDigest.getInstance("SHA-256")
+                    .digest(TOKEN_SECRET.getBytes(StandardCharsets.UTF_8));
+            return Keys.hmacShaKeyFor(digest);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     /**
      * 요청에 대한 사용자의 권한여부 체크하여 true/false 리턴한다 헤더에 토큰이 있으면 유효성을 체크한다.
      *
@@ -87,10 +103,14 @@ public class ReactiveAuthorization implements ReactiveAuthorizationManager<Autho
         ) {
             try {
                 authorizationHeader = authorizations.get(0);
-                String jwt = authorizationHeader.replace("Bearer", "");
-                String subject = Jwts.parser().setSigningKey(TOKEN_SECRET)
-                    .parseClaimsJws(jwt)
-                    .getBody()
+                String raw = authorizationHeader.trim();
+                String jwt = raw.startsWith("Bearer ") ? raw.substring(7).trim() : raw;
+                SecretKey key = verificationKey();
+                String subject = Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(jwt)
+                    .getPayload()
                     .getSubject();
 
                 // refresh token 요청 시 토큰 검증만 하고 인가 처리 한다.

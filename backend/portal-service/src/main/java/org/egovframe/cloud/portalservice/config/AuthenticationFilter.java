@@ -1,13 +1,15 @@
-package org.egovframe.cloud.servlet.config;
+package org.egovframe.cloud.portalservice.config;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
-import org.egovframe.cloud.common.util.JwtHs512Keys;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +21,7 @@ import org.springframework.util.ObjectUtils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -26,24 +29,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- * org.egovframe.cloud.servlet.config.AuthenticationFilter
- * <p>
- * Spring Security AuthenticationFilter 처리
- * 로그인 인증정보를 받아 토큰을 발급한다
- *
- * @author 표준프레임워크센터 jaeyeolkim
- * @version 1.0
- * @since 2021/06/30
- *
- * <pre>
- * ===== 개정이력(Modification Information) =====
- *
- *     수정일        수정자           수정내용
- *  ----------    --------    ---------------------------
- *  2021/06/30    jaeyeolkim  최초 생성
- * </pre>
- */
+/** SHA-256(UTF-8) 키 파생으로 오버라이드 */
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final String TOKEN_CLAIM_NAME = "authorities";
@@ -55,24 +41,29 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     private SecretKey verificationKey() {
-        return JwtHs512Keys.keyFromSecret(TOKEN_SECRET);
+        try {
+            byte[] digest = MessageDigest.getInstance("SHA-256")
+                .digest(TOKEN_SECRET.getBytes(StandardCharsets.UTF_8));
+            return Keys.hmacShaKeyFor(digest);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
-    /**
-     * Authorization 헤더 값(선택적 Bearer 접두)에서 JWT를 검증해 클레임을 반환한다.
-     */
     public Claims getClaimsFromToken(String token) {
-        String tokenContent = JwtHs512Keys.normalizeBearerToken(token);
+        String tokenContent = token.trim();
+        if (tokenContent.startsWith("Bearer ")) {
+            tokenContent = tokenContent.substring(7).trim();
+        }
         return Jwts.parser()
-                .verifyWith(verificationKey())
-                .build()
-                .parseSignedClaims(tokenContent)
-                .getPayload();
+            .verifyWith(verificationKey())
+            .build()
+            .parseSignedClaims(tokenContent)
+            .getPayload();
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String token = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
         if (ObjectUtils.isEmpty(token)) {
@@ -81,15 +72,14 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             Claims claims = getClaimsFromToken(token);
             String authoritiesStr = claims.get(TOKEN_CLAIM_NAME, String.class);
             List<SimpleGrantedAuthority> roleList = authoritiesStr == null ? List.of() :
-                    Arrays.stream(authoritiesStr.split(","))
-                            .map(String::trim)
-                            .filter(s -> !s.isEmpty())
-                            .map(SimpleGrantedAuthority::new)
-                            .collect(Collectors.toList());
+                Arrays.stream(authoritiesStr.split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
             String username = claims.getSubject();
             if (username != null) {
-                SecurityContextHolder.getContext().setAuthentication(
-                        new UsernamePasswordAuthenticationToken(username, null, roleList));
+                SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(username, null, roleList));
                 chain.doFilter(request, response);
             } else {
                 SecurityContextHolder.getContext().setAuthentication(null);

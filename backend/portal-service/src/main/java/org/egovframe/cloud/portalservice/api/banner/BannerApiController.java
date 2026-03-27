@@ -1,7 +1,9 @@
 package org.egovframe.cloud.portalservice.api.banner;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.egovframe.cloud.portalservice.api.banner.dto.BannerImageResponseDto;
 import org.egovframe.cloud.portalservice.api.banner.dto.BannerListResponseDto;
@@ -77,8 +79,15 @@ public class BannerApiController {
      * @return Map<String, List<BannerImageResponseDto>> 배너 유형 코드별 배너 이미지 응답 DTO Map
      */
     @GetMapping("/api/v1/{siteId}/banners/{bannerTypeCodes}/{bannerCount}")
-    public Map<String, List<BannerImageResponseDto>> findUseList(@PathVariable("bannerTypeCodes") Long siteId, @PathVariable("bannerCount") List<String> bannerTypeCodes, @PathVariable("bannerCount") Integer bannerCount) {
-        return bannerService.findList(bannerTypeCodes, bannerCount, true, siteId);
+    public Map<String, List<BannerImageResponseDto>> findUseList(
+            @PathVariable Long siteId,
+            @PathVariable String bannerTypeCodes,
+            @PathVariable Integer bannerCount) {
+        List<String> codes = Arrays.stream(bannerTypeCodes.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
+        return bannerService.findList(codes, bannerCount, true, siteId);
     }
 
     /**

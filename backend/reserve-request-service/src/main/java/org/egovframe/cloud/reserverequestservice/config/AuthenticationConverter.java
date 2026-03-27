@@ -1,12 +1,14 @@
-package org.egovframe.cloud.reactive.config;
+package org.egovframe.cloud.reserverequestservice.config;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
-import org.egovframe.cloud.common.util.JwtHs512Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,26 +22,10 @@ import org.springframework.web.server.ServerWebExchange;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import reactor.core.publisher.Mono;
 
-/**
- * org.egovframe.cloud.reactive.config.AuthenticationConverter
- * <p>
- * 요청을 authentiation으로 변환하는 클래스
- * AuthenticationWebFilter에서 호출됨.
- *
- * @author 표준프레임워크센터 shinmj
- * @version 1.0
- * @since 2021/09/06
- *
- * <pre>
- * ===== 개정이력(Modification Information) =====
- *
- *     수정일        수정자           수정내용
- *  ----------    --------    ---------------------------
- *  2021/09/06    shinmj       최초 생성
- * </pre>
- */
+/** SHA-256(UTF-8) 키 파생으로 오버라이드 */
 @Component
 public class AuthenticationConverter implements ServerAuthenticationConverter {
 
@@ -47,6 +33,27 @@ public class AuthenticationConverter implements ServerAuthenticationConverter {
 
     @Value("${token.secret}")
     private String TOKEN_SECRET;
+
+    private SecretKey verificationKey() {
+        try {
+            byte[] digest = MessageDigest.getInstance("SHA-256")
+                .digest(TOKEN_SECRET.getBytes(StandardCharsets.UTF_8));
+            return Keys.hmacShaKeyFor(digest);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private String normalizeBearerToken(String token) {
+        if (token == null) {
+            return "";
+        }
+        String t = token.trim();
+        if (t.startsWith("Bearer ")) {
+            return t.substring(7).trim();
+        }
+        return t;
+    }
 
     @Override
     public Mono<Authentication> convert(ServerWebExchange exchange) {
@@ -65,11 +72,11 @@ public class AuthenticationConverter implements ServerAuthenticationConverter {
                     Claims claims = getClaimsFromToken(token);
                     String authoritiesStr = claims.get(TOKEN_CLAIM_NAME, String.class);
                     List<SimpleGrantedAuthority> roleList = authoritiesStr == null ? List.of() :
-                            Arrays.stream(authoritiesStr.split(","))
-                                    .map(String::trim)
-                                    .filter(s -> !s.isEmpty())
-                                    .map(SimpleGrantedAuthority::new)
-                                    .collect(Collectors.toList());
+                        Arrays.stream(authoritiesStr.split(","))
+                            .map(String::trim)
+                            .filter(s -> !s.isEmpty())
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList());
 
                     String username = claims.getSubject();
 
@@ -87,13 +94,10 @@ public class AuthenticationConverter implements ServerAuthenticationConverter {
     }
 
     public Claims getClaimsFromToken(String token) {
-        SecretKey key = JwtHs512Keys.keyFromSecret(TOKEN_SECRET);
-        String compact = JwtHs512Keys.normalizeBearerToken(token);
         return Jwts.parser()
-                .verifyWith(key)
+                .verifyWith(verificationKey())
                 .build()
-                .parseSignedClaims(compact)
+                .parseSignedClaims(normalizeBearerToken(token))
                 .getPayload();
     }
-
 }

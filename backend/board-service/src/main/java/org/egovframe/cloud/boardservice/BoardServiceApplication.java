@@ -22,7 +22,7 @@ import org.springframework.context.annotation.ComponentScan;
  *  2021/07/28    jooho       최초 생성
  * </pre>
  */
-@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.servlet", "org.egovframe.cloud.boardservice"}) // org.egovframe.cloud.common package 포함하기 위해
+@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.boardservice"})
 @EntityScan({"org.egovframe.cloud.servlet.domain", "org.egovframe.cloud.boardservice.domain"})
 @SpringBootApplication
 public class BoardServiceApplication {

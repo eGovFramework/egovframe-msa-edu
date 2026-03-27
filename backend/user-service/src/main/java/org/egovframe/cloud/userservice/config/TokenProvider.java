@@ -1,7 +1,12 @@
 package org.egovframe.cloud.userservice.config;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.stream.Collectors;
+
+import javax.crypto.SecretKey;
 
 import org.egovframe.cloud.userservice.api.user.dto.UserResponseDto;
 import org.egovframe.cloud.userservice.service.user.UserService;
@@ -12,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -58,6 +63,30 @@ public class TokenProvider {
     final String TOKEN_USER_ID = "token-id";
 
     /**
+     * token.secret UTF-8 문자열의 SHA-256 다이제스트로 HMAC 키를 만든다.
+     */
+    private SecretKey signingKey() {
+        try {
+            byte[] digest = MessageDigest.getInstance("SHA-256")
+                .digest(TOKEN_SECRET.getBytes(StandardCharsets.UTF_8));
+            return Keys.hmacShaKeyFor(digest);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private String normalizeBearerToken(String token) {
+        if (token == null) {
+            return "";
+        }
+        String t = token.trim();
+        if (t.startsWith("Bearer ")) {
+            return t.substring(7).trim();
+        }
+        return t;
+    }
+
+    /**
      * 로그인 후 토큰을 생성하고 헤더에 정보를 담는다.
      *
      * @param request
@@ -98,10 +127,10 @@ public class TokenProvider {
      */
     private String createAccessToken(String authorities, String userId) {
         return Jwts.builder()
-                .setSubject(userId)
+                .subject(userId)
                 .claim(TOKEN_CLAIM_NAME, authorities)
-                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(TOKEN_EXPIRATION_TIME)))
-                .signWith(SignatureAlgorithm.HS512, TOKEN_SECRET)
+                .expiration(new Date(System.currentTimeMillis() + Long.parseLong(TOKEN_EXPIRATION_TIME)))
+                .signWith(signingKey())
                 .compact();
     }
 
@@ -113,8 +142,8 @@ public class TokenProvider {
      */
     private String createRefreshToken() {
         return Jwts.builder()
-                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(TOKEN_REFRESH_TIME)))
-                .signWith(SignatureAlgorithm.HS512, TOKEN_SECRET)
+                .expiration(new Date(System.currentTimeMillis() + Long.parseLong(TOKEN_REFRESH_TIME)))
+                .signWith(signingKey())
                 .compact();
     }
 
@@ -148,9 +177,10 @@ public class TokenProvider {
      */
     public Claims getClaimsFromToken(String token) {
         return Jwts.parser()
-                .setSigningKey(TOKEN_SECRET)
-                .parseClaimsJws(token)
-                .getBody();
+                .verifyWith(signingKey())
+                .build()
+                .parseSignedClaims(normalizeBearerToken(token))
+                .getPayload();
     }
 
 }

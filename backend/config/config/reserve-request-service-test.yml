@@ -33,7 +33,7 @@ messages:
 
 # jwt token
 token:
-  secret: egovframe_user_token
+  secret: egovframe-msa-jwt-shared-secret-minimum-256-bits-for-hmac-sha256
 
 # ftp server
 ftp:

@@ -2,7 +2,7 @@
 token:
   expiration_time: 7200000
   refresh_time: 86400000
-  secret: 'token_secret'
+  secret: 'egovframe-msa-jwt-shared-secret-minimum-256-bits-for-hmac-sha256'
 
 eureka:
   instance:

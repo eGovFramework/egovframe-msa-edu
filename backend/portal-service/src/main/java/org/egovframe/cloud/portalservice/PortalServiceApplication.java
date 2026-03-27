@@ -25,7 +25,7 @@ import org.springframework.context.annotation.ComponentScan;
  *  2021/06/30    jaeyeolkim  최초 생성
  * </pre>
  */
-@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.servlet", "org.egovframe.cloud.portalservice"}) // org.egovframe.cloud.common package 포함하기 위해
+@ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.portalservice"})
 @EntityScan({"org.egovframe.cloud.servlet.domain", "org.egovframe.cloud.portalservice.domain"})
 @EnableFeignClients
 @EnableDiscoveryClient

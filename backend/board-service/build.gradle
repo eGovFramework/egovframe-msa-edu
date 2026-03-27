@@ -53,7 +53,9 @@ dependencies {
 
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'        // logstash logback
     implementation 'com.mysql:mysql-connector-j:8.4.0'
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 
     // querydsl
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'

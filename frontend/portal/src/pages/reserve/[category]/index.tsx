@@ -278,8 +278,9 @@ const Reserve = ({ locations, categories }: ReserveProps) => {
 export const getServerSideProps: GetServerSideProps = async context => {
   const categoryId = String(context.query.category)
 
-  let locations: OptionsType[]
-  let categories: OptionsType[]
+  // Next.js는 getServerSideProps props에 undefined를 허용하지 않는다(JSON 직렬화 불가).
+  let locations: OptionsType[] = []
+  let categories: OptionsType[] = []
 
   try {
     const location = (await (
@@ -313,8 +314,10 @@ export const getServerSideProps: GetServerSideProps = async context => {
         label: '전체',
       })
     }
-  } catch (error) {
-    console.error(`reserve detail item query error ${error.message}`)
+  } catch (error: any) {
+    console.error(
+      `reserve detail item query error ${error?.message ?? String(error)}`,
+    )
   }
 
   return {

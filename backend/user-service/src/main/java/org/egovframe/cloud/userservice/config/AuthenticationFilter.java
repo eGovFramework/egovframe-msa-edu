@@ -24,12 +24,16 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -62,10 +66,29 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final TokenProvider tokenProvider;
     private final UserService userService;
 
+    /** Spring Security 기본 폼 로그인 URL */
+    public static final String LEGACY_LOGIN_PROCESSING_URL = "/login";
+
+    /** API 스타일 로그인 URL */
+    public static final String LOGIN_PROCESSING_URL = "/auth/login";
+
     public AuthenticationFilter(AuthenticationManager authenticationManager, TokenProvider tokenProvider, UserService userService) {
         super.setAuthenticationManager(authenticationManager);
+        PathPatternRequestMatcher.Builder pathMatcher = PathPatternRequestMatcher.withDefaults();
+        setRequiresAuthenticationRequestMatcher(RequestMatchers.anyOf(
+            pathMatcher.matcher(HttpMethod.POST, LEGACY_LOGIN_PROCESSING_URL),
+            pathMatcher.matcher(HttpMethod.POST, LOGIN_PROCESSING_URL)));
+        setPostOnly(true);
         this.tokenProvider = tokenProvider;
         this.userService = userService;
+    }
+
+    private boolean isLoginProcessingRequest(HttpServletRequest request) {
+        if (!"POST".equalsIgnoreCase(request.getMethod())) {
+            return false;
+        }
+        String path = request.getServletPath();
+        return LEGACY_LOGIN_PROCESSING_URL.equals(path) || LOGIN_PROCESSING_URL.equals(path);
     }
 
     /**
@@ -164,6 +187,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
         try {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
+            // 로그인 요청은 ID/비밀번호로 처리해야 하며, 만료된 Bearer 가 있어도 JWT 파싱에 막히지 않도록 한다.
+            if (isLoginProcessingRequest(httpRequest)) {
+                super.doFilter(request, response, chain);
+                return;
+            }
             String token = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
             if (!hasLength(token) || "undefined".equals(token)) {
                 super.doFilter(request, response, chain);
@@ -189,6 +217,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
             httpServletResponse.setStatus(e.getErrorCode().getStatus());
             log.error("AuthenticationFilter doFilter error: {}", e.getMessage());
+        } catch (JwtException e) {
+            SecurityContextHolder.getContext().setAuthentication(null);
+            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+            httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            log.error("AuthenticationFilter JWT error: {}", e.getMessage());
         } catch (ServletException | IOException e) {
             SecurityContextHolder.getContext().setAuthentication(null);
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;

@@ -1,6 +1,5 @@
 package org.egovframe.cloud.reservechecksevice.config;
 
-import org.egovframe.cloud.reactive.config.AuthenticationConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;

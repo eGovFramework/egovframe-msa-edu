@@ -30,7 +30,6 @@ ext {
     jakartaAnnotationApiVersion = '3.0.0'
     jakartaPersistenceApiVersion = '3.2.0'
     querydslVersion = '5.0.0'
-    jwtVersion = '0.12.6'
     javassistVersion = '3.29.2-GA'
     webjarLocatorCoreVersion = '0.59'
 }
@@ -69,7 +68,9 @@ dependencies {
     annotationProcessor "jakarta.annotation:jakarta.annotation-api:${jakartaAnnotationApiVersion}"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api:${jakartaPersistenceApiVersion}"
 
-    implementation "io.jsonwebtoken:jjwt:${jwtVersion}"
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.6'
     implementation "org.javassist:javassist:${javassistVersion}"
     implementation "org.webjars:webjars-locator-core:${webjarLocatorCoreVersion}"
 

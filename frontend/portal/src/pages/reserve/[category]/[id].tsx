@@ -12,7 +12,7 @@ import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 interface ReserveDetailProps {
-  initData: IReserveItem
+  initData: IReserveItem | null
 }
 
 export interface IReserveComplete {
@@ -55,6 +55,14 @@ const ReserveDetail = ({ initData }: ReserveDetailProps) => {
     return buttons
   }, [t, router.query, initData, edit])
 
+  if (!initData && !complete.done) {
+    return (
+      <div className="table_view02">
+        <p>{t('err.internal.server')}</p>
+      </div>
+    )
+  }
+
   return (
     <>
       {complete.done ? (
@@ -77,15 +85,15 @@ export const getServerSideProps: GetServerSideProps = async context => {
   const categoryId = String(context.query.category)
   const id = Number(context.query.id)
 
-  let initData: IReserveItem
+  let initData: IReserveItem | null = null
 
   try {
     const result = await reserveService.getItem(id)
     if (result) {
       initData = result.data
     }
-  } catch (error) {
-    console.error(`reserve detail item query error ${error.message}`)
+  } catch (error: any) {
+    console.error(`reserve detail item query error ${error?.message ?? error}`)
     if (error.response?.data?.code === 'E003') {
       return {
         notFound: true,
