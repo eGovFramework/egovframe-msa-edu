@@ -18,3 +18,18 @@ spring:
         inventoryUpdated-out-0: # 예약 요청후 물품 재고업데이트 결과에 이벤트에 대한 supplier binding
           destination: inventory-updated.topic # queue name
           group: reserved
+
+# springdoc-openapi 설정
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: false
+    tags-sorter: alpha
+    operations-sorter: alpha
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  paths-to-match:
+    - /api/**

@@ -13,3 +13,18 @@ spring:
         attachmentEntity-out-0: # 첨부파일 entity 정보 업데이트 하기 위한 이벤트
           destination: attachment-entity.topic # queue name
           group: attachment
+
+# springdoc-openapi 설정
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: false
+    tags-sorter: alpha
+    operations-sorter: alpha
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  paths-to-match:
+    - /api/**

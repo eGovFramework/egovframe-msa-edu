@@ -31,3 +31,18 @@ ftp:
   port: 21
   directory: /mnt
   enabled: false # ftp 사용 여부, FTP 서버에 최상위 디렉토리 자동 생성 및 구현체를 결정하게 된다.
+
+# springdoc-openapi 설정
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: false
+    tags-sorter: alpha
+    operations-sorter: alpha
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  paths-to-match:
+    - /api/**
