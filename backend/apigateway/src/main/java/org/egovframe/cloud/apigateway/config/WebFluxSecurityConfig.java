@@ -5,11 +5,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authorization.ReactiveAuthorizationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.HttpStatusServerEntryPoint;
 import org.springframework.security.web.server.authorization.AuthorizationContext;
+import org.springframework.security.web.server.header.ReferrerPolicyServerHttpHeadersWriter.ReferrerPolicy;
+import org.springframework.security.web.server.header.XFrameOptionsServerHttpHeadersWriter.Mode;
 
 /**
  * org.egovframe.cloud.apigateway.config.WebFluxSecurityConfig
@@ -54,15 +57,19 @@ public class WebFluxSecurityConfig {
      */
     @Bean
     public SecurityWebFilterChain configure(ServerHttpSecurity http, ReactiveAuthorizationManager<AuthorizationContext> check) throws Exception {
-    	http
-                .csrf(csrf -> csrf.disable())
-                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
-                .formLogin(formLogin -> formLogin.disable())
-                .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(new HttpStatusServerEntryPoint(HttpStatus.UNAUTHORIZED))) // login dialog disabled & 401 HttpStatus return
-                .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers(PERMITALL_ANTPATTERNS).permitAll()
-                        .pathMatchers(HttpMethod.POST, USER_JOIN_ANTPATTERNS).permitAll()
-                        .anyExchange().access(check));
+        http.headers(headers -> headers
+                .frameOptions(frameOptions -> frameOptions.mode(Mode.DENY))
+                .contentTypeOptions(Customizer.withDefaults())
+                .referrerPolicy(referrer -> referrer.policy(ReferrerPolicy.SAME_ORIGIN))
+                .contentSecurityPolicy(cps -> cps.policyDirectives("default-src 'self'; frame-ancestors 'none'; base-uri 'self'")));
+
+    	http.csrf(csrf -> csrf.disable())
+            .formLogin(formLogin -> formLogin.disable())
+            .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(new HttpStatusServerEntryPoint(HttpStatus.UNAUTHORIZED))) // login dialog disabled & 401 HttpStatus return
+            .authorizeExchange(exchanges -> exchanges
+                .pathMatchers(PERMITALL_ANTPATTERNS).permitAll()
+                .pathMatchers(HttpMethod.POST, USER_JOIN_ANTPATTERNS).permitAll()
+                .anyExchange().access(check));
 
         return http.build();
     }

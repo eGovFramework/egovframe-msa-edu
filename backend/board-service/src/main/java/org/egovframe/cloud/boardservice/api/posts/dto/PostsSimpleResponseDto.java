@@ -1,7 +1,6 @@
 package org.egovframe.cloud.boardservice.api.posts.dto;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.egovframe.cloud.boardservice.api.board.dto.BoardResponseDto;
@@ -94,9 +93,9 @@ public class PostsSimpleResponseDto implements Serializable {
      * @return PostsSimpleResponseDto 게시물 응답 DTO
      */
     public PostsSimpleResponseDto setIsNew(BoardResponseDto boardResponseDto) {
-        if (boardResponseDto.getNewDisplayDayCount() != null) {
-            int compareTo = createdDate.toLocalDate().compareTo(LocalDate.now());
-            this.isNew = 0 <= compareTo && compareTo <= boardResponseDto.getNewDisplayDayCount();
+        Integer dayCount = boardResponseDto != null ? boardResponseDto.getNewDisplayDayCount() : null;
+        if (dayCount != null && dayCount > 0 && this.createdDate != null) {
+            this.isNew = this.createdDate.plusDays(dayCount).compareTo(LocalDateTime.now()) >= 0;
         } else {
             this.isNew = false;
         }
