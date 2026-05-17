@@ -131,7 +131,11 @@ public class PostsListResponseDto implements Serializable {
         this.createdBy = createdBy;
         this.createdName = createdName;
         this.createdDate = createdDate;
-        this.isNew = createdDate.plusDays(newDisplayDayCount).compareTo(LocalDateTime.now()) >= 0;
+        if (newDisplayDayCount != null && newDisplayDayCount > 0 && this.createdDate != null) {
+            this.isNew = this.createdDate.plusDays(newDisplayDayCount).compareTo(LocalDateTime.now()) >= 0;
+        } else {
+            this.isNew = false;
+        }
         this.commentCount = commentCount;
     }
 

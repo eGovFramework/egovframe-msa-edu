@@ -11,9 +11,14 @@ server:
 # config server actuator
 management:
   endpoints:
+    access:
+      default: read-only # 기본적으로 모든 엔드포인트를 읽기 전용으로 설정
+    jmx:
+      exposure:
+        exclude: "*" # JMX에서 모든 엔드포인트 비활성화
     web:
       exposure:
-        include: refresh, health, beans, info
+        include: health, info
 
 info:
   app:
