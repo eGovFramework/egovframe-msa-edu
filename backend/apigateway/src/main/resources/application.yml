@@ -62,9 +62,12 @@ spring:
 # config server actuator
 management:
   endpoints:
+    jmx:
+      exposure:
+        exclude: "*" # JMX에서 모든 엔드포인트 비활성화
     web:
       exposure:
-        include: refresh, health, beans, info
+        include: health, info
 
 messages:
   directory: ${user.dir}/msa-attach-volume/messages

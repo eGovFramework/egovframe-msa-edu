@@ -1,8 +1,30 @@
 package org.egovframe.cloud.portalservice.utils;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
+import static org.egovframe.cloud.portalservice.utils.PortalUtils.getPhysicalFileName;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
+
 import org.egovframe.cloud.common.exception.BusinessException;
 import org.egovframe.cloud.common.exception.BusinessMessageException;
 import org.egovframe.cloud.common.exception.dto.ErrorCode;
@@ -12,19 +34,12 @@ import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentImageRespo
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URLConnection;
-import java.nio.file.*;
-import java.util.Base64;
-import java.util.List;
-
-import static org.egovframe.cloud.portalservice.utils.PortalUtils.getPhysicalFileName;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * org.egovframe.cloud.portalservice.utils.FileStorageUtils
@@ -45,17 +60,43 @@ import static org.egovframe.cloud.portalservice.utils.PortalUtils.getPhysicalFil
  */
 @Slf4j
 @Getter
-@Component
 public class FileStorageUtils implements StorageUtils {
+
+    /** 콤마 구분 확장자(소문자, 점 없이). 예: {@code file.storage.allowed-extensions=pdf,png,jpg} */
+    public static final String PROPERTY_ALLOWED_EXTENSIONS = "file.storage.allowed-extensions";
+
+    /** 단일 파일 최대 크기. 미설정 시 {@code spring.servlet.multipart.max-file-size}, 그 다음 기본 10MB */
+    public static final String PROPERTY_MAX_FILE_SIZE = "file.storage.max-file-size";
 
     private final Path fileStorageLocation;
     private final Environment environment;
     private final MessageUtil messageUtil;
+    private final Set<String> allowedExtensionsLowercase;
+    private final long maxFileSizeBytes;
 
     public FileStorageUtils(Environment environment, MessageUtil messageUtil) {
         this.environment = environment;
         this.fileStorageLocation = Paths.get(environment.getProperty("file.directory")).toAbsolutePath().normalize();
         this.messageUtil = messageUtil;
+        this.allowedExtensionsLowercase = parseAllowedExtensions(environment);
+        this.maxFileSizeBytes = resolveMaxFileSizeBytes(environment);
+    }
+
+    private static Set<String> parseAllowedExtensions(Environment environment) {
+        String raw = environment.getProperty(PROPERTY_ALLOWED_EXTENSIONS, "jpg,jpeg,png,gif,bmp,webp,pdf,xlsx,xls,htm,html,txt");
+        return Arrays.stream(raw.split(","))
+                .map(String::trim)
+                .filter(StringUtils::hasText)
+                .map(s -> s.toLowerCase(Locale.ROOT).replaceFirst("^\\.+", ""))
+                .collect(Collectors.toUnmodifiableSet());
+    }
+
+    private static long resolveMaxFileSizeBytes(Environment environment) {
+        String explicit = environment.getProperty(PROPERTY_MAX_FILE_SIZE);
+        String source = StringUtils.hasText(explicit)
+                ? explicit
+                : environment.getProperty("spring.servlet.multipart.max-file-size", "10MB");
+        return DataSize.parse(source).toBytes();
     }
 
     @PostConstruct
@@ -65,14 +106,22 @@ public class FileStorageUtils implements StorageUtils {
             if (!StringUtils.hasLength(ftpEnabled) || !"true".equals(ftpEnabled)) {
                 log.info("FileStorageUtils createDirectories! ftpEnabled: {}", ftpEnabled);
                 Files.createDirectories(this.fileStorageLocation);
+                log.info("FileStorageUtils storage policy — maxFileSizeBytes: {}, allowedExtensions: {}",
+                        formatMaxFileSizeForLog(), allowedExtensionsLowercase.size());
             }
         } catch (Exception ex) {
             throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Could not create the directory where the uploaded files will be stored.");
         }
     }
 
+    private String formatMaxFileSizeForLog() {
+        return maxFileSizeBytes >= 1024 * 1024
+                ? (maxFileSizeBytes / (1024 * 1024)) + "MiB"
+                : maxFileSizeBytes + " bytes";
+    }
+
     /**
-     * 저장 경로
+     * 저장 경로(기준 상대 경로만 허용, 디렉터리 트래버설 차단)
      *
      * @param basePath
      * @return
@@ -80,7 +129,7 @@ public class FileStorageUtils implements StorageUtils {
     public Path getStorePath(String basePath) {
 
         try {
-            Path path = fileStorageLocation.resolve(basePath);
+            Path path = resolveDirectoryUnderStorageRoot(basePath);
             Files.createDirectories(path);
             return path;
         } catch (IOException ex) {
@@ -90,9 +139,74 @@ public class FileStorageUtils implements StorageUtils {
         }
     }
 
+    private Path resolveDirectoryUnderStorageRoot(String basePath) {
+        if (!StringUtils.hasText(basePath)) {
+            return fileStorageLocation;
+        }
+        Path candidate = fileStorageLocation.resolve(StringUtils.cleanPath(basePath)).normalize();
+        if (!candidate.startsWith(fileStorageLocation)) {
+            log.error("Rejected basePath (escapes storage root): {}", basePath);
+            throw new BusinessMessageException(messageUtil.getMessage("valid.file.invalid_name"));
+        }
+        return candidate;
+    }
 
-    public String getContentType(String filename) {
-        Path filePath = this.fileStorageLocation.resolve(StringUtils.cleanPath("/" + filename));
+    /**
+     * 저장소 루트 아래 파일만 허용 (업로드된 상대 경로 / 이미지 경로 등).
+     */
+    private Path resolvePathUnderFileStorage(String relativePathFromStorageRoot) {
+        String clean = StringUtils.cleanPath(relativePathFromStorageRoot);
+        if (!StringUtils.hasText(clean)) {
+            throw new BusinessMessageException(messageUtil.getMessage("valid.file.not_found"));
+        }
+        Path resolved = fileStorageLocation.resolve(clean).normalize();
+        if (!resolved.startsWith(fileStorageLocation)) {
+            log.error("Rejected path (escapes storage root): {}", relativePathFromStorageRoot);
+            throw new BusinessMessageException(messageUtil.getMessage("valid.file.invalid_name"));
+        }
+        assertPhysicalStoredNameAllowed(fileNameSegment(resolved));
+        return resolved;
+    }
+
+    private static String fileNameSegment(Path resolvedFile) {
+        Path fileName = resolvedFile.getFileName();
+        return fileName != null ? fileName.toString() : "";
+    }
+
+    private void assertPhysicalStoredNameAllowed(String storedFileName) {
+        String name = storedFileName;
+        if (name.endsWith(".temp")) {
+            name = name.substring(0, name.length() - ".temp".length());
+        }
+        assertExtensionAllowed(name);
+    }
+
+    private void assertOriginalNamePresent(String originalFilename) {
+        if (!StringUtils.hasText(originalFilename)) {
+            throw new BusinessMessageException(messageUtil.getMessage("valid.file.invalid_name"));
+        }
+    }
+
+    private void assertExtensionAllowed(String filename) {
+        String ext = StringUtils.getFilenameExtension(filename);
+        if (!StringUtils.hasText(ext)) {
+            throw new BusinessMessageException(messageUtil.getMessage("valid.file.invalid_name"));
+        }
+        String extLower = ext.toLowerCase(Locale.ROOT);
+        if (!allowedExtensionsLowercase.contains(extLower)) {
+            log.warn("Rejected file extension: {}", extLower);
+            throw new BusinessMessageException(messageUtil.getMessage("valid.file.invalid_name"));
+        }
+    }
+
+    private void assertWithinMaxSize(long sizeBytes) {
+        if (sizeBytes > maxFileSizeBytes) {
+            throw new BusinessMessageException(messageUtil.getMessage("valid.file.too_big"));
+        }
+    }
+
+
+    private String probeContentType(Path filePath) {
         String mimeType = null;
         try {
             mimeType = Files.probeContentType(filePath);
@@ -103,6 +217,11 @@ public class FileStorageUtils implements StorageUtils {
         return mimeType == null ? URLConnection.guessContentTypeFromName(filePath.toString()) : mimeType;
     }
 
+    public String getContentType(String filename) {
+        Path filePath = resolvePathUnderFileStorage(filename);
+        return probeContentType(filePath);
+    }
+
     /**
      * .temp 제거
      *
@@ -110,19 +229,27 @@ public class FileStorageUtils implements StorageUtils {
      * @return
      */
     public String renameTemp(String physicalFileName) {
-        String rename = physicalFileName.replace(".temp", "");
+        String renamedRelative = stripTempSuffixFromRelativePath(physicalFileName);
+        Path source = resolvePathUnderFileStorage(physicalFileName);
+        Path target = resolvePathUnderFileStorage(renamedRelative);
 
-        //물리적 파일 처리
-        Path path = getStorePath("");
-        File file = path.resolve(physicalFileName).toFile();
-        File renameFile = path.resolve(rename).toFile();
+        File file = source.toFile();
+        File renameFile = target.toFile();
         try {
             file.renameTo(renameFile);
         } catch (NullPointerException ex) {
             // 파일을 찾을 수 없습니다.
             throw new BusinessMessageException(messageUtil.getMessage("valid.file.not_found"));
         }
-        return rename;
+        return renamedRelative;
+    }
+
+    private static String stripTempSuffixFromRelativePath(String relativePath) {
+        String clean = StringUtils.cleanPath(relativePath);
+        if (clean.endsWith(".temp")) {
+            return clean.substring(0, clean.length() - ".temp".length());
+        }
+        return clean.replace(".temp", "");
     }
 
     /**
@@ -133,14 +260,22 @@ public class FileStorageUtils implements StorageUtils {
      * @return
      */
     public String storeBase64File(AttachmentBase64RequestDto requestDto, String basePath) {
+        assertOriginalNamePresent(requestDto.getOriginalName());
+        assertExtensionAllowed(requestDto.getOriginalName());
+
         String filename = getPhysicalFileName(requestDto.getOriginalName(), false);
 
         try {
             Path path = getStorePath(basePath);
-            File file = path.resolve(filename).toFile();
+            Path target = path.resolve(filename).normalize();
+            if (!target.startsWith(path)) {
+                throw new BusinessMessageException(messageUtil.getMessage("valid.file.invalid_name"));
+            }
+            File file = target.toFile();
 
             Base64.Decoder decoder = Base64.getDecoder();
             byte[] decodeBytes = decoder.decode(requestDto.getFileBase64().getBytes());
+            assertWithinMaxSize(decodeBytes.length);
 
             try (FileOutputStream outputStream = new FileOutputStream(file)) {
                 outputStream.write(decodeBytes);
@@ -148,6 +283,9 @@ public class FileStorageUtils implements StorageUtils {
 
             return filename;
 
+        } catch (IllegalArgumentException ex) {
+            log.error("Invalid base64 payload.", ex);
+            throw new BusinessMessageException(messageUtil.getMessage("valid.file.not_saved_try_again"));
         } catch (IOException ex) {
             log.error("Could not stored base 64 file.", ex);
             // 파일을 저장할 수 없습니다. 다시 시도해 주세요.
@@ -174,18 +312,23 @@ public class FileStorageUtils implements StorageUtils {
      * @return
      */
     public String storeFile(MultipartFile file, String basePath, boolean isTemp) {
+        assertOriginalNamePresent(file.getOriginalFilename());
+        assertExtensionAllowed(file.getOriginalFilename());
+        assertWithinMaxSize(file.getSize());
+
         String filename = getPhysicalFileName(file.getOriginalFilename(), isTemp);
 
         try {
-            if (filename.contains("..")) {
-                log.error("Filename contains invalid path sequence : " + filename);
-                // 파일명이 잘못되었습니다.
+            Path path = getStorePath(basePath);
+            Path target = path.resolve(filename).normalize();
+            if (!target.startsWith(path)) {
+                log.error("Filename resolves outside store directory : {}", filename);
                 throw new BusinessMessageException(messageUtil.getMessage("valid.file.invalid_name") + " : " + filename);
             }
 
-            Path path = getStorePath(basePath);
-            Path target = path.resolve(filename);
-            Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
+            try (InputStream inputStream = file.getInputStream()) {
+                Files.copy(inputStream, target, StandardCopyOption.REPLACE_EXISTING);
+            }
 
             return filename;
         } catch (IOException ex) {
@@ -248,9 +391,9 @@ public class FileStorageUtils implements StorageUtils {
      * @return
      */
     public Resource downloadFile(String filename) {
-        Path path = getStorePath("");
         try {
-            Resource resource = new UrlResource(path.resolve(filename).toUri());
+            Path path = resolvePathUnderFileStorage(filename);
+            Resource resource = new UrlResource(path.toUri());
 
             if (resource.exists()) {
                 return resource;
@@ -275,7 +418,7 @@ public class FileStorageUtils implements StorageUtils {
      */
     public AttachmentImageResponseDto loadImage(String imagename) {
         try {
-            Path imagePath = this.fileStorageLocation.resolve(imagename).normalize();
+            Path imagePath = resolvePathUnderFileStorage(imagename);
             try (InputStream is = new FileInputStream(imagePath.toFile())) {
                 try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
                     int read;
@@ -285,7 +428,7 @@ public class FileStorageUtils implements StorageUtils {
                     }
 
                     return AttachmentImageResponseDto.builder()
-                            .mimeType(getContentType(imagename))
+                            .mimeType(probeContentType(imagePath))
                             .data(data)
                             .build();
                 }
@@ -308,9 +451,9 @@ public class FileStorageUtils implements StorageUtils {
      * @return
      */
     public boolean deleteFile(String filename) {
-        Path path = getStorePath("");
         try {
-            return Files.deleteIfExists(path.resolve(filename));
+            Path path = resolvePathUnderFileStorage(filename);
+            return Files.deleteIfExists(path);
         } catch (IOException e) {
             log.error("Could not deleted file.", e);
             return false;

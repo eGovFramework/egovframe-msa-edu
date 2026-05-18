@@ -23,11 +23,9 @@ spring:
 # config server actuator
 management:
   endpoints:
+    jmx:
+      exposure:
+        exclude: "*" # JMX에서 모든 엔드포인트 비활성화
     web:
       exposure:
-        include: refresh, health, beans, info
-
-logging:
-  level:
-    org.egovframe.cloud.portalservice.client: DEBUG   # Feign log를 확인하기 위해 해당 패키지를 디버그 모드로 설정
-
+        include: health, info
