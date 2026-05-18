@@ -27,6 +27,7 @@ import org.egovframe.cloud.portalservice.domain.attachment.AttachmentRepository;
 import org.egovframe.cloud.portalservice.service.attachment.AttachmentService;
 import org.egovframe.cloud.portalservice.util.RestResponsePage;
 import org.egovframe.cloud.portalservice.utils.FileStorageUtils;
+import org.egovframe.cloud.portalservice.utils.StorageUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -60,7 +61,7 @@ class AttachmentApiControllerTest {
     TestRestTemplate restTemplate;
 
     @Autowired
-    FileStorageUtils fileStorageUtils;
+    StorageUtils storageUtils;
 
     @Autowired
     AttachmentService attachmentService;
@@ -465,7 +466,7 @@ class AttachmentApiControllerTest {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         List<Attachment> attachmentList = attachmentRepository.findByCode(responseEntity.getBody());
         attachmentList.stream().forEach(attachment -> {
-            Path filePath = Paths.get(fileStorageUtils.getFileStorageLocation()+"/" +attachment.getPhysicalFileName())
+            Path filePath = Paths.get(((FileStorageUtils) storageUtils).getFileStorageLocation()+"/" +attachment.getPhysicalFileName())
                     .toAbsolutePath().normalize();
             assertThat(Files.exists(filePath));
         });
