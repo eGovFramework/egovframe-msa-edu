@@ -1,10 +1,10 @@
 package org.egovframe.cloud.servlet.config;
 
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 
@@ -38,11 +38,12 @@ public class UserAuditAware implements AuditorAware<String> {
     @Override
     public Optional<String> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+        if (authentication == null || !authentication.isAuthenticated()) {
             return Optional.empty();
         }
-
-        String userId = authentication.getPrincipal() == null ? null : authentication.getPrincipal().toString();
-        return Optional.of(userId);
+        // getName()은 UsernamePasswordAuthenticationToken·JWT 등에서 일관된 사용자 식별자를 준다.
+        // 익명 사용자(anonymousUser)도 DB NOT NULL 제약을 만족하도록 반환한다.
+        String userId = authentication.getName();
+        return StringUtils.hasText(userId) ? Optional.of(userId) : Optional.empty();
     }
 }

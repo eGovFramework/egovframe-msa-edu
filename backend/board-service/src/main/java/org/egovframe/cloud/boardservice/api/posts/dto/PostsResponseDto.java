@@ -158,8 +158,12 @@ public class PostsResponseDto implements Serializable {
         this.createdName = createdName;
         this.createdDate = createdDate;
         this.board = board;
-        if (this.board.getNewDisplayDayCount() != null && this.board.getNewDisplayDayCount() > 0) {
-            this.isNew = createdDate.plusDays(this.board.getNewDisplayDayCount()).compareTo(LocalDateTime.now()) <= 0;
+        if (this.board != null
+                && this.board.getNewDisplayDayCount() != null
+                && this.board.getNewDisplayDayCount() > 0
+                && this.createdDate != null) {
+            this.isNew = this.createdDate.plusDays(this.board.getNewDisplayDayCount())
+                    .compareTo(LocalDateTime.now()) >= 0;
         } else {
             this.isNew = false;
         }
@@ -185,8 +189,11 @@ public class PostsResponseDto implements Serializable {
         this.createdName = entity.getCreator() != null ? entity.getCreator().getUserName() : null;
         this.createdDate = entity.getCreatedDate();
         this.board = new BoardResponseDto(entity.getBoard());
-        if (this.board.getNewDisplayDayCount() != null) {
-            this.isNew = createdDate.plusDays(this.board.getNewDisplayDayCount()).compareTo(LocalDateTime.now()) <= 0;
+        if (this.board.getNewDisplayDayCount() != null
+                && this.board.getNewDisplayDayCount() > 0
+                && this.createdDate != null) {
+            this.isNew = this.createdDate.plusDays(this.board.getNewDisplayDayCount())
+                    .compareTo(LocalDateTime.now()) >= 0;
         } else {
             this.isNew = false;
         }
