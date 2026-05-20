@@ -1,0 +1,64 @@
+version: 2
+updates:
+  # Gradle backend modules
+  - package-ecosystem: "gradle"
+    directories:
+      - "/backend/apigateway"
+      - "/backend/board-service"
+      - "/backend/config"
+      - "/backend/discovery"
+      - "/backend/egovframe-cloud-module-common"
+      - "/backend/portal-service"
+      - "/backend/reserve-check-service"
+      - "/backend/reserve-item-service"
+      - "/backend/reserve-request-service"
+      - "/backend/user-service"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Seoul"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Seoul"
+    open-pull-requests-limit: 3
+    labels:
+      - "ci"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+
+  # Docker images (Dockerfile, DockerfileK8s under each backend service)
+  - package-ecosystem: "docker"
+    directories:
+      - "/backend/apigateway"
+      - "/backend/board-service"
+      - "/backend/config"
+      - "/backend/discovery"
+      - "/backend/portal-service"
+      - "/backend/reserve-check-service"
+      - "/backend/reserve-item-service"
+      - "/backend/reserve-request-service"
+      - "/backend/user-service"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Seoul"
+    open-pull-requests-limit: 5
+    labels:
+      - "docker"
+    commit-message:
+      prefix: "docker"
+      include: "scope"
