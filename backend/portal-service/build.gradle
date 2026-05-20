@@ -53,7 +53,7 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'        // logstash logback
+    implementation 'net.logstash.logback:logstash-logback-encoder:8.0'        // logstash logback
     implementation 'commons-io:commons-io:2.18.0'
     implementation 'commons-net:commons-net:3.11.1' // FTPClient
     implementation 'com.mysql:mysql-connector-j:8.4.0'
