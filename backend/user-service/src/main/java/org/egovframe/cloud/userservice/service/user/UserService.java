@@ -271,7 +271,7 @@ public class UserService extends AbstractService implements UserDetailsService {
         ArrayList<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRoleKey()));
 
-        if (user.isSocialUser() && user.getEncryptedPassword() == null || "".equals(user.getEncryptedPassword())) { // 소셜 회원이고 비밀번호가 등록되지 않은 경우
+        if (user.isSocialUser() && (user.getEncryptedPassword() == null || "".equals(user.getEncryptedPassword()))) { // 소셜 회원이고 비밀번호가 등록되지 않은 경우
             return new SocialUser(user.getEmail(), authorities);
         } else {
             return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getEncryptedPassword(), authorities);

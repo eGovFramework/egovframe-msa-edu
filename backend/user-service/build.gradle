@@ -106,6 +106,9 @@ dependencyManagement {
 
 test {
     useJUnitPlatform()
+    // 테스트 클래스패스에 log4j-slf4j2-impl 과 log4j-to-slf4j 가 함께 존재하여 발생하는 바인딩 충돌을 방지한다.
+    // 운영과 동일하게 logback 을 slf4j 프로바이더로 고정한다.
+    systemProperty 'slf4j.provider', 'ch.qos.logback.classic.spi.LogbackServiceProvider'
 }
 
 // querydsl 추가 시작
