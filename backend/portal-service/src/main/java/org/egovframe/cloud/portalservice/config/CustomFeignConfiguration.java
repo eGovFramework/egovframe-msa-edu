@@ -22,6 +22,7 @@ import feign.codec.ErrorDecoder;
  *     수정일        수정자           수정내용
  *  ----------    --------    ---------------------------
  *  2021/08/23    shinmj  최초 생성
+ *  2026/06/26    이백행     [2026년 컨트리뷰션] @Bean 메서드의 불필요한 public 접근제어자 제거
  * </pre>
  */
 public class CustomFeignConfiguration {
@@ -42,7 +43,7 @@ public class CustomFeignConfiguration {
      * @return
      */
     @Bean
-    public ErrorDecoder errorDecoder() {
+    ErrorDecoder errorDecoder() {
         return new CustomErrorDecoder();
     }
 
@@ -52,7 +53,7 @@ public class CustomFeignConfiguration {
      * @return
      */
     @Bean
-    public Retryer retryer() {
+    Retryer retryer() {
         return new Retryer.Default();
     }
 

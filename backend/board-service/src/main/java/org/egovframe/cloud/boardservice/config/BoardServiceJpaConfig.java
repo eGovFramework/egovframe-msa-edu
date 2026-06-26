@@ -37,13 +37,13 @@ import jakarta.persistence.EntityManagerFactory;
 public class BoardServiceJpaConfig {
 
     @Bean
-    public AuditorAware<String> userAuditAware() {
+    AuditorAware<String> userAuditAware() {
         return new UserAuditAware();
     }
 
     @Primary
     @Bean(name = "entityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+    LocalContainerEntityManagerFactoryBean entityManagerFactory(
             EntityManagerFactoryBuilder builder,
             DataSource dataSource) {
         return builder
@@ -58,13 +58,13 @@ public class BoardServiceJpaConfig {
 
     @Primary
     @Bean(name = "transactionManager")
-    public PlatformTransactionManager transactionManager(
+    PlatformTransactionManager transactionManager(
             @Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
     }
 
     @Bean
-    public JPAQueryFactory jpaQueryFactory(EntityManager entityManager) {
+    JPAQueryFactory jpaQueryFactory(EntityManager entityManager) {
         return new JPAQueryFactory(entityManager);
     }
 
