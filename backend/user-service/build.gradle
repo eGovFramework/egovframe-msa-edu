@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '3.5.6'
+    id 'org.springframework.boot' version '3.5.16'
     id 'org.sonarqube' version '3.5.0.2730'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
@@ -24,7 +24,7 @@ repositories {
 
 ext {
     set('egovframeBootParentVersion', '5.0.0')
-    set('springCloudVersion', '2025.0.0')
+    set('springCloudVersion', '2025.0.3')
 }
 
 dependencies {
