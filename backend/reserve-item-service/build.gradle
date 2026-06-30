@@ -28,6 +28,7 @@ ext {
 dependencies {
 //    implementation files('../module-common/build/libs/egovframe-cloud-module-common.jar') // @ComponentScan(basePackages={"org.egovframe.cloud"}) 추가해야 적용된다
     implementation("org.egovframe.cloud:egovframe-cloud-module-common:${egovframeBootParentVersion}") {
+        exclude group: 'org.egovframe.rte', module: 'egovframe-rte-fdl-logging'
         exclude group: 'commons-logging', module: 'commons-logging'
     }
     implementation("org.egovframe.rte:egovframe-rte-fdl-cmmn:${egovframeBootParentVersion}") {
