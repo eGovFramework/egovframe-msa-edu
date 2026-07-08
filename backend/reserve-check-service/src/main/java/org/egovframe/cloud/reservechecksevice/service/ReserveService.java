@@ -209,10 +209,15 @@ public class ReserveService extends ReactiveAbstractService {
      * @return
      */
     public Mono<ReserveResponseDto> create(ReserveSaveRequestDto saveRequestDto) {
-        return Mono.just(saveRequestDto)
-            .map(ReserveSaveRequestDto::createNewReserve)
-            .zipWith(getUserId())
-            .flatMap(tuple -> Mono.just(tuple.getT1().setCreatedInfo(LocalDateTime.now(), tuple.getT2())))
+        return Mono.zip(Mono.just(saveRequestDto), getUserId(), getIsAdmin())
+            .flatMap(tuple -> {
+                ReserveSaveRequestDto dto = tuple.getT1();
+                if (!tuple.getT3()) {
+                    dto.applyReserveOwner(tuple.getT2());
+                }
+                return Mono.just(dto.createNewReserve()
+                    .setCreatedInfo(LocalDateTime.now(), tuple.getT2()));
+            })
             .flatMap(validator::checkReserveItems)
             .onErrorResume(Mono::error)
             .flatMap(this::updateInventory)
@@ -283,7 +288,7 @@ public class ReserveService extends ReactiveAbstractService {
                     throw new BusinessMessageException(getMessage("valid.reserve_not_update_status"));
                 }
 
-                return tuple.getT1().update(updateRequestDto);
+                return tuple.getT1().updateForUser(updateRequestDto);
             })
             .flatMap(validator::checkReserveItems)
             .onErrorResume(Mono::error)
@@ -308,7 +313,7 @@ public class ReserveService extends ReactiveAbstractService {
                     throw new BusinessMessageException(
                         getMessage("valid.reserve_not_update_status"));
                 }
-                return reserve.update(updateRequestDto);
+                return reserve.updateByAdmin(updateRequestDto);
             })
             .flatMap(validator::checkReserveItems)
             .onErrorResume(Mono::error)

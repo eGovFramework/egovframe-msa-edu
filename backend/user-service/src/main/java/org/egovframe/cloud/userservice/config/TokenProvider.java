@@ -108,8 +108,8 @@ public class TokenProvider {
         // JWT Access 토큰 생성
         String accessToken = createAccessToken(authorities, userId);
 
-        // JWT Refresh 토큰 생성 후 사용자 도메인에 저장하여 토큰 재생성 요청시 활용한다.
-        String refreshToken = createRefreshToken();
+        // JWT Refresh 토큰 생성 후 해시값을 DB에 저장한다.
+        String refreshToken = createRefreshToken(userId);
         userService.updateRefreshToken(userId, refreshToken);
 
         // Header에 토큰 세팅
@@ -135,13 +135,15 @@ public class TokenProvider {
     }
 
     /**
-     * JWT Refresh Token 생성
-     * 중복 로그인을 허용하려면 user domain 에 있는 refresh token 값을 반환하고 없는 경우에만 생성하도록 처리한다.
+     * JWT Refresh Token 생성 (subject/JTI 바인딩)
      *
+     * @param userId
      * @return
      */
-    private String createRefreshToken() {
+    private String createRefreshToken(String userId) {
         return Jwts.builder()
+                .subject(userId)
+                .id(java.util.UUID.randomUUID().toString())
                 .expiration(new Date(System.currentTimeMillis() + Long.parseLong(TOKEN_REFRESH_TIME)))
                 .signWith(signingKey())
                 .compact();
@@ -155,14 +157,23 @@ public class TokenProvider {
      * @return
      */
     public String refreshToken(String refreshToken, HttpServletResponse response) {
-        // refresh token 으로 유효한 사용자가 있는지 찾는다.
-        org.egovframe.cloud.userservice.domain.user.User user = userService.findByRefreshToken(refreshToken);
-        // 사용자가 있으면 access token 을 새로 발급하여 리턴한다.
+        String normalizedRefreshToken = normalizeBearerToken(refreshToken);
+        Claims claims = getClaimsFromToken(normalizedRefreshToken);
+        String userId = claims.getSubject();
+
+        org.egovframe.cloud.userservice.domain.user.User user =
+            userService.findByRefreshToken(normalizedRefreshToken);
+
+        if (userId == null || !userId.equals(user.getUserId())) {
+            throw new org.springframework.security.core.userdetails.UsernameNotFoundException("Invalid refresh token subject");
+        }
+
         String accessToken = createAccessToken(user.getRoleKey(), user.getUserId());
+        String newRefreshToken = createRefreshToken(user.getUserId());
+        userService.updateRefreshToken(user.getUserId(), newRefreshToken);
 
-        String filteredRefreshToken = refreshToken.replaceAll("\r", "").replaceAll("\n", "");
+        String filteredRefreshToken = newRefreshToken.replaceAll("\r", "").replaceAll("\n", "");
 
-        // Header에 토큰 세팅
         response.addHeader(TOKEN_ACCESS_KEY, accessToken);
         response.addHeader(TOKEN_REFRESH_KEY, filteredRefreshToken);
         response.addHeader(TOKEN_USER_ID, user.getUserId());
