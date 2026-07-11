@@ -1,15 +1,14 @@
 package org.egovframe.cloud.portalservice.api.menu.dto;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.egovframe.cloud.portalservice.domain.menu.Menu;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.egovframe.cloud.portalservice.domain.menu.Menu;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import org.egovframe.cloud.portalservice.domain.menu.MenuRole;
 
 /**
  * org.egovframe.cloud.portalservice.api.menu.dto.MenuSideResponseDto
@@ -84,7 +83,7 @@ public class MenuSideResponseDto {
     }
 
     public boolean hasChildren() {
-        return Objects.nonNull(children) || children.size() > 0;
+        return Objects.nonNull(children) && !children.isEmpty();
     }
 
     public boolean isRequiredUrlPath() {
