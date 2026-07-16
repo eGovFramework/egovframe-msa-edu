@@ -47,7 +47,7 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
     }
 
     /**
-     * 예약 물품 저장 시 비지니스 로직에 의한 validation check
+     * 예약 물품 저장 시 비즈니스 로직에 의한 validation check
      *
      * @param value
      * @param context
