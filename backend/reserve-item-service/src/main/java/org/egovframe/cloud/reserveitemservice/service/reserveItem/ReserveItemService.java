@@ -216,9 +216,9 @@ public class ReserveItemService extends ReactiveAbstractService {
 
     /**
      * 각 카테고리별 최신 예약 물품 조회
-     * 파라미터로 받는 갯수만큼 조회한다.
+     * 파라미터로 받는 개수만큼 조회한다.
      *
-     * @param count 조회할 갯수 0:전체
+     * @param count 조회할 개수 0:전체
      * @return
      */
     public Mono<Map<String, Collection<ReserveItemMainResponseDto>>> findLatest(Integer count) {
