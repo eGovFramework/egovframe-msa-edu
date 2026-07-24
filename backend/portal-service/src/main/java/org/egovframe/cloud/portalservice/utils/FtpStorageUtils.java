@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.net.ftp.FTP;
@@ -377,6 +378,12 @@ public class FtpStorageUtils implements StorageUtils {
             String contentType = URLConnection.guessContentTypeFromName(resource.getFilename());
 
             inputStream.close();
+
+            // image/* 만 허용(저장형 XSS 방지)
+            if (contentType == null || !contentType.toLowerCase(Locale.ROOT).startsWith("image/")) {
+                log.warn("Rejected non-image content type on image load: {}", contentType);
+                throw new BusinessMessageException(messageUtil.getMessage("valid.file.invalid_name"));
+            }
 
             return AttachmentImageResponseDto.builder()
                 .mimeType(contentType)
