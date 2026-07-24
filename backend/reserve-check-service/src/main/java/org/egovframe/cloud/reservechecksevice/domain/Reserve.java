@@ -167,12 +167,9 @@ public class Reserve extends BaseEntity {
     }
 
     /**
-     * 예약 정보 업데이트
-     *
-     * @param updateRequestDto
-     * @return
+     * 예약 정보 업데이트 (관리자)
      */
-    public Reserve update(ReserveUpdateRequestDto updateRequestDto) {
+    public Reserve updateByAdmin(ReserveUpdateRequestDto updateRequestDto) {
         this.reserveQty = updateRequestDto.getReserveQty();
         this.reservePurposeContent = updateRequestDto.getReservePurposeContent();
         this.attachmentCode = updateRequestDto.getAttachmentCode();
@@ -182,6 +179,28 @@ public class Reserve extends BaseEntity {
         this.userEmail = updateRequestDto.getUserEmail();
         this.userContactNo = updateRequestDto.getUserContactNo();
         return this;
+    }
+
+    /**
+     * 예약 정보 업데이트 (일반 사용자 — 소유자 userId 유지)
+     */
+    public Reserve updateForUser(ReserveUpdateRequestDto updateRequestDto) {
+        this.reserveQty = updateRequestDto.getReserveQty();
+        this.reservePurposeContent = updateRequestDto.getReservePurposeContent();
+        this.attachmentCode = updateRequestDto.getAttachmentCode();
+        this.reserveStartDate = updateRequestDto.getReserveStartDate();
+        this.reserveEndDate = updateRequestDto.getReserveEndDate();
+        this.userEmail = updateRequestDto.getUserEmail();
+        this.userContactNo = updateRequestDto.getUserContactNo();
+        return this;
+    }
+
+    /**
+     * @deprecated {@link #updateByAdmin(ReserveUpdateRequestDto)} 또는 {@link #updateForUser(ReserveUpdateRequestDto)} 사용
+     */
+    @Deprecated
+    public Reserve update(ReserveUpdateRequestDto updateRequestDto) {
+        return updateByAdmin(updateRequestDto);
     }
 
     /**

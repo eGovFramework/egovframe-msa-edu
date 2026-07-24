@@ -11,6 +11,7 @@ import org.egovframe.cloud.portalservice.api.menu.dto.SiteResponseDto;
 import org.egovframe.cloud.portalservice.domain.menu.SiteRepository;
 import org.egovframe.cloud.portalservice.service.menu.MenuService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -90,6 +91,7 @@ public class MenuApiController {
      * @param menuTreeRequestDto
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/api/v1/menus")
     @ResponseStatus(HttpStatus.CREATED)
     public MenuTreeResponseDto save(@RequestBody @Valid MenuTreeRequestDto menuTreeRequestDto) {
@@ -103,6 +105,7 @@ public class MenuApiController {
      * @param menuDnDRequestDtoList
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/api/v1/menus/{siteId}/tree")
     public Long saveDnD(@PathVariable("siteId") Long siteId,  @RequestBody List<MenuDnDRequestDto> menuDnDRequestDtoList) {
         return menuService.updateDnD(siteId, menuDnDRequestDtoList);
@@ -115,6 +118,7 @@ public class MenuApiController {
      * @param name
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/api/v1/menus/{menuId}/{name}")
     public MenuTreeResponseDto updateName(@PathVariable("menuId") Long menuId, @PathVariable String name) {
         return menuService.updateName(menuId, name);
@@ -127,6 +131,7 @@ public class MenuApiController {
      * @param updateRequestDto
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/api/v1/menus/{menuId}")
     public MenuResponseDto update(@PathVariable("menuId") Long menuId, @RequestBody MenuUpdateRequestDto updateRequestDto) {
         return menuService.update(menuId, updateRequestDto);
@@ -137,6 +142,7 @@ public class MenuApiController {
      *
      * @param menuId
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(value = "/api/v1/menus/{menuId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("menuId") Long menuId) {
