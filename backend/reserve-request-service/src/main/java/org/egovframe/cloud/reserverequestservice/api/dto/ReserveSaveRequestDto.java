@@ -97,6 +97,10 @@ public class ReserveSaveRequestDto {
         this.userEmail = userEmail;
     }
 
+    public void applyReserveOwner(String authenticatedUserId) {
+        this.userId = authenticatedUserId;
+    }
+
     public Reserve createRequestReserve() {
         this.reserveId = String.valueOf(UUID.randomUUID());
         this.reserveStatusId = ReserveStatus.REQUEST.getKey();
