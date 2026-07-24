@@ -82,6 +82,10 @@ public class ReserveSaveRequestDto {
         return toEntity();
     }
 
+    public void applyReserveOwner(String authenticatedUserId) {
+        this.userId = authenticatedUserId;
+    }
+
     public Reserve toEntity() {
         Reserve reserve = Reserve.builder()
             .reserveId(this.reserveId)
