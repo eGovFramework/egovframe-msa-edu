@@ -68,11 +68,15 @@ public class ReserveService extends ReactiveAbstractService {
      */
     public Mono<ReserveResponseDto> create(ReserveSaveRequestDto saveRequestDto) {
         return Mono.just(saveRequestDto)
-            .flatMap(dto -> Mono.just(dto.createRequestReserve()))
             .zipWith(getUserId())
-            .flatMap(tuple -> {
-                tuple.getT1().setCreatedInfo(LocalDateTime.now(), tuple.getT2());
-                return Mono.just(tuple.getT1());
+            .map(tuple -> {
+                ReserveSaveRequestDto dto = tuple.getT1();
+                dto.applyReserveOwner(tuple.getT2());
+                return dto.createRequestReserve();
+            })
+            .flatMap(reserve -> {
+                reserve.setCreatedInfo(LocalDateTime.now(), reserve.getUserId());
+                return Mono.just(reserve);
             })
             .flatMap(reserveRepository::insert)
             .doOnNext(reserve -> sendAttachmentEntityInfo(streamBridge,
@@ -127,10 +131,19 @@ public class ReserveService extends ReactiveAbstractService {
      */
     public Mono<ReserveResponseDto> save(ReserveSaveRequestDto saveRequestDto) {
         return Mono.just(saveRequestDto)
+            .zipWith(getUserId())
+            .map(tuple -> {
+                ReserveSaveRequestDto dto = tuple.getT1();
+                dto.applyReserveOwner(tuple.getT2());
+                return dto;
+            })
             .flatMap(this::validate)
             .onErrorResume(throwable -> Mono.error(throwable))
-            .flatMap(dto -> Mono.just(dto.createApproveReserve())).zipWith(getUserId())
-            .flatMap(tuple -> Mono.just(tuple.getT1().setCreatedInfo(LocalDateTime.now(), tuple.getT2())))
+            .map(ReserveSaveRequestDto::createApproveReserve)
+            .flatMap(reserve -> {
+                reserve.setCreatedInfo(LocalDateTime.now(), reserve.getUserId());
+                return Mono.just(reserve);
+            })
             .flatMap(reserveRepository::insert)
             .flatMap(this::convertReserveResponseDto);
     }
