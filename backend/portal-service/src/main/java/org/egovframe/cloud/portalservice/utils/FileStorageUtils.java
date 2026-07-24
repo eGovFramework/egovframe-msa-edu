@@ -82,7 +82,7 @@ public class FileStorageUtils implements StorageUtils {
     }
 
     private static Set<String> parseAllowedExtensions(Environment environment) {
-        String raw = environment.getProperty(PROPERTY_ALLOWED_EXTENSIONS, "jpg,jpeg,png,gif,bmp,webp,pdf,xlsx,xls,htm,html,txt");
+        String raw = environment.getProperty(PROPERTY_ALLOWED_EXTENSIONS, "jpg,jpeg,png,gif,bmp,webp,pdf,xlsx,xls,txt");
         return Arrays.stream(raw.split(","))
                 .map(String::trim)
                 .filter(StringUtils::hasText)
@@ -426,8 +426,15 @@ public class FileStorageUtils implements StorageUtils {
                         buffer.write(data, 0, read);
                     }
 
+                    // /image/* 만 허용(저장형 XSS 방지)
+                    String mimeType = probeContentType(imagePath);
+                    if (mimeType == null || !mimeType.toLowerCase(Locale.ROOT).startsWith("image/")) {
+                        log.warn("Rejected non-image content type on image load: {}", mimeType);
+                        throw new BusinessMessageException(messageUtil.getMessage("valid.file.invalid_name"));
+                    }
+
                     return AttachmentImageResponseDto.builder()
-                            .mimeType(probeContentType(imagePath))
+                            .mimeType(mimeType)
                             .data(data)
                             .build();
                 }
