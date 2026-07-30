@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -93,6 +94,7 @@ public class PrivacyApiController {
      * @param requestDto 개인정보처리방침 등록 요청 DTO
      * @return PrivacyResponseDto 개인정보처리방침 상세 응답 DTO
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/api/v1/privacies")
     @ResponseStatus(HttpStatus.CREATED)
     public PrivacyResponseDto save(@RequestBody @Valid PrivacySaveRequestDto requestDto) {
@@ -106,6 +108,7 @@ public class PrivacyApiController {
      * @param requestDto 개인정보처리방침 수정 요청 DTO
      * @return PrivacyResponseDto 개인정보처리방침 상세 응답 DTO
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/api/v1/privacies/{privacyNo}")
     public PrivacyResponseDto update(@PathVariable("privacyNo") Integer privacyNo, @RequestBody @Valid PrivacyUpdateRequestDto requestDto) {
         return privacyService.update(privacyNo, requestDto);
@@ -118,6 +121,7 @@ public class PrivacyApiController {
      * @param useAt     사용 여부
      * @return PrivacyResponseDto 개인정보처리방침 상세 응답 DTO
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/api/v1/privacies/{privacyNo}/{useAt}")
     public PrivacyResponseDto updateUseAt(@PathVariable("privacyNo") Integer privacyNo, @PathVariable("useAt") Boolean useAt) {
         return privacyService.updateUseAt(privacyNo, useAt);
@@ -128,6 +132,7 @@ public class PrivacyApiController {
      *
      * @param privacyNo 개인정보처리방침 번호
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/api/v1/privacies/{privacyNo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("privacyNo") Integer privacyNo) {

@@ -29,6 +29,9 @@ ext {
 dependencies {
 //    implementation files('../module-common/build/libs/egovframe-cloud-module-common.jar') // @ComponentScan(basePackages={"org.egovframe.cloud"}) 추가해야 적용된다
     implementation("org.egovframe.cloud:egovframe-cloud-module-common:${egovframeBootParentVersion}") {
+        // egovframe-rte-fdl-logging이 log4j-slf4j2-impl(slf4j→log4j2)을 끌어와
+        // Spring Boot 기본 logback의 log4j-to-slf4j(log4j2→slf4j)와 충돌하므로 제외한다.
+        exclude group: 'org.egovframe.rte', module: 'egovframe-rte-fdl-logging'
         exclude group: 'commons-logging', module: 'commons-logging'
     }
     implementation("org.egovframe.rte:egovframe-rte-fdl-cmmn:${egovframeBootParentVersion}") {
@@ -85,7 +88,7 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     implementation 'org.javassist:javassist:3.29.2-GA'
-    implementation 'org.webjars:webjars-locator-core:0.53'
+    implementation 'org.webjars:webjars-locator-core:0.59'
     implementation 'com.google.guava:guava:32.1.3-jre'
 }
 
@@ -98,6 +101,12 @@ dependencyManagement {
 
 test {
     useJUnitPlatform()
+    // egovframe-rte-fdl-logging pulls in log4j-slf4j2-impl while spring-boot-starter-logging
+    // pulls in log4j-to-slf4j. Having both on the classpath causes a LoggingException at
+    // EgovAbstractServiceImpl initialisation. Exclude the redundant bridge in test scope.
+    configurations.testRuntimeClasspath {
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    }
 }
 
 // querydsl 추가 시작

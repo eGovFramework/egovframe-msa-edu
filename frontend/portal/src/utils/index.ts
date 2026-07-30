@@ -59,7 +59,7 @@ export const escapeHtml = html => {
 
 // 개행 태그(p, div) 제거
 export const escapeHtmlNl = html => {
-  return html.replace(/(<[/]([p|div]+)>)/gi, '\n').replace(/(<([^>]+)>)/gi, '').replace(/(\&nbsp\;)/gi, '')
+  return html.replace(/(<[/](p|div)>)/gi, '\n').replace(/(<([^>]+)>)/gi, '').replace(/(\&nbsp\;)/gi, '')
 }
 
 // 개행 문자를 br 태그로 변환

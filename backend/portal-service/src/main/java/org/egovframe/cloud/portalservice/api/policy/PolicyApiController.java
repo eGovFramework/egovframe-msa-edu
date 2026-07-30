@@ -8,6 +8,7 @@ import org.egovframe.cloud.portalservice.service.policy.PolicyService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -86,6 +87,7 @@ public class PolicyApiController {
      * @param saveRequestDto
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/api/v1/policies")
     @ResponseStatus(HttpStatus.CREATED)
     public Long save(@RequestBody PolicySaveRequestDto saveRequestDto) {
@@ -99,6 +101,7 @@ public class PolicyApiController {
      * @param updateRequestDto
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/api/v1/policies/{id}")
     public Long update(@PathVariable("id") Long id, @RequestBody PolicyUpdateRequestDto updateRequestDto) {
         return policyService.update(id, updateRequestDto);
@@ -111,6 +114,7 @@ public class PolicyApiController {
      * @param isUse
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/api/v1/policies/{id}/{isUse}")
     public Long updateIsUse(@PathVariable("id") Long id, @PathVariable("isUse") boolean isUse) {
         return policyService.updateIsUse(id, isUse);
@@ -121,6 +125,7 @@ public class PolicyApiController {
      *
      * @param id
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/api/v1/policies/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") Long id) {

@@ -25,6 +25,11 @@ spec:
         app: portal-service
         name: portal-service-pod
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       tolerations:
         - key: pvc
           operator: Equal
@@ -90,6 +95,27 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 80
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           volumeMounts:
             - name: backend-volume
               mountPath: /srv/nfs
