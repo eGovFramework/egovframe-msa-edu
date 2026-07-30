@@ -83,7 +83,7 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
-    implementation 'org.webjars:webjars-locator-core:0.53'
+    implementation 'org.webjars:webjars-locator-core:0.59'
 }
 
 test {
