@@ -12,14 +12,14 @@ eureka:
     register-with-eureka: true # eureka 서버에 등록
     fetch-registry: true # 외부 검색 가능
     service-url:
-      defaultZone: http://admin:admin@${eureka.instance.hostname:localhost}:8761/eureka
+      defaultZone: http://${EUREKA_USERNAME:admin}:${EUREKA_PASSWORD:admin}@${eureka.instance.hostname:localhost}:8761/eureka
 
 # file attach location - messages{lang}.properties 도 이 경로에 위치한다.
 file:
   directory: ${app.home:${user.home}}/msa-attach-volume # url 사용시에는 사용되지 않는다
   url: http://${file.hostname:localhost}:8080 # nginx 로 파일 다운로드 처리
   storage:
-    allowed-extensions: jpg,jpeg,png,gif,bmp,webp,pdf,xlsx,xls,htm,html,txt
+    allowed-extensions: jpg,jpeg,png,gif,bmp,webp,pdf,xlsx,xls,txt
     max-file-size: 10MB
 
 messages:

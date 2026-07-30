@@ -130,20 +130,13 @@ public class ReserveValidator {
      * @return
      */
     private Mono<Integer> getMaxByReserveDate( Long reserveItemId, LocalDateTime startDate, LocalDateTime endDate) {
-        Flux<Reserve> reserveFlux = reserveRepository.findAllByReserveDate(reserveItemId, startDate, endDate)
-            .switchIfEmpty(Flux.empty());
-
-        if (reserveFlux.equals(Flux.empty())) {
-            return Mono.just(0);
-        }
+        Flux<Reserve> reserveFlux = reserveRepository.findAllByReserveDate(reserveItemId, startDate, endDate);
 
         long between = ChronoUnit.DAYS.between(startDate, endDate);
 
         if (between == 0) {
             return reserveFlux.map(reserve -> {
-                if (startDate.isAfter(reserve.getReserveStartDate())
-                    || startDate.isBefore(reserve.getReserveEndDate())
-                    || startDate.isEqual(reserve.getReserveStartDate()) || startDate.isEqual(reserve.getReserveEndDate())) {
+                if (isOverlapped(startDate, reserve)) {
                     return reserve.getReserveQty();
                 }
                 return 0;
@@ -155,10 +148,7 @@ public class ReserveValidator {
             .mapToObj(i -> startDate.plusDays(i)))
             .flatMap(localDateTime ->
                 reserveFlux.map(findReserve -> {
-                    if (localDateTime.isAfter(findReserve.getReserveStartDate())
-                        || localDateTime.isBefore(findReserve.getReserveEndDate())
-                        || localDateTime.isEqual(findReserve.getReserveStartDate()) || localDateTime.isEqual(findReserve.getReserveEndDate())
-                    ) {
+                    if (isOverlapped(localDateTime, findReserve)) {
                         return findReserve.getReserveQty();
                     }
                     return 0;
@@ -166,6 +156,18 @@ public class ReserveValidator {
             .groupBy(integer -> integer)
             .flatMap(group -> group.reduce((x1,x2) -> x1 > x2?x1:x2))
             .last(0);
+    }
+
+    /**
+     * 조회 날짜가 예약 기간(시작일~종료일, 양 끝 포함)에 겹치는지 판단한다.
+     *
+     * @param date 조회 날짜
+     * @param reserve 비교 대상 예약
+     * @return 겹치면 true
+     */
+    private boolean isOverlapped(LocalDateTime date, Reserve reserve) {
+        return !date.isBefore(reserve.getReserveStartDate())
+            && !date.isAfter(reserve.getReserveEndDate());
     }
 
     private String getMessage(String code) {

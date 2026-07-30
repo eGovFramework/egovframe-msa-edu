@@ -12,6 +12,7 @@ import org.egovframe.cloud.portalservice.service.code.CodeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -90,6 +91,7 @@ public class CodeApiController {
      * @param requestDto
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/api/v1/codes")
     @ResponseStatus(HttpStatus.CREATED)
     public String save(@RequestBody @Valid CodeSaveRequestDto requestDto) {
@@ -103,6 +105,7 @@ public class CodeApiController {
      * @param requestDto
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/api/v1/codes/{codeId}")
     public String update(@PathVariable("codeId") String codeId, @RequestBody CodeUpdateRequestDto requestDto) {
         return codeService.update(codeId, requestDto);
@@ -115,6 +118,7 @@ public class CodeApiController {
      * @param useAt
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/api/v1/codes/{codeId}/toggle-use")
     public String updateUseAt(@PathVariable("codeId") String codeId, @RequestParam boolean useAt) {
         return codeService.updateUseAt(codeId, useAt);
@@ -125,6 +129,7 @@ public class CodeApiController {
      *
      * @param codeId
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/api/v1/codes/{codeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("codeId") String codeId) {

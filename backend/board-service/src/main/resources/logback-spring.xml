@@ -40,9 +40,43 @@
                 </providers>
             </encoder>
         </appender>
+
+        <!-- RollingFile - JSON 구조화 로그를 파일로 기록 (운영 환경 장애 분석용) -->
+        <property name="LOG_PATH" value="${log_path:-./logs}" />
+        <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_PATH}/${app_name}.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_PATH}/${app_name}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>100MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+                <maxHistory>30</maxHistory>
+                <totalSizeCap>3GB</totalSizeCap>
+            </rollingPolicy>
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <timestamp>
+                        <fieldName>timestamp</fieldName>
+                        <pattern>yyyy-MM-dd'T'HH:mm:ss.SSSZ</pattern>
+                    </timestamp>
+                    <logLevel/>
+                    <loggerName/>
+                    <mdc/>
+                    <pattern>
+                        <pattern>
+                            {"appName": "${app_name}"}
+                        </pattern>
+                    </pattern>
+                    <threadName/>
+                    <message/>
+                    <stackTrace/>
+                </providers>
+            </encoder>
+        </appender>
         <root level="WARN">
             <appender-ref ref="LOGSTASH" />
             <appender-ref ref="STDOUT" />
+            <appender-ref ref="ROLLING_FILE" />
         </root>
     </springProfile>
 

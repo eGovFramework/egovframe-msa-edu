@@ -25,6 +25,11 @@ spec:
         app: apigateway
         name: apigateway-pod
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
         - name: apigateway
           image: egovframe/egovframe-msa-edu-backend-apigateway:latest # TODO
@@ -67,4 +72,25 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 10
             successThreshold: 1
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8000
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
             failureThreshold: 3

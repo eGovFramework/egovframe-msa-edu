@@ -13,6 +13,7 @@ import org.egovframe.cloud.portalservice.service.code.CodeDetailService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -116,6 +117,7 @@ public class CodeDetailApiController {
      * @param requestDto
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/api/v1/code-details")
     @ResponseStatus(HttpStatus.CREATED)
     public String save(@RequestBody @Valid CodeDetailSaveRequestDto requestDto) {
@@ -129,6 +131,7 @@ public class CodeDetailApiController {
      * @param requestDto
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/api/v1/code-details/{codeId}")
     public String update(@PathVariable("codeId") String codeId, @RequestBody CodeDetailUpdateRequestDto requestDto) {
         return codeDetailService.update(codeId, requestDto);
@@ -141,6 +144,7 @@ public class CodeDetailApiController {
      * @param useAt
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/api/v1/code-details/{codeId}/toggle-use")
     public String updateUseAt(@PathVariable("codeId") String codeId, @RequestParam boolean useAt) {
         return codeDetailService.updateUseAt(codeId, useAt);
@@ -151,6 +155,7 @@ public class CodeDetailApiController {
      *
      * @param codeId
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/api/v1/code-details/{codeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("codeId") String codeId) {
