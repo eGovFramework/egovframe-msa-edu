@@ -98,6 +98,12 @@ dependencyManagement {
 
 test {
     useJUnitPlatform()
+    // egovframe-rte-fdl-logging pulls in log4j-slf4j2-impl while spring-boot-starter-logging
+    // pulls in log4j-to-slf4j. Having both on the classpath causes a LoggingException at
+    // EgovAbstractServiceImpl initialisation. Exclude the redundant bridge in test scope.
+    configurations.testRuntimeClasspath {
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    }
 }
 
 // querydsl 추가 시작
