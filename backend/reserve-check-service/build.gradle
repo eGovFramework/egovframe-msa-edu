@@ -59,7 +59,7 @@ dependencies {
     implementation 'io.zipkin.reporter2:zipkin-reporter'
     implementation 'io.zipkin.zipkin2:zipkin'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'        // logstash logback
+    implementation 'net.logstash.logback:logstash-logback-encoder:8.0'        // logstash logback
 
     //messaging
     implementation 'org.springframework.cloud:spring-cloud-stream'
