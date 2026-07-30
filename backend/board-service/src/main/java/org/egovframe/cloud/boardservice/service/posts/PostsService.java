@@ -362,7 +362,7 @@ public class PostsService extends AbstractService {
      * @param postsNo 게시물 번호
      * @param userId  사용자 id
      * @return Posts 게시물 엔티티
-     * @throws BusinessMessageException 비지니스 예외
+     * @throws BusinessMessageException 비즈니스 예외
      */
     private Posts findPostsByCreatedBy(Integer boardNo, Integer postsNo, String userId) throws BusinessMessageException {
         if (userId == null || "".equals(userId)) {
@@ -384,7 +384,7 @@ public class PostsService extends AbstractService {
      * 게시판 사용자 작성 여부 확인
      *
      * @param boardNo 게시판 번호
-     * @throws BusinessMessageException 비지니스 예외
+     * @throws BusinessMessageException 비즈니스 예외
      */
     private void checkUserWritable(Integer boardNo) throws BusinessMessageException {
         BoardResponseDto board = boardService.findById(boardNo);
@@ -395,7 +395,7 @@ public class PostsService extends AbstractService {
     }
 
     /**
-     * 첨부파일 entity 정보 업데이트 하기 위해 이벤트 메세지 발행
+     * 첨부파일 entity 정보 업데이트 하기 위해 이벤트 메시지 발행
      *
      * @param entity
      */
