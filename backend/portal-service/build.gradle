@@ -14,6 +14,9 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    testRuntimeClasspath {
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    }
 }
 
 repositories {
