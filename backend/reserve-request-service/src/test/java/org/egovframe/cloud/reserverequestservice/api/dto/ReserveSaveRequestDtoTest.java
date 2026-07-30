@@ -1,99 +1,84 @@
 package org.egovframe.cloud.reserverequestservice.api.dto;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.time.LocalDateTime;
-
 import org.egovframe.cloud.reserverequestservice.domain.Reserve;
 import org.egovframe.cloud.reserverequestservice.domain.ReserveStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 class ReserveSaveRequestDtoTest {
 
     private ReserveSaveRequestDto buildDto() {
         return ReserveSaveRequestDto.builder()
-                .reserveItemId(1L)
-                .locationId(10L)
-                .categoryId("equipment")
-                .totalQty(5)
+                .reserveItemId(101L)
+                .locationId(7L)
+                .categoryId("CAT")
                 .reserveQty(2)
-                .reservePurposeContent("테스트 예약 목적")
-                .reserveStartDate(LocalDateTime.of(2024, 6, 1, 9, 0))
-                .reserveEndDate(LocalDateTime.of(2024, 6, 3, 18, 0))
-                .userId("testUser")
-                .userContactNo("010-1234-5678")
-                .userEmail("test@example.com")
-                .reserveMeansId("realtime")
-                .operationStartDate(LocalDateTime.of(2024, 5, 1, 0, 0))
-                .operationEndDate(LocalDateTime.of(2024, 12, 31, 23, 59))
-                .requestStartDate(LocalDateTime.of(2024, 5, 1, 0, 0))
-                .requestEndDate(LocalDateTime.of(2024, 12, 31, 23, 59))
-                .isPeriod(false)
+                .reservePurposeContent("회의실 예약 사유")
+                .attachmentCode("ATT-1")
+                .reserveStartDate(LocalDateTime.of(2026, 6, 1, 10, 0))
+                .reserveEndDate(LocalDateTime.of(2026, 6, 1, 12, 0))
+                .userId("user-1")
+                .userContactNo("010-0000-0000")
+                .userEmail("user@example.com")
                 .build();
     }
 
     @Test
-    @DisplayName("builder로 생성한 DTO의 필드가 올바르게 설정된다")
-    void builder_sets_fields_correctly() {
+    @DisplayName("toEntity는 DTO 필드를 Reserve 엔티티로 그대로 복사한다")
+    void toEntity_copiesFields() {
         ReserveSaveRequestDto dto = buildDto();
 
-        assertThat(dto.getReserveItemId()).isEqualTo(1L);
-        assertThat(dto.getCategoryId()).isEqualTo("equipment");
-        assertThat(dto.getReserveQty()).isEqualTo(2);
-        assertThat(dto.getUserId()).isEqualTo("testUser");
-        assertThat(dto.getUserEmail()).isEqualTo("test@example.com");
+        Reserve entity = dto.toEntity();
+
+        assertThat(entity).isNotNull();
+        assertThat(entity.getReserveItemId()).isEqualTo(101L);
+        assertThat(entity.getLocationId()).isEqualTo(7L);
+        assertThat(entity.getCategoryId()).isEqualTo("CAT");
+        assertThat(entity.getReserveQty()).isEqualTo(2);
+        assertThat(entity.getReservePurposeContent()).isEqualTo("회의실 예약 사유");
+        assertThat(entity.getAttachmentCode()).isEqualTo("ATT-1");
+        assertThat(entity.getUserId()).isEqualTo("user-1");
+        assertThat(entity.getUserContactNo()).isEqualTo("010-0000-0000");
+        assertThat(entity.getUserEmail()).isEqualTo("user@example.com");
     }
 
     @Test
-    @DisplayName("createRequestReserve는 상태를 REQUEST로 설정하고 Reserve 엔티티를 반환한다")
-    void create_request_reserve_sets_status_to_request() {
+    @DisplayName("createRequestReserve는 새 reserveId를 생성하고 상태를 REQUEST로 설정한다")
+    void createRequestReserve_assignsIdAndRequestStatus() {
         ReserveSaveRequestDto dto = buildDto();
+        assertThat(dto.getReserveId()).isNull();
 
-        Reserve reserve = dto.createRequestReserve();
+        Reserve entity = dto.createRequestReserve();
 
-        assertThat(reserve.getReserveStatusId()).isEqualTo(ReserveStatus.REQUEST.getKey());
-        assertThat(reserve.getReserveId()).isNotNull();
-        assertThat(reserve.getReserveItemId()).isEqualTo(1L);
-        assertThat(reserve.getUserId()).isEqualTo("testUser");
+        assertThat(dto.getReserveId()).isNotBlank();
+        assertThat(entity.getReserveId()).isEqualTo(dto.getReserveId());
+        assertThat(entity.getReserveStatusId()).isEqualTo(ReserveStatus.REQUEST.getKey());
     }
 
     @Test
-    @DisplayName("createApproveReserve는 상태를 APPROVE로 설정하고 Reserve 엔티티를 반환한다")
-    void create_approve_reserve_sets_status_to_approve() {
+    @DisplayName("createApproveReserve는 새 reserveId를 생성하고 상태를 APPROVE로 설정한다")
+    void createApproveReserve_assignsIdAndApproveStatus() {
         ReserveSaveRequestDto dto = buildDto();
 
-        Reserve reserve = dto.createApproveReserve();
+        Reserve entity = dto.createApproveReserve();
 
-        assertThat(reserve.getReserveStatusId()).isEqualTo(ReserveStatus.APPROVE.getKey());
-        assertThat(reserve.getReserveId()).isNotNull();
+        assertThat(dto.getReserveId()).isNotBlank();
+        assertThat(entity.getReserveStatusId()).isEqualTo(ReserveStatus.APPROVE.getKey());
     }
 
     @Test
-    @DisplayName("toEntity는 DTO의 값을 Reserve 엔티티로 변환한다")
-    void to_entity_maps_fields() {
-        ReserveSaveRequestDto dto = buildDto();
-        dto.setReserveId("test-reserve-id");
-        dto.setReserveStatusId(ReserveStatus.REQUEST.getKey());
+    @DisplayName("createRequestReserve와 createApproveReserve는 매번 다른 reserveId를 생성한다")
+    void createReserve_generatesUniqueId() {
+        ReserveSaveRequestDto first = buildDto();
+        ReserveSaveRequestDto second = buildDto();
 
-        Reserve reserve = dto.toEntity();
+        first.createRequestReserve();
+        second.createRequestReserve();
 
-        assertThat(reserve.getReserveId()).isEqualTo("test-reserve-id");
-        assertThat(reserve.getLocationId()).isEqualTo(10L);
-        assertThat(reserve.getCategoryId()).isEqualTo("equipment");
-        assertThat(reserve.getReservePurposeContent()).isEqualTo("테스트 예약 목적");
-        assertThat(reserve.getUserContactNo()).isEqualTo("010-1234-5678");
-    }
-
-    @Test
-    @DisplayName("createRequestReserve를 두 번 호출하면 각각 다른 reserveId가 생성된다")
-    void create_request_reserve_generates_unique_id() {
-        ReserveSaveRequestDto dto1 = buildDto();
-        ReserveSaveRequestDto dto2 = buildDto();
-
-        Reserve reserve1 = dto1.createRequestReserve();
-        Reserve reserve2 = dto2.createRequestReserve();
-
-        assertThat(reserve1.getReserveId()).isNotEqualTo(reserve2.getReserveId());
+        assertThat(first.getReserveId()).isNotEqualTo(second.getReserveId());
     }
 }
