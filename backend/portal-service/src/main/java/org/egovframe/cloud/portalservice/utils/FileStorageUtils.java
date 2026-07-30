@@ -234,10 +234,11 @@ public class FileStorageUtils implements StorageUtils {
 
         File file = source.toFile();
         File renameFile = target.toFile();
-        try {
-            file.renameTo(renameFile);
-        } catch (NullPointerException ex) {
-            // 파일을 찾을 수 없습니다.
+        // File.renameTo는 실패 시 예외가 아니라 false를 반환하므로 반환값을 검사한다.
+        // (기존 catch(NullPointerException)는 rename 실패를 감지하지 못해 실패가 조용히 무시되어
+        //  존재하지 않는 파일 경로가 그대로 저장되는 문제가 있었다.)
+        if (!file.renameTo(renameFile)) {
+            // 원본 파일을 찾을 수 없거나 이름 변경에 실패한 경우
             throw new BusinessMessageException(messageUtil.getMessage("valid.file.not_found"));
         }
         return renamedRelative;
