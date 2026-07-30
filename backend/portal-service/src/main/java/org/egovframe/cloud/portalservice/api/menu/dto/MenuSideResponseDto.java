@@ -83,7 +83,7 @@ public class MenuSideResponseDto {
     }
 
     public boolean hasChildren() {
-        return Objects.nonNull(children) || children.size() > 0;
+        return Objects.nonNull(children) && !children.isEmpty();
     }
 
     public boolean isRequiredUrlPath() {
