@@ -166,7 +166,7 @@ public class ReserveItemService extends ReactiveAbstractService {
                     if (qty < 0) {
                         return Mono.just(false);
                     }
-                    return reserveItemRepository.save(reserveItem.updateInventoryQty(qty)).thenReturn(true);
+                    return reserveItemRepository.save(reserveItem.updateInventoryQty(reserveQty)).thenReturn(true);
                 });
     }
 
