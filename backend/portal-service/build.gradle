@@ -32,6 +32,11 @@ ext {
 dependencies {
 //    implementation files('../module-common/build/libs/egovframe-cloud-module-common.jar') // @ComponentScan(basePackages={"org.egovframe.cloud"}) 추가해야 적용된다
     implementation("org.egovframe.cloud:egovframe-cloud-module-common:${egovframeBootParentVersion}") {
+        // egovframe-rte-fdl-logging이 log4j-slf4j2-impl(slf4j→log4j2)을 끌어와
+        // Spring Boot 기본 logback의 log4j-to-slf4j(log4j2→slf4j)와 충돌하므로 제외한다.
+        // (직접 의존인 egovframe-rte-fdl-cmmn에는 이미 동일 제외가 적용되어 있으나
+        //  module-common 경유 전이 의존에는 누락되어 있었음)
+        exclude group: 'org.egovframe.rte', module: 'egovframe-rte-fdl-logging'
         exclude group: 'commons-logging', module: 'commons-logging'
     }
     implementation("org.egovframe.rte:egovframe-rte-fdl-cmmn:${egovframeBootParentVersion}") {
