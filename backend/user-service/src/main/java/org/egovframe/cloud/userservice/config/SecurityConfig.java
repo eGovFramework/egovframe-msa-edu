@@ -35,6 +35,7 @@ import lombok.RequiredArgsConstructor;
  *     수정일        수정자           수정내용
  *  ----------    --------    ---------------------------
  *  2021/06/30    jaeyeolkim  최초 생성
+ *  2026/06/26    이백행         [2026년 컨트리뷰션] @Bean 메서드의 불필요한 public 접근제어자 제거
  * </pre>
  */
 @RequiredArgsConstructor
@@ -54,7 +55,7 @@ public class SecurityConfig {
      * @throws Exception
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+    SecurityFilterChain securityFilterChain(HttpSecurity http,
             WebExpressionAuthorizationManager webExpressionAuthorizationManager,
             PasswordEncoder passwordEncoder) throws Exception {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userService);
@@ -81,7 +82,7 @@ public class SecurityConfig {
      * (Spring Security 6.x 기본 설정에서는 bean resolver가 등록되지 않아 EL1057E 발생)
      */
     @Bean
-    public WebExpressionAuthorizationManager webExpressionAuthorizationManager() {
+    WebExpressionAuthorizationManager webExpressionAuthorizationManager() {
         DefaultHttpSecurityExpressionHandler expressionHandler = new DefaultHttpSecurityExpressionHandler();
         expressionHandler.setApplicationContext(applicationContext);
         WebExpressionAuthorizationManager authorization = new WebExpressionAuthorizationManager(

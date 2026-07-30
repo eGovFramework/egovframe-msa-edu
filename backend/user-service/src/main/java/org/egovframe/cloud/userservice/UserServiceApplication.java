@@ -24,6 +24,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  *     수정일        수정자           수정내용
  *  ----------    --------    ---------------------------
  *  2021/06/30    jaeyeolkim  최초 생성
+ *  2026/06/26    이백행         [2026년 컨트리뷰션] @Bean 메서드의 불필요한 public 접근제어자 제거
  * </pre>
  */
 @ComponentScan({"org.egovframe.cloud.common", "org.egovframe.cloud.userservice"})
@@ -37,7 +38,7 @@ public class UserServiceApplication {
     }
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
+    BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -81,6 +82,7 @@ public class ContentApiController {
      * @param requestDto 컨텐츠 등록 요청 DTO
      * @return ContentResponseDto 컨텐츠 상세 응답 DTO
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/api/v1/contents")
     @ResponseStatus(HttpStatus.CREATED)
     public ContentResponseDto save(@RequestBody @Valid ContentSaveRequestDto requestDto) {
@@ -94,6 +96,7 @@ public class ContentApiController {
      * @param requestDto 컨텐츠 수정 요청 DTO
      * @return ContentResponseDto 컨텐츠 상세 응답 DTO
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/api/v1/contents/{contentNo}")
     public ContentResponseDto update(@PathVariable("contentNo") Integer contentNo, @RequestBody @Valid ContentUpdateRequestDto requestDto) {
         return contentService.update(contentNo, requestDto);
@@ -104,6 +107,7 @@ public class ContentApiController {
      *
      * @param contentNo 컨텐츠 번호
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/api/v1/contents/{contentNo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("contentNo") Integer contentNo) {

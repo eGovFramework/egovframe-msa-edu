@@ -13,6 +13,9 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    testRuntimeClasspath {
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    }
 }
 
 repositories {
@@ -29,6 +32,9 @@ ext {
 dependencies {
 //    implementation files('../module-common/build/libs/egovframe-cloud-module-common.jar') // @ComponentScan(basePackages={"org.egovframe.cloud"}) 추가해야 적용된다
     implementation("org.egovframe.cloud:egovframe-cloud-module-common:${egovframeBootParentVersion}") {
+        // egovframe-rte-fdl-logging이 log4j-slf4j2-impl(slf4j→log4j2)을 끌어와
+        // Spring Boot 기본 logback의 log4j-to-slf4j(log4j2→slf4j)와 충돌하므로 제외한다.
+        exclude group: 'org.egovframe.rte', module: 'egovframe-rte-fdl-logging'
         exclude group: 'commons-logging', module: 'commons-logging'
         exclude group: 'org.egovframe.rte', module: 'egovframe-rte-fdl-logging'
     }
@@ -54,7 +60,7 @@ dependencies {
     implementation 'io.zipkin.reporter2:zipkin-reporter'
     implementation 'io.zipkin.zipkin2:zipkin'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'        // logstash logback
+    implementation 'net.logstash.logback:logstash-logback-encoder:8.0'        // logstash logback
 
     //messaging
     implementation 'org.springframework.cloud:spring-cloud-stream'
@@ -79,12 +85,14 @@ dependencies {
     testImplementation 'com.h2database:h2'
     testImplementation 'io.r2dbc:r2dbc-h2'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    }
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
-    implementation 'org.webjars:webjars-locator-core:0.53'
+    implementation 'org.webjars:webjars-locator-core:0.59'
 }
 
 test {

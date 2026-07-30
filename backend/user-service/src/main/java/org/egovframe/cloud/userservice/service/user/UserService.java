@@ -33,6 +33,7 @@ import org.egovframe.cloud.userservice.config.UserPasswordChangeEmailTemplate;
 import org.egovframe.cloud.userservice.config.dto.SocialUser;
 import org.egovframe.cloud.userservice.domain.log.LoginLog;
 import org.egovframe.cloud.userservice.domain.log.LoginLogRepository;
+import org.egovframe.cloud.userservice.config.RefreshTokenHashUtil;
 import org.egovframe.cloud.userservice.domain.user.User;
 import org.egovframe.cloud.userservice.domain.user.UserFindPassword;
 import org.egovframe.cloud.userservice.domain.user.UserFindPasswordRepository;
@@ -189,7 +190,7 @@ public class UserService extends AbstractService implements UserDetailsService {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException(getMessage("err.user.notexists")));
 
-        user.updateRefreshToken(updateRefreshToken);
+        user.updateRefreshToken(RefreshTokenHashUtil.hash(updateRefreshToken));
 
         return user.getRoleKey();
     }
@@ -201,7 +202,7 @@ public class UserService extends AbstractService implements UserDetailsService {
      * @return
      */
     public User findByRefreshToken(String refreshToken) {
-        return userRepository.findByRefreshToken(refreshToken)
+        return userRepository.findByRefreshToken(RefreshTokenHashUtil.hash(refreshToken))
                 .orElseThrow(() -> new UsernameNotFoundException(getMessage("err.user.notexists")));
     }
 
@@ -271,7 +272,7 @@ public class UserService extends AbstractService implements UserDetailsService {
         ArrayList<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRoleKey()));
 
-        if (user.isSocialUser() && user.getEncryptedPassword() == null || "".equals(user.getEncryptedPassword())) { // 소셜 회원이고 비밀번호가 등록되지 않은 경우
+        if (user.isSocialUser() && (user.getEncryptedPassword() == null || "".equals(user.getEncryptedPassword()))) { // 소셜 회원이고 비밀번호가 등록되지 않은 경우
             return new SocialUser(user.getEmail(), authorities);
         } else {
             return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getEncryptedPassword(), authorities);

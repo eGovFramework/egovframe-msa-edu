@@ -3,7 +3,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import { makeStyles, Theme } from '@material-ui/core/styles'
 import Alert from '@material-ui/lab/Alert'
 import { userService } from '@service'
-import { format } from '@utils'
+import { EMAIL_PATTERN, format } from '@utils'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -152,8 +152,7 @@ const FindPassword = () => {
                     message: format(t('valid.maxlength.format'), [50]),
                   },
                   pattern: {
-                    value:
-                      /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i,
+                    value: EMAIL_PATTERN,
                     message: t('valid.email.pattern'),
                   },
                 }}

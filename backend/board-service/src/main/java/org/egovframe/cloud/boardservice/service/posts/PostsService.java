@@ -1,6 +1,6 @@
 package org.egovframe.cloud.boardservice.service.posts;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -106,7 +106,7 @@ public class PostsService extends AbstractService {
         List<PostsSimpleResponseDto> allPosts = postsRepository.findAllByBoardNosLimitCount(boardNos, postsCount);
         Map<Integer, List<PostsSimpleResponseDto>> postsGroup = allPosts.stream().collect(Collectors.groupingBy(PostsSimpleResponseDto::getBoardNo, Collectors.toList()));
 
-        Map<Integer, BoardResponseDto> data = new HashMap<>(); // 요청한 게시판 순서로 리턴하기 위해서 map 리턴
+        Map<Integer, BoardResponseDto> data = new LinkedHashMap<>(); // 요청한 게시판 순서로 리턴하기 위해서 map 리턴
         for (BoardResponseDto board : boards) {
             List<PostsSimpleResponseDto> posts = postsGroup.get(board.getBoardNo());
             if (posts != null) {
