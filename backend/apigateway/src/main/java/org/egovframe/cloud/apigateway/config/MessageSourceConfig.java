@@ -44,7 +44,7 @@ public class MessageSourceConfig {
     private String profile;
 
     @Bean
-    public MessageSource messageSource() {
+    MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         final String MESSAGES = "/messages";
         if ("default".equals(profile)) {

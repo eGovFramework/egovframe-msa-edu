@@ -27,13 +27,14 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
  *     수정일        수정자           수정내용
  *  ----------    --------    ---------------------------
  *  2021/08/31    jaeyeolkim  최초 생성
+ *  2026/06/26    이백행         [2026년 컨트리뷰션] @Bean 메서드의 불필요한 public 접근제어자 제거
  * </pre>
  */
 @Configuration
 public class Resilience4JConfig {
 
     @Bean
-    public Customizer<Resilience4JCircuitBreakerFactory> resilience4JCircuitBreakerFactoryCustomizer() {
+    Customizer<Resilience4JCircuitBreakerFactory> resilience4JCircuitBreakerFactoryCustomizer() {
         CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
                 .slidingWindowType(CircuitBreakerConfig.SlidingWindowType.TIME_BASED) // circuit breaker time 기반 처리
                 .slowCallDurationThreshold(Duration.ofSeconds(10)) // 요청 지연으로 간주하는 시간

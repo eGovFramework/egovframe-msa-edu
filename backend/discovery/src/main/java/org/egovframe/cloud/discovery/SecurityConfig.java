@@ -23,6 +23,7 @@ import org.springframework.security.web.SecurityFilterChain;
  *  ----------    --------    ---------------------------
  *  2021/06/30    jaeyeolkim  최초 생성
  *  2025/09/01    유지보수	  Spring Security 6.5.3 버전에 맞게 수정
+ *  2026/06/26    이백행         [2026년 컨트리뷰션] @Bean 메서드의 불필요한 public 접근제어자 제거
  * </pre>
  */
 @Configuration
@@ -39,7 +40,7 @@ public class SecurityConfig {
      * @throws Exception 예외
      */
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers
