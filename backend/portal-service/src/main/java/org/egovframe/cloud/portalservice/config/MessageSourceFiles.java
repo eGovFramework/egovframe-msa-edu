@@ -70,7 +70,7 @@ public class MessageSourceFiles {
         // 메시지 폴더 경로
         final String fileMessagesDirectory = StringUtils.cleanPath(environment.getProperty("file.directory") + "/messages");
         try {
-            Files.createDirectory(Paths.get(fileMessagesDirectory).toAbsolutePath().normalize());
+            Files.createDirectories(Paths.get(fileMessagesDirectory).toAbsolutePath().normalize());
         } catch (FileAlreadyExistsException e) {
             log.info("메시지 폴더 경로에 파일이나 디렉토리가 이미 존재");
         } catch (IOException e) {
@@ -99,12 +99,11 @@ public class MessageSourceFiles {
 
             try (FileOutputStream out = new FileOutputStream(propFile)) {
                 prop.store(out, "messages");
+                // 저장에 성공한 파일만 업로드 대상에 담는다
+                files.add(propFile);
             } catch (IOException e) {
                 log.error("Messages FileOutputStream IOException", e);
             }
-
-            // files
-            files.add(propFile);
         }
 
         String ftpEnabled = environment.getProperty("ftp.enabled");
