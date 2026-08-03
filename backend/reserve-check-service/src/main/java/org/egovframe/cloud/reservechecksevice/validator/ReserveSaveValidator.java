@@ -41,7 +41,6 @@ public class ReserveSaveValidator implements ConstraintValidator<ReserveSaveVali
     protected MessageUtil messageUtil;
 
     private String message;
-    private boolean fieldValid;
 
 
     @Override
@@ -59,8 +58,6 @@ public class ReserveSaveValidator implements ConstraintValidator<ReserveSaveVali
     @SneakyThrows
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
-        fieldValid = true;
-
         String categoryId = String.valueOf(getFieldValue(value, "categoryId"));
         if ("education".equals(categoryId)) {
             //교육인 경우
@@ -71,10 +68,8 @@ public class ReserveSaveValidator implements ConstraintValidator<ReserveSaveVali
         if ("equipment".equals(categoryId)) {
             //장비인 경우
             //신청일자(기간), 신청수량
-            fieldValid = checkReserveDate(value, context);
-            fieldValid = checkReserveQty(value, context);
-
-            return fieldValid;
+            // 두 검사를 모두 수행해 위반 사유를 함께 담는다
+            return checkReserveDate(value, context) & checkReserveQty(value, context);
         }
 
         if ("place".equals(categoryId)) {
@@ -83,7 +78,7 @@ public class ReserveSaveValidator implements ConstraintValidator<ReserveSaveVali
             return checkReserveDate(value, context);
         }
 
-        return fieldValid;
+        return true;
     }
 
     /**
@@ -105,7 +100,7 @@ public class ReserveSaveValidator implements ConstraintValidator<ReserveSaveVali
                 .addConstraintViolation();
             return false;
         }
-        return fieldValid;
+        return true;
     }
 
     /**
@@ -155,7 +150,7 @@ public class ReserveSaveValidator implements ConstraintValidator<ReserveSaveVali
             return false;
         }
 
-        return fieldValid;
+        return true;
     }
 
     /**

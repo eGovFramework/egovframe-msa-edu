@@ -39,7 +39,6 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
     protected MessageUtil messageUtil;
 
     private String message;
-    private boolean fieldValid;
 
     @Override
     public void initialize(ReserveItemSaveValid constraintAnnotation) {
@@ -56,26 +55,24 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
     @SneakyThrows
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
-        fieldValid = true;
-
         // 운영 시작일, 종료일 체크
-        validateOperationDate(value, context);
+        boolean fieldValid = validateOperationDate(value, context);
 
         // 유료인 경우 이용 요금 필수
-        validatePaid(value, context);
+        fieldValid &= validatePaid(value, context);
 
         String reserveMethodId = String.valueOf(getFieldValue(value, "reserveMethodId"));
         //예약 방법이 '인터넷' 인경우
         if ("internet".equals(reserveMethodId)) {
-            return validateInternet(value, context);
+            return validateInternet(value, context) & fieldValid;
         }
 
         if ("phone".equals(reserveMethodId)) {
-            return validateTelephone(value, context);
+            return validateTelephone(value, context) & fieldValid;
         }
 
         if ("visit".equals(reserveMethodId)) {
-            return validateVisit(value, context);
+            return validateVisit(value, context) & fieldValid;
         }
 
         return fieldValid;
@@ -90,7 +87,7 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
      * @throws NoSuchFieldException
      * @throws IllegalAccessException
      */
-    private void validateOperationDate(Object value, ConstraintValidatorContext context)
+    private boolean validateOperationDate(Object value, ConstraintValidatorContext context)
         throws NoSuchFieldException, IllegalAccessException {
         LocalDateTime operationStartDate = (LocalDateTime) getFieldValue(value,
             "operationStartDate");
@@ -105,8 +102,10 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
                         messageUtil.getMessage("common.end_date")}))
                 .addPropertyNode("operationStartDate")
                 .addConstraintViolation();
-            fieldValid = false;
+            return false;
         }
+
+        return true;
     }
 
     /**
@@ -118,7 +117,7 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
      * @throws NoSuchFieldException
      * @throws IllegalAccessException
      */
-    private void validatePaid(Object value, ConstraintValidatorContext context)
+    private boolean validatePaid(Object value, ConstraintValidatorContext context)
         throws NoSuchFieldException, IllegalAccessException {
         Boolean isPaid = Boolean.valueOf(String.valueOf(getFieldValue(value, "isPaid")));
         if (isPaid && isNull(value, "usageCost")) {
@@ -129,8 +128,10 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
                     .getMessage("valid.required"))
                 .addPropertyNode("usageCost")
                 .addConstraintViolation();
-            fieldValid = false;
+            return false;
         }
+
+        return true;
     }
 
     /**
@@ -154,7 +155,7 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
             return false;
         }
 
-        return fieldValid;
+        return true;
     }
 
     /**
@@ -178,7 +179,7 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
                 .addConstraintViolation();
             return false;
         }
-        return fieldValid;
+        return true;
     }
 
     /**
@@ -224,7 +225,7 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
             }
         }
 
-        return fieldValid;
+        return true;
     }
 
     /**
@@ -238,13 +239,8 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
      */
     private boolean validateRealTime(Object value, ConstraintValidatorContext context)
         throws NoSuchFieldException, IllegalAccessException {
-        // 예약 신청 기간 필수
-        fieldValid = validateRequestDate(value, context);
-
-        //기간 지정 필수
-        fieldValid = validatePeriod(value, context);
-
-        return fieldValid;
+        // 예약 신청 기간 필수, 기간 지정 필수 — 두 검사를 모두 수행해 위반 사유를 함께 담는다
+        return validateRequestDate(value, context) & validatePeriod(value, context);
     }
 
     /**
@@ -281,7 +277,7 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
             return false;
         }
 
-        return fieldValid;
+        return true;
     }
 
     /**
@@ -332,7 +328,7 @@ public class ReserveItemSaveValidator implements ConstraintValidator<ReserveItem
             return false;
         }
 
-        return fieldValid;
+        return true;
     }
 
     /**
