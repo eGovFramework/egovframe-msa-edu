@@ -14,7 +14,7 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
-}https://github.com/eGovFramework/egovframe-msa-edu/pull/83/conflict?name=backend%252Fboard-service%252Fsrc%252Ftest%252Fjava%252Forg%252Fegovframe%252Fcloud%252Fboardservice%252Fservice%252Fposts%252FPostsServiceTest.java&base_oid=b00134c887002d1b45a1838c9969cc215e8a87d1&head_oid=f0766c80f5024db512416c7cd3133b3b886943a6
+}
 
 repositories {
     mavenCentral()
