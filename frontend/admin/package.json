@@ -43,7 +43,7 @@
     "@material-ui/styles": "^4.11.4",
     "@next/bundle-analyzer": "^11.1.0",
     "@types/form-data": "^2.5.0",
-    "axios": "^0.21.1",
+    "axios": "^0.28.1",
     "classnames": "^2.3.1",
     "cookies": "^0.8.0",
     "date-fns": "^2.23.0",
