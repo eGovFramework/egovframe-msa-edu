@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 
 /**
  * org.egovframe.cloud.portalservice.config.MessageSourceTest
@@ -29,7 +28,6 @@ import org.springframework.test.context.TestPropertySource;
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableConfigurationProperties
-@TestPropertySource(properties = {"spring.config.location=classpath:application-test.yml"})
 @ActiveProfiles(profiles = "test")
 public class MessageSourceTest {
 

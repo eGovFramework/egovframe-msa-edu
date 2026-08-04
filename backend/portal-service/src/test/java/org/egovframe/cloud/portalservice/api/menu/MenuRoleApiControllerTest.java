@@ -30,12 +30,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableConfigurationProperties
-@TestPropertySource(properties = {"spring.config.location=classpath:application-test.yml"})
 @ActiveProfiles(profiles = "test")
 class MenuRoleApiControllerTest {
 

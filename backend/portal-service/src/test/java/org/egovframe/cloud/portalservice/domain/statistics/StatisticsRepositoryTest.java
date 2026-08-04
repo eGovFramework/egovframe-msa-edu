@@ -9,13 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import jakarta.persistence.EntityManager;
 import java.util.UUID;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableConfigurationProperties
-@TestPropertySource(properties = {"spring.config.location=classpath:application-test.yml"})
 @ActiveProfiles(profiles = "test")
 class StatisticsRepositoryTest {
     @Autowired
