@@ -44,7 +44,7 @@ public class MessageSourceConfig {
     private String profile;
 
     @Bean
-    public MessageSource messageSource() {
+    MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         final String MESSAGES = "/messages";
         if ("default".equals(profile)) {
@@ -57,8 +57,8 @@ public class MessageSourceConfig {
         }
         messageSource.getBasenameSet().forEach(s -> log.info("messageSource getBasenameSet={}", s));
 
-        messageSource.setCacheSeconds(60); // 메세지 파일 변경 감지 간격
-        messageSource.setUseCodeAsDefaultMessage(true); // 메세지가 없으면 코드를 메세지로 한다
+        messageSource.setCacheSeconds(60); // 메시지 파일 변경 감지 간격
+        messageSource.setUseCodeAsDefaultMessage(true); // 메시지가 없으면 코드를 메시지로 한다
         messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
         return messageSource;
     }

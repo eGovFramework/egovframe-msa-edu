@@ -59,7 +59,7 @@ export const escapeHtml = html => {
 
 // 개행 태그(p, div) 제거
 export const escapeHtmlNl = html => {
-  return html.replace(/(<[/]([p|div]+)>)/gi, '\n').replace(/(<([^>]+)>)/gi, '').replace(/(\&nbsp\;)/gi, '')
+  return html.replace(/(<[/](p|div)>)/gi, '\n').replace(/(<([^>]+)>)/gi, '').replace(/(\&nbsp\;)/gi, '')
 }
 
 // 개행 문자를 br 태그로 변환
@@ -70,4 +70,13 @@ export const nl2Br = html => {
 // 비밀번호 형식 확인
 export const isValidPassword = value => {
   return /^(?=.*?[a-zA-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$/.test(value)
+}
+
+// 이메일 형식 정규식 (최상위 도메인 길이는 DNS 라벨 최대치인 63자까지 허용)
+export const EMAIL_PATTERN =
+  /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,63}(?:\.[a-z]{2})?)$/i
+
+// 이메일 형식 확인
+export const isValidEmail = value => {
+  return EMAIL_PATTERN.test(value)
 }

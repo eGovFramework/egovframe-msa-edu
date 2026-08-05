@@ -29,6 +29,9 @@ ext {
 dependencies {
 //    implementation files('../module-common/build/libs/egovframe-cloud-module-common.jar') // @ComponentScan(basePackages={"org.egovframe.cloud"}) 추가해야 적용된다
     implementation("org.egovframe.cloud:egovframe-cloud-module-common:${egovframeBootParentVersion}") {
+        // egovframe-rte-fdl-logging이 log4j-slf4j2-impl(slf4j→log4j2)을 끌어와
+        // Spring Boot 기본 logback의 log4j-to-slf4j(log4j2→slf4j)와 충돌하므로 제외한다.
+        exclude group: 'org.egovframe.rte', module: 'egovframe-rte-fdl-logging'
         exclude group: 'commons-logging', module: 'commons-logging'
     }
     implementation("org.egovframe.rte:egovframe-rte-fdl-cmmn:${egovframeBootParentVersion}") {
@@ -51,7 +54,7 @@ dependencies {
     implementation 'io.zipkin.reporter2:zipkin-reporter'
     implementation 'io.zipkin.zipkin2:zipkin'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'        // logstash logback
+    implementation 'net.logstash.logback:logstash-logback-encoder:8.0'        // logstash logback
     implementation 'com.mysql:mysql-connector-j:8.4.0'
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
@@ -85,7 +88,7 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     implementation 'org.javassist:javassist:3.29.2-GA'
-    implementation 'org.webjars:webjars-locator-core:0.53'
+    implementation 'org.webjars:webjars-locator-core:0.59'
     implementation 'com.google.guava:guava:32.1.3-jre'
 }
 
@@ -98,6 +101,9 @@ dependencyManagement {
 
 test {
     useJUnitPlatform()
+    // 테스트 클래스패스에 log4j-slf4j2-impl 과 log4j-to-slf4j 가 함께 존재하여 발생하는 바인딩 충돌을 방지한다.
+    // 운영과 동일하게 logback 을 slf4j 프로바이더로 고정한다.
+    systemProperty 'slf4j.provider', 'ch.qos.logback.classic.spi.LogbackServiceProvider'
 }
 
 // querydsl 추가 시작

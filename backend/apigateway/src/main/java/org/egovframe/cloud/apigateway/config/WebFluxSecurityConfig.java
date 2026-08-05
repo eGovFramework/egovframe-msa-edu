@@ -56,7 +56,7 @@ public class WebFluxSecurityConfig {
      * @throws Exception
      */
     @Bean
-    public SecurityWebFilterChain configure(ServerHttpSecurity http, ReactiveAuthorizationManager<AuthorizationContext> check) throws Exception {
+    SecurityWebFilterChain configure(ServerHttpSecurity http, ReactiveAuthorizationManager<AuthorizationContext> check) throws Exception {
         http.headers(headers -> headers
                 .frameOptions(frameOptions -> frameOptions.mode(Mode.DENY))
                 .contentTypeOptions(Customizer.withDefaults())

@@ -22,7 +22,7 @@ public class LoadBalancedRestTemplateConfig {
 
     @Bean
     @LoadBalanced
-    public RestTemplate loadBalancedRestTemplate() {
+    RestTemplate loadBalancedRestTemplate() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(CONNECT_TIMEOUT);
         factory.setReadTimeout(READ_TIMEOUT);

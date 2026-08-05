@@ -107,7 +107,7 @@ public class ReserveValidator {
                     return Mono.error(new BusinessMessageException(getMessage("valid.reserve_close")));
                 }
 
-                if (reserveItemResponseDto.isPossibleInventoryQty(reserve.getReserveQty())) {
+                if (!reserveItemResponseDto.isPossibleInventoryQty(reserve.getReserveQty())) {
                     //예약가능한 인원이 부족합니다. (남은 인원 : {0})
                     return Mono.error(new BusinessMessageException(getMessage("valid.reserve_number_of_people", new Object[]{reserveItemResponseDto.getInventoryQty()})));
                 }
@@ -216,17 +216,11 @@ public class ReserveValidator {
      * @return
      */
     private Mono<Integer> countMax(Flux<Reserve> reserveFlux, LocalDateTime startDate, LocalDateTime endDate) {
-        if (reserveFlux.equals(Flux.empty())) {
-            return Mono.just(0);
-        }
-
         long between = ChronoUnit.DAYS.between(startDate, endDate);
 
         if (between == 0) {
             return reserveFlux.map(reserve -> {
-                if (startDate.isAfter(reserve.getReserveStartDate())
-                    || startDate.isBefore(reserve.getReserveEndDate())
-                    || startDate.isEqual(reserve.getReserveStartDate()) || startDate.isEqual(reserve.getReserveEndDate())) {
+                if (isOverlapped(startDate, reserve)) {
                     return reserve.getReserveQty();
                 }
                 return 0;
@@ -238,9 +232,7 @@ public class ReserveValidator {
             .mapToObj(i -> startDate.plusDays(i)))
             .flatMap(localDateTime ->
                 reserveFlux.map(findReserve -> {
-                    if (localDateTime.isAfter(findReserve.getReserveStartDate())
-                        || localDateTime.isBefore(findReserve.getReserveEndDate())
-                        || localDateTime.isEqual(findReserve.getReserveStartDate()) || localDateTime.isEqual(findReserve.getReserveEndDate())) {
+                    if (isOverlapped(localDateTime, findReserve)) {
                         return findReserve.getReserveQty();
                     }
                     return 0;
@@ -248,6 +240,18 @@ public class ReserveValidator {
             .groupBy(integer -> integer)
             .flatMap(group -> group.reduce((x1,x2) -> x1 > x2?x1:x2))
             .last(0);
+    }
+
+    /**
+     * 조회 날짜가 예약 기간(시작일~종료일, 양 끝 포함)에 겹치는지 판단한다.
+     *
+     * @param date 조회 날짜
+     * @param reserve 비교 대상 예약
+     * @return 겹치면 true
+     */
+    private boolean isOverlapped(LocalDateTime date, Reserve reserve) {
+        return !date.isBefore(reserve.getReserveStartDate())
+            && !date.isAfter(reserve.getReserveEndDate());
     }
 
     private String getMessage(String code) {

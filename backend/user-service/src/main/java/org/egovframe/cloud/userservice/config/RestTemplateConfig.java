@@ -22,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
  *    수정일       수정자              수정내용
  *  ----------    --------    ---------------------------
  *  2021/09/27    jooho       최초 생성
+ *  2026/06/26    이백행         [2026년 컨트리뷰션] @Bean 메서드의 불필요한 public 접근제어자 제거
  * </pre>
  */
 @Configuration
@@ -39,7 +40,7 @@ public class RestTemplateConfig {
      * @return RestTemplate REST Template
      */
     @Bean
-    public RestTemplate restTemplate() {
+    RestTemplate restTemplate() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(CONNECT_TIMEOUT);
         factory.setReadTimeout(READ_TIMEOUT);

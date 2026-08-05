@@ -95,7 +95,7 @@ public class ReserveItemRepositoryImpl implements ReserveItemRepositoryCustom{
     /**
      * 카테고리별 예약 물품 최신 데이터 count 만큼 조회
      *
-     * @param count         조회할 갯수 0:전체
+     * @param count         조회할 개수 0:전체
      * @param categoryId    카테고리 아이디
      * @return
      */

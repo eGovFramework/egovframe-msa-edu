@@ -19,7 +19,7 @@ public class EventStreamConfig {
 	private AttachmentService attachmentService;
 
 	@Bean
-	public Consumer<AttachmentEntityMessage> attachmentEntity() {
+	Consumer<AttachmentEntityMessage> attachmentEntity() {
 		return attachmentEntityMessage -> attachmentService.updateEntity(
 			attachmentEntityMessage.getAttachmentCode(),
 			AttachmentUploadRequestDto.builder()
