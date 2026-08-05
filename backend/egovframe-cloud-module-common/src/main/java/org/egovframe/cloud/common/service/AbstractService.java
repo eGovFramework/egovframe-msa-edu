@@ -48,7 +48,7 @@ public abstract class AbstractService extends EgovAbstractServiceImpl {
 
     /**
      * 게시물 저장 후 해당 정보를 첨부파일 entity에 입력하기 위해
-     * 이벤트 메세지 발행
+     * 이벤트 메시지 발행
      */
     protected void sendAttachmentEntityInfo(StreamBridge streamBridge, AttachmentEntityMessage entityMessage) {
         streamBridge.send(ATTACHMENT_ENTITY_BINDING_NAME, MessageBuilder.withPayload(entityMessage).build());

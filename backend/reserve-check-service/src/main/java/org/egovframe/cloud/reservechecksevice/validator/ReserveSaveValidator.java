@@ -50,7 +50,7 @@ public class ReserveSaveValidator implements ConstraintValidator<ReserveSaveVali
     }
 
     /**
-     * 예약 신청 시 비지니스 로직에 의한 validation check
+     * 예약 신청 시 비즈니스 로직에 의한 validation check
      *
      * @param value
      * @param context

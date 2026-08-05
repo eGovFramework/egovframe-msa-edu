@@ -35,7 +35,7 @@ public class WebFluxSecurityConfig {
     };
 
     @Bean
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+    SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .headers(h -> h.frameOptions(ServerHttpSecurity.HeaderSpec.FrameOptionsSpec::disable))
@@ -50,7 +50,7 @@ public class WebFluxSecurityConfig {
     }
 
     @Bean
-    public ReactiveAuthenticationManager authenticationManager() {
+    ReactiveAuthenticationManager authenticationManager() {
         return authentication -> Mono.just(authentication);
     }
 

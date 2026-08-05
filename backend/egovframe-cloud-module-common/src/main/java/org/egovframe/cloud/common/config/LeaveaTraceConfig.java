@@ -20,13 +20,14 @@ import org.springframework.context.annotation.Configuration;
  *     수정일        수정자           수정내용
  *  ----------    --------    ---------------------------
  *  2021/09/24    jaeyeolkim  최초 생성
+ *  2026/06/26    이백행         [2026년 컨트리뷰션] @Bean 메서드의 불필요한 public 접근제어자 제거
  * </pre>
  */
 @Configuration
 public class LeaveaTraceConfig {
 
     @Bean
-    public LeaveaTrace leaveaTrace() {
+    LeaveaTrace leaveaTrace() {
         return new LeaveaTrace();
     }
 

@@ -3,7 +3,7 @@ import { BottomButtons, IButtons } from '@components/Buttons'
 import { DLWrapper } from '@components/WriteDLFields'
 import { userService } from '@service'
 import { errorStateSelector, userAtom } from '@stores'
-import { format } from '@utils'
+import { EMAIL_PATTERN, format, isValidEmail } from '@utils'
 import React, { useMemo } from 'react'
 import { Controller, UseFormGetValues, UseFormSetFocus } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -43,11 +43,7 @@ const UserInfoModified = (props: UserInfoModifiedPrpps) => {
       return
     }
 
-    if (
-      /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i.test(
-        emailValue,
-      ) === false
-    ) {
+    if (isValidEmail(emailValue) === false) {
       showMessage(t('valid.email.pattern'), () => setFocus('email'))
       return
     }
@@ -121,8 +117,7 @@ const UserInfoModified = (props: UserInfoModifiedPrpps) => {
               message: format(t('valid.maxlength.format'), [50]),
             },
             pattern: {
-              value:
-                /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i,
+              value: EMAIL_PATTERN,
               message: t('valid.email.pattern'),
             },
           }}

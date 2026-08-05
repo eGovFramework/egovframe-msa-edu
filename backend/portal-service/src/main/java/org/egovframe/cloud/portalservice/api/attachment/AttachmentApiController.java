@@ -25,6 +25,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -76,6 +77,7 @@ public class AttachmentApiController {
      * @return
      * @throws Exception
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping(value = "/api/v1/upload")
     @ResponseStatus(HttpStatus.CREATED)
     public AttachmentFileResponseDto upload(@RequestParam("file") MultipartFile file) {
@@ -90,6 +92,7 @@ public class AttachmentApiController {
      * @param files
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/api/v1/upload/multi")
     @ResponseStatus(HttpStatus.CREATED)
     public List<AttachmentFileResponseDto> uploadMulti(@RequestParam("files") List<MultipartFile> files) {
@@ -103,6 +106,7 @@ public class AttachmentApiController {
      * @param editorRequestDto
      * @return
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping(value = "/api/v1/upload/editor")
     @ResponseStatus(HttpStatus.CREATED)
     public AttachmentEditorResponseDto uploadEditor(@RequestBody AttachmentBase64RequestDto editorRequestDto) {
@@ -278,6 +282,7 @@ public class AttachmentApiController {
      * @param isDelete
      * @return
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/api/v1/attachments/{uniqueId}/{isDelete}")
     public String toggleDelete(@PathVariable("uniqueId") String uniqueId, @PathVariable("isDelete") boolean isDelete) {
         return attachmentService.toggleDelete(uniqueId, isDelete);
@@ -290,6 +295,7 @@ public class AttachmentApiController {
      *
      * @param uniqueId
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(value = "/api/v1/attachments/{uniqueId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("uniqueId") String uniqueId) {
@@ -304,6 +310,7 @@ public class AttachmentApiController {
      * @param uploadRequestDto
      * @return
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'USER')")
     @PostMapping(value = "/api/v1/attachments/upload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
     public String uploadAndSave(@RequestPart(value = "files", required = true) List<MultipartFile> files,
@@ -323,6 +330,7 @@ public class AttachmentApiController {
      * @param saveRequestDtoList
      * @return
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'USER')")
     @PutMapping(value = "/api/v1/attachments/upload/{attachmentCode}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public String uploadAndUpdate(@PathVariable("attachmentCode") String attachmentCode,
                                   @RequestPart(value = "files", required = true) List<MultipartFile> files,
@@ -340,6 +348,7 @@ public class AttachmentApiController {
      * @param updateRequestDtoList
      * @return
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'USER')")
     @PutMapping(value = "/api/v1/attachments/{attachmentCode}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public String update(@PathVariable("attachmentCode") String attachmentCode,
                          @RequestPart(value = "info") AttachmentUploadRequestDto uploadRequestDto,
@@ -371,6 +380,7 @@ public class AttachmentApiController {
      *
      * @param attachmentCode
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     @DeleteMapping("/api/v1/attachments/{attachmentCode}/children")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAllEmptyEntity(@PathVariable("attachmentCode") String attachmentCode) {

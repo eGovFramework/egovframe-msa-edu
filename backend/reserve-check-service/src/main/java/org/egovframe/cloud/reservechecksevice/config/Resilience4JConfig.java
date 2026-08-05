@@ -26,13 +26,14 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
  *  ----------    --------    ---------------------------
  *  2021/08/31    jaeyeolkim  최초 생성
  *  2021/10/05    shinmj      reactive로 변경
+ *  2026/06/26    이백행         [2026년 컨트리뷰션] @Bean 메서드의 불필요한 public 접근제어자 제거
  * </pre>
  */
 @Configuration
 public class Resilience4JConfig {
 
     @Bean
-    public CircuitBreakerRegistry circuitBreakerRegistry() {
+    CircuitBreakerRegistry circuitBreakerRegistry() {
         CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
             .failureRateThreshold(50) // Circuit 열지 말지 결정하는 실패 threshold 퍼센테이지
             .waitDurationInOpenState(Duration.ofSeconds(5)) // (half closed 전에) circuitBreaker가 open 되기 전에 기다리는 기간

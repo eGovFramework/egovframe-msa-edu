@@ -28,7 +28,9 @@ ext {
 dependencies {
 //    implementation files('../module-common/build/libs/egovframe-cloud-module-common.jar') // @ComponentScan(basePackages={"org.egovframe.cloud"}) 추가해야 적용된다
     implementation("org.egovframe.cloud:egovframe-cloud-module-common:${egovframeBootParentVersion}") {
+        exclude group: 'org.egovframe.rte', module: 'egovframe-rte-fdl-logging'
         exclude group: 'commons-logging', module: 'commons-logging'
+        exclude group: 'org.egovframe.rte', module: 'egovframe-rte-fdl-logging'
     }
     implementation("org.egovframe.rte:egovframe-rte-fdl-cmmn:${egovframeBootParentVersion}") {
         exclude group: 'org.egovframe.rte', module: 'egovframe-rte-fdl-logging'
@@ -56,7 +58,7 @@ dependencies {
     implementation 'io.zipkin.reporter2:zipkin-reporter'
     implementation 'io.zipkin.zipkin2:zipkin'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'        // logstash logback
+    implementation 'net.logstash.logback:logstash-logback-encoder:8.0'        // logstash logback
 
     implementation 'io.asyncer:r2dbc-mysql:1.2.0'
     implementation 'com.mysql:mysql-connector-j:8.4.0'
@@ -82,7 +84,7 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
-    implementation 'org.webjars:webjars-locator-core:0.53'
+    implementation 'org.webjars:webjars-locator-core:0.59'
 }
 
 test {

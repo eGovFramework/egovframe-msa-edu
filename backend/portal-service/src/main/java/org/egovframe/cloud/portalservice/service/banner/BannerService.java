@@ -131,7 +131,7 @@ public class BannerService extends AbstractService {
 
         Banner entity = bannerRepository.save(requestDto.toEntity(site));
 
-        //첨부파일 entity 정보 업데이트 하기 위해 이벤트 메세지 발행
+        //첨부파일 entity 정보 업데이트 하기 위해 이벤트 메시지 발행
         sendAttachment(entity);
 
         return new BannerResponseDto(entity);

@@ -19,7 +19,7 @@ import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator;
 @EnableR2dbcRepositories
 public class R2dbcConfig{
     @Bean
-    public H2ConnectionFactory connectionFactory() {
+    H2ConnectionFactory connectionFactory() {
         return new H2ConnectionFactory(H2ConnectionConfiguration.builder()
                 .inMemory("testdb")
                 .property(H2ConnectionOption.DB_CLOSE_DELAY, "-1")
@@ -28,7 +28,7 @@ public class R2dbcConfig{
     }
 
     @Bean
-    public ConnectionFactoryInitializer initializer(ConnectionFactory connectionFactory) {
+    ConnectionFactoryInitializer initializer(ConnectionFactory connectionFactory) {
         ConnectionFactoryInitializer initializer = new ConnectionFactoryInitializer();
         initializer.setConnectionFactory(connectionFactory);
         CompositeDatabasePopulator populator = new CompositeDatabasePopulator();

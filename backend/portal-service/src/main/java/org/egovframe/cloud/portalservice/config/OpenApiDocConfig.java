@@ -17,7 +17,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 public class OpenApiDocConfig {
 
 	@Bean
-    public GroupedOpenApi publicApi() {
+    GroupedOpenApi publicApi() {
         return GroupedOpenApi.builder()
                 .group("portal-service")
                 .pathsToMatch("/api/**")
@@ -25,7 +25,7 @@ public class OpenApiDocConfig {
     }
 
 	@Bean
-    public OpenAPI openAPI() {
+    OpenAPI openAPI() {
         Components components = new Components()
                 .addSecuritySchemes("Authorization",
                         new SecurityScheme()

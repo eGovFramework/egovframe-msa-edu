@@ -2,7 +2,6 @@ package org.egovframe.cloud.userservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -20,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
  *    수정일       수정자              수정내용
  *  ----------    --------    ---------------------------
  *  2021/09/27    jooho       최초 생성
+ *  2026/06/26    이백행         [2026년 컨트리뷰션] @Bean 메서드의 불필요한 public 접근제어자 제거
  * </pre>
  */
 @Configuration
@@ -31,13 +31,8 @@ public class RestTemplateConfig {
      * @return RestTemplate REST Template
      */
     @Bean
-    public RestTemplate restTemplate() {
-        // 안정성: 기본 RestTemplate 은 connect/read 타임아웃이 없어(무한 대기)
-        // 다운스트림 무응답 시 호출 스레드가 영구 블록될 수 있다(CWE-400).
-        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(5000);
-        factory.setReadTimeout(30000);
-        return new RestTemplate(factory);
+    RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
 }

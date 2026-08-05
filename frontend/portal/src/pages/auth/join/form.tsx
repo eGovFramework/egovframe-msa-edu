@@ -3,7 +3,7 @@ import { DLWrapper } from '@components/WriteDLFields'
 import { makeStyles, Theme } from '@material-ui/core/styles'
 import Alert from '@material-ui/lab/Alert'
 import { ISocialUser, userService } from '@service'
-import { format, isValidPassword } from '@utils'
+import { EMAIL_PATTERN, format, isValidEmail, isValidPassword } from '@utils'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import React, { createRef, useEffect, useState } from 'react'
@@ -92,11 +92,7 @@ const Form = (props: FormProps) => {
     const emailElement = emailRef.current
     const email = emailElement?.value
 
-    if (
-      /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i.test(
-        email,
-      ) === false
-    ) {
+    if (isValidEmail(email) === false) {
       showMessage(t('valid.email.pattern'), () => {
         emailElement?.focus()
       })
@@ -199,8 +195,7 @@ const Form = (props: FormProps) => {
                     message: format(t('valid.maxlength.format'), [50]),
                   },
                   pattern: {
-                    value:
-                      /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i,
+                    value: EMAIL_PATTERN,
                     message: t('valid.email.pattern'),
                   },
                 }}

@@ -25,6 +25,7 @@ import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator;
  *     수정일        수정자           수정내용
  *  ----------    --------    ---------------------------
  *  2021/09/06    shinmj       최초 생성
+ *  2026/06/26    이백행         [2026년 컨트리뷰션] @Bean 메서드의 불필요한 public 접근제어자 제거
  * </pre>
  */
 @Profile("!test")
@@ -33,7 +34,7 @@ import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator;
 public class R2dbcConfig {
 
     @Bean
-    public ConnectionFactoryInitializer initializer(ConnectionFactory connectionFactory) {
+    ConnectionFactoryInitializer initializer(ConnectionFactory connectionFactory) {
         ConnectionFactoryInitializer initializer = new ConnectionFactoryInitializer();
         initializer.setConnectionFactory(connectionFactory);
 
