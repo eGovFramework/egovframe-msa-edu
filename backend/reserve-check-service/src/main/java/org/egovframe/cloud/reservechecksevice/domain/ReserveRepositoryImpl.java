@@ -4,6 +4,7 @@ import static org.springframework.data.relational.core.query.Criteria.where;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.egovframe.cloud.reservechecksevice.api.dto.ReserveRequestDto;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.data.relational.core.query.Query;
+import org.springframework.data.relational.core.query.Update;
 import org.springframework.util.StringUtils;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
@@ -231,6 +233,27 @@ public class ReserveRepositoryImpl implements ReserveRepositoryCustom{
     @Override
     public Mono<Reserve> insert(Reserve reserve) {
         return entityTemplate.insert(reserve);
+    }
+
+    /**
+     * 현재 상태가 허용 목록에 있을 때만 예약 상태를 변경한다.
+     * WHERE 조건(허용 상태 목록)과 SET 을 한 번의 UPDATE 문으로 실행해, 조건 확인과 반영이
+     * DB 엔진 안에서 원자적으로 처리되도록 한다. findById 로 읽은 뒤 메모리에서 상태를 확인하고
+     * 다시 저장하는 방식은 두 요청이 거의 동시에 findById 를 호출하면(둘 다 아직 갱신 전 상태를 읽음)
+     * 둘 다 조건을 통과해버리는 문제가 있어, 그 대신 이 메서드를 쓴다.
+     *
+     * @param reserveId
+     * @param allowedCurrentStatuses
+     * @param newStatusId
+     * @return
+     */
+    @Override
+    public Mono<Long> updateStatusIfCurrentStatusIn(String reserveId, Collection<String> allowedCurrentStatuses, String newStatusId) {
+        return entityTemplate.update(
+                Query.query(where("reserve_id").is(reserveId)
+                        .and("reserve_status_id").in(allowedCurrentStatuses)),
+                Update.update("reserve_status_id", newStatusId),
+                Reserve.class);
     }
 
     /**

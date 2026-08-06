@@ -63,6 +63,13 @@ public class ReserveService extends ReactiveAbstractService {
 
     private static final String RESERVE_ITEM_CIRCUIT_BREAKER_NAME = "reserve-item";
 
+    /** 승인으로 넘어갈 수 있는 현재 상태 - 신청 상태에서만 승인 가능 */
+    private static final List<String> APPROVABLE_STATUSES = List.of(ReserveStatus.REQUEST.getKey());
+
+    /** 취소로 넘어갈 수 있는 현재 상태 - 완료·이미 취소된 예약은 취소 불가 */
+    private static final List<String> CANCELLABLE_STATUSES =
+        List.of(ReserveStatus.REQUEST.getKey(), ReserveStatus.APPROVE.getKey());
+
     private final ReserveRepository reserveRepository;
     private final ReserveItemServiceClient reserveItemServiceClient;
     private final CircuitBreakerRegistry circuitBreakerRegistry;
@@ -149,6 +156,12 @@ public class ReserveService extends ReactiveAbstractService {
 
     /**
      * 예약 상태 취소로 변경
+     * <p>
+     * 상태 변경 가능 여부는 findById 로 읽은 값을 메모리에서 확인하는 것이 아니라
+     * {@link ReserveRepository#updateStatusIfCurrentStatusIn}로 DB에 조건부로 반영해 판단한다 -
+     * 두 취소 요청이 findById 를 거의 동시에 호출해도(둘 다 취소 전 상태를 읽음) 조건부 UPDATE 는
+     * DB에서 단 한 번만 성공하므로, 그 판단이 끝난 뒤에만(1건 반영됐을 때만) 재고를 되돌리는
+     * updateInventory 를 호출한다.
      *
      * @param reserveId
      * @param cancelRequestDto
@@ -156,8 +169,19 @@ public class ReserveService extends ReactiveAbstractService {
      */
     private Mono<Void> reserveCancel(String reserveId, ReserveCancelRequestDto cancelRequestDto) {
         return findById(reserveId)
-            .map(reserve ->
-                reserve.updateStatusCancel(cancelRequestDto.getReasonCancelContent(), getMessage("valid.cant_cancel_because_done")))
+            .flatMap(reserve -> reserveRepository
+                .updateStatusIfCurrentStatusIn(reserveId, CANCELLABLE_STATUSES, ReserveStatus.CANCEL.getKey())
+                .flatMap(updatedRowCount -> {
+                    if (updatedRowCount == 0) {
+                        if (reserve.isDone()) {
+                            //해당 예약은 이미 실행되어 취소할 수 없습니다.
+                            return Mono.<Reserve>error(new BusinessMessageException(getMessage("valid.cant_cancel_because_done")));
+                        }
+                        //해당 예약은 이미 취소되어 다시 취소할 수 없습니다.
+                        return Mono.<Reserve>error(new BusinessMessageException(getMessage("valid.cant_cancel_because_cancel")));
+                    }
+                    return Mono.just(reserve.updateStatusCancel(cancelRequestDto.getReasonCancelContent()));
+                }))
             .flatMap(reserve -> Mono.just(reserve.conversionReserveQty()))
             .flatMap(this::updateInventory)
             .onErrorResume(throwable -> Mono.error(throwable))
@@ -254,6 +278,11 @@ public class ReserveService extends ReactiveAbstractService {
 
     /**
      * 승인 전 validate check 및 교육인 경우 재고 업데이트
+     * <p>
+     * 승인 가능 여부는 findById 로 읽은 값을 메모리에서 확인하는 것이 아니라
+     * {@link ReserveRepository#updateStatusIfCurrentStatusIn}로 DB에 조건부로 반영해 판단한다 -
+     * 같은 예약에 대해 승인 요청이 중복 호출(재시도·중복 클릭 등)되면 두 번째 호출은 조건부 UPDATE 가
+     * 0건을 반환해 재고를 반영하는 updateInventory 호출 전에 차단된다.
      *
      * @param reserveId
      * @return
@@ -262,7 +291,15 @@ public class ReserveService extends ReactiveAbstractService {
         return findById(reserveId)
             .flatMap(validator::checkReserveItems)
             .onErrorResume(Mono::error)
-            .map(reserve -> reserve.updateStatus(ReserveStatus.APPROVE.getKey()))
+            .flatMap(reserve -> reserveRepository
+                .updateStatusIfCurrentStatusIn(reserveId, APPROVABLE_STATUSES, ReserveStatus.APPROVE.getKey())
+                .flatMap(updatedRowCount -> {
+                    if (updatedRowCount == 0) {
+                        //예약 신청 상태인 경우에만 승인할 수 있습니다.
+                        return Mono.<Reserve>error(new BusinessMessageException(getMessage("valid.reserve_not_approve_status")));
+                    }
+                    return Mono.just(reserve.updateStatus(ReserveStatus.APPROVE.getKey()));
+                }))
             .flatMap(this::updateInventory);
     }
 
