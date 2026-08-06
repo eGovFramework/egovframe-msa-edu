@@ -158,6 +158,9 @@ public class AttachmentApiController {
         try {
             // get mime type
             URLConnection connection = new URL(downloadFile.getFile().getURL().toString()).openConnection();
+            // 안정성: 원격 URL 무응답 시 요청 스레드 무한 블록 방지(CWE-400)
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(30000);
             mimeType = connection.getContentType();
         } catch (IOException ex) {
             log.error("download fail", ex);
@@ -207,6 +210,9 @@ public class AttachmentApiController {
         try {
             // get mime type
             URLConnection connection = new URL(downloadFile.getFile().getURL().toString()).openConnection();
+            // 안정성: 원격 URL 무응답 시 요청 스레드 무한 블록 방지(CWE-400)
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(30000);
             mimeType = connection.getContentType();
         } catch (IOException ex) {
             log.error("download fail", ex);
