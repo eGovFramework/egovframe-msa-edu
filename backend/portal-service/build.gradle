@@ -38,6 +38,7 @@ dependencies {
         //  module-common 경유 전이 의존에는 누락되어 있었음)
         exclude group: 'org.egovframe.rte', module: 'egovframe-rte-fdl-logging'
         exclude group: 'commons-logging', module: 'commons-logging'
+        exclude group: 'org.egovframe.rte', module: 'egovframe-rte-fdl-logging'
     }
     implementation("org.egovframe.rte:egovframe-rte-fdl-cmmn:${egovframeBootParentVersion}") {
         exclude group: 'org.egovframe.rte', module: 'egovframe-rte-fdl-logging'

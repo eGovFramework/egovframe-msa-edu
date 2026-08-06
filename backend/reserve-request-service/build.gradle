@@ -32,6 +32,7 @@ dependencies {
         // Spring Boot 기본 logback의 log4j-to-slf4j(log4j2→slf4j)와 충돌하므로 제외한다.
         exclude group: 'org.egovframe.rte', module: 'egovframe-rte-fdl-logging'
         exclude group: 'commons-logging', module: 'commons-logging'
+        exclude group: 'org.egovframe.rte', module: 'egovframe-rte-fdl-logging'
     }
     implementation("org.egovframe.rte:egovframe-rte-fdl-cmmn:${egovframeBootParentVersion}") {
         exclude group: 'org.egovframe.rte', module: 'egovframe-rte-fdl-logging'
