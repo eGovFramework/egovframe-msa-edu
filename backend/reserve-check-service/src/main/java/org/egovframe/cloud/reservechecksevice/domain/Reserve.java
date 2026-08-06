@@ -2,7 +2,6 @@ package org.egovframe.cloud.reservechecksevice.domain;
 
 import java.time.LocalDateTime;
 
-import org.egovframe.cloud.common.exception.BusinessMessageException;
 import org.egovframe.cloud.reactive.domain.BaseEntity;
 import org.egovframe.cloud.reservechecksevice.api.dto.ReserveUpdateRequestDto;
 import org.egovframe.cloud.reservechecksevice.client.dto.UserResponseDto;
@@ -235,11 +234,20 @@ public class Reserve extends BaseEntity {
         return ReserveStatus.DONE.isEquals(this.reserveStatusId);
     }
 
-    public Reserve updateStatusCancel(String reason, String errorMessage) {
-        if (isDone()) {
-            throw new BusinessMessageException(errorMessage);
-        }
+    public boolean isCancel() {
+        return ReserveStatus.CANCEL.isEquals(this.reserveStatusId);
+    }
 
+    /**
+     * 취소 상태·취소 사유를 반영한다.
+     * 취소 가능 여부는 {@link org.egovframe.cloud.reservechecksevice.service.ReserveService}에서
+     * DB 조건부 업데이트(ReserveRepositoryCustom#updateStatusIfCurrentStatusIn)로 먼저 판단하므로
+     * 이 메서드는 그 판단이 끝난 뒤 값만 반영한다.
+     *
+     * @param reason
+     * @return
+     */
+    public Reserve updateStatusCancel(String reason) {
         this.reserveStatusId = ReserveStatus.CANCEL.getKey();
         this.reasonCancelContent = reason;
         return this;
