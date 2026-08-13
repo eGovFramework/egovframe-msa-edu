@@ -4,6 +4,7 @@ import {
   getTextLength,
   isValidPassword,
   rownum,
+  truncateText,
   translateToLang,
 } from '../index'
 import { Page } from '@service'
@@ -61,6 +62,20 @@ describe('getTextLength', () => {
   it('빈 문자열은 0이다', () => {
     expect(getTextLength('')).toBe(0)
     expect(getTextLength('', 'char')).toBe(0)
+  })
+})
+
+describe('truncateText', () => {
+  it('truncates ASCII text at the byte limit', () => {
+    expect(truncateText('abcdef', 4)).toBe('abcd')
+  })
+
+  it('truncates Korean text using its weighted length', () => {
+    expect(truncateText('한글텍스트', 5)).toBe('한글')
+  })
+
+  it('does not split a Unicode surrogate pair', () => {
+    expect(truncateText('a😀b', 2)).toBe('a😀')
   })
 })
 

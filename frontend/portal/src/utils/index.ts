@@ -46,6 +46,25 @@ export const getTextLength = (
   return len
 }
 
+export const truncateText = (
+  str: string,
+  maxLength: number,
+  format: 'byte' | 'char' = 'byte',
+) => {
+  let result = ''
+  let length = 0
+
+  for (const character of str) {
+    const characterLength = getTextLength(character, format)
+    if (length + characterLength > maxLength) break
+
+    result += character
+    length += characterLength
+  }
+
+  return result
+}
+
 // 텍스트 포멧
 export const format = (text: string, args: any[]) =>
   text.replace(/{(\d+)}/g, (match, number) =>
