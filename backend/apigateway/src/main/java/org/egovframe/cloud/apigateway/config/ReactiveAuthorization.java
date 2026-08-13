@@ -51,6 +51,8 @@ import reactor.core.publisher.Mono;
 @Component
 public class ReactiveAuthorization implements ReactiveAuthorizationManager<AuthorizationContext> {
 
+    private final WebClient.Builder webClientBuilder;
+
     @Value("${apigateway.host:http://localhost:8000}")
     private String APIGATEWAY_HOST;
 
@@ -133,23 +135,21 @@ public class ReactiveAuthorization implements ReactiveAuthorizationManager<Autho
             }
         }
 
-        boolean granted = false;
-        try {
-            String token = authorizationHeader; // Variable used in lambda expression should be final or effectively final
-            Mono<Boolean> body = WebClient.create(baseUrl)
-                .get()
-                .headers(httpHeaders -> {
-                    httpHeaders.add(HttpHeaders.AUTHORIZATION, token);
-                })
-                .retrieve().bodyToMono(Boolean.class);
-            granted = body.toFuture().get().booleanValue();
-            log.info("Security AuthorizationDecision granted={}", granted);
-        } catch (Exception e) {
-            log.error("인가 서버에 요청 중 오류 : {}", e.getMessage());
-            throw new AuthorizationServiceException("인가 요청시 오류 발생");
-        }
-
-        return Mono.just(new AuthorizationDecision(granted));
+        String token = authorizationHeader;
+        return webClientBuilder.clone()
+            .baseUrl(baseUrl)
+            .build()
+            .get()
+            .headers(httpHeaders -> httpHeaders.add(HttpHeaders.AUTHORIZATION, token))
+            .retrieve()
+            .bodyToMono(Boolean.class)
+            .defaultIfEmpty(false)
+            .doOnNext(granted -> log.info("Security AuthorizationDecision granted={}", granted))
+            .map(AuthorizationDecision::new)
+            .onErrorMap(e -> {
+                log.error("인가 서버에 요청 중 오류 : {}", e.getMessage());
+                return new AuthorizationServiceException("인가 요청시 오류 발생", e);
+            });
     }
 
 }
