@@ -71,7 +71,7 @@ public class MenuUpdateRequestDto {
 
     public boolean hasUrlPath() {
         if ("inside".equals(menuType) || "outside".equals(menuType)) {
-            return Objects.nonNull(urlPath) || StringUtils.hasText(urlPath);
+            return Objects.nonNull(urlPath) && StringUtils.hasText(urlPath);
         }
         return true;
     }
