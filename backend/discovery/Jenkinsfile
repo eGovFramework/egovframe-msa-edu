@@ -24,8 +24,7 @@ podTemplate(
         }
 
         stage("gradle") {
-            sh "./gradlew wrap --gradle-version=7.3 --daemon"
-            sh "./gradlew bootJar"
+            sh "./gradlew --no-daemon clean bootJar"
         }
 
         stage("docker") {
