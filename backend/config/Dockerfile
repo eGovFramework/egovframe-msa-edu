@@ -1,6 +1,6 @@
 # docker run --name egov-config -d -p 8888:8888 -e profile=prod -e ENCRYPT_KEY=??? egovframework/egov-config
 # base image - openjdk17
-FROM eclipse-temurin:17-jre-jammy
+FROM eclipse-temurin:25-jre-jammy
 
 # curl(healthcheck)
 RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
