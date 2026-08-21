@@ -1,5 +1,5 @@
 # openjdk17 base image
-FROM eclipse-temurin:17-jre-jammy
+FROM eclipse-temurin:25-jre-jammy
 
 # directory 생성
 RUN mkdir -p /usr/app/msa-attach-volume/messages
