@@ -36,7 +36,7 @@ const GlobalError = () => {
   })
 
   useEffect(() => {
-    if (errorState.error) {
+    if (errorState.error || errorState.message) {
       if (errorState.status === 400) {
         const errors = errorState.errors.map(item => {
           return item.defaultMessage
@@ -55,7 +55,7 @@ const GlobalError = () => {
     }
   }, [errorState])
 
-  if (!errorState.error) return null
+  if (!errorState.error && !errorState.message) return null
 
   const resetError = () => {
     setAlertState({
