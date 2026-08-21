@@ -2,10 +2,7 @@ package org.egovframe.cloud.portalservice.utils;
 
 import static org.egovframe.cloud.portalservice.utils.PortalUtils.getPhysicalFileName;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -419,29 +416,21 @@ public class FileStorageUtils implements StorageUtils {
     public AttachmentImageResponseDto loadImage(String imagename) {
         try {
             Path imagePath = resolvePathUnderFileStorage(imagename);
-            try (InputStream is = new FileInputStream(imagePath.toFile())) {
-                try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
-                    int read;
-                    byte[] data = new byte[(int) imagePath.toFile().length()];
-                    while ((read = is.read(data, 0, data.length)) != -1) {
-                        buffer.write(data, 0, read);
-                    }
+            byte[] data = Files.readAllBytes(imagePath);
 
-                    // /image/* 만 허용(저장형 XSS 방지)
-                    String mimeType = probeContentType(imagePath);
-                    if (mimeType == null || !mimeType.toLowerCase(Locale.ROOT).startsWith("image/")) {
-                        log.warn("Rejected non-image content type on image load: {}", mimeType);
-                        throw new BusinessMessageException(messageUtil.getMessage("valid.file.invalid_name"));
-                    }
-
-                    return AttachmentImageResponseDto.builder()
-                            .mimeType(mimeType)
-                            .data(data)
-                            .build();
-                }
+            // /image/* 만 허용(저장형 XSS 방지)
+            String mimeType = probeContentType(imagePath);
+            if (mimeType == null || !mimeType.toLowerCase(Locale.ROOT).startsWith("image/")) {
+                log.warn("Rejected non-image content type on image load: {}", mimeType);
+                throw new BusinessMessageException(messageUtil.getMessage("valid.file.invalid_name"));
             }
 
-        } catch (FileNotFoundException | NoSuchFileException ex) {
+            return AttachmentImageResponseDto.builder()
+                    .mimeType(mimeType)
+                    .data(data)
+                    .build();
+
+        } catch (NoSuchFileException ex) {
             // 파일을 찾을 수 없습니다.
             throw new BusinessMessageException(messageUtil.getMessage("valid.file.not_found"));
         } catch (IOException iex) {
