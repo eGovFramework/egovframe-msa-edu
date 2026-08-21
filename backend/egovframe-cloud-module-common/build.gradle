@@ -1,6 +1,6 @@
 plugins {
     id 'java-library' // 라이브러리 모듈(api:외부노출, implementation:내부전용)
-    id 'io.spring.dependency-management' version '1.1.6'
+    id 'io.spring.dependency-management' version '1.1.7'
     id 'maven-publish'
     id 'base'
 }
