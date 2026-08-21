@@ -1,0 +1,43 @@
+name: Backend Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - apigateway
+          - board-service
+          - config
+          - discovery
+          - egovframe-cloud-module-common
+          - portal-service
+          - reserve-check-service
+          - reserve-item-service
+          - reserve-request-service
+          - user-service
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Build ${{ matrix.service }}
+        run: cd backend/${{ matrix.service }} && ./gradlew --no-daemon build -x test
