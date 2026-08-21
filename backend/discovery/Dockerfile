@@ -1,5 +1,5 @@
 # openjdk17 base image
-FROM eclipse-temurin:17-jre-jammy
+FROM eclipse-temurin:25-jre-jammy
 # jar 파일이 복사되는 위치
 ENV APP_HOME=/usr/app/
 # 작업 시작 위치
