@@ -1,5 +1,5 @@
 import { COMMENTS_MAX_LENGTH } from '@constants'
-import { getTextLength } from '@utils'
+import { getTextLength, truncateText } from '@utils'
 import React, { useState } from 'react'
 
 export interface ITextarea {
@@ -15,12 +15,13 @@ export default function useTextarea(
   const max = maxLength
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    let targetValue = event.target.value
+    const targetValue = event.target.value
     const count = getTextLength(targetValue)
     if (count > max) {
+      const truncatedValue = truncateText(targetValue, max)
       setTextarea({
-        value: targetValue.slice(0, max),
-        currentCount: max,
+        value: truncatedValue,
+        currentCount: getTextLength(truncatedValue),
       })
 
       return
