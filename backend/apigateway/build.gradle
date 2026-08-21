@@ -35,7 +35,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.6'
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
     runtimeOnly 'javax.xml.bind:jaxb-api:2.3.1'
-    runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:2.3.6'
+    runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.9'
 
     // openapi docs
     implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.8.13'
