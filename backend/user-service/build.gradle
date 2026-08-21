@@ -76,7 +76,7 @@ dependencies {
     implementation 'javax.cache:cache-api' // expiry를 위해 필요
 
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
-    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.8'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.9'
 
     implementation 'com.google.api-client:google-api-client:2.2.0'
 
