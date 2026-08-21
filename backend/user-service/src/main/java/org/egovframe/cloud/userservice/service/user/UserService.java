@@ -397,7 +397,8 @@ public class UserService extends AbstractService implements UserDetailsService {
 
             userFindPasswordRepository.save(userFindPassword);
 
-            log.info("end send change password email - emailAddr: " + emailAddr + ", tokenValue: " + tokenValue);
+            // 재설정 토큰(tokenValue)은 비밀번호 재설정을 인가하는 비밀값이므로 로그로 남기지 않는다 (CWE-532).
+            log.info("end send change password email: " + emailAddr);
         } catch (MessagingException e) {
             String errorMessage = getMessage("err.user.find.password");
             log.error(errorMessage + ": " + e.getMessage());
