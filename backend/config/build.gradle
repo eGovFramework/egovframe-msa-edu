@@ -25,7 +25,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'  // bus
     implementation 'org.springframework.boot:spring-boot-starter-actuator'    // bus
-    implementation 'net.logstash.logback:logstash-logback-encoder:8.0'        // logstash logback
+    implementation 'net.logstash.logback:logstash-logback-encoder:9.0'        // logstash logback
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
