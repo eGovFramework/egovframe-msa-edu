@@ -91,7 +91,7 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'com.h2database:h2'
-    testImplementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1'
+    testImplementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:2.0.1'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
