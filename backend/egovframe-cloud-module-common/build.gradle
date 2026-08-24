@@ -30,7 +30,7 @@ ext {
     jakartaAnnotationApiVersion = '3.0.0'
     jakartaPersistenceApiVersion = '3.2.0'
     querydslVersion = '5.0.0'
-    javassistVersion = '3.29.2-GA'
+    javassistVersion = '3.32.0-GA'
     webjarLocatorCoreVersion = '0.59'
 }
 
