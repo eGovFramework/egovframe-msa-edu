@@ -60,7 +60,7 @@ dependencies {
 
     implementation 'net.logstash.logback:logstash-logback-encoder:8.0'        // logstash logback
 
-    implementation 'io.asyncer:r2dbc-mysql:1.2.0'
+    implementation 'io.asyncer:r2dbc-mysql:1.4.3'
     implementation 'com.mysql:mysql-connector-j:8.4.0'
 
     // openapi docs
