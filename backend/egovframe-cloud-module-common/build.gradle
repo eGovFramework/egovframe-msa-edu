@@ -68,9 +68,9 @@ dependencies {
     annotationProcessor "jakarta.annotation:jakarta.annotation-api:${jakartaAnnotationApiVersion}"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api:${jakartaPersistenceApiVersion}"
 
-    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
-    implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
-    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+    implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.13.0'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.13.0'
     implementation "org.javassist:javassist:${javassistVersion}"
     implementation "org.webjars:webjars-locator-core:${webjarLocatorCoreVersion}"
 
