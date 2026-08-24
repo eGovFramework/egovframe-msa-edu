@@ -7,9 +7,11 @@ spring:
     username: sa
     password: 
     driver-class-name: org.h2.Driver
-    initialization-mode: always
-#    schema: classpath:h2/schema.sql
-    data: classpath:h2/data.sql
+  sql:
+    init:
+      mode: always
+#      schema-locations: classpath:h2/schema.sql
+      data-locations: classpath:h2/data.sql
   jpa:
     hibernate:
       generate-ddl: true
@@ -19,6 +21,8 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 1000
+        auto_quote_keyword: true
+    defer-datasource-initialization: true
     show-sql: true
   h2:
     console:
