@@ -96,7 +96,7 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.springframework.security:spring-security-test'
 
-    implementation 'org.javassist:javassist:3.29.2-GA'
+    implementation 'org.javassist:javassist:3.33.0-GA'
     implementation 'org.webjars:webjars-locator-core:0.59'
     implementation 'com.google.guava:guava:32.1.3-jre'
 }
