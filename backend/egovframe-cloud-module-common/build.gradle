@@ -26,7 +26,7 @@ repositories {
 
 ext {
     egovframeBootParentVersion = '5.0.0'
-    jakartaServletApiVersion = '6.0.0'
+    jakartaServletApiVersion = '6.1.0'
     jakartaAnnotationApiVersion = '3.0.0'
     jakartaPersistenceApiVersion = '3.2.0'
     querydslVersion = '5.0.0'
