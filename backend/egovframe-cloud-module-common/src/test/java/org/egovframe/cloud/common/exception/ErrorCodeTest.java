@@ -46,7 +46,7 @@ class ErrorCodeTest {
     }
 
     @Test
-    @DisplayName("비즈니스 에러코드의 상태코드와 코드값이 올바르게 정의되어야 한다")
+    @DisplayName("비즈니스 에러코드의 상태코드, 에러코드, 메시지 키가 올바르게 정의되어야 한다")
     void businessErrorCode_속성값_검증() {
         assertEquals(400, ErrorCode.BUSINESS_CUSTOM_MESSAGE.getStatus());
         assertEquals("B001", ErrorCode.BUSINESS_CUSTOM_MESSAGE.getCode());
@@ -54,9 +54,11 @@ class ErrorCodeTest {
 
         assertEquals(400, ErrorCode.DUPLICATE_INPUT_INVALID.getStatus());
         assertEquals("B002", ErrorCode.DUPLICATE_INPUT_INVALID.getCode());
+        assertEquals("err.duplicate.input.value", ErrorCode.DUPLICATE_INPUT_INVALID.getMessage());
 
         assertEquals(400, ErrorCode.DB_CONSTRAINT_DELETE.getStatus());
         assertEquals("B003", ErrorCode.DB_CONSTRAINT_DELETE.getCode());
+        assertEquals("err.db.constraint.delete", ErrorCode.DB_CONSTRAINT_DELETE.getMessage());
     }
 
     @Test

@@ -36,7 +36,7 @@ public enum ErrorCode {
     // business error code
     BUSINESS_CUSTOM_MESSAGE(400, "B001", ""), // 사용자 정의 메시지를 넘기는 business exception
     DUPLICATE_INPUT_INVALID(400, "B002", "err.duplicate.input.value"), // 중복된 값을 입력하였습니다
-    DB_CONSTRAINT_DELETE(400, "B003", "err.duplicate.input.value") // 참조하는 데이터가 있어서 삭제할 수 없습니다
+    DB_CONSTRAINT_DELETE(400, "B003", "err.db.constraint.delete") // 참조하는 데이터가 있어서 삭제할 수 없습니다
     ;
 
     private final int status;
