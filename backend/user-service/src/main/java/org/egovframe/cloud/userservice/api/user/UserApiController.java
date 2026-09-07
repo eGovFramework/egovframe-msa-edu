@@ -166,7 +166,7 @@ public class UserApiController {
      * @return Boolean 중복 여부
      */
     @PostMapping("/api/v1/users/exists")
-    public Boolean existsEmail(@RequestBody UserEmailRequestDto requestDto) {
+    public Boolean existsEmail(@RequestBody @Valid UserEmailRequestDto requestDto) {
         return userService.existsEmail(requestDto.getEmail(), requestDto.getUserId());
     }
 
