@@ -122,7 +122,7 @@ public class ReserveApiController {
      */
     @PutMapping("/api/v1/reserves/cancel/{reserveId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> cancel(@PathVariable("reserveId") String reserveId, @RequestBody ReserveCancelRequestDto cancelRequestDto) {
+    public Mono<Void> cancel(@PathVariable("reserveId") String reserveId, @Valid @RequestBody ReserveCancelRequestDto cancelRequestDto) {
         return reserveService.cancel(reserveId, cancelRequestDto);
     }
 
