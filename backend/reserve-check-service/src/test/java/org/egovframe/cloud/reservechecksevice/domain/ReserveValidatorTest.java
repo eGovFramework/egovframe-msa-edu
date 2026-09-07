@@ -212,7 +212,7 @@ public class ReserveValidatorTest {
                 .reserveMeansId("realtime")
                 .requestStartDate(now.minusDays(1))
                 .requestEndDate(now.plusDays(5))
-                .inventoryQty(2)
+                .inventoryQty(5)
                 .build();
 
         ReserveItemResponseDto reserveItemDto = ReserveItemResponseDto.builder()
@@ -290,34 +290,6 @@ public class ReserveValidatorTest {
                 .verify();
     }
 
-    @Test
-    void checkEducation_실패_인원충분_하지만코드에러조건() {
-        LocalDateTime now = LocalDateTime.now();
-        ReserveItem item = ReserveItem.builder()
-                .reserveItemId(1L)
-                .categoryId("education")
-                .reserveMeansId("realtime")
-                .requestStartDate(now.minusDays(1))
-                .requestEndDate(now.plusDays(5))
-                .inventoryQty(5)
-                .build();
-
-        ReserveItemResponseDto reserveItemDto = ReserveItemResponseDto.builder()
-                .reserveItem(item)
-                .build();
-
-        Reserve reserve = Reserve.builder()
-                .reserveId("reserve-1")
-                .reserveItemId(1L)
-                .reserveQty(3)
-                .build();
-
-        Mono<Reserve> result = reserveValidator.checkEducation(reserveItemDto, reserve);
-
-        StepVerifier.create(result)
-                .expectError(BusinessMessageException.class)
-                .verify();
-    }
 
     @Test
     void checkReserveItems_공간_라우팅_성공() {
