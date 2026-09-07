@@ -2,11 +2,14 @@ package org.egovframe.cloud.userservice.config;
 
 import javax.sql.DataSource;
 
+import org.egovframe.cloud.servlet.config.UserAuditAware;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -22,6 +25,7 @@ import jakarta.persistence.EntityManagerFactory;
  * Includes repositories from both user-service and common module
  */
 @Configuration
+@EnableJpaAuditing(auditorAwareRef = "userAuditAware")
 @EnableJpaRepositories(
     basePackages = {
         "org.egovframe.cloud.servlet.domain",
@@ -31,6 +35,11 @@ import jakarta.persistence.EntityManagerFactory;
     transactionManagerRef = "transactionManager"
 )
 public class UserServiceJpaConfig {
+
+    @Bean
+    AuditorAware<String> userAuditAware() {
+        return new UserAuditAware();
+    }
 
     @Primary
     @Bean(name = "entityManagerFactory")
