@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 
 import org.egovframe.cloud.common.util.MessageUtil;
+import org.egovframe.cloud.reservechecksevice.domain.Category;
 import org.egovframe.cloud.reservechecksevice.validator.annotation.ReserveSaveValid;
 import org.springframework.util.StringUtils;
 
@@ -59,20 +60,20 @@ public class ReserveSaveValidator implements ConstraintValidator<ReserveSaveVali
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
         String categoryId = String.valueOf(getFieldValue(value, "categoryId"));
-        if ("education".equals(categoryId)) {
+        if (Category.EDUCATION.isEquals(categoryId)) {
             //교육인 경우
             //신청인원
             return checkReserveQty(value, context);
         }
 
-        if ("equipment".equals(categoryId)) {
+        if (Category.EQUIPMENT.isEquals(categoryId)) {
             //장비인 경우
             //신청일자(기간), 신청수량
             // 두 검사를 모두 수행해 위반 사유를 함께 담는다
             return checkReserveDate(value, context) & checkReserveQty(value, context);
         }
 
-        if ("place".equals(categoryId)) {
+        if (Category.SPACE.isEquals(categoryId)) {
             //공간인 경우
             //신청일자(기간)
             return checkReserveDate(value, context);
