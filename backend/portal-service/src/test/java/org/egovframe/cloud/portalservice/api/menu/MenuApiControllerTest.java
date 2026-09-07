@@ -339,6 +339,8 @@ class MenuApiControllerTest {
 
         HttpEntity<MenuUpdateRequestDto> httpEntity = new HttpEntity<>(
                 MenuUpdateRequestDto.builder()
+                        .menuKorName("parent_1")
+                        .menuEngName("parent1")
                         .description("상위메뉴")
                         .connectId(1)
                         .menuType("menuType")

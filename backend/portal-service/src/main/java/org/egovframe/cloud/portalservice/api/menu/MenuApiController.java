@@ -133,7 +133,7 @@ public class MenuApiController {
      */
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/api/v1/menus/{menuId}")
-    public MenuResponseDto update(@PathVariable("menuId") Long menuId, @RequestBody MenuUpdateRequestDto updateRequestDto) {
+    public MenuResponseDto update(@PathVariable("menuId") Long menuId, @RequestBody @Valid MenuUpdateRequestDto updateRequestDto) {
         return menuService.update(menuId, updateRequestDto);
     }
 
