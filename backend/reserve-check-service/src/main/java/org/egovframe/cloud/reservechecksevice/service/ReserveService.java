@@ -307,6 +307,11 @@ public class ReserveService extends ReactiveAbstractService {
      * 사용자 예약 수정
      *
      * @param reserveId
+     * <p>
+     * 재고는 반영하지 않는다. 이 메서드에 도달하는 예약은 아래 isRequest 검사 때문에 예약 신청 상태뿐이고,
+     * 그 상태는 아직 재고가 차감되지 않은 상태다. 심사가 필요한 신청은 reserve-request-service 가
+     * 재고를 건드리지 않고 신청 상태로 저장하며, 차감은 승인 시 checkApprove 가 한 번 수행한다.
+     *
      * @param updateRequestDto
      * @return
      */
@@ -329,8 +334,6 @@ public class ReserveService extends ReactiveAbstractService {
             })
             .flatMap(validator::checkReserveItems)
             .onErrorResume(Mono::error)
-            .flatMap(this::updateInventory)
-            .onErrorResume(Mono::error)
             .flatMap(reserveRepository::save);
     }
 
@@ -338,6 +341,9 @@ public class ReserveService extends ReactiveAbstractService {
      * 관리자 예약 수정
      *
      * @param reserveId
+     * <p>
+     * 재고는 반영하지 않는다. 이유는 {@link #updateReserveForUser} 와 같다.
+     *
      * @param updateRequestDto
      * @return
      */
@@ -353,8 +359,6 @@ public class ReserveService extends ReactiveAbstractService {
                 return reserve.updateByAdmin(updateRequestDto);
             })
             .flatMap(validator::checkReserveItems)
-            .onErrorResume(Mono::error)
-            .flatMap(this::updateInventory)
             .onErrorResume(Mono::error)
             .flatMap(reserveRepository::save);
     }
