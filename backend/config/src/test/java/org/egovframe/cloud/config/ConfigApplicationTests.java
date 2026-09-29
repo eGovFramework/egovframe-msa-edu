@@ -28,7 +28,10 @@ import com.fasterxml.jackson.databind.JsonNode;
  *   2026-09-08  이백행          [2026년 컨트리뷰션] 최초 생성
  *      </pre>
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+// RabbitMQ 가 없는 환경(CI 등)에서도 헬스 체크가 UP 이 되도록 RabbitMQ 연결에 의존하는 헬스 지표를 끈다.
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
+		"management.health.rabbit.enabled=false",
+		"management.health.binders.enabled=false" })
 class ConfigApplicationTests {
 
 	/** 테스트 서버에 HTTP 요청을 전송하기 위한 REST 클라이언트 */
