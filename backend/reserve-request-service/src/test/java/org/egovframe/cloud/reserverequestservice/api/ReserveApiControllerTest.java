@@ -40,6 +40,9 @@ class ReserveApiControllerTest {
 
 		reserve = Reserve.builder()
 			.reserveId("1")
+			.reserveItemId(101L)
+			.userContactNo("010-0000-0000")
+			.userEmail("user@example.com")
 			.reserveQty(50)
 			.reservePurposeContent("test")
 			.reserveStatusId("request")
