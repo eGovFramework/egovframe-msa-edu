@@ -7,6 +7,7 @@ import org.egovframe.cloud.reserverequestservice.domain.Reserve;
 import org.egovframe.cloud.reserverequestservice.domain.ReserveStatus;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.groups.Default;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,9 +36,12 @@ import lombok.ToString;
 @ToString
 public class ReserveSaveRequestDto {
 
+    /** Client-supplied fields; the service derives userId from authentication. */
+    public interface ClientInput {}
+
     @Setter
     private String reserveId;
-    @NotNull
+    @NotNull(groups = {Default.class, ClientInput.class})
     private Long reserveItemId;
     private Long locationId;
     private String categoryId;
@@ -52,7 +56,7 @@ public class ReserveSaveRequestDto {
     private Integer periodMaxCount;
 
     private Integer reserveQty;    //예약 신청 인원/수량
-    @NotNull
+    @NotNull(groups = {Default.class, ClientInput.class})
     private String reservePurposeContent;   //예약 목적
     private String attachmentCode;  //첨부파일 코드
     private LocalDateTime reserveStartDate; //예약 신청 시작일
@@ -60,10 +64,10 @@ public class ReserveSaveRequestDto {
     @Setter
     private String reserveStatusId;     //예약상태 - 공통코드(reserve-status)
     @NotNull
-    private String userId;  //예약자
-    @NotNull
+    private String userId;  //예약자 - 서비스에서 인증된 사용자로 덮어쓴다
+    @NotNull(groups = {Default.class, ClientInput.class})
     private String userContactNo;   //예약자 연락처
-    @NotNull
+    @NotNull(groups = {Default.class, ClientInput.class})
     private String userEmail;   //예약자 이메일
 
     @Builder

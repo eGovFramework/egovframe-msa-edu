@@ -13,6 +13,7 @@ import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -77,7 +78,7 @@ public class ReserveApiController {
      */
     @PostMapping("/api/v1/requests/evaluates")
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<ReserveResponseDto> create(@RequestBody Mono<ReserveSaveRequestDto> saveRequestDtoMono) {
+    public Mono<ReserveResponseDto> create(@Validated(ReserveSaveRequestDto.ClientInput.class) @RequestBody Mono<ReserveSaveRequestDto> saveRequestDtoMono) {
         return saveRequestDtoMono.flatMap(reserveService::create);
     }
 
@@ -89,7 +90,7 @@ public class ReserveApiController {
      */
     @PostMapping("/api/v1/requests")
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<ReserveResponseDto> save(@RequestBody Mono<ReserveSaveRequestDto> saveRequestDtoMono) {
+    public Mono<ReserveResponseDto> save(@Validated(ReserveSaveRequestDto.ClientInput.class) @RequestBody Mono<ReserveSaveRequestDto> saveRequestDtoMono) {
         return saveRequestDtoMono
             .flatMap(saveRequestDto -> {
             if (Category.EDUCATION.isEquals(saveRequestDto.getCategoryId())) {
