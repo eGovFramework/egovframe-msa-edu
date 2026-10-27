@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS  reserve
     reserve_item_id          BIGINT           NULL        COMMENT '예약 물품 id',
     location_id              BIGINT           NULL        COMMENT '예약 물품-지역 id',
     category_id              VARCHAR(255)     NULL        COMMENT '예약 물품-유형 id',
-    reserve_qty              BIGINT(18)       NULL        COMMENT '예약 신청인원/수량',
+    reserve_qty              BIGINT           NULL        COMMENT '예약 신청인원/수량',
     reserve_purpose_content  VARCHAR(4000)    NULL        COMMENT '예약신청 목적',
     attachment_code          VARCHAR(255)     NULL        COMMENT '첨부파일 코드',
     reserve_start_date       DATETIME         NULL        COMMENT '예약 신청 시작일',

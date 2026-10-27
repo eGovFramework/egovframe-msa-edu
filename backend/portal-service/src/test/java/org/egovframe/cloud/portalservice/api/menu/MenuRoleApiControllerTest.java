@@ -17,25 +17,22 @@ import org.egovframe.cloud.portalservice.domain.menu.MenuRoleRepository;
 import org.egovframe.cloud.portalservice.domain.menu.Site;
 import org.egovframe.cloud.portalservice.domain.menu.SiteRepository;
 import org.egovframe.cloud.portalservice.domain.user.Role;
+import org.egovframe.cloud.portalservice.support.AuthorizedHttpTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableConfigurationProperties
-@ActiveProfiles(profiles = "test")
-class MenuRoleApiControllerTest {
+class MenuRoleApiControllerTest extends AuthorizedHttpTest {
 
 
     @Autowired
@@ -233,7 +230,7 @@ class MenuRoleApiControllerTest {
         }
         //when
         ResponseEntity<List<MenuSideResponseDto>> responseEntity =
-                restTemplate.exchange("/api/v1/menu-roles/"+site.getId(), HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuSideResponseDto>>(){});
+                anonymousClient().exchange("/api/v1/menu-roles/"+site.getId(), HttpMethod.GET, null, new ParameterizedTypeReference<List<MenuSideResponseDto>>(){});
 
 
         //then

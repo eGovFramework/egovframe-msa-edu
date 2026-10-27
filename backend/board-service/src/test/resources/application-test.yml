@@ -1,20 +1,26 @@
 spring:
   application:
     name: board-service
+  cloud:
+    bus:
+      enabled: false
+    stream:
+      bindings: {}
+      function:
+        autodetect: false
 
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MYSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
+    url: jdbc:h2:mem:board-${random.uuid};MODE=MYSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;NON_KEYWORDS=USER
     username: sa
     password: 
     driver-class-name: org.h2.Driver
   jpa:
-#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       generate-ddl: true
       ddl-auto: create-drop
-#      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
         default_batch_fetch_size: 1000
     show-sql: true
@@ -42,5 +48,4 @@ ftp:
 # eureka 가 포함되면 eureka server 도 등록되므로 해제한다.
 eureka:
   client:
-    register-with-eureka: false
-    fetch-registry: false
+    enabled: false # 서비스 간 호출은 spring.cloud.discovery.client.simple 로 테스트 스텁에 연결한다 (AuthorizedHttpTest)

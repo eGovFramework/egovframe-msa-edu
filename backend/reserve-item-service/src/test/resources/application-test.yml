@@ -1,6 +1,21 @@
 spring:
   application:
     name: reserve-item-service
+  main:
+    web-application-type: reactive
+  cloud:
+    discovery:
+      enabled: false
+    bus:
+      enabled: false
+    stream:
+      function:
+        autodetect: false
+    function:
+      definition: ""
+  sql:
+    init:
+      mode: never
 
   h2:
     console:
@@ -13,7 +28,7 @@ spring:
 file:
   directory: ${user.home}/msa-attach-volume
 messages:
-  directory: ${file.directory}/messages
+  directory: ${user.dir}/src/test/resources/messages
 
 # jwt token
 token:
@@ -26,5 +41,10 @@ ftp:
 # eureka 가 포함되면 eureka server 도 등록되므로 해제한다.
 eureka:
   client:
+    enabled: false
     register-with-eureka: false
     fetch-registry: false
+
+management:
+  tracing:
+    enabled: false

@@ -2,6 +2,32 @@ spring:
   application:
     name: reserve-check-service
 
+  main:
+    web-application-type: reactive
+    allow-bean-definition-overriding: true
+
+  # 테스트는 config server / eureka / rabbit 에 연결하지 않는다.
+  cloud:
+    config:
+      enabled: false
+      fail-fast: false
+    discovery:
+      enabled: false
+    bus:
+      enabled: false
+    stream:
+      function:
+        autodetect: false
+    function:
+      definition: ""
+  rabbitmq:
+    listener:
+      simple:
+        auto-startup: false
+  sql:
+    init:
+      mode: never
+
   h2:
     console:
       enabled: true
@@ -10,10 +36,13 @@ spring:
   logging.level:
     org.hibernate.SQL: debug
 
-file:
-  directory: ${user.home}/msa-attach-volume
+# 에러 메시지 fixture: src/test/resources/messages/messages.properties
 messages:
-  directory: ${file.directory}/messages
+  directory: ${user.dir}/src/test/resources/messages
+
+management:
+  tracing:
+    enabled: false
 
 # jwt token
 token:
@@ -26,5 +55,6 @@ ftp:
 # eureka 가 포함되면 eureka server 도 등록되므로 해제한다.
 eureka:
   client:
+    enabled: false
     register-with-eureka: false
     fetch-registry: false

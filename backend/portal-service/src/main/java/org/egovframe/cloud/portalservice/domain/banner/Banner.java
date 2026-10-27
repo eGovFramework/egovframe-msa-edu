@@ -2,6 +2,7 @@ package org.egovframe.cloud.portalservice.domain.banner;
 
 import org.egovframe.cloud.portalservice.domain.menu.Site;
 import org.egovframe.cloud.servlet.domain.BaseEntity;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -87,7 +88,8 @@ public class Banner extends BaseEntity {
     /**
      * 정렬 순서
      */
-    @Column(nullable = false, columnDefinition = "mediumint(5) default '99999'")
+    @Column(nullable = false, columnDefinition = "mediumint(5)")
+    @ColumnDefault("99999")
     private Integer sortSeq;
 
     /**

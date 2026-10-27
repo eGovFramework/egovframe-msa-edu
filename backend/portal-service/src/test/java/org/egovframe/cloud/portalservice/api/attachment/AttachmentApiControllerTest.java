@@ -25,6 +25,7 @@ import org.egovframe.cloud.portalservice.api.attachment.dto.AttachmentUploadRequ
 import org.egovframe.cloud.portalservice.domain.attachment.Attachment;
 import org.egovframe.cloud.portalservice.domain.attachment.AttachmentRepository;
 import org.egovframe.cloud.portalservice.service.attachment.AttachmentService;
+import org.egovframe.cloud.portalservice.support.AuthorizedHttpTest;
 import org.egovframe.cloud.portalservice.util.RestResponsePage;
 import org.egovframe.cloud.portalservice.utils.FileStorageUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -32,7 +33,6 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
@@ -44,16 +44,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableConfigurationProperties
-@ActiveProfiles(profiles = "test")
-class AttachmentApiControllerTest {
+class AttachmentApiControllerTest extends AuthorizedHttpTest {
     @Autowired
     TestRestTemplate restTemplate;
 
@@ -245,12 +242,17 @@ class AttachmentApiControllerTest {
     @Test
     public void 에디터이미지업로드_후_이미지태그에서_이미지파일_조회_정상() throws Exception {
         //given
-        Resource testFile = getTestFile();
+        byte[] imageBytes = java.util.Base64.getDecoder().decode(
+                "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aWQ0AAAAASUVORK5CYII=");
+        Path imageFile = Files.createTempFile("editor-image", ".png");
+        Files.write(imageFile, imageBytes);
+        imageFile.toFile().deleteOnExit();
+        Resource testFile = new FileSystemResource(imageFile);
 
         String base64data = Base64.toBase64String(getByteFile(testFile.getFile()));
         AttachmentBase64RequestDto requestDto = AttachmentBase64RequestDto.builder()
                 .fieldName("upload")
-                .fileType("text")
+                .fileType("image")
                 .fileBase64(base64data)
                 .originalName(testFile.getFilename())
                 .size(testFile.contentLength())
@@ -264,6 +266,8 @@ class AttachmentApiControllerTest {
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getHeaders().getContentType()).isEqualTo(MediaType.IMAGE_PNG);
+        assertThat(responseEntity.getBody()).isEqualTo(imageBytes);
     }
 
     @Test

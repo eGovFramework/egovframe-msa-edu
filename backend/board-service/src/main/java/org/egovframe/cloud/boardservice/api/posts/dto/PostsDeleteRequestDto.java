@@ -4,7 +4,7 @@ import org.egovframe.cloud.boardservice.domain.board.Board;
 import org.egovframe.cloud.boardservice.domain.posts.Posts;
 import org.egovframe.cloud.boardservice.domain.posts.PostsId;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 /**
@@ -30,13 +30,13 @@ public class PostsDeleteRequestDto {
     /**
      * 게시판 번호
      */
-    @NotBlank(message = "{board.board_no} {err.required}")
+    @NotNull(message = "{board.board_no} {err.required}")
     private Integer boardNo;
 
     /**
      * 게시물 번호
      */
-    @NotBlank(message = "{posts.posts_no} {err.required}")
+    @NotNull(message = "{posts.posts_no} {err.required}")
     private Integer postsNo;
 
     /**

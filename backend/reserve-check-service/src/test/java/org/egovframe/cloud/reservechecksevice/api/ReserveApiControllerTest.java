@@ -22,25 +22,22 @@ import org.egovframe.cloud.reservechecksevice.domain.ReserveRepository;
 import org.egovframe.cloud.reservechecksevice.domain.ReserveStatus;
 import org.egovframe.cloud.reservechecksevice.domain.location.Location;
 import org.egovframe.cloud.reservechecksevice.util.RestResponsePage;
-import org.egovframe.cloud.reservechecksevice.util.WithCustomMockUser;
+import org.egovframe.cloud.reservechecksevice.util.JwtTestTokens;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@EnableConfigurationProperties
-@TestPropertySource(properties = {"spring.config.location=classpath:application-test.yml"})
 @ActiveProfiles(profiles = "test")
 public class ReserveApiControllerTest {
 
@@ -53,9 +50,22 @@ public class ReserveApiControllerTest {
 	@MockBean
 	private UserServiceClient userServiceClient;
 
+	// 첨부파일 이벤트의 외부 RabbitMQ 경계만 대체한다.
+	@MockBean
+	private org.springframework.cloud.stream.function.StreamBridge streamBridge;
+
 	@Autowired
 	private WebTestClient webTestClient;
 
+	@Value("${token.secret}")
+	private String tokenSecret;
+
+	/** 운영 보안 필터 체인이 검증하는 것과 같은 방식으로 서명한 JWT 를 실어 보내는 클라이언트 */
+	private WebTestClient as(String userId, Role role) {
+		return webTestClient.mutate()
+			.defaultHeader("Authorization", JwtTestTokens.bearer(tokenSecret, userId, role))
+			.build();
+	}
 
 	private static final String API_URL = "/api/v1/reserves";
 
@@ -124,7 +134,7 @@ public class ReserveApiControllerTest {
 		assertNotNull(saved);
 
 		//when
-		webTestClient.get()
+		as("admin", Role.ADMIN).get()
 			.uri(API_URL + "?page=0&size=5")
 			.exchange()
 			.expectStatus().isOk()
@@ -140,7 +150,6 @@ public class ReserveApiControllerTest {
 	}
 
 	@Test
-	@WithCustomMockUser(userId = "admin", role = Role.ADMIN)
 	public void 관리자_취소_성공() {
 		BDDMockito.when(reserveItemServiceClient.updateInventory(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt()))
 			.thenReturn(Mono.just(true));
@@ -148,7 +157,7 @@ public class ReserveApiControllerTest {
 		Reserve saved = reserveRepository.insert(reserve).block();
 		assertNotNull(saved);
 
-		webTestClient.put()
+		as("admin", Role.ADMIN).put()
 			.uri(API_URL + "/cancel/{reserveId}", saved.getReserveId())
 			.bodyValue(ReserveCancelRequestDto.builder().reasonCancelContent("reason for cancellation").build())
 			.exchange()
@@ -161,7 +170,6 @@ public class ReserveApiControllerTest {
 	}
 
 	@Test
-	@WithCustomMockUser(userId = "user", role = Role.USER)
 	public void 사용자_취소_성공() {
 		//given
 		BDDMockito.when(reserveItemServiceClient.updateInventory(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt()))
@@ -170,7 +178,7 @@ public class ReserveApiControllerTest {
 		assertNotNull(saved);
 
 		//when
-		webTestClient.put()
+		as("user", Role.USER).put()
 			.uri(API_URL + "/cancel/{reserveId}", saved.getReserveId())
 			.bodyValue(ReserveCancelRequestDto.builder().reasonCancelContent("reason for cancellation").build())
 			.exchange()
@@ -183,14 +191,13 @@ public class ReserveApiControllerTest {
 	}
 
 	@Test
-	@WithCustomMockUser(userId = "test", role = Role.USER)
 	public void 다른사용자_예약_취소_실패() {
 		BDDMockito.when(reserveItemServiceClient.updateInventory(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt()))
 			.thenReturn(Mono.just(true));
 		Reserve saved = reserveRepository.insert(reserve).block();
 		assertNotNull(saved);
 
-		webTestClient.put()
+		as("test", Role.USER).put()
 			.uri(API_URL + "/cancel/{reserveId}", saved.getReserveId())
 			.bodyValue(ReserveCancelRequestDto.builder().reasonCancelContent("reason for cancellation").build())
 			.exchange()
@@ -203,7 +210,6 @@ public class ReserveApiControllerTest {
 	}
 
 	@Test
-	@WithCustomMockUser(userId = "user", role = Role.USER)
 	public void 예약상태_완료_취소_실패() {
 		Reserve done = reserve.updateStatus(ReserveStatus.DONE.getKey());
 		Reserve saved = reserveRepository.insert(done).block();
@@ -212,7 +218,7 @@ public class ReserveApiControllerTest {
 		BDDMockito.when(reserveItemServiceClient.updateInventory(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt()))
 			.thenReturn(Mono.just(true));
 
-		webTestClient.put()
+		as("user", Role.USER).put()
 			.uri(API_URL + "/cancel/{reserveId}", saved.getReserveId())
 			.bodyValue(ReserveCancelRequestDto.builder().reasonCancelContent("reason for cancellation").build())
 			.exchange()
@@ -225,7 +231,6 @@ public class ReserveApiControllerTest {
 	}
 
 	@Test
-	@WithCustomMockUser(userId = "user", role = Role.USER)
 	public void 관리자가_아닌_경우_승인_실패() {
 		Reserve saved = reserveRepository.insert(reserve).block();
 		assertNotNull(saved);
@@ -235,7 +240,7 @@ public class ReserveApiControllerTest {
 		BDDMockito.when(reserveItemServiceClient.updateInventory(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt()))
 			.thenReturn(Mono.just(true));
 
-		webTestClient.put()
+		as("user", Role.USER).put()
 			.uri(API_URL + "/approve/{reserveId}", saved.getReserveId())
 			.exchange()
 			.expectStatus().isBadRequest()
@@ -246,7 +251,6 @@ public class ReserveApiControllerTest {
 	}
 
 	@Test
-	@WithCustomMockUser(userId = "admin", role = Role.ADMIN)
 	public void 예약승인_성공() {
 
 		Reserve saved = reserveRepository.insert(reserve).block();
@@ -257,7 +261,7 @@ public class ReserveApiControllerTest {
 		BDDMockito.when(reserveItemServiceClient.updateInventory(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt()))
 			.thenReturn(Mono.just(true));
 
-		webTestClient.put()
+		as("admin", Role.ADMIN).put()
 			.uri(API_URL + "/approve/{reserveId}", saved.getReserveId())
 			.exchange()
 			.expectStatus().isNoContent();
@@ -268,7 +272,6 @@ public class ReserveApiControllerTest {
 	}
 
 	@Test
-	@WithCustomMockUser(userId = "admin", role = Role.ADMIN)
 	public void 예약승인_실패_재고부족() {
 		ReserveItem failReserveItem = ReserveItem.builder()
 			.reserveItemId(1L)
@@ -295,7 +298,7 @@ public class ReserveApiControllerTest {
 		BDDMockito.when(reserveItemServiceClient.updateInventory(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt()))
 			.thenReturn(Mono.just(false));
 
-		webTestClient.put()
+		as("admin", Role.ADMIN).put()
 			.uri(API_URL + "/approve/{reserveId}", saved.getReserveId())
 			.exchange()
 			.expectStatus().isBadRequest()
@@ -307,7 +310,6 @@ public class ReserveApiControllerTest {
 	}
 
 	@Test
-	@WithCustomMockUser(userId = "admin", role = Role.ADMIN)
 	public void 관리자_예약정보_수정_성공() {
 		Reserve saved = reserveRepository.insert(reserve).block();
 		assertNotNull(saved);
@@ -331,7 +333,7 @@ public class ReserveApiControllerTest {
 				.userEmail(saved.getUserEmail())
 				.build();
 
-		webTestClient.put()
+		as("admin", Role.ADMIN).put()
 			.uri(API_URL + "/{reserveId}", saved.getReserveId())
 			.bodyValue(updateRequestDto)
 			.exchange()
@@ -345,7 +347,6 @@ public class ReserveApiControllerTest {
 	}
 
 	@Test
-	@WithCustomMockUser(userId = "test", role = Role.USER)
 	public void 다른사용자_예약정보_수정_실패() {
 		Reserve saved = reserveRepository.insert(reserve).block();
 		assertNotNull(saved);
@@ -369,7 +370,7 @@ public class ReserveApiControllerTest {
 				.userEmail(saved.getUserEmail())
 				.build();
 
-		webTestClient.put()
+		as("test", Role.USER).put()
 			.uri(API_URL + "/{reserveId}", saved.getReserveId())
 			.bodyValue(updateRequestDto)
 			.exchange()
@@ -381,7 +382,6 @@ public class ReserveApiControllerTest {
 	}
 
 	@Test
-	@WithCustomMockUser(userId = "user", role = Role.USER)
 	public void 사용자_예약정보_수정_성공() {
 		Reserve saved = reserveRepository.insert(reserve).block();
 		assertNotNull(saved);
@@ -405,7 +405,7 @@ public class ReserveApiControllerTest {
 				.userEmail(saved.getUserEmail())
 				.build();
 
-		webTestClient.put()
+		as("user", Role.USER).put()
 			.uri(API_URL + "/{reserveId}", saved.getReserveId())
 			.bodyValue(updateRequestDto)
 			.exchange()
@@ -420,7 +420,6 @@ public class ReserveApiControllerTest {
 	}
 
 	@Test
-	@WithCustomMockUser(userId = "user", role = Role.USER)
 	public void 사용자_상태승인인예약정보_수정_실패() {
 		Reserve failedReserve = reserve.withReserveStatusId(ReserveStatus.APPROVE.getKey());
 		Reserve saved = reserveRepository.insert(failedReserve).block();
@@ -445,7 +444,7 @@ public class ReserveApiControllerTest {
 				.userEmail(saved.getUserEmail())
 				.build();
 
-		webTestClient.put()
+		as("user", Role.USER).put()
 			.uri(API_URL + "/{reserveId}", saved.getReserveId())
 			.bodyValue(updateRequestDto)
 			.exchange()
@@ -459,6 +458,10 @@ public class ReserveApiControllerTest {
 
 	@Test
 	public void 관리자_예약_성공() {
+		BDDMockito.when(userServiceClient.findByUserId(ArgumentMatchers.anyString()))
+			.thenReturn(Mono.just(user));
+		BDDMockito.when(reserveItemServiceClient.findByIdWithRelations(ArgumentMatchers.anyLong()))
+			.thenReturn(Mono.just(ReserveItemRelationResponseDto.builder().entity(reserveItem).build()));
 		BDDMockito.when(reserveItemServiceClient.findById(ArgumentMatchers.anyLong()))
 			.thenReturn(Mono.just(ReserveItemResponseDto.builder().reserveItem(reserveItem).build()));
 		BDDMockito.when(reserveItemServiceClient.updateInventory(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt()))
@@ -478,14 +481,20 @@ public class ReserveApiControllerTest {
 				.userEmail(reserve.getUserEmail())
 				.build();
 
-		webTestClient.post()
+		as("admin", Role.ADMIN).post()
 			.uri(API_URL)
 			.bodyValue(saveRequestDto)
 			.exchange()
-			.expectStatus().isCreated();
+			.expectStatus().isCreated()
+			.expectBody()
+			.jsonPath("$.reserveId").isNotEmpty()
+			.jsonPath("$.reserveQty").isEqualTo(saveRequestDto.getReserveQty())
+			.jsonPath("$.userId").isEqualTo(saveRequestDto.getUserId());
 
-		Reserve saved = reserveRepository.findById(reserve.getReserveId()).block();
-		System.out.println(saved);
+		assertThat(reserveRepository.count().block()).isEqualTo(1L);
+		Reserve saved = reserveRepository.findAll().single().block();
+		assertThat(saved.getReservePurposeContent()).isEqualTo(saveRequestDto.getReservePurposeContent());
+		BDDMockito.verify(streamBridge).send(ArgumentMatchers.anyString(), ArgumentMatchers.any());
 
 	}
 
@@ -518,7 +527,7 @@ public class ReserveApiControllerTest {
 				.userEmail(reserve.getUserEmail())
 				.build();
 
-		webTestClient.post()
+		as("admin", Role.ADMIN).post()
 			.uri(API_URL)
 			.bodyValue(saveRequestDto)
 			.exchange()
@@ -549,7 +558,7 @@ public class ReserveApiControllerTest {
 		Reserve saved = reserveRepository.insert(inventoryreserve).block();
 		assertNotNull(saved);
 
-		Integer responseBody = webTestClient.get()
+		Integer responseBody = as("user", Role.USER).get()
 			.uri("/api/v1/reserves/" + reserveItem.getReserveItemId()
 				+ "/inventories?startDate=2021-09-09&endDate=2021-09-09")
 			.exchange()
@@ -559,6 +568,52 @@ public class ReserveApiControllerTest {
 
 		assertThat(responseBody).isEqualTo(50);
 
+	}
+
+	@Test
+	public void 토큰없이_조회하면_401() {
+		webTestClient.get()
+			.uri(API_URL + "?page=0&size=5")
+			.exchange()
+			.expectStatus().isUnauthorized();
+	}
+
+	@Test
+	public void 토큰없이_예약_변경_요청은_모두_401이고_데이터는_바뀌지_않는다() {
+		Reserve saved = reserveRepository.insert(reserve).block();
+		assertNotNull(saved);
+
+		webTestClient.put()
+			.uri(API_URL + "/approve/{reserveId}", saved.getReserveId())
+			.exchange()
+			.expectStatus().isUnauthorized();
+
+		webTestClient.put()
+			.uri(API_URL + "/cancel/{reserveId}", saved.getReserveId())
+			.bodyValue(ReserveCancelRequestDto.builder().reasonCancelContent("reason for cancellation").build())
+			.exchange()
+			.expectStatus().isUnauthorized();
+
+		webTestClient.post()
+			.uri(API_URL)
+			.bodyValue(ReserveSaveRequestDto.builder().reserveItemId(reserveItem.getReserveItemId()).build())
+			.exchange()
+			.expectStatus().isUnauthorized();
+
+		Reserve unchanged = reserveRepository.findById(saved.getReserveId()).block();
+		assertThat(unchanged.getReserveStatusId()).isEqualTo("request");
+		assertThat(reserveRepository.count().block()).isEqualTo(1L);
+	}
+
+	@Test
+	public void 서명이_다른_토큰은_거부된다() {
+		String forged = JwtTestTokens.token("another-secret", "admin", Role.ADMIN.getKey());
+
+		webTestClient.get()
+			.uri(API_URL + "?page=0&size=5")
+			.header("Authorization", "Bearer " + forged)
+			.exchange()
+			.expectStatus().value(status -> assertThat(status).isIn(401, 403));
 	}
 
 }

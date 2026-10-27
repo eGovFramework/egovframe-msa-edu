@@ -1,6 +1,7 @@
 package org.egovframe.cloud.portalservice.config;
 
 import org.egovframe.cloud.common.exception.dto.ErrorResponse;
+import org.egovframe.cloud.portalservice.support.AuthorizedHttpTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -9,7 +10,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -31,10 +31,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  *  2021/07/16    jaeyeolkim  최초 생성
  * </pre>
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableConfigurationProperties
-@ActiveProfiles(profiles = "test")
-public class ExceptionResponseTest {
+public class ExceptionResponseTest extends AuthorizedHttpTest {
 
     @Autowired
     private TestRestTemplate restTemplate;

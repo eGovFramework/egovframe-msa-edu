@@ -1,6 +1,8 @@
 package org.egovframe.cloud.portalservice.api.banner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -15,6 +17,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
 import org.assertj.core.api.Condition;
+import org.egovframe.cloud.common.dto.AttachmentEntityMessage;
 import org.egovframe.cloud.portalservice.api.banner.dto.BannerImageResponseDto;
 import org.egovframe.cloud.portalservice.api.banner.dto.BannerListResponseDto;
 import org.egovframe.cloud.portalservice.api.banner.dto.BannerResponseDto;
@@ -23,25 +26,27 @@ import org.egovframe.cloud.portalservice.domain.banner.BannerRepository;
 import org.egovframe.cloud.portalservice.domain.menu.Site;
 import org.egovframe.cloud.portalservice.domain.menu.SiteRepository;
 import org.egovframe.cloud.portalservice.service.banner.BannerService;
+import org.egovframe.cloud.portalservice.support.AuthorizedHttpTest;
 import org.egovframe.cloud.portalservice.util.RestResponsePage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.messaging.Message;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * org.egovframe.cloud.portalservice.api.banner.BannerApiControllerTest
@@ -60,10 +65,8 @@ import org.springframework.test.context.ActiveProfiles;
  *  2021/08/18    jooho       최초 생성
  * </pre>
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableConfigurationProperties
-@ActiveProfiles(profiles = "test")
-class BannerApiControllerTest {
+class BannerApiControllerTest extends AuthorizedHttpTest {
 
     /**
      * test rest template
@@ -125,11 +128,16 @@ class BannerApiControllerTest {
     private Site site;
     private final List<Banner> banners = new ArrayList<>();
 
+    /** RabbitMQ 송신 경계만 대체한다. HTTP, 인가, BannerService 와 DB 는 실제 구현을 사용한다. */
+    @MockitoBean
+    private StreamBridge streamBridge;
+
     /**
      * 테스트 시작 전 수행
      */
     @BeforeEach
     void setUp() {
+        when(streamBridge.send(eq("attachmentEntity-out-0"), any())).thenReturn(true);
     	// 사이트 등록
     	site = siteRepository.save(Site.builder()
     			.name("TEST_SITE")
@@ -274,7 +282,6 @@ class BannerApiControllerTest {
      * 배너 등록 테스트
      */
     @Test
-    @Disabled
     void 배너_등록() {
         // given
         Map<String, Object> params = new HashMap<>();
@@ -319,6 +326,16 @@ class BannerApiControllerTest {
         assertThat(entity.getBannerContent()).isEqualTo(INSERT_BANNER_CONTENT);
         assertThat(entity.getNewWindowAt()).isEqualTo(INSERT_NEW_WINDOW_AT);
         assertThat(entity.getSortSeq()).isEqualTo(INSERT_SORT_SEQ);
+
+        ArgumentCaptor<Object> published = ArgumentCaptor.forClass(Object.class);
+        verify(streamBridge).send(eq("attachmentEntity-out-0"), published.capture());
+        assertThat(published.getValue()).isInstanceOfSatisfying(Message.class, envelope -> {
+            assertThat(envelope.getPayload()).isInstanceOfSatisfying(AttachmentEntityMessage.class, attachment -> {
+                assertThat(attachment.getAttachmentCode()).isEqualTo(INSERT_ATTACHMENT_CODE);
+                assertThat(attachment.getEntityName()).isEqualTo(Banner.class.getName());
+                assertThat(attachment.getEntityId()).isEqualTo(String.valueOf(bannerNo));
+            });
+        });
     }
 
     /**

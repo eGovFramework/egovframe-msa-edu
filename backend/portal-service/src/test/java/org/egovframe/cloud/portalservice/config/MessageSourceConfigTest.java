@@ -2,17 +2,14 @@ package org.egovframe.cloud.portalservice.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.egovframe.cloud.portalservice.support.AuthorizedHttpTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableConfigurationProperties
-@ActiveProfiles(profiles = "test")
-class MessageSourceConfigTest {
+class MessageSourceConfigTest extends AuthorizedHttpTest {
 
     @Autowired
     TestRestTemplate restTemplate;

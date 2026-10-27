@@ -1,5 +1,7 @@
 package org.egovframe.cloud.reserveitemservice.config;
 
+import java.util.UUID;
+
 import io.r2dbc.h2.H2ConnectionConfiguration;
 import io.r2dbc.h2.H2ConnectionFactory;
 import io.r2dbc.h2.H2ConnectionOption;
@@ -8,7 +10,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.r2dbc.connection.init.CompositeDatabasePopulator;
 import org.springframework.r2dbc.connection.init.ConnectionFactoryInitializer;
@@ -21,7 +22,7 @@ public class R2dbcConfig{
     @Bean
     H2ConnectionFactory connectionFactory() {
         return new H2ConnectionFactory(H2ConnectionConfiguration.builder()
-                .inMemory("testdb")
+                .inMemory("reserve-item-" + UUID.randomUUID())
                 .property(H2ConnectionOption.DB_CLOSE_DELAY, "-1")
                 .username("sa")
                 .build());

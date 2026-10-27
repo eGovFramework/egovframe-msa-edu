@@ -13,20 +13,19 @@ import org.egovframe.cloud.portalservice.api.privacy.dto.PrivacyListResponseDto;
 import org.egovframe.cloud.portalservice.api.privacy.dto.PrivacyResponseDto;
 import org.egovframe.cloud.portalservice.domain.privacy.Privacy;
 import org.egovframe.cloud.portalservice.domain.privacy.PrivacyRepository;
+import org.egovframe.cloud.portalservice.support.AuthorizedHttpTest;
 import org.egovframe.cloud.portalservice.util.RestResponsePage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
 
 /**
  * org.egovframe.cloud.portalservice.api.privacy.PrivacyApiControllerTest
@@ -45,10 +44,8 @@ import org.springframework.test.context.ActiveProfiles;
  *  2021/07/23    jooho       최초 생성
  * </pre>
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableConfigurationProperties
-@ActiveProfiles(profiles = "test")
-class PrivacyApiControllerTest {
+class PrivacyApiControllerTest extends AuthorizedHttpTest {
 
     /**
      * test rest template
