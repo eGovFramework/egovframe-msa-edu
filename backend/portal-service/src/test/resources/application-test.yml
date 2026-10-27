@@ -1,9 +1,15 @@
 spring:
   application:
     name: portal-service
+  cloud:
+    bus:
+      enabled: false
+    stream:
+      function:
+        autodetect: false
 
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MYSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
+    url: jdbc:h2:mem:portal-${random.uuid};MODE=MYSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;NON_KEYWORDS=USER
     username: sa
     password: 
     driver-class-name: org.h2.Driver
@@ -13,6 +19,7 @@ spring:
       ddl-auto: create-drop
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
         default_batch_fetch_size: 1000
     show-sql: true
@@ -25,9 +32,10 @@ spring:
     org.hibernate.SQL: debug
 
 file:
-  directory: ${user.home}/msa-attach-volume
+  directory: ${java.io.tmpdir}/portal-service-test/attach-volume
 messages:
-  directory: ${file.directory}/messages
+  # 운영 볼륨 대신 저장소에 포함된 테스트 전용 메시지 파일(src/test/resources/test-messages)을 읽는다.
+  directory: ${user.dir}/src/test/resources/test-messages
 
 # jwt token
 token:
@@ -40,5 +48,6 @@ ftp:
 # eureka 가 포함되면 eureka server 도 등록되므로 해제한다.
 eureka:
   client:
+    enabled: false
     register-with-eureka: false
     fetch-registry: false

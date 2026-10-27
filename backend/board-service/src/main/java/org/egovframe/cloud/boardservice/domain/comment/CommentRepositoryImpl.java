@@ -12,6 +12,7 @@ import org.egovframe.cloud.boardservice.api.comment.dto.CommentListResponseDto;
 import org.egovframe.cloud.boardservice.api.comment.dto.QCommentListResponseDto;
 import org.egovframe.cloud.boardservice.domain.user.QUser;
 import org.springframework.data.domain.Page;
+import org.egovframe.cloud.boardservice.domain.user.User;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
@@ -141,7 +142,9 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         NumberPath<Integer> sortSeqPath = Expressions.numberPath(Integer.class, commentPath, "sort_seq");
         NumberPath<Integer> deleteAtPath = Expressions.numberPath(Integer.class, commentPath, "delete_at");
 
-        StringPath userPath = Expressions.stringPath("user");
+        // H2 에서 user 는 예약어(USER 함수)라 user.user_id 를 컬럼 참조로 해석하지 못하므로 별칭으로 조인한다. (MySQL 에서도 동일하게 동작)
+        Path<User> userAliasPath = Expressions.path(User.class, "user_info");
+        StringPath userPath = Expressions.stringPath("user_info");
 
         BooleanExpression deleteAtExpression = null;
         if (deleteAt != null) {
@@ -181,7 +184,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .innerJoin(groupComment, groupCommentPath).on(Expressions.numberPath(Integer.class, groupCommentPath, "board_no").eq(boardNoPath)
                         .and(Expressions.numberPath(Integer.class, groupCommentPath, "posts_no").eq(postsNoPath))
                         .and(Expressions.numberPath(Integer.class, groupCommentPath, "comment_no").eq(groupNoPath)))
-                .leftJoin(user).on(Expressions.stringPath(commentPath, "created_by").eq(Expressions.stringPath(userPath, "user_id")))
+                .leftJoin(user, userAliasPath).on(Expressions.stringPath(commentPath, "created_by").eq(Expressions.stringPath(userPath, "user_id")))
                 .where(boardNoPath.eq(boardNo)
                         .and(postsNoPath.eq(postsNo))
                         .and(deleteAtExpression))

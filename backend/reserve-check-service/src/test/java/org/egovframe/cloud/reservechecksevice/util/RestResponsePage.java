@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * org.egovframe.cloud.boardservice.util.RestResponsePage
@@ -28,6 +29,9 @@ import com.fasterxml.jackson.databind.JsonNode;
  *  2021/07/08    jooho       최초 생성
  * </pre>
  */
+// spring-cloud-openfeign 의 PageJacksonModule 이 Page 계열을 SimplePageImpl 로 좁히는 mix-in 을 걸어 두므로,
+// 이 테스트 DTO 로 역직렬화되도록 명시한다.
+@JsonDeserialize(as = RestResponsePage.class)
 public class RestResponsePage<T> extends PageImpl<T> {
 
     /**

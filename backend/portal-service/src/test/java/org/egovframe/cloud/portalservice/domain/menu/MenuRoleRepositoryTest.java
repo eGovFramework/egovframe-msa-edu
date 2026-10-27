@@ -46,9 +46,9 @@ class MenuRoleRepositoryTest {
 
     @AfterEach
     public void tearDown() {
-        siteRepository.deleteAll();
-        menuRepository.deleteAll();
         menuRoleRepository.deleteAll();
+        menuRepository.deleteAll();
+        siteRepository.deleteAll();
     }
 
     @Test

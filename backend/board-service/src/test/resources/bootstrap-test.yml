@@ -1,0 +1,5 @@
+# 테스트에서는 Config Server(localhost:8888)를 조회하지 않는다. 설정은 application-test.yml 이 제공한다.
+spring:
+  cloud:
+    config:
+      enabled: false

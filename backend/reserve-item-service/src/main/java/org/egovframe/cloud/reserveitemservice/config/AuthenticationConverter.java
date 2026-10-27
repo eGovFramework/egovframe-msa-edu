@@ -88,8 +88,9 @@ public class AuthenticationConverter implements ServerAuthenticationConverter {
                             new UsernamePasswordAuthenticationToken(username, null, roleList);
 
                     ReactiveSecurityContextHolder.withAuthentication(authenticationToken);
-                    return Mono.just(authenticationToken);
-                });
+                    return Mono.<Authentication>just(authenticationToken);
+                })
+                .onErrorResume(io.jsonwebtoken.JwtException.class, invalidToken -> Mono.empty());
 
     }
 

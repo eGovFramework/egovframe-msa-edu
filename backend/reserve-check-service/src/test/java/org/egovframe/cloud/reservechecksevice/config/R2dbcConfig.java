@@ -1,5 +1,7 @@
 package org.egovframe.cloud.reservechecksevice.config;
 
+import java.util.UUID;
+
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
@@ -21,7 +23,7 @@ public class R2dbcConfig {
     @Bean
     H2ConnectionFactory connectionFactory() {
         return new H2ConnectionFactory(H2ConnectionConfiguration.builder()
-                .inMemory("testdb")
+                .inMemory("reserve-check-" + UUID.randomUUID())
                 .property(H2ConnectionOption.DB_CLOSE_DELAY, "-1")
                 .username("sa")
                 .build());

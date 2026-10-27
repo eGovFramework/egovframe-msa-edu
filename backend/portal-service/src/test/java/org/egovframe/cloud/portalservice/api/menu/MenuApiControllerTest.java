@@ -16,24 +16,21 @@ import org.egovframe.cloud.portalservice.domain.menu.Menu;
 import org.egovframe.cloud.portalservice.domain.menu.MenuRepository;
 import org.egovframe.cloud.portalservice.domain.menu.Site;
 import org.egovframe.cloud.portalservice.domain.menu.SiteRepository;
+import org.egovframe.cloud.portalservice.support.AuthorizedHttpTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableConfigurationProperties
-@ActiveProfiles(profiles = "test")
-class MenuApiControllerTest {
+class MenuApiControllerTest extends AuthorizedHttpTest {
 
 
     @Autowired

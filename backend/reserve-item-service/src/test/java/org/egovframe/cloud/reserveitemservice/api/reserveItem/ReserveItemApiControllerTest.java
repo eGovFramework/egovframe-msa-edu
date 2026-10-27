@@ -22,6 +22,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.egovframe.cloud.reserveitemservice.support.JwtTestTokens;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -29,13 +32,11 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableConfigurationProperties
-@TestPropertySource(properties = {"spring.config.location=classpath:application-test.yml"})
 @ActiveProfiles("test")
 @Import({R2dbcConfig.class})
 class ReserveItemApiControllerTest {
@@ -50,7 +51,16 @@ class ReserveItemApiControllerTest {
     private R2dbcEntityTemplate entityTemplate;
 
     @Autowired
-    WebTestClient webTestClient;
+    private WebTestClient rawClient;
+
+    private WebTestClient webTestClient;
+
+    @Value("${token.secret}")
+    private String tokenSecret;
+
+    // Only the outbound attachment-event transport is replaced; services and repositories are real.
+    @MockitoBean
+    private org.springframework.cloud.stream.function.StreamBridge streamBridge;
 
     private final static String API_URL = "/api/v1/reserve-items";
 
@@ -67,6 +77,8 @@ class ReserveItemApiControllerTest {
 
     @BeforeEach
     public void setUp() {
+        webTestClient = rawClient.mutate()
+            .defaultHeader("Authorization", JwtTestTokens.bearer(tokenSecret)).build();
         category = Code.builder().codeName("category").codeId("category").parentCodeId("reserve-category").build();
         entityTemplate.insert(Code.class)
             .using(category).block();
@@ -159,7 +171,7 @@ class ReserveItemApiControllerTest {
         assertThat(responseBody.keySet().contains(category.getCodeId())).isTrue();
         Collection<ReserveItemMainResponseDto> reserveItemMainResponseDtos = responseBody.get(category.getCodeId());
         reserveItemMainResponseDtos.stream().forEach(reserveItemMainResponseDto -> {
-            assertThat(reserveItemMainResponseDto.getReserveItemName().equals(saved.getReserveItemName()));
+            assertThat(reserveItemMainResponseDto.getReserveItemName()).isEqualTo(saved.getReserveItemName());
         });
     }
 
@@ -275,6 +287,13 @@ class ReserveItemApiControllerTest {
             assertThat(fieldError.getField()).isEqualTo("requestStartDate");
             System.out.println(fieldError.getMessage());
         });
+    }
+
+    @Test
+    void unauthenticatedRequestsAreRejected() {
+        rawClient.get().uri(API_URL + "?page=0&size=3").exchange().expectStatus().isUnauthorized();
+        rawClient.put().uri(API_URL + "/1/false").exchange().expectStatus().isUnauthorized();
+        assertThat(reserveItemRepository.count().block()).isZero();
     }
 
 }

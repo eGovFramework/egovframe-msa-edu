@@ -7,6 +7,7 @@ import org.egovframe.cloud.boardservice.domain.board.Board;
 import org.egovframe.cloud.boardservice.domain.comment.Comment;
 import org.egovframe.cloud.boardservice.domain.user.User;
 import org.egovframe.cloud.servlet.domain.BaseEntity;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
@@ -89,7 +90,8 @@ public class Posts extends BaseEntity {
     /**
      * 조회 수
      */
-    @Column(columnDefinition = "int(9) default '0'")
+    @Column
+    @ColumnDefault("0")
     private Integer readCount;
 
     /**

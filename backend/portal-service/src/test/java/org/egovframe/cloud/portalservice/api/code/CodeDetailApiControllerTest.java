@@ -7,16 +7,15 @@ import java.util.List;
 import org.egovframe.cloud.portalservice.api.code.dto.CodeDetailRequestDto;
 import org.egovframe.cloud.portalservice.api.code.dto.CodeDetailResponseDto;
 import org.egovframe.cloud.portalservice.api.code.dto.CodeDetailSaveRequestDto;
-import org.egovframe.cloud.portalservice.api.code.dto.CodeUpdateRequestDto;
-import org.json.JSONObject;
-import org.junit.jupiter.api.Disabled;
+import org.egovframe.cloud.portalservice.api.code.dto.CodeDetailUpdateRequestDto;
+import org.egovframe.cloud.portalservice.support.AuthorizedHttpTest;
+import org.egovframe.cloud.portalservice.support.TestTokens;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -25,7 +24,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -50,10 +48,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableConfigurationProperties
-@ActiveProfiles(profiles = "test")
-class CodeDetailApiControllerTest {
+class CodeDetailApiControllerTest extends AuthorizedHttpTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -63,9 +59,6 @@ class CodeDetailApiControllerTest {
     private static final String TEST_CODE_NAME = "테스트상세1";
     private static final String TEST_COM = "@test.com";
     private static final String TEST_EMAIL = System.currentTimeMillis() + TEST_COM;
-    private static final String TEST_PASSWORD = "test1234!";
-//    private static final String PORTAL_SERVICE_URL = "http://localhost:8000/portal-service";
-    private static final String USER_SERVICE_URL = "http://localhost:8000/user-service";
     private static final String API_URL = "/api/v1/code-details";
 
     // login 후 발급된 토큰 값이 입력된다
@@ -73,26 +66,15 @@ class CodeDetailApiControllerTest {
 
     @Test
     @Order(Integer.MIN_VALUE)
-    @Disabled
     public void setup() throws Exception {
-        // 사용자 등록
+        // user-service 로그인 대신, AuthenticationFilter 가 검증하는 형식으로 서명한 관리자 JWT 를 발급한다
+        ACCESS_TOKEN = TestTokens.bearer(TEST_EMAIL, TestTokens.ADMIN);
+
+        // 발급한 토큰이 실제 보안 필터와 (user-service 스텁을 통한) 인가 위임을 통과하는지 확인한다
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("email", TEST_EMAIL);
-        jsonObject.put("password", TEST_PASSWORD);
-        jsonObject.put("userName", "테스터");
-
-        String url = USER_SERVICE_URL + "/api/v1/users";
-        HttpEntity<String> httpEntity = new HttpEntity<>(jsonObject.toString(), headers);
-        ResponseEntity<Long> userResponseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, Long.class);
-        assertThat(userResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        // 로그인 후 토큰 값 세팅
-        jsonObject.remove("userName");
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(USER_SERVICE_URL + "/login", jsonObject.toString(), String.class);
-        ACCESS_TOKEN = responseEntity.getHeaders().get("access-token").get(0);
+        headers.set(HttpHeaders.AUTHORIZATION, ACCESS_TOKEN);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(API_URL, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         log.info("token ={}", ACCESS_TOKEN);
     }
 
@@ -208,7 +190,8 @@ class CodeDetailApiControllerTest {
         headers.set(HttpHeaders.AUTHORIZATION, ACCESS_TOKEN);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        CodeUpdateRequestDto requestDto = CodeUpdateRequestDto.builder()
+        CodeDetailUpdateRequestDto requestDto = CodeDetailUpdateRequestDto.builder()
+                .parentCodeId(PARENT_CODE_ID)
                 .codeName(TEST_CODE_NAME + "2")
                 .codeDescription("테스트 공통코드입니다2")
                 .sortSeq(2)

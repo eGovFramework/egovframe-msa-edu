@@ -12,18 +12,19 @@ import org.egovframe.cloud.reserveitemservice.domain.reserveItem.ReserveItemRepo
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.junit.jupiter.api.BeforeEach;
+import org.egovframe.cloud.reserveitemservice.support.JwtTestTokens;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableConfigurationProperties
-@TestPropertySource(properties = {"spring.config.location=classpath:application-test.yml"})
 @ActiveProfiles("test")
 @Import({R2dbcConfig.class})
 public class LocationApiControllerTest {
@@ -35,7 +36,18 @@ public class LocationApiControllerTest {
 	private ReserveItemRepository reserveItemRepository;
 
 	@Autowired
-	WebTestClient webTestClient;
+	private WebTestClient rawClient;
+
+	private WebTestClient webTestClient;
+
+	@Value("${token.secret}")
+	private String tokenSecret;
+
+	@BeforeEach
+	void authenticateOverHttp() {
+		webTestClient = rawClient.mutate()
+			.defaultHeader("Authorization", JwtTestTokens.bearer(tokenSecret)).build();
+	}
 
 	private static final String API_URL = "/api/v1/locations";
 
@@ -177,6 +189,22 @@ public class LocationApiControllerTest {
 			.exchange()
 			.expectStatus().isNoContent();
 
+	}
+
+	@Test
+	void unauthenticatedRequestsAreRejected() {
+		rawClient.get().uri(API_URL + "?page=0&size=3").exchange().expectStatus().isUnauthorized();
+		rawClient.post().uri(API_URL).bodyValue(LocationSaveRequestDto.builder()
+			.locationName("unauthenticated").isUse(true).sortSeq(1).build())
+			.exchange().expectStatus().isUnauthorized();
+		assertEquals(0L, locationRepository.count().block());
+	}
+
+	@Test
+	void forgedSignatureIsRejected() {
+		rawClient.get().uri(API_URL + "?page=0&size=3")
+			.header("Authorization", JwtTestTokens.bearer("wrong-signing-secret"))
+			.exchange().expectStatus().isUnauthorized();
 	}
 
 
