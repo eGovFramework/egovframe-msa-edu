@@ -4,9 +4,15 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/build-frontend.yml'
   pull_request:
     branches:
       - main
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/build-frontend.yml'
 
 permissions:
   contents: read
@@ -22,10 +28,10 @@ jobs:
           - portal
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Node.js 22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '22'
           cache: npm

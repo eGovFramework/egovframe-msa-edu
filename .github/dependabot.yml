@@ -18,9 +18,22 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "Asia/Seoul"
-    open-pull-requests-limit: 10
-    labels:
-      - "dependencies"
+    # Routine major upgrades are reviewed as explicit migrations. This only
+    # limits version updates; Dependabot security updates remain enabled.
+    allow:
+      - dependency-type: "all"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+    groups:
+      gradle-dependencies:
+        group-by: "dependency-name"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    open-pull-requests-limit: 5
     commit-message:
       prefix: "deps"
       include: "scope"
@@ -32,9 +45,11 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "Asia/Seoul"
-    open-pull-requests-limit: 3
-    labels:
-      - "ci"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+    open-pull-requests-limit: 1
     commit-message:
       prefix: "ci"
       include: "scope"
@@ -56,9 +71,21 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "Asia/Seoul"
-    open-pull-requests-limit: 5
-    labels:
-      - "docker"
+    # Keep the declared runtime line stable; major image changes are manual.
+    allow:
+      - dependency-type: "all"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+    groups:
+      docker-images:
+        group-by: "dependency-name"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    open-pull-requests-limit: 3
     commit-message:
       prefix: "docker"
       include: "scope"
